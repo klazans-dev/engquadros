@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cliente | EngQuadros</title>
+    <link rel="icon" type="image/png" href="public/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root { --vermelho-marca: #e31b23; --azul-marca: #2b5c92; --azul-escuro: #1a365d; --amarelo-destaque: #f4c522; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
+        body { background-color: #0a0e17; background-image: linear-gradient(rgba(0, 168, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 168, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; padding: 20px; }
+
+        .auth-container { background: rgba(15, 20, 25, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-top: 5px solid var(--azul-marca); width: 100%; max-width: 500px; border-bottom: 1px solid rgba(43, 92, 146, 0.3); border-left: 1px solid rgba(43, 92, 146, 0.3); border-right: 1px solid rgba(43, 92, 146, 0.3); }
+
+        .logo { max-width: 180px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
+        
+        .abas-auth { display: flex; margin-bottom: 30px; border-bottom: 1px solid #333; }
+        .abas-auth button { flex: 1; padding: 12px; background: transparent; color: #aaa; border: none; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .abas-auth button.ativo { color: var(--amarelo-destaque); border-bottom-color: var(--amarelo-destaque); }
+
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #ccc; }
+        .input-group input { width: 100%; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; background: #111; color: #fff; font-size: 0.95rem; }
+        .input-group input:focus { outline: none; border-color: var(--azul-marca); box-shadow: 0 0 10px rgba(43, 92, 146, 0.5); }
+
+        .linha-dupla { display: flex; gap: 15px; }
+        .linha-dupla .input-group { flex: 1; }
+
+        .btn-acao { width: 100%; padding: 14px; background: var(--azul-marca); color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-acao:hover { background: var(--vermelho-marca); }
+        
+        .mensagem { font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; font-weight: bold; }
+        .voltar { display: block; margin-top: 25px; color: #aaa; text-decoration: none; font-size: 0.9rem; transition: 0.3s; text-align: center; }
+        .voltar:hover { color: var(--amarelo-destaque); }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <img src="public/logo.png" alt="EngQuadros" class="logo">
+        
+        <div class="abas-auth">
+            <button id="btnAbaLogin" class="ativo" onclick="alternarAba('login')">Fazer Login</button>
+            <button id="btnAbaCadastro" onclick="alternarAba('cadastro')">Cadastrar-se</button>
+        </div>
+
+        <!-- FORMULÁRIO DE LOGIN -->
+        <form id="formLogin">
+            <div class="input-group">
+                <label>CNPJ da Empresa</label>
+                <input type="text" id="loginCnpj" placeholder="Somente números" required autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Chave Mestre (Senha)</label>
+                <input type="password" id="loginSenha" required>
+            </div>
+            <button type="submit" class="btn-acao"><i class="fa-solid fa-right-to-bracket"></i> Acessar Portal</button>
+            <div id="msgErroLogin" class="mensagem" style="color: var(--vermelho-marca);">CNPJ ou Senha incorretos.</div>
+        </form>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <form id="formCadastro" style="display: none;">
+            <div class="input-group">
+                <label>Razão Social da Empresa</label>
+                <input type="text" id="cadRazao" required>
+            </div>
+            <div class="linha-dupla">
+                <div class="input-group"><label>CNPJ (Somente Números)</label><input type="text" id="cadCnpj" required></div>
+                <div class="input-group"><label>WhatsApp</label><input type="text" id="cadWhatsapp" required></div>
+            </div>
+            <div class="input-group">
+                <label>Nome do Contato Responsável</label>
+                <input type="text" id="cadNome" required>
+            </div>
+            <div class="input-group">
+                <label>E-mail Corporativo</label>
+                <input type="email" id="cadEmail" required>
+            </div>
+            <div class="input-group">
+                <label>Crie uma Chave Mestre (Senha)</label>
+                <input type="password" id="cadSenha" required>
+            </div>
+            <button type="submit" class="btn-acao" style="background: #10b981;"><i class="fa-solid fa-user-plus"></i> Criar Cadastro</button>
+            <div id="msgCadastro" class="mensagem"></div>
+        </form>
+
+        <a href="index.html" class="voltar"><i class="fa-solid fa-arrow-left"></i> Voltar ao site principal</a>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
+        const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        function alternarAba(aba) {
+            document.getElementById('btnAbaLogin').className = aba === 'login' ? 'ativo' : '';
+            document.getElementById('btnAbaCadastro').className = aba === 'cadastro' ? 'ativo' : '';
+            
+            document.getElementById('formLogin').style.display = aba === 'login' ? 'block' : 'none';
+            document.getElementById('formCadastro').style.display = aba === 'cadastro' ? 'block' : 'none';
+        }
+
+        // LÓGICA DE LOGIN
+        document.getElementById('formLogin').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const cnpjInput = document.getElementById('loginCnpj').value.trim();
+            const chaveInput = document.getElementById('loginSenha').value.trim();
+            const msgErro = document.getElementById('msgErroLogin');
+            
+            msgErro.style.display = 'none';
+
+            const { data, error } = await supabaseClient.from('clientes')
+                .select('*').eq('cnpj', cnpjInput).eq('chave_mestre', chaveInput);
+
+            if (error || data.length === 0) {
+                msgErro.style.display = 'block';
+            } else {
+                sessionStorage.setItem('clienteLogado', data[0].cnpj);
+                sessionStorage.setItem('clienteNome', data[0].razao_social);
+                window.location.href = 'painel-cliente.html';
+            }
+        });
+
+        // LÓGICA DE CADASTRO
+        document.getElementById('formCadastro').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('msgCadastro');
+            const btn = document.querySelector('#formCadastro .btn-acao');
+            
+            const novoCliente = {
+                razao_social: document.getElementById('cadRazao').value.trim(),
+                cnpj: document.getElementById('cadCnpj').value.trim(),
+                whatsapp: document.getElementById('cadWhatsapp').value.trim(),
+                nome_contato: document.getElementById('cadNome').value.trim(),
+                email: document.getElementById('cadEmail').value.trim(),
+                chave_mestre: document.getElementById('cadSenha').value.trim()
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = 'Processando...';
+
+            // Insere no banco
+            const { error } = await supabaseClient.from('clientes').insert([novoCliente]);
+
+            if (error) {
+                msg.style.display = 'block';
+                msg.style.color = 'var(--vermelho-marca)';
+                msg.innerText = 'Erro: Este CNPJ já está cadastrado ou houve falha na rede.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar Cadastro';
+            } else {
+                msg.style.display = 'block';
+                msg.style.color = '#10b981'; // Verde
+                msg.innerText = 'Cadastro realizado! Faça login para continuar.';
+                document.getElementById('formCadastro').reset();
+                
+                // Volta para a aba de login após 2 segundos
+                setTimeout(() => {
+                    alternarAba('login');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar Cadastro';
+                    msg.style.display = 'none';
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

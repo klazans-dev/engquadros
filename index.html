@@ -307,12 +307,26 @@
 
         <nav aria-label="Menu Principal">
             <ul>
-                <li><a href="#hero" class="ativo">Home</a></li>
+                <li><a href="#hero" >Home</a></li>
                 <li><a href="#missao">A Empresa</a></li>
                 <li><a href="#servicos">Soluções</a></li>
                 <li><a href="#galeria">Projetos</a></li>
                 <li><a href="public/portfolio.pdf" target="_blank" style="color: var(--amarelo-destaque); font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Portfólio</a></li>
                 <li><a href="#contato">Contato</a></li>
+                <!-- BOTOES DE ACESSO DO SISTEMA -->
+<div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+    
+    <!-- Botão do Cliente -->
+    <a href="login.html" class="btn-orcamento" style="background-color: var(--amarelo-destaque); color: var(--azul-escuro); padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
+        <i class="fa-solid fa-user-lock"></i> Área do Cliente
+    </a>
+
+    <!-- Botão do Admin (Restrito) -->
+    <a href="admin.html" class="btn-orcamento" style="background-color: transparent; border: 1px solid var(--amarelo-destaque); color: var(--amarelo-destaque); padding: 9px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
+        <i class="fa-solid fa-shield-halved"></i> Restrito
+    </a>
+
+</div>
             </ul>
         </nav>
     </header>
@@ -321,9 +335,7 @@
         <section id="hero" class="hero-wrapper">
             <div class="slider-container">
                 <div class="slide active"><img src="public/banner0.jpg" alt="Logo EngQuadros"></div>
-                <div class="slide"><img src="public/banner1.jpg" alt="Estrutura Industrial"></div>
-                <div class="slide"><img src="public/banner2.jpg" alt="Montagem de Painéis"></div>
-                <div class="slide"><img src="public/banner3.jpg" alt="Equipe Técnica"></div>
+                
             </div>
             <div class="hero-botoes reveal">
                 <a href="#contato" class="btn btn-primario"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
@@ -333,27 +345,87 @@
         
         <div class="energy-divider"></div>
 
-        <!-- APRESENTAÇÃO E ELETROCENTRO -->
+<!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
+       <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
         <section id="apresentacao" class="secao">
-            <h2 class="titulo-secao reveal">Apresentação</h2>
-            <p class="apresentacao-intro reveal">A ENGQUADROS atua com soluções inteligentes, desenvolvendo quadros e painéis elétricos de baixa, média tensão e Eletrocentro padronizados e de alta qualidade para as mais diversas aplicações.</p>
+            <h2 class="titulo-secao reveal">A Engenharia Segura</h2>
+            <p class="apresentacao-intro reveal">Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.</p>
 
-            <div class="eletrocentro-container reveal">
-                <h3 class="subtitulo-eletrocentro">Eletrocentro</h3>
-                <div class="grid-eletrocentro">
-                    <div class="eletrocentro-imagens">
-                        <img src="public/eletrocentro1.jpg" alt="Eletrocentro Interno" loading="lazy">
-                        <img src="public/eletrocentro2.jpg" alt="Eletrocentro Externo" loading="lazy">
-                    </div>
-                    <div class="eletrocentro-texto">
-                        <p>Um conceito moderno, perfeito para projetos industriais 4.0, ou seja, dinâmicos, rápidos e sustentáveis. Salas elétricas modulares e metálicas construídas, testadas em fábrica e transportadas até o local de instalação. Projetada sob medida, a partir das necessidades do cliente, cumprindo as Normas Aplicáveis e otimizando do uso de espaço útil.<br><br>Fabricado com tecnologia que garante rigidez adequada para atender as demandas de serviço do equipamento por décadas. Projetado e calculado para garantir o excelente desempenho, todo o Eletrocentro é provido de dispositivos de proteção, aterramentos, isolação de terminais energizados e sinalização padronizada conforme requisitos das normas NR 10 e NR 22.</p>
-                    </div>
+            <!-- NÚMEROS DO CATÁLOGO -->
+            <div class="grid-numeros reveal" style="display: flex; justify-content: center; gap: 50px; margin-bottom: 80px; text-align: center; flex-wrap: wrap;">
+                <div class="numero-card" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 4px solid var(--vermelho-marca); min-width: 250px;">
+                    <h3 style="font-size: 3rem; color: var(--azul-escuro);">+11.000</h3>
+                    <p style="color: var(--texto-secundario); font-weight: bold;">Painéis Entregues</p>
                 </div>
+                <div class="numero-card" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 4px solid var(--azul-marca); min-width: 250px;">
+                    <h3 style="font-size: 3rem; color: var(--azul-escuro);">+2.000m²</h3>
+                    <p style="color: var(--texto-secundario); font-weight: bold;">De Parque Fabril</p>
+                </div>
+            </div>
+
+            <!-- PILARES EM PAISAGEM (Lado a Lado) -->
+            <div class="pilares-paisagem reveal" style="margin-bottom: 80px;">
+                <h3 style="color: var(--azul-escuro); margin-bottom: 40px; font-size: 2rem; font-weight: 700; text-align: center;">Nossos 3 Pilares Exemplares</h3>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                    
+                    <!-- Pilar 1 -->
+                    <div style="background: #fff; padding: 40px 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 6px solid var(--azul-marca); transition: transform 0.3s ease; text-align: center;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fa-solid fa-check-double" style="color: var(--azul-marca); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                        <h4 style="color: var(--azul-escuro); margin-bottom: 15px; font-size: 1.3rem;">Consistência de entrega</h4>
+                        <p style="color: var(--texto-secundario); font-size: 1rem; line-height: 1.6;">Reconhecida pela alta consistência em cada etapa, do projeto à execução.</p>
+                    </div>
+
+                    <!-- Pilar 2 -->
+                    <div style="background: #fff; padding: 40px 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 6px solid var(--vermelho-marca); transition: transform 0.3s ease; text-align: center;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fa-solid fa-gears" style="color: var(--vermelho-marca); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                        <h4 style="color: var(--azul-escuro); margin-bottom: 15px; font-size: 1.3rem;">Excelência em produção</h4>
+                        <p style="color: var(--texto-secundario); font-size: 1rem; line-height: 1.6;">Padrão fiel e rigoroso com processos qualificados e planejados.</p>
+                    </div>
+
+                    <!-- Pilar 3 -->
+                    <div style="background: #fff; padding: 40px 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 6px solid var(--amarelo-destaque); transition: transform 0.3s ease; text-align: center;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="fa-solid fa-shield-halved" style="color: var(--amarelo-destaque); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                        <h4 style="color: var(--azul-escuro); margin-bottom: 15px; font-size: 1.3rem;">Engenharia segura</h4>
+                        <p style="color: var(--texto-secundario); font-size: 1rem; line-height: 1.6;">Base construída pela confiança, entregando resultados verdadeiros e garantidos.</p>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- IMAGEM ELETROCENTRO EM DESTAQUE -->
+            <div class="eletrocentro-destaque reveal" style="text-align: center;">
+                <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" loading="lazy" style="max-width: 100%; width: 700px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
             </div>
         </section>
 
         <div class="energy-divider"></div>
-
+<!-- FAIXA DE SELOS E NORMAS (ISO) -->
+        <section class="faixa-certificacoes reveal" style="background: linear-gradient(90deg, var(--azul-escuro), var(--azul-marca)); padding: 40px 20px; text-align: center; color: #fff; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; border-top: 3px solid var(--amarelo-destaque); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            
+            <h3 style="font-size: 1.4rem; margin-right: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;">
+                <i class="fa-solid fa-award" style="color: var(--amarelo-destaque); font-size: 2rem;"></i> 
+                Qualidade Certificada:
+            </h3>
+            
+            <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <!-- Selo ISO -->
+                <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(244, 197, 34, 0.5); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-certificate" style="color: var(--amarelo-destaque); font-size: 1.2rem;"></i> Padrão ISO (Qualidade)
+                </div>
+                
+                <!-- Selo IEC -->
+                <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-shield-check" style="color: #fff; font-size: 1.2rem;"></i> Norma IEC 61439
+                </div>
+                
+                <!-- Selo NRs -->
+                <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fa-solid fa-hard-hat" style="color: #fff; font-size: 1.2rem;"></i> NR-10 e NR-22
+                </div>
+            </div>
+            
+        </section>
         <!-- ENGENHARIA EM FOCO (FLIP CARDS COM PAINEL DE AÇO) -->
         <section class="curiosidades-bg circuit-bg">
             <h2 class="titulo-secao reveal" style="color: #fff;">Engenharia em Foco</h2>
@@ -363,7 +435,7 @@
                         <div class="flip-card-front steel-panel high-voltage">
                             <i class="fa-solid fa-temperature-high"></i>
                             <h3>Segurança Térmica</h3>
-                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para revelar</p>
+                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja  para exibir</p>
                         </div>
                         <div class="flip-card-back">
                             <p><strong>Norma IEC 61439:</strong> Nossos painéis seguem a norma internacional, garantindo resistência a curtos-circuitos e mitigando riscos de incêndio.</p>
@@ -375,7 +447,7 @@
                         <div class="flip-card-front steel-panel high-voltage">
                             <i class="fa-solid fa-hard-hat"></i>
                             <h3>Proteção Operacional</h3>
-                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para revelar</p>
+                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para exibir</p>
                         </div>
                         <div class="flip-card-back">
                             <p><strong>Classificação IAC:</strong> Painéis de Média Tensão com estrutura que direciona gases de arco interno para fora, protegendo o operador.</p>
@@ -387,7 +459,7 @@
                         <div class="flip-card-front steel-panel high-voltage">
                             <i class="fa-solid fa-droplet-slash"></i>
                             <h3>Ambientes Severos</h3>
-                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para revelar</p>
+                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para exibir</p>
                         </div>
                         <div class="flip-card-back">
                             <p><strong>Índice IP-54:</strong> Eletrocentros selados contra poeira industrial e jatos de água, garantindo a integridade dos eletrônicos.</p>
@@ -455,7 +527,56 @@
                 </div>
             </div>
         </section>
+<!-- NOSSOS QUADROS E PAINÉIS (DETALHAMENTO TÉCNICO) -->
+        <section class="secao bg-cinza">
+            <h2 class="titulo-secao reveal" style="color: var(--azul-escuro);">Nossos Quadros e Painéis</h2>
+            <p class="apresentacao-intro reveal" style="color: var(--texto-secundario);">Fornecemos engenharia de alta patente para que cada entrega represente a segurança elétrica, padronização técnica, qualidade de execução e previsibilidade.</p>
+            <div class="grid-flip reveal" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+                
+                <!-- CARD SPCS -->
+                <div class="steel-panel high-voltage" style="padding: 30px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="color: var(--amarelo-destaque); font-size: 1.5rem; margin-bottom: 15px;">Painéis SPCS</h3>
+                        <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 20px;">Controle e Proteção para Subestações. Centralizam a proteção, o controle e a automação de subestações de média e alta tensão.</p>
+                        <ul style="color: #aaa; font-size: 0.85rem; line-height: 1.8; margin-bottom: 20px;">
+                            <li><i class="fa-solid fa-bolt" style="color: var(--vermelho-marca);"></i> Painéis de linha e trafo</li>
+                            <li><i class="fa-solid fa-bolt" style="color: var(--vermelho-marca);"></i> Painéis de IHM e Teleproteção</li>
+                            <li><i class="fa-solid fa-bolt" style="color: var(--vermelho-marca);"></i> Bastidor de Rede e Serviços Auxiliares</li>
+                        </ul>
+                    </div>
+                </div>
 
+                <!-- CARD MÉDIA TENSÃO -->
+                <div class="steel-panel high-voltage" style="padding: 30px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="color: var(--amarelo-destaque); font-size: 1.5rem; margin-bottom: 15px;">Média Tensão (PMTENG)</h3>
+                        <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 20px;">Comando, proteção e seccionamento seguro. Cubículos de proteção, entrada, distribuição e transferência.</p>
+                        <ul style="color: #aaa; font-size: 0.85rem; line-height: 1.8; margin-bottom: 20px;">
+                            <li><i class="fa-solid fa-check" style="color: var(--azul-marca);"></i> Comunicação IEC 61850</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--azul-marca);"></i> Resistente a arco interno (IAC) AFL</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--azul-marca);"></i> Isolação a Vácuo, Ar ou SF6</li>
+                            <li><i class="fa-solid fa-check" style="color: var(--azul-marca);"></i> Chaparia robusta (14/12 MSG)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CARD BAIXA TENSÃO -->
+                <div class="steel-panel high-voltage" style="padding: 30px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h3 style="color: var(--amarelo-destaque); font-size: 1.5rem; margin-bottom: 15px;">Baixa Tensão (PBTENG)</h3>
+                        <p style="color: #ddd; font-size: 0.9rem; margin-bottom: 20px;">Solução completa para distribuição industrial. Inclui QGBTs, CCMs, QTA e Painéis de HVAC em conformidade NBR IEC 61439.</p>
+                        <ul style="color: #aaa; font-size: 0.85rem; line-height: 1.8; margin-bottom: 20px;">
+                            <li><i class="fa-solid fa-shield" style="color: var(--amarelo-destaque);"></i> Certificado IEC 61439</li>
+                            <li><i class="fa-solid fa-shield" style="color: var(--amarelo-destaque);"></i> Compartimentação Forma 1 a 4B</li>
+                            <li><i class="fa-solid fa-shield" style="color: var(--amarelo-destaque);"></i> Quadros em ABS, Inox e Aço Carbono</li>
+                            <li><i class="fa-solid fa-shield" style="color: var(--amarelo-destaque);"></i> Proteção contra partes vivas</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <div class="energy-divider"></div>
         <div class="energy-divider"></div>
 
         <!-- GALERIA DE PROJETOS -->
@@ -502,7 +623,7 @@
                 <img src="public/ype.jpg" alt="Ypê" loading="lazy">
             </div>
             <div class="divisor-parceiros"></div>
-            <h3 style="text-align: center; color: var(--texto-secundario); margin-bottom: 30px;" class="reveal">Principais Fornecedores Homologados</h3>
+            <h3 style="text-align: center; color: var(--texto-secundario); margin-bottom: 30px;" class="reveal">Parceiros</h3>
             <div class="grid-clientes reveal" style="gap: 80px;">
                 <img src="public/siemens.jpg" alt="Siemens" loading="lazy" style="max-width: 200px;">
                 <img src="public/rittal.jpg" alt="Rittal" loading="lazy" style="max-width: 200px;">

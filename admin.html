@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin & CRM | EngQuadros</title>
+    <link rel="icon" type="image/png" href="public/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Aviso automático na tela caso falte comunicação com o banco -->
+    <script>
+        window.onerror = function(msg, url, line) {
+            console.error("Erro (Linha " + line + "): " + msg);
+        };
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root { 
+            --vermelho-marca: #e31b23; 
+            --azul-marca: #2b5c92; 
+            --azul-escuro: #1a365d; 
+            --amarelo-destaque: #f4c522; 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: #f4f7f6; color: #333; height: 100vh; overflow: hidden; }
+
+        /* ================= TELA DE LOGIN ================= */
+        #telaLogin { 
+            background-color: #0a0e17; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; width: 100vw; 
+        }
+        
+        .login-container { 
+            background: rgba(15, 20, 25, 0.95); padding: 40px; 
+            border-radius: 12px; border-top: 5px solid var(--amarelo-destaque); 
+            width: 100%; max-width: 400px; text-align: center; color: #fff; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+        
+        .tipo-acesso { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tipo-acesso button { 
+            flex: 1; padding: 10px; border: none; background: #222; 
+            color: #aaa; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.3s;
+        }
+        .tipo-acesso button.ativo { background: var(--amarelo-destaque); color: var(--azul-escuro); }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #ccc; }
+        .input-group input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #111; color: #fff; }
+        
+        .btn-entrar { 
+            width: 100%; padding: 14px; background: var(--amarelo-destaque); 
+            color: var(--azul-escuro); border: none; border-radius: 6px; 
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-entrar:hover { background: #fff; }
+        
+        #mensagemErroLogin { color: var(--vermelho-marca); font-size: 0.9rem; margin-top: 15px; display: none; font-weight: bold; }
+
+        /* ================= PAINEL E SIDEBAR ================= */
+        #telaPainel { display: none; height: 100vh; width: 100vw; }
+        
+        aside { 
+            width: 320px; background: var(--azul-escuro); color: #fff; 
+            display: flex; flex-direction: column; z-index: 10; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .logo-area { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        .btn-sair-admin { 
+            background: transparent; border: 1px solid var(--vermelho-marca); 
+            color: var(--vermelho-marca); padding: 5px 15px; cursor: pointer; 
+            font-size: 0.8rem; margin-top: 10px; border-radius: 4px; transition: 0.3s;
+        }
+        .btn-sair-admin:hover { background: var(--vermelho-marca); color: #fff; }
+        
+        .menu-abas { display: flex; background: rgba(0,0,0,0.2); }
+        .menu-abas button { 
+            flex: 1; padding: 15px; background: transparent; color: #aaa; 
+            border: none; cursor: pointer; font-weight: bold; border-bottom: 3px solid transparent; 
+        }
+        .menu-abas button.ativa { 
+            color: var(--amarelo-destaque); border-bottom-color: var(--amarelo-destaque); background: rgba(255,255,255,0.05); 
+        }
+        
+        .btn-novo-cliente { 
+            background: #10b981; width: 100%; border: none; padding: 12px; 
+            color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s;
+        }
+        .btn-novo-cliente:hover { background: #059669; }
+        
+        .busca-aside { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .busca-aside input { 
+            width: 100%; padding: 8px 12px; border-radius: 4px; border: none; 
+            background: rgba(255,255,255,0.1); color: #fff; 
+        }
+        .busca-aside input::placeholder { color: #aaa; }
+
+        .lista-lateral { flex: 1; overflow-y: auto; padding: 15px; }
+        .item-lista { 
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; 
+            margin-bottom: 10px; cursor: pointer; border-left: 4px solid transparent; 
+            position: relative; transition: 0.2s;
+        }
+        .item-lista:hover, .item-lista.ativo { 
+            background: rgba(255,255,255,0.1); border-left-color: var(--amarelo-destaque); 
+        }
+        .item-lista h4 { color: #fff; font-size: 1rem; margin-bottom: 5px; }
+        .item-lista p { color: #aaa; font-size: 0.8rem; }
+        .badge-inativo { 
+            display: inline-block; font-size: 0.7rem; background: var(--vermelho-marca); 
+            color: #fff; padding: 3px 8px; border-radius: 12px; margin-left: 10px; 
+            vertical-align: middle; 
+        }
+
+        /* ================= ÁREA PRINCIPAL (MAIN) ================= */
+        main { flex: 1; padding: 40px; overflow-y: auto; background: #fff; display: flex; flex-direction: column; }
+        #estadoVazio { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #94a3b8; }
+        
+        .painel-conteudo { display: none; }
+        .card-box { 
+            background: #f8fafc; border: 1px solid #e2e8f0; 
+            border-radius: 8px; padding: 30px; margin-bottom: 30px; 
+        }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; color: var(--azul-escuro); margin-bottom: 5px; font-size: 0.9rem;}
+        .form-group input, .form-group select { 
+            width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1rem;
+        }
+        
+        .btn-acao { 
+            background: var(--azul-marca); color: #fff; border: none; 
+            padding: 10px 20px; border-radius: 4px; font-weight: bold; 
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+        }
+        .btn-acao:hover { background: var(--azul-escuro); }
+        
+        .linha-form { display: flex; gap: 15px; }
+        .linha-form .form-group { flex: 1; }
+        
+        .doc-card { 
+            border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: #fff; margin-bottom: 10px; 
+        }
+        .doc-card a { color: var(--azul-marca); font-weight: bold; text-decoration: none; }
+        .btn-del-doc { background: transparent; border: none; color: var(--vermelho-marca); cursor: pointer; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- ================= TELA DE LOGIN ================= -->
+    <div id="telaLogin">
+        <div class="login-container">
+            <h2 style="color: var(--amarelo-destaque); margin-bottom: 20px;">CRM EngQuadros</h2>
+            
+            <div class="tipo-acesso">
+                <button type="button" id="btnAcessoMestre" class="ativo" onclick="mudarModoLogin('mestre')">Master</button>
+                <button type="button" id="btnAcessoEquipe" onclick="mudarModoLogin('equipe')">Equipe</button>
+            </div>
+            
+            <form id="formLogin">
+                <div class="input-group" id="grupoIdentificador">
+                    <label id="labelIdentificador">CNPJ Master</label>
+                    <input type="text" id="inputIdentificador" required autocomplete="off">
+                </div>
+                
+                <div class="input-group">
+                    <label>Senha de Acesso</label>
+                    <input type="password" id="inputSenha" required>
+                </div>
+                
+                <button type="submit" class="btn-entrar">Acessar Painel</button>
+                <div id="mensagemErroLogin">Acesso negado. Credenciais inválidas.</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= TELA DO PAINEL CRM ================= -->
+    <div id="telaPainel">
+        <aside>
+            <div class="logo-area">
+                <h3 style="color: var(--amarelo-destaque);">PAINEL CRM</h3>
+                <p style="font-size: 0.8rem; color: #ccc;" id="nomeUsuarioLogado">Carregando...</p>
+                <button type="button" class="btn-sair-admin" onclick="sair()">Sair do Sistema</button>
+            </div>
+            
+            <div class="menu-abas">
+                <button type="button" id="abaClientes" class="ativa" onclick="abrirAba('clientes')">Clientes</button>
+                <button type="button" id="abaEquipe" onclick="abrirAba('equipe')">Equipe</button>
+            </div>
+            
+            <div id="boxBuscaLateral" class="busca-aside">
+                <input type="text" id="inputBuscaMenu" placeholder="Procurar cliente..." onkeyup="filtrarMenu()">
+            </div>
+            
+            <div id="boxBtnNovoCliente" style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <button type="button" class="btn-novo-cliente" onclick="abrirPainelNovoCliente()">+ Novo Cliente</button>
+            </div>
+            
+            <div class="lista-lateral" id="listaLateral"></div>
+        </aside>
+
+        <main>
+            <div id="estadoVazio">
+                <i class="fa-solid fa-arrow-left" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h2>Selecione um item no menu lateral</h2>
+            </div>
+
+            <!-- PAINEL 1: CADASTRAR NOVO CLIENTE -->
+            <div id="painelNovoCliente" class="painel-conteudo">
+                <h2 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Cadastrar Cliente</h2>
+                <div class="card-box">
+                    <form id="formNovoCliente">
+                        <div class="form-group">
+                            <label>Razão Social *</label>
+                            <input type="text" id="novoCliNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>CNPJ *</label>
+                            <input type="text" id="novoCliCnpj" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha de Acesso do Cliente *</label>
+                            <input type="text" id="novoCliSenha" required>
+                        </div>
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>WhatsApp (Opcional)</label>
+                                <input type="text" id="novoCliWpp" placeholder="(00) 00000-0000">
+                            </div>
+                            <div class="form-group">
+                                <label>E-mail (Opcional)</label>
+                                <input type="email" id="novoCliEmail" placeholder="contato@empresa.com">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-acao">Salvar Cliente</button>
+                        <span id="msgNovoCliente" style="margin-left: 10px; font-weight: bold;"></span>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PAINEL 2: DETALHES E GESTÃO DO CLIENTE -->
+            <div id="painelCliente" class="painel-conteudo">
+                
+                <div class="card-box" style="border-top: 4px solid var(--azul-marca);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                        <div>
+                            <h2 id="viewCliNome" style="color: var(--azul-escuro);">Nome</h2>
+                            <p>CNPJ: <span id="viewCliCnpj"></span> | Status: <span id="viewCliStatus" style="font-weight:bold;"></span></p>
+                        </div>
+                        <div>
+                            <a id="btnWppDireto" href="#" target="_blank" class="btn-acao" style="background: #25D366; text-decoration:none;">
+                                <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <form id="formEditarCliente">
+                        <div class="linha-form">
+                            <div class="form-group" style="flex:2;">
+                                <label>Razão Social</label>
+                                <input type="text" id="editCliNome" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Senha de Acesso</label>
+                                <input type="text" id="editCliSenha" required>
+                            </div>
+                        </div>
+                        
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>WhatsApp</label>
+                                <input type="text" id="editCliWpp">
+                            </div>
+                            <div class="form-group">
+                                <label>Status da Conta</label>
+                                <select id="editCliStatus">
+                                    <option value="ativo">Ativo</option>
+                                    <option value="inativo">Inativo (Bloqueado)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="boxAcoesAdmin" style="display: flex; gap: 15px; margin-top: 15px;">
+                            <button type="submit" class="btn-acao">Salvar Edição</button>
+                            <button type="button" class="btn-acao" style="background: transparent; border: 1px solid var(--vermelho-marca); color: var(--vermelho-marca);" onclick="excluirClienteAtual()">
+                                <i class="fa-solid fa-trash"></i> Excluir Cliente
+                            </button>
+                            <span id="msgEditCliente" style="align-self: center; font-weight: bold;"></span>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-box" id="boxVinculos" style="display: none;">
+                    <h3 style="color: var(--azul-escuro);"><i class="fa-solid fa-users-gear"></i> Vínculos da Equipe</h3>
+                    <div id="listaEquipeVinculo" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;"></div>
+                    <button type="button" class="btn-acao" onclick="salvarVinculos()" style="margin-top:20px; background: #10b981;">Atualizar Vínculos</button>
+                    <span id="msgVinculo" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+                </div>
+
+                <div class="card-box">
+                    <h3 style="color: var(--azul-escuro);"><i class="fa-solid fa-cloud-arrow-up"></i> Enviar Documento</h3>
+                    <form id="formUpload" style="margin-top: 20px;">
+                        <div class="form-group">
+                            <label>Título do Arquivo</label>
+                            <input type="text" id="nomeDoc" required>
+                        </div>
+                        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                            <label><input type="radio" name="tipoEnvio" value="pdf" checked onchange="trocarTipoInput()"> Enviar Arquivo PDF</label>
+                            <label><input type="radio" name="tipoEnvio" value="link" onchange="trocarTipoInput()"> Colar Link Externo</label>
+                        </div>
+                        <div class="form-group" id="boxPdf">
+                            <input type="file" id="arquivoPdf" accept="application/pdf">
+                        </div>
+                        <div class="form-group" id="boxLink" style="display: none;">
+                            <input type="text" id="linkDoc" placeholder="https://...">
+                        </div>
+                        <button type="submit" class="btn-acao">Salvar Documento no Acervo</button>
+                    </form>
+                </div>
+
+                <div class="card-box">
+                    <h3 style="color: var(--azul-escuro);"><i class="fa-solid fa-folder-open"></i> Arquivos Salvos</h3>
+                    <div id="listaArquivosAdmin" style="margin-top: 20px;"></div>
+                </div>
+            </div>
+
+            <!-- PAINEL 3: GESTÃO DA EQUIPE -->
+            <div id="painelEquipe" class="painel-conteudo">
+                <h2 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Adicionar Usuário da Equipe</h2>
+                <div class="card-box">
+                    <form id="formEquipe">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="eqNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Usuário de Login</label>
+                            <input type="text" id="eqUser" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Senha Provisória</label>
+                            <input type="password" id="eqPass" required>
+                        </div>
+                        <button type="submit" class="btn-acao">Cadastrar Usuário</button>
+                        <span id="msgEquipe" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+<!-- ================= SCRIPTS ================= -->
+    <script>
+        // Trava para verificar se o Supabase carregou corretamente
+        if (typeof window.supabase === 'undefined') {
+            alert("⚠️ ERRO CRÍTICO: O motor do banco de dados não carregou. Verifique sua conexão de internet ou pause seu AdBlocker.");
+        }
+
+        const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
+        const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let modoLoginAtual = 'mestre';
+        let isMaster = false;
+        let equipeIdLogada = null;
+        let clienteSelecionado = null;
+
+        if(sessionStorage.getItem('acessoCRM')) {
+            isMaster = sessionStorage.getItem('tipoAcesso') === 'mestre';
+            equipeIdLogada = sessionStorage.getItem('equipeId');
+            document.getElementById('nomeUsuarioLogado').innerText = isMaster ? 'Acesso Master' : 'Equipe: ' + sessionStorage.getItem('nomeEquipe');
+            iniciarPainel();
+        }
+
+        function mudarModoLogin(modo) {
+            modoLoginAtual = modo;
+            document.getElementById('btnAcessoMestre').className = modo === 'mestre' ? 'ativo' : '';
+            document.getElementById('btnAcessoEquipe').className = modo === 'equipe' ? 'ativo' : '';
+            document.getElementById('labelIdentificador').innerText = modo === 'mestre' ? 'CNPJ Master' : 'Usuário';
+        }
+
+        document.getElementById('formLogin').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const ident = document.getElementById('inputIdentificador').value.trim();
+            const senha = document.getElementById('inputSenha').value.trim();
+            const msg = document.getElementById('mensagemErroLogin');
+            
+            msg.style.display = 'none'; 
+            document.querySelector('.btn-entrar').innerText = 'Autenticando...';
+
+            try {
+                if (modoLoginAtual === 'mestre') {
+                    // BUSCA EXCLUSIVA NA NOVA TABELA DO BANCO DE DADOS
+                    const { data, error } = await supabaseClient.from('admin_master')
+                        .select('*').eq('cnpj', ident).eq('senha', senha);
+                    
+                    if (error) {
+                        msg.style.display = 'block';
+                        msg.innerText = 'Erro na comunicação com a tabela admin_master.';
+                        document.querySelector('.btn-entrar').innerText = 'Acessar Painel';
+                        console.error(error);
+                        return;
+                    }
+
+                    if (data && data.length > 0) {
+                        sessionStorage.setItem('acessoCRM', 'true');
+                        sessionStorage.setItem('tipoAcesso', 'mestre');
+                        window.location.reload();
+                    } else {
+                        msg.style.display = 'block';
+                        msg.innerText = 'Acesso negado. CNPJ ou Senha não conferem no banco.';
+                        console.log("Tentativa rejeitada. Verifique se a senha no Supabase é exatamente igual à digitada.");
+                    }
+                } else {
+                    const { data, error } = await supabaseClient.from('equipe_admin')
+                        .select('*').eq('usuario_login', ident).eq('senha', senha);
+                    
+                    if (data && data.length > 0) {
+                        sessionStorage.setItem('acessoCRM', 'true');
+                        sessionStorage.setItem('tipoAcesso', 'equipe');
+                        sessionStorage.setItem('equipeId', data[0].id);
+                        sessionStorage.setItem('nomeEquipe', data[0].nome);
+                        window.location.reload();
+                    } else {
+                        msg.style.display = 'block';
+                        msg.innerText = 'Usuário ou senha da equipe incorretos.';
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                msg.style.display = 'block';
+                msg.innerText = "Erro de conexão com o servidor.";
+            } finally {
+                document.querySelector('.btn-entrar').innerText = 'Acessar Painel';
+            }
+        });
+
+        function sair() { sessionStorage.clear(); window.location.reload(); }
+
+        function iniciarPainel() {
+            document.getElementById('telaLogin').style.display = 'none';
+            document.getElementById('telaPainel').style.display = 'flex';
+            
+            if (!isMaster) { 
+                document.getElementById('abaEquipe').style.display = 'none'; 
+                document.getElementById('boxBtnNovoCliente').style.display = 'none';
+                document.getElementById('boxAcoesAdmin').style.display = 'none';
+                
+                document.getElementById('editCliNome').disabled = true;
+                document.getElementById('editCliSenha').disabled = true;
+                document.getElementById('editCliWpp').disabled = true;
+                document.getElementById('editCliEmail').disabled = true;
+                document.getElementById('editCliStatus').disabled = true;
+            }
+            abrirAba('clientes');
+        }
+
+        function abrirAba(aba) {
+            document.getElementById('abaClientes').className = aba === 'clientes' ? 'ativa' : '';
+            document.getElementById('abaEquipe').className = aba === 'equipe' ? 'ativa' : '';
+            document.getElementById('estadoVazio').style.display = 'flex';
+            document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
+            document.getElementById('inputBuscaMenu').value = ''; 
+            
+            if (aba === 'clientes') {
+                carregarListaClientes();
+                if (isMaster) document.getElementById('boxBtnNovoCliente').style.display = 'block';
+            }
+            if (aba === 'equipe') {
+                document.getElementById('boxBtnNovoCliente').style.display = 'none';
+                carregarListaEquipe();
+            }
+        }
+
+        function filtrarMenu() {
+            const termo = document.getElementById('inputBuscaMenu').value.toLowerCase();
+            const itens = document.querySelectorAll('.item-lista');
+            itens.forEach(item => {
+                const texto = item.innerText.toLowerCase();
+                item.style.display = texto.includes(termo) ? 'block' : 'none';
+            });
+        }
+
+        function abrirPainelNovoCliente() {
+            document.querySelectorAll('.item-lista').forEach(el => el.classList.remove('ativo'));
+            document.getElementById('estadoVazio').style.display = 'none';
+            document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
+            document.getElementById('painelNovoCliente').style.display = 'block';
+        }
+
+        document.getElementById('formNovoCliente').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('msgNovoCliente');
+            msg.style.color = '#333';
+            msg.innerText = 'Salvando...';
+
+            const payload = {
+                razao_social: document.getElementById('novoCliNome').value.trim(),
+                cnpj: document.getElementById('novoCliCnpj').value.trim(),
+                chave_mestre: document.getElementById('novoCliSenha').value.trim(),
+                whatsapp: document.getElementById('novoCliWpp').value.trim(),
+                email: document.getElementById('novoCliEmail').value.trim(),
+                status: 'ativo'
+            };
+            
+            const { error } = await supabaseClient.from('clientes').insert([payload]);
+            
+            if (!error) {
+                document.getElementById('formNovoCliente').reset();
+                carregarListaClientes(); 
+                msg.style.color = 'green';
+                msg.innerText = 'Cliente cadastrado com sucesso!';
+                setTimeout(() => msg.innerText = '', 3000);
+            } else {
+                msg.style.color = 'red';
+                msg.innerText = 'Erro ao salvar. Verifique se CNPJ já existe.';
+            }
+        });
+
+        async function carregarListaClientes() {
+            const lista = document.getElementById('listaLateral');
+            lista.innerHTML = '<p style="padding: 20px; color: #aaa;">Carregando...</p>';
+            
+            let cnpjsPermitidos = [];
+            
+            if (!isMaster) {
+                const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente')
+                    .select('cliente_cnpj').eq('equipe_id', equipeIdLogada);
+                
+                cnpjsPermitidos = vinculos ? vinculos.map(v => v.cliente_cnpj) : [];
+                
+                if (cnpjsPermitidos.length === 0) { 
+                    lista.innerHTML = '<p style="padding: 20px; color:#aaa;">Nenhum cliente vinculado a você.</p>'; 
+                    return; 
+                }
+            }
+
+            let query = supabaseClient.from('clientes').select('*').order('razao_social');
+            if (!isMaster) query = query.in('cnpj', cnpjsPermitidos);
+
+            const { data } = await query;
+            lista.innerHTML = '';
+            
+            if(data) {
+                data.forEach(cli => {
+                    const statusBadge = cli.status === 'inativo' ? '<span class="badge-inativo">INATIVO</span>' : '';
+                    const div = document.createElement('div');
+                    div.className = 'item-lista';
+                    div.innerHTML = `<h4>${cli.razao_social} ${statusBadge}</h4><p>CNPJ: ${cli.cnpj}</p>`;
+                    div.onclick = () => abrirPainelCliente(cli, div);
+                    lista.appendChild(div);
+                });
+            }
+        }
+
+        async function abrirPainelCliente(cli, elemento) {
+            document.querySelectorAll('.item-lista').forEach(el => el.classList.remove('ativo'));
+            elemento.classList.add('ativo');
+            
+            document.getElementById('estadoVazio').style.display = 'none';
+            document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
+            document.getElementById('painelCliente').style.display = 'block';
+            
+            clienteSelecionado = cli.cnpj;
+            
+            document.getElementById('viewCliNome').innerText = cli.razao_social;
+            document.getElementById('viewCliCnpj').innerText = cli.cnpj;
+            document.getElementById('viewCliStatus').innerText = (cli.status === 'inativo') ? 'Inativo (Bloqueado)' : 'Ativo';
+            document.getElementById('viewCliStatus').style.color = (cli.status === 'inativo') ? 'red' : 'green';
+
+            document.getElementById('editCliNome').value = cli.razao_social;
+            document.getElementById('editCliSenha').value = cli.chave_mestre;
+            document.getElementById('editCliWpp').value = cli.whatsapp || '';
+            document.getElementById('editCliEmail').value = cli.email || '';
+            document.getElementById('editCliStatus').value = cli.status || 'ativo';
+
+            const wppBtn = document.getElementById('btnWppDireto');
+            if (cli.whatsapp) {
+                wppBtn.href = `https://wa.me/55${cli.whatsapp.replace(/\D/g, '')}`;
+                wppBtn.style.display = 'inline-flex';
+            } else { wppBtn.style.display = 'none'; }
+
+            if (isMaster) {
+                document.getElementById('boxVinculos').style.display = 'block';
+                carregarEquipeParaVinculo(cli.cnpj);
+            }
+            carregarArquivosClienteAdmin(cli.cnpj);
+        }
+
+        document.getElementById('formEditarCliente').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('msgEditCliente');
+            msg.style.color = '#333';
+            msg.innerText = 'Atualizando...';
+
+            const payload = {
+                razao_social: document.getElementById('editCliNome').value.trim(),
+                chave_mestre: document.getElementById('editCliSenha').value.trim(),
+                whatsapp: document.getElementById('editCliWpp').value.trim(),
+                email: document.getElementById('editCliEmail').value.trim(),
+                status: document.getElementById('editCliStatus').value
+            };
+            
+            const { error } = await supabaseClient.from('clientes').update(payload).eq('cnpj', clienteSelecionado);
+            
+            if (!error) {
+                msg.style.color = 'green';
+                msg.innerText = 'Dados atualizados!';
+                carregarListaClientes();
+                document.getElementById('viewCliNome').innerText = payload.razao_social;
+                document.getElementById('viewCliStatus').innerText = (payload.status === 'inativo') ? 'Inativo (Bloqueado)' : 'Ativo';
+                document.getElementById('viewCliStatus').style.color = (payload.status === 'inativo') ? 'red' : 'green';
+                setTimeout(() => msg.innerText = '', 3000);
+            } else {
+                msg.style.color = 'red';
+                msg.innerText = 'Erro ao atualizar dados.';
+            }
+        });
+
+        async function excluirClienteAtual() {
+            const confirmacao = confirm("Tem certeza que deseja EXCLUIR este cliente permanentemente?");
+            if (confirmacao) {
+                await supabaseClient.from('clientes').delete().eq('cnpj', clienteSelecionado);
+                alert("Cliente excluído com sucesso.");
+                carregarListaClientes();
+                document.getElementById('painelCliente').style.display = 'none';
+                document.getElementById('estadoVazio').style.display = 'flex';
+            }
+        }
+
+        async function carregarArquivosClienteAdmin(cnpj) {
+            const container = document.getElementById('listaArquivosAdmin');
+            container.innerHTML = '<p>Buscando arquivos...</p>';
+            const { data } = await supabaseClient.from('arquivos').select('*').eq('cliente_cnpj', cnpj).order('created_at', { ascending: false });
+            container.innerHTML = '';
+            if(!data || data.length === 0) { container.innerHTML = '<p style="color:#aaa;">Nenhum arquivo enviado ainda.</p>'; return; }
+            data.forEach(arq => {
+                container.innerHTML += `
+                    <div class="doc-card">
+                        <a href="${arq.caminho_arquivo}" target="_blank"><i class="fa-solid fa-file-pdf" style="margin-right: 8px;"></i> ${arq.nome_documento}</a>
+                        <button type="button" class="btn-del-doc" onclick="excluirArquivo('${arq.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>`;
+            });
+        }
+
+        async function excluirArquivo(id) {
+            if(confirm("Deseja apagar este documento do painel do cliente?")) {
+                await supabaseClient.from('arquivos').delete().eq('id', id);
+                carregarArquivosClienteAdmin(clienteSelecionado); 
+            }
+        }
+
+        function trocarTipoInput() {
+            const tipo = document.querySelector('input[name="tipoEnvio"]:checked').value;
+            document.getElementById('boxPdf').style.display = tipo === 'pdf' ? 'block' : 'none';
+            document.getElementById('boxLink').style.display = tipo === 'link' ? 'block' : 'none';
+        }
+
+        document.getElementById('formUpload').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.querySelector('#formUpload .btn-acao');
+            const titulo = document.getElementById('nomeDoc').value.trim();
+            const tipo = document.querySelector('input[name="tipoEnvio"]:checked').value;
+            let linkFinal = '';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            btn.disabled = true;
+
+            try {
+                if (tipo === 'link') {
+                    linkFinal = document.getElementById('linkDoc').value;
+                    if(!linkFinal) throw new Error("Insira a URL do link.");
+                } else {
+                    const arquivoInput = document.getElementById('arquivoPdf').files[0];
+                    if(!arquivoInput) throw new Error("Selecione um arquivo PDF.");
+                    const nomeUnico = `${clienteSelecionado}/${Date.now()}_${arquivoInput.name}`;
+                    const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivoInput);
+                    if (uploadError) throw uploadError;
+                    const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico);
+                    linkFinal = urlData.publicUrl;
+                }
+                await supabaseClient.from('arquivos').insert([{ cliente_cnpj: clienteSelecionado, nome_documento: titulo, caminho_arquivo: linkFinal }]);
+                document.getElementById('formUpload').reset();
+                carregarArquivosClienteAdmin(clienteSelecionado); 
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Enviado com sucesso!';
+            } catch (error) {
+                alert("Falha ao enviar: " + error.message);
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Salvar Documento no Acervo';
+            } finally {
+                setTimeout(() => { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check"></i> Salvar Documento no Acervo'; }, 3000);
+            }
+        });
+
+        async function carregarListaEquipe() {
+            const lista = document.getElementById('listaLateral');
+            lista.innerHTML = '<p style="padding: 20px; color: #aaa;">Buscando equipe...</p>';
+            const { data } = await supabaseClient.from('equipe_admin').select('*').order('nome');
+            lista.innerHTML = '';
+            if(data) {
+                data.forEach(m => {
+                    lista.innerHTML += `<div class="item-lista"><h4><i class="fa-solid fa-user"></i> ${m.nome}</h4><p>Usuário: ${m.usuario_login}</p></div>`;
+                });
+            }
+            document.getElementById('estadoVazio').style.display = 'none';
+            document.getElementById('painelEquipe').style.display = 'block';
+        }
+
+        document.getElementById('formEquipe').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('msgEquipe');
+            const payload = { nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim() };
+            await supabaseClient.from('equipe_admin').insert([payload]);
+            document.getElementById('formEquipe').reset();
+            carregarListaEquipe();
+            msg.innerText = 'Membro cadastrado com sucesso!';
+            setTimeout(() => msg.innerText = '', 3000);
+        });
+
+        async function carregarEquipeParaVinculo(cnpj) {
+            const container = document.getElementById('listaEquipeVinculo');
+            const { data: equipe } = await supabaseClient.from('equipe_admin').select('*');
+            const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('equipe_id').eq('cliente_cnpj', cnpj);
+            const idsVinculados = vinculos ? vinculos.map(v => v.equipe_id) : [];
+            container.innerHTML = '';
+            if(equipe) {
+                equipe.forEach(m => {
+                    const isChecked = idsVinculados.includes(m.id) ? 'checked' : '';
+                    container.innerHTML += `
+                        <label style="display:flex; align-items:center; gap:10px; background:#f8fafc; padding:10px; border-radius:4px; border:1px solid #e2e8f0;">
+                            <input type="checkbox" class="check-equipe" value="${m.id}" ${isChecked} style="width:auto;"> 
+                            <span><strong>${m.nome}</strong> (Login: ${m.usuario_login})</span>
+                        </label>`;
+                });
+            }
+        }
+
+        async function salvarVinculos() {
+            const msg = document.getElementById('msgVinculo');
+            const checks = document.querySelectorAll('.check-equipe');
+            await supabaseClient.from('vinculo_equipe_cliente').delete().eq('cliente_cnpj', clienteSelecionado);
+            const insercoes = [];
+            checks.forEach(chk => { if(chk.checked) insercoes.push({ equipe_id: chk.value, cliente_cnpj: clienteSelecionado }); });
+            if(insercoes.length > 0) await supabaseClient.from('vinculo_equipe_cliente').insert(insercoes);
+            msg.style.color = 'green';
+            msg.innerText = 'Acessos atualizados e salvos!';
+            setTimeout(() => msg.innerText = '', 3000);
+        }
+    </script>
+</body>
+</html>

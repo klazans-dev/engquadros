@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsenal Técnico | EngQuadros</title>
+    <link rel="icon" type="image/png" href="public/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Importando o Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --vermelho-marca: #e31b23;
+            --azul-marca: #2b5c92;
+            --azul-escuro: #1a365d;
+            --amarelo-destaque: #f4c522;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        
+        body {
+            background-color: #0a0e17;
+            background-image: 
+                linear-gradient(rgba(0, 168, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- CABEÇALHO DO PAINEL --- */
+        header {
+            background: rgba(15, 20, 25, 0.95);
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--azul-marca);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .logo img { height: 40px; }
+        
+        .user-info { display: flex; align-items: center; gap: 20px; }
+        .user-info span { font-weight: 600; color: var(--amarelo-destaque); }
+        
+        .btn-sair {
+            background: transparent; border: 1px solid var(--vermelho-marca); color: var(--vermelho-marca);
+            padding: 8px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-sair:hover { background: var(--vermelho-marca); color: #fff; }
+
+        /* --- CORPO PRINCIPAL --- */
+        main { padding: 50px; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        .titulo-painel { font-size: 2.2rem; color: #fff; margin-bottom: 10px; }
+        .subtitulo-painel { color: #aaa; margin-bottom: 30px; font-size: 1.1rem; }
+
+        /* --- BARRA DE BUSCA DO CLIENTE --- */
+        .busca-container { margin-bottom: 40px; }
+        .busca-container input { 
+            width: 100%; max-width: 500px; padding: 14px 25px; border-radius: 30px; 
+            border: 1px solid #333; background: #111; color: #fff; 
+            font-size: 1rem; transition: 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .busca-container input:focus { outline: none; border-color: var(--azul-marca); }
+        .busca-container input::placeholder { color: #555; }
+
+        /* --- GRID DE ARQUIVOS --- */
+        .grid-arquivos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .arquivo-card {
+            background: #111823;
+            border: 1px solid rgba(0, 168, 255, 0.2);
+            border-radius: 8px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .arquivo-card:hover { transform: translateY(-5px); border-color: var(--azul-marca); }
+        
+        .arquivo-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, var(--azul-marca), var(--vermelho-marca));
+        }
+
+        .arquivo-card i { font-size: 3.5rem; color: var(--amarelo-destaque); margin-bottom: 20px; }
+        .arquivo-card h4 { font-size: 1.1rem; color: #fff; margin-bottom: 25px; line-height: 1.4; }
+
+        .btn-download {
+            display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+            width: 100%; padding: 12px; background: var(--azul-marca); color: #fff; 
+            text-decoration: none; border-radius: 4px; font-weight: bold; transition: 0.3s;
+        }
+        .btn-download:hover { background: var(--azul-escuro); }
+
+        .estado-vazio {
+            grid-column: 1 / -1; text-align: center; padding: 60px;
+            background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px dashed #333;
+        }
+        .estado-vazio i { font-size: 3rem; color: #555; margin-bottom: 15px; }
+        .estado-vazio p { color: #888; font-size: 1.1rem; }
+
+        /* --- FOOTER --- */
+        footer { text-align: center; padding: 20px; background: #05070a; color: #666; font-size: 0.9rem; border-top: 1px solid #111;}
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 20px; padding: 20px; }
+            main { padding: 40px 20px; }
+            .busca-container input { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="public/logo.png" alt="EngQuadros">
+        </div>
+        <div class="user-info">
+            <span><i class="fa-solid fa-building-user"></i> <span id="nomeEmpresa">Carregando...</span></span>
+            <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-power-off"></i> Sair do Portal</button>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="titulo-painel">Seu Arsenal Técnico</h1>
+        <p class="subtitulo-painel">Acesse e faça o download dos manuais e projetos do seu contrato.</p>
+
+        <!-- Barra de Pesquisa -->
+        <div class="busca-container">
+            <input type="text" id="buscaArquivo" placeholder="Pesquisar diagrama ou documento pelo nome..." onkeyup="filtrarArquivos()">
+        </div>
+
+        <div id="gridArquivos" class="grid-arquivos">
+            <!-- Os PDFs aparecerão aqui via JavaScript -->
+            <div class="estado-vazio" id="mensagemCarregando">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <p>Buscando arquivos seguros no servidor...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 ENGQUADROS. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // 1. TRAVA DE SEGURANÇA NA MEMÓRIA DO NAVEGADOR
+        const cnpjLogado = sessionStorage.getItem('clienteLogado');
+        const nomeLogado = sessionStorage.getItem('clienteNome');
+
+        if (!cnpjLogado) {
+            window.location.href = 'login.html';
+        } else {
+            document.getElementById('nomeEmpresa').innerText = nomeLogado;
+        }
+
+        // 2. INICIALIZAR O SUPABASE
+        const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
+        const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // 3. TRAVA DE SEGURANÇA NO BANCO DE DADOS (Checa se não foi bloqueado)
+        async function validarStatusEBuscarArquivos() {
+            // Verifica na tabela clientes se a coluna status está inativa
+            const { data, error } = await supabaseClient.from('clientes')
+                .select('status').eq('cnpj', cnpjLogado).single();
+            
+            if (data && data.status === 'inativo') {
+                alert("Seu acesso foi suspenso. Por favor, entre em contato com o suporte da EngQuadros.");
+                sair(); // Expulsa o cliente
+            } else {
+                carregarArquivos(); // Se estiver ativo, carrega normalmente
+            }
+        }
+
+        // 4. BUSCAR E RENDERIZAR ARQUIVOS
+        async function carregarArquivos() {
+            const grid = document.getElementById('gridArquivos');
+
+            const { data, error } = await supabaseClient.from('arquivos')
+                .select('*').eq('cliente_cnpj', cnpjLogado).order('created_at', { ascending: false });
+
+            if (error) {
+                grid.innerHTML = `
+                    <div class="estado-vazio">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: var(--vermelho-marca);"></i>
+                        <p>Ocorreu um erro ao carregar os documentos. Tente novamente mais tarde.</p>
+                    </div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                grid.innerHTML = `
+                    <div class="estado-vazio">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <p>Nenhum documento técnico disponível para download no momento.</p>
+                    </div>`;
+                return;
+            }
+
+            // Criação dos cartões
+            grid.innerHTML = '';
+            data.forEach(arquivo => {
+                // Descobre se é um link externo ou um PDF hospedado no Supabase para mudar o botão e o ícone
+                const isPdf = arquivo.caminho_arquivo.includes('supabase.co');
+                const icone = isPdf ? 'fa-file-pdf' : 'fa-link';
+                const textoBtn = isPdf ? 'Baixar Arquivo PDF' : 'Acessar Link Seguro';
+                const iconeBtn = isPdf ? 'fa-download' : 'fa-arrow-up-right-from-square';
+                
+                grid.innerHTML += `
+                    <div class="arquivo-card item-arquivo">
+                        <i class="fa-solid ${icone}"></i>
+                        <h4 class="titulo-doc">${arquivo.nome_documento}</h4>
+                        <a href="${arquivo.caminho_arquivo}" target="_blank" class="btn-download">
+                            <i class="fa-solid ${iconeBtn}"></i> ${textoBtn}
+                        </a>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. FUNÇÃO DA BARRA DE PESQUISA (Filtra os cartões em tempo real)
+        function filtrarArquivos() {
+            const termo = document.getElementById('buscaArquivo').value.toLowerCase();
+            const cards = document.querySelectorAll('.item-arquivo');
+            
+            cards.forEach(card => {
+                const titulo = card.querySelector('.titulo-doc').innerText.toLowerCase();
+                // Se o termo digitado existir no título, mostra o cartão, senão oculta
+                card.style.display = titulo.includes(termo) ? 'block' : 'none';
+            });
+        }
+
+        // 6. FUNÇÃO DE LOGOUT
+        function sair() {
+            sessionStorage.clear(); 
+            window.location.href = 'login.html'; 
+        }
+
+        // Executa a dupla checagem assim que a página carrega
+        validarStatusEBuscarArquivos();
+    </script>
+</body>
+</html>
