@@ -303,20 +303,46 @@
         @media (max-width: 992px) { 
             .contato-container { grid-template-columns: 1fr; } 
             .grid-eletrocentro { grid-template-columns: 1fr; }
-            .eletrocentro-imagens { justify-content: center; }
-        }
-        @media (max-width: 768px) {
-            header, header.scrolled { flex-wrap: wrap; justify-content: center; padding: 15px 20px; background: rgba(15, 20, 25, 0.98); }
-            .header-biblico { order: 3; width: 100%; margin-top: 10px; font-size: 0.8rem; }
-            nav ul { display: none; }
-            .hero-wrapper { height: auto; padding: 120px 0 60px; }
-            .slider-container { height: 220px; border-radius: 8px; width: 90%; margin: 0 auto; }
-            .hero-botoes { flex-direction: column; width: 90%; margin: 30px auto; }
-            .secao { padding: 60px 20px; }
-            .formulario { grid-template-columns: 1fr; }
-            .avaliacoes-header .nota-container { flex-direction: column; gap: 5px; }
-            .carousel-reviews { height: 260px; }
-        }
+            .eletrocentro-imagens { justify-content: @media (max-width: 768px) {
+    /* Mostra o botão hambúrguer no celular */
+    .menu-mobile-btn {
+        display: block; 
+    }
+    
+    /* Oculta a lista de links (ul) e prepara para abrir por cima */
+    #main-header nav ul {
+        display: none; 
+        flex-direction: column;
+        position: absolute;
+        top: 100%; /* Faz o menu abrir exatamente abaixo do cabeçalho */
+        left: 0;
+        width: 100%;
+        background-color: rgba(10, 14, 23, 0.98); /* Fundo bem escuro e moderno */
+        padding: 20px;
+        text-align: center;
+        gap: 15px;
+        z-index: 9999; /* Garante que não fique atrás das imagens do site */
+        border-bottom: 2px solid var(--amarelo-destaque);
+    }
+
+    /* A classe que o Javascript injeta para mostrar a tela */
+    #main-header nav ul.aberto {
+        display: flex !important;
+    }
+
+    /* Ajusta os botões "Área do Cliente" e "Restrito" para ficarem um em cima do outro no celular */
+    #main-header nav ul div {
+        flex-direction: column;
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    
+    #main-header nav ul div a {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
     </style>
 </head>
 <body>
@@ -820,14 +846,13 @@
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         <script>
-    // Ativa e desativa a expansão do menu
+   <script>
+    // Ativa e desativa a expansão do menu no Mobile
     document.getElementById('btnMenuMobile').addEventListener('click', function() {
-        // Atenção: Troque '.menu-links' para a classe correta que você usou no HTML para agrupar os links, se for diferente!
-        const menu = document.querySelector('.menu-links');
+        const menu = document.querySelector('#main-header nav ul');
         menu.classList.toggle('aberto');
     });
 </script>
 
-    </script>
 </body>
 </html>
