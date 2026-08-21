@@ -264,85 +264,62 @@
 
         /* --- RESPONSIVIDADE --- */
         
-        /* 1. Esconde o botão nas telas de computador */
-.menu-mobile-btn {
-    display: none;
-    background: transparent;
-    border: none;
-    color: var(--amarelo-destaque); /* Se quiser, troque pela cor do seu header */
-    font-size: 2rem;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    /* 2. Mostra o botão hambúrguer no celular */
-    .menu-mobile-btn {
-        display: block; 
-    }
-    
-    /* 3. Prepara a lista de links para descer na tela */
-    .menu-links { /* ⚠️ IMPORTANTE: Se a sua lista de links usar outra classe (ex: .nav-menu), mude o nome aqui */
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 80px; /* Ajuste conforme a altura exata do seu header */
-        left: 0;
-        width: 100%;
-        background-color: var(--azul-escuro); /* Fundo do menu de celular */
-        padding: 20px;
-        text-align: center;
-        gap: 15px;
-    }
-
-    /* 4. A classe mágica que o JavaScript vai injetar no clique */
-    .menu-links.aberto {
-        display: flex !important;
-    }
-}
+        /* Esconde o botão nas telas de computador */
+        .menu-mobile-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--amarelo-destaque); 
+            font-size: 2rem;
+            cursor: pointer;
+        }
 
         @media (max-width: 992px) { 
             .contato-container { grid-template-columns: 1fr; } 
             .grid-eletrocentro { grid-template-columns: 1fr; }
-            .eletrocentro-imagens { justify-content: @media (max-width: 768px) {
-    /* Mostra o botão hambúrguer no celular */
-    .menu-mobile-btn {
-        display: block; 
-    }
-    
-    /* Oculta a lista de links (ul) e prepara para abrir por cima */
-    #main-header nav ul {
-        display: none; 
-        flex-direction: column;
-        position: absolute;
-        top: 100%; /* Faz o menu abrir exatamente abaixo do cabeçalho */
-        left: 0;
-        width: 100%;
-        background-color: rgba(10, 14, 23, 0.98); /* Fundo bem escuro e moderno */
-        padding: 20px;
-        text-align: center;
-        gap: 15px;
-        z-index: 9999; /* Garante que não fique atrás das imagens do site */
-        border-bottom: 2px solid var(--amarelo-destaque);
-    }
+            .eletrocentro-imagens { justify-content: center; flex-direction: column; }
+            .eletrocentro-imagens img { width: 100%; }
+        }
 
-    /* A classe que o Javascript injeta para mostrar a tela */
-    #main-header nav ul.aberto {
-        display: flex !important;
-    }
+        @media (max-width: 768px) {
+            /* Mostra o botão hambúrguer no celular */
+            .menu-mobile-btn {
+                display: block; 
+            }
+            
+            /* Oculta a lista de links (ul) e prepara para abrir por cima */
+            #main-header nav ul {
+                display: none; 
+                flex-direction: column;
+                position: absolute;
+                top: 100%; /* Faz o menu abrir exatamente abaixo do cabeçalho */
+                left: 0;
+                width: 100%;
+                background-color: rgba(10, 14, 23, 0.98); /* Fundo bem escuro e moderno */
+                padding: 20px;
+                text-align: center;
+                gap: 15px;
+                z-index: 9999; /* Garante que não fique atrás das imagens do site */
+                border-bottom: 2px solid var(--amarelo-destaque);
+            }
 
-    /* Ajusta os botões "Área do Cliente" e "Restrito" para ficarem um em cima do outro no celular */
-    #main-header nav ul div {
-        flex-direction: column;
-        margin-left: 0 !important;
-        width: 100%;
-    }
-    
-    #main-header nav ul div a {
-        width: 100%;
-        justify-content: center;
-    }
-}
+            /* A classe que o Javascript injeta para mostrar a tela */
+            #main-header nav ul.aberto {
+                display: flex !important;
+            }
 
+            /* Ajusta os botões "Área do Cliente" e "Restrito" para ficarem um em cima do outro no celular */
+            #main-header nav ul div {
+                flex-direction: column;
+                margin-left: 0 !important;
+                width: 100%;
+            }
+            
+            #main-header nav ul div a {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -361,19 +338,17 @@
             <img src="public/logo.png" alt="Logotipo EngQuadros">
         </a>
         
-        <!-- Adicione logo antes ou depois da sua lista de links (<ul>) -->
-
-
-        
         <div class="header-biblico">
             <div class="slide-biblico active">"Ensina-me, Senhor, o Teu caminho, e andarei na Tua verdade..." <span>Salmos 86:11</span></div>
             <div class="slide-biblico">"Venham e vejam o que Deus tem feito..." <span>Salmos 66:5</span></div>
             <div class="slide-biblico">"Tudo posso naquele que me fortalece." <span>Filipenses 4:13</span></div>
             <div class="slide-biblico">"Das alturas, o Eterno enxerga as profundezas..." <span>Salmos 138:6</span></div>
         </div>
-<button id="btnMenuMobile" class="menu-mobile-btn">
-    <i class="fa-solid fa-bars"></i>
-</button>
+
+        <button id="btnMenuMobile" class="menu-mobile-btn">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
         <nav aria-label="Menu Principal">
             <ul>
                 <li><a href="#hero" >Home</a></li>
@@ -383,19 +358,18 @@
                 <li><a href="public/portfolio.pdf" target="_blank" style="color: var(--amarelo-destaque); font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Portfólio</a></li>
                 <li><a href="#contato">Contato</a></li>
                 <!-- BOTOES DE ACESSO DO SISTEMA -->
-<div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
-    
-    <!-- Botão do Cliente -->
-    <a href="login.html" class="btn-orcamento" style="background-color: var(--amarelo-destaque); color: var(--azul-escuro); padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
-        <i class="fa-solid fa-user-lock"></i> Área do Cliente
-    </a>
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                    
+                    <!-- Botão do Cliente -->
+                    <a href="login.html" class="btn-orcamento" style="background-color: var(--amarelo-destaque); color: var(--azul-escuro); padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
+                        <i class="fa-solid fa-user-lock"></i> Área do Cliente
+                    </a>
 
-    <!-- Botão do Admin (Restrito) -->
-    <a href="admin.html" class="btn-orcamento" style="background-color: transparent; border: 1px solid var(--amarelo-destaque); color: var(--amarelo-destaque); padding: 9px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
-        <i class="fa-solid fa-shield-halved"></i> Restrito
-    </a>
-
-</div>
+                    <!-- Botão do Admin (Restrito) -->
+                    <a href="admin.html" class="btn-orcamento" style="background-color: transparent; border: 1px solid var(--amarelo-destaque); color: var(--amarelo-destaque); padding: 9px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: flex; align-items: center; gap: 8px; transition: 0.3s;">
+                        <i class="fa-solid fa-shield-halved"></i> Restrito
+                    </a>
+                </div>
             </ul>
         </nav>
     </header>
@@ -404,7 +378,6 @@
         <section id="hero" class="hero-wrapper">
             <div class="slider-container">
                 <div class="slide active"><img src="public/banner0.jpg" alt="Logo EngQuadros"></div>
-                
             </div>
             <div class="hero-botoes reveal">
                 <a href="#contato" class="btn btn-primario"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
@@ -414,8 +387,7 @@
         
         <div class="energy-divider"></div>
 
-<!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
-       <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
+        <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
         <section id="apresentacao" class="secao">
             <h2 class="titulo-secao reveal">A Engenharia Segura</h2>
             <p class="apresentacao-intro reveal">Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.</p>
@@ -458,7 +430,6 @@
                         <h4 style="color: var(--azul-escuro); margin-bottom: 15px; font-size: 1.3rem;">Engenharia segura</h4>
                         <p style="color: var(--texto-secundario); font-size: 1rem; line-height: 1.6;">Base construída pela confiança, entregando resultados verdadeiros e garantidos.</p>
                     </div>
-                    
                 </div>
             </div>
 
@@ -469,32 +440,26 @@
         </section>
 
         <div class="energy-divider"></div>
-<!-- FAIXA DE SELOS E NORMAS (ISO) -->
+
+        <!-- FAIXA DE SELOS E NORMAS (ISO) -->
         <section class="faixa-certificacoes reveal" style="background: linear-gradient(90deg, var(--azul-escuro), var(--azul-marca)); padding: 40px 20px; text-align: center; color: #fff; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px; border-top: 3px solid var(--amarelo-destaque); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            
             <h3 style="font-size: 1.4rem; margin-right: 20px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;">
-                <i class="fa-solid fa-award" style="color: var(--amarelo-destaque); font-size: 2rem;"></i> 
-                Qualidade Certificada:
+                <i class="fa-solid fa-award" style="color: var(--amarelo-destaque); font-size: 2rem;"></i> Qualidade Certificada:
             </h3>
             
             <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center;">
-                <!-- Selo ISO -->
                 <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(244, 197, 34, 0.5); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-certificate" style="color: var(--amarelo-destaque); font-size: 1.2rem;"></i> Padrão ISO (Qualidade)
                 </div>
-                
-                <!-- Selo IEC -->
                 <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-shield-check" style="color: #fff; font-size: 1.2rem;"></i> Norma IEC 61439
                 </div>
-                
-                <!-- Selo NRs -->
                 <div style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 12px 25px; border-radius: 50px; font-weight: bold; display: flex; align-items: center; gap: 10px; transition: transform 0.3s ease; cursor: default;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <i class="fa-solid fa-hard-hat" style="color: #fff; font-size: 1.2rem;"></i> NR-10 e NR-22
                 </div>
             </div>
-            
         </section>
+
         <!-- ENGENHARIA EM FOCO (FLIP CARDS COM PAINEL DE AÇO) -->
         <section class="curiosidades-bg circuit-bg">
             <h2 class="titulo-secao reveal" style="color: #fff;">Engenharia em Foco</h2>
@@ -504,7 +469,7 @@
                         <div class="flip-card-front steel-panel high-voltage">
                             <i class="fa-solid fa-temperature-high"></i>
                             <h3>Segurança Térmica</h3>
-                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja  para exibir</p>
+                            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">Interaja para exibir</p>
                         </div>
                         <div class="flip-card-back">
                             <p><strong>Norma IEC 61439:</strong> Nossos painéis seguem a norma internacional, garantindo resistência a curtos-circuitos e mitigando riscos de incêndio.</p>
@@ -596,7 +561,8 @@
                 </div>
             </div>
         </section>
-<!-- NOSSOS QUADROS E PAINÉIS (DETALHAMENTO TÉCNICO) -->
+
+        <!-- NOSSOS QUADROS E PAINÉIS (DETALHAMENTO TÉCNICO) -->
         <section class="secao bg-cinza">
             <h2 class="titulo-secao reveal" style="color: var(--azul-escuro);">Nossos Quadros e Painéis</h2>
             <p class="apresentacao-intro reveal" style="color: var(--texto-secundario);">Fornecemos engenharia de alta patente para que cada entrega represente a segurança elétrica, padronização técnica, qualidade de execução e previsibilidade.</p>
@@ -842,17 +808,15 @@
 
         // Scroll Reveal
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.cla ssList.add('active'); });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-        <script>
-   <script>
-    // Ativa e desativa a expansão do menu no Mobile
-    document.getElementById('btnMenuMobile').addEventListener('click', function() {
-        const menu = document.querySelector('#main-header nav ul');
-        menu.classList.toggle('aberto');
-    });
-</script>
 
+        // Ativa e desativa a expansão do menu no Mobile
+        document.getElementById('btnMenuMobile').addEventListener('click', function() {
+            const menu = document.querySelector('#main-header nav ul');
+            menu.classList.toggle('aberto');
+        });
+    </script>
 </body>
 </html>
