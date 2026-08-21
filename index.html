@@ -268,6 +268,43 @@
         .whatsapp-float:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6); }
 
         /* --- RESPONSIVIDADE --- */
+        
+        /* 1. Esconde o botão nas telas de computador */
+.menu-mobile-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--amarelo-destaque); /* Se quiser, troque pela cor do seu header */
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    /* 2. Mostra o botão hambúrguer no celular */
+    .menu-mobile-btn {
+        display: block; 
+    }
+    
+    /* 3. Prepara a lista de links para descer na tela */
+    .menu-links { /* ⚠️ IMPORTANTE: Se a sua lista de links usar outra classe (ex: .nav-menu), mude o nome aqui */
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 80px; /* Ajuste conforme a altura exata do seu header */
+        left: 0;
+        width: 100%;
+        background-color: var(--azul-escuro); /* Fundo do menu de celular */
+        padding: 20px;
+        text-align: center;
+        gap: 15px;
+    }
+
+    /* 4. A classe mágica que o JavaScript vai injetar no clique */
+    .menu-links.aberto {
+        display: flex !important;
+    }
+}
+
         @media (max-width: 992px) { 
             .contato-container { grid-template-columns: 1fr; } 
             .grid-eletrocentro { grid-template-columns: 1fr; }
@@ -784,9 +821,18 @@
 
         // Scroll Reveal
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.cla ssList.add('active'); });
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        <script>
+    // Ativa e desativa a expansão do menu
+    document.getElementById('btnMenuMobile').addEventListener('click', function() {
+        // Atenção: Troque '.menu-links' para a classe correta que você usou no HTML para agrupar os links, se for diferente!
+        const menu = document.querySelector('.menu-links');
+        menu.classList.toggle('aberto');
+    });
+</script>
+
     </script>
 </body>
 </html>
