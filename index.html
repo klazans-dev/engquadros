@@ -282,9 +282,21 @@
         }
 
         @media (max-width: 768px) {
-            /* Cabeçalho */
-            header, header.scrolled { padding: 10px 20px; }
-            .header-biblico { display: none; } /* Oculta versículos no celular para não amassar a logo */
+            /* Cabeçalho Responsivo com Mensagem Bíblica */
+            header, header.scrolled { 
+                padding: 10px 20px; 
+                flex-wrap: wrap; 
+            }
+            .logo { order: 1; }
+            .menu-mobile-btn { order: 2; }
+            .header-biblico { 
+                display: block; /* Traz a mensagem de volta */
+                order: 3; /* Joga para a linha de baixo */
+                width: 100%; 
+                margin-top: 8px; 
+                font-size: 0.75rem; 
+                padding: 0;
+            }
 
             /* Ajustes no Hero Banner e Contadores Animados */
             .hero-botoes { flex-direction: column; width: 90%; }
