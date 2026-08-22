@@ -26,7 +26,30 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: #f4f7f6; color: #333; height: 100vh; overflow: hidden; }
+/* Efeito Encolhido da Barra Lateral */
+#sidebarAdmin.encolhida {
+    width: 60px !important;
+    padding: 20px 5px !important;
+}
 
+#sidebarAdmin.encolhida .logo-area img,
+#sidebarAdmin.encolhida .logo-area p,
+#sidebarAdmin.encolhida .logo-area a,
+#sidebarAdmin.encolhida .logo-area button,
+#sidebarAdmin.encolhida .menu-abas,
+#sidebarAdmin.encolhida .busca-aside,
+#sidebarAdmin.encolhida #boxBtnNovoCliente {
+    display: none !important;
+}
+
+/* Transição do painel principal para acompanhar o encolhimento */
+main {
+    transition: margin-left 0.3s ease;
+}
+main.expandido {
+    margin-left: 0px !important; 
+    width: calc(100% - 60px) !important;
+}
         /* ================= TELA DE LOGIN ================= */
         #telaLogin { 
             background-color: #0a0e17; 
@@ -158,7 +181,15 @@
     <!-- ================= TELA DE LOGIN ================= -->
     <div id="telaLogin">
         <div class="login-container">
-            <h2 style="color: var(--amarelo-destaque); margin-bottom: 20px;">CRM EngQuadros</h2>
+            <!-- LOGO E BOTÃO DE VOLTAR NO LOGIN -->
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 25px;">
+                <img src="public/logo.png" alt="Logotipo EngQuadros" style="max-width: 180px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.2));">
+                
+                <a href="index.html" style="background-color: transparent; border: 1px solid var(--amarelo-destaque); color: var(--amarelo-destaque); padding: 6px 15px; text-decoration: none; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;" onmouseover="this.style.backgroundColor='var(--amarelo-destaque)'; this.style.color='#111';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--amarelo-destaque)';">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Site
+                </a>
+            </div>
+            <!-- =============================== -->
             
             <div class="tipo-acesso">
                 <button type="button" id="btnAcessoMestre" class="ativo" onclick="mudarModoLogin('mestre')">Master</button>
@@ -184,11 +215,28 @@
 
     <!-- ================= TELA DO PAINEL CRM ================= -->
     <div id="telaPainel">
-        <aside>
-            <div class="logo-area">
-                <h3 style="color: var(--amarelo-destaque);">PAINEL CRM</h3>
-                <p style="font-size: 0.8rem; color: #ccc;" id="nomeUsuarioLogado">Carregando...</p>
-                <button type="button" class="btn-sair-admin" onclick="sair()">Sair do Sistema</button>
+        <aside style="position: relative; transition: width 0.3s ease;" id="sidebarAdmin">
+            <!-- Botão de Encolher a Barra Lateral -->
+            <button id="btnToggleSidebar" style="position: absolute; top: 15px; right: -15px; background: var(--amarelo-destaque, #f4c522); color: var(--azul-escuro, #1a365d); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index: 1000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+                <i class="fa-solid fa-chevron-left" id="iconeToggle"></i>
+            </button>
+
+            <div class="logo-area" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                <!-- Substituído H3 "PAINEL CRM" pela Logo -->
+                <a href="admin.html" style="text-decoration: none;">
+                    <img src="public/logo.png" alt="EngQuadros Admin" style="max-width: 140px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.2));">
+                </a>
+                
+                <p style="font-size: 0.8rem; color: #ccc; margin-top: 5px;" id="nomeUsuarioLogado">Carregando...</p>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%;">
+                    <!-- Botão de Voltar ao Site Original -->
+                    <a href="index.html" style="background-color: transparent; border: 1px solid var(--amarelo-destaque, #f4c522); color: var(--amarelo-destaque, #f4c522); padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.3s;" onmouseover="this.style.backgroundColor='var(--amarelo-destaque, #f4c522)'; this.style.color='#111';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--amarelo-destaque, #f4c522)';">
+                        <i class="fa-solid fa-arrow-left"></i> Site
+                    </a>
+                    
+                    <button type="button" class="btn-sair-admin" onclick="sair()" style="padding: 5px 10px; font-size: 0.8rem;">Sair</button>
+                </div>
             </div>
             
             <div class="menu-abas">
@@ -356,8 +404,6 @@
             </div>
         </main>
     </div>
-
-    <!-- ================= SCRIPTS ================= -->
 <!-- ================= SCRIPTS ================= -->
     <script>
         // Trava para verificar se o Supabase carregou corretamente
@@ -699,30 +745,51 @@
             }
         });
 
+      // ==============================================================
+        // ===================== MÓDULO DA EQUIPE =======================
+        // ==============================================================
+        
         async function carregarListaEquipe() {
             const lista = document.getElementById('listaLateral');
             lista.innerHTML = '<p style="padding: 20px; color: #aaa;">Buscando equipe...</p>';
+            
             const { data } = await supabaseClient.from('equipe_admin').select('*').order('nome');
             lista.innerHTML = '';
+            
             if(data) {
                 data.forEach(m => {
-                    lista.innerHTML += `<div class="item-lista"><h4><i class="fa-solid fa-user"></i> ${m.nome}</h4><p>Usuário: ${m.usuario_login}</p></div>`;
+                    // O card com o OnClick enviando todos os dados, inclusive a SENHA
+                    lista.innerHTML += `
+                    <div class="item-lista" onclick="abrirModalMembro('${m.id}', '${m.nome}', '${m.usuario_login}', '${m.senha}')" style="cursor: pointer; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                        <h4 style="color: #fff; font-size: 1rem; margin-bottom: 5px;"><i class="fa-solid fa-user"></i> ${m.nome}</h4>
+                        <p style="color: #aaa; font-size: 0.8rem;">Usuário: ${m.usuario_login}</p>
+                    </div>`;
                 });
             }
+            
+            // Exibe a tela da equipe (mantive sua estrutura)
             document.getElementById('estadoVazio').style.display = 'none';
-            document.getElementById('painelEquipe').style.display = 'block';
+            if(document.getElementById('painelEquipe')) {
+                document.getElementById('painelEquipe').style.display = 'block';
+            }
         }
 
+        // Formulário para ADICIONAR NOVO membro
         document.getElementById('formEquipe').addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgEquipe');
-            const payload = { nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim() };
+            const payload = { 
+                nome: document.getElementById('eqNome').value.trim(), 
+                usuario_login: document.getElementById('eqUser').value.trim(), 
+                senha: document.getElementById('eqPass').value.trim() 
+            };
             await supabaseClient.from('equipe_admin').insert([payload]);
             document.getElementById('formEquipe').reset();
             carregarListaEquipe();
             msg.innerText = 'Membro cadastrado com sucesso!';
             setTimeout(() => msg.innerText = '', 3000);
         });
+    
 
         async function carregarEquipeParaVinculo(cnpj) {
             const container = document.getElementById('listaEquipeVinculo');
@@ -753,6 +820,119 @@
             msg.innerText = 'Acessos atualizados e salvos!';
             setTimeout(() => msg.innerText = '', 3000);
         }
+        // Ativa e desativa a expansão da Barra Lateral
+document.getElementById('btnToggleSidebar').addEventListener('click', function() {
+    const sidebar = document.getElementById('sidebarAdmin');
+    const mainContent = document.querySelector('main');
+    const icone = document.getElementById('iconeToggle');
+    
+    sidebar.classList.toggle('encolhida');
+    if(mainContent) mainContent.classList.toggle('expandido');
+    
+    if(sidebar.classList.contains('encolhida')) {
+        icone.classList.replace('fa-chevron-left', 'fa-chevron-right');
+    } else {
+        icone.classList.replace('fa-chevron-right', 'fa-chevron-left');
+    }
+});
+
+// ================= FUNÇÕES DO MODAL DE EDIÇÃO =================
+
+        // Abre a janela preenchendo os dados
+        function abrirModalMembro(id, nome, usuario, senha) {
+            document.getElementById('editEquipeId').value = id;
+            document.getElementById('editEquipeNome').value = nome;
+            document.getElementById('editEquipeUsuario').value = usuario;
+            document.getElementById('editEquipeSenha').value = senha;
+            
+            document.getElementById('modalEditarEquipe').style.display = 'flex';
+        }
+
+        // Salva a alteração no Supabase
+        async function salvarEdicaoMembro() {
+            const id = document.getElementById('editEquipeId').value;
+            const nome = document.getElementById('editEquipeNome').value;
+            const usuario = document.getElementById('editEquipeUsuario').value;
+            const senha = document.getElementById('editEquipeSenha').value;
+
+            if(!nome || !usuario || !senha) {
+                alert("Preencha todos os campos, inclusive a senha!");
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('equipe_admin') 
+                    .update({ nome: nome, usuario_login: usuario, senha: senha }) 
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert("Usuário atualizado com sucesso!");
+                document.getElementById('modalEditarEquipe').style.display = 'none';
+                
+                // Recarrega a lista para mostrar a alteração
+                carregarListaEquipe();
+                
+            } catch (error) {
+                console.error("Erro ao atualizar:", error);
+                alert("Erro ao atualizar o usuário.");
+            }
+        }
+
+        // Deleta do Supabase
+        async function excluirMembro() {
+            const id = document.getElementById('editEquipeId').value;
+            
+            if(confirm("ATENÇÃO: Tem certeza que deseja excluir este usuário permanentemente?")) {
+                try {
+                    const { error } = await supabaseClient
+                        .from('equipe_admin')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+
+                    alert("Usuário excluído com sucesso!");
+                    document.getElementById('modalEditarEquipe').style.display = 'none';
+                    
+                    // Recarrega a lista
+                    carregarListaEquipe();
+                    
+                } catch (error) {
+                    console.error("Erro ao excluir:", error);
+                    alert("Erro ao excluir o usuário.");
+                }
+            }
+        }
     </script>
+    <!-- Modal Editar Membro da Equipe -->
+<div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: var(--bg-site, #fff); padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+        <h3 style="color: var(--azul-escuro, #1a365d); margin-bottom: 20px; border-bottom: 2px solid var(--amarelo-destaque, #f4c522); padding-bottom: 10px;">Editar Membro da Equipe</h3>
+        
+        <input type="hidden" id="editEquipeId">
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nome Completo:</label>
+            <input type="text" id="editEquipeNome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Usuário de Login:</label>
+            <input type="text" id="editEquipeUsuario" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <div style="margin-bottom: 25px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Senha de Acesso:</label>
+            <input type="text" id="editEquipeSenha" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        
+        <div style="display: flex; gap: 10px; justify-content: space-between;">
+            <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" style="padding: 10px; border: none; background: #999; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
+            <button type="button" onclick="excluirMembro()" style="padding: 10px; border: none; background: #e31b23; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
+            <button type="button" onclick="salvarEdicaoMembro()" style="padding: 10px; border: none; background: #2b5c92; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-save"></i> Salvar</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
