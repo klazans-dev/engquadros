@@ -170,7 +170,7 @@
         /* --- ENGENHARIA EM FOCO (FLIP CARDS) --- */
         .curiosidades-bg { padding: 80px 50px; }
         .curiosidades-bg .titulo-secao { color: #fff; }
-        .grid-flip { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; perspective: 1000px; }
+        .grid-flip { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; perspective: 1000px; }
         .flip-card { background-color: transparent; width: 100%; height: 260px; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.8s; transform-style: preserve-3d; }
         .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
@@ -183,7 +183,7 @@
         .missao-bg { background-color: #ffffff; border-radius: 12px; box-shadow: var(--sombra-industrial); padding: 60px; margin-top: -50px; position: relative; z-index: 2;}
         .missao-overhead { text-align: center; font-size: 0.85rem; color: var(--vermelho-marca); text-transform: uppercase; font-weight: bold; letter-spacing: 2px; margin-bottom: 5px; }
         .missao-intro { max-width: 800px; margin: 0 auto 50px; font-size: 1.1rem; color: var(--texto-secundario); line-height: 1.8; text-align: center;}
-        .grid-missao { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        .grid-missao { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
         .item-missao { display: flex; gap: 20px; align-items: flex-start; }
         .icone-missao { flex-shrink: 0; width: 50px; height: 50px; background: rgba(43, 92, 146, 0.1); color: var(--azul-marca); border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; transition: var(--transicao-padrao); }
         .item-missao:hover .icone-missao { background: var(--azul-marca); color: #fff; transform: translateY(-5px); }
@@ -282,33 +282,53 @@
         }
 
         @media (max-width: 768px) {
+            /* Cabeçalho */
+            header, header.scrolled { padding: 10px 20px; }
+            .header-biblico { display: none; } /* Oculta versículos no celular para não amassar a logo */
+
+            /* Ajustes no Hero Banner e Contadores Animados */
+            .hero-botoes { flex-direction: column; width: 90%; }
+            .hero-botoes .btn { width: 100%; }
+            .hero-stats { flex-direction: column !important; padding: 20px !important; width: 90%; gap: 15px !important; }
+            .hero-stats h3 { font-size: 2.2rem !important; }
+            .stats-divider { width: 100% !important; height: 1px !important; margin: 5px 0 !important; }
+
+            /* Espaçamentos Globais (Evita vazamento lateral) */
+            .secao, .curiosidades-bg { padding: 60px 20px; }
+            .titulo-secao { font-size: 1.8rem; margin-bottom: 40px; }
+            .apresentacao-intro { font-size: 1rem; }
+            
+            /* Força Grids menores a caírem para 1 coluna */
+            .grid-flip { grid-template-columns: 1fr !important; }
+            .formulario { grid-template-columns: 1fr; }
+
             /* Mostra o botão hambúrguer no celular */
             .menu-mobile-btn {
                 display: block; 
             }
             
-            /* Oculta a lista de links (ul) e prepara para abrir por cima */
+            /* Menu lateral oculto */
             #main-header nav ul {
                 display: none; 
                 flex-direction: column;
                 position: absolute;
-                top: 100%; /* Faz o menu abrir exatamente abaixo do cabeçalho */
+                top: 100%; 
                 left: 0;
                 width: 100%;
-                background-color: rgba(10, 14, 23, 0.98); /* Fundo bem escuro e moderno */
+                background-color: rgba(10, 14, 23, 0.98); 
                 padding: 20px;
                 text-align: center;
                 gap: 15px;
-                z-index: 9999; /* Garante que não fique atrás das imagens do site */
+                z-index: 9999; 
                 border-bottom: 2px solid var(--amarelo-destaque);
             }
 
-            /* A classe que o Javascript injeta para mostrar a tela */
+            /* Injetada via JS para abrir menu */
             #main-header nav ul.aberto {
                 display: flex !important;
             }
 
-            /* Ajusta os botões "Área do Cliente" e "Restrito" para ficarem um em cima do outro no celular */
+            /* Botões do Menu Mobile */
             #main-header nav ul div {
                 flex-direction: column;
                 margin-left: 0 !important;
@@ -392,7 +412,8 @@
                     <p style="color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Painéis Entregues</p>
                 </div>
                 
-                <div style="width: 2px; background: rgba(255,255,255,0.15);"></div>
+                <!-- Adicionada classe stats-divider para responsividade -->
+                <div class="stats-divider" style="width: 2px; background: rgba(255,255,255,0.15);"></div>
                 
                 <div style="text-align: center;">
                     <h3 style="font-size: 3rem; color: var(--amarelo-destaque); font-weight: 700; text-shadow: 0 0 15px rgba(244, 197, 34, 0.3);">+<span class="contador-animado" data-target="2000">0</span>m²</h3>
@@ -406,13 +427,11 @@
             <h2 class="titulo-secao reveal">A Engenharia Segura</h2>
             <p class="apresentacao-intro reveal">Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.</p>
 
-            <!-- NÚMEROS DO CATÁLOGO -->
-            
             <!-- PILARES EM PAISAGEM (Lado a Lado) -->
             <div class="pilares-paisagem reveal" style="margin-bottom: 80px;">
                 <h3 style="color: var(--azul-escuro); margin-bottom: 40px; font-size: 2rem; font-weight: 700; text-align: center;">Nossos 3 Pilares Exemplares</h3>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px;">
                     
                     <!-- Pilar 1 -->
                     <div style="background: #fff; padding: 40px 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 6px solid var(--azul-marca); transition: transform 0.3s ease; text-align: center;" onmouseover="this.style.transform='translateY(-10px)'" onmouseout="this.style.transform='translateY(0)'">
@@ -477,9 +496,6 @@
                 </div>
             </div>
         </section>
-
-
-           
         </section>
 
         <div class="energy-divider"></div>
@@ -548,8 +564,6 @@
 
         <div class="energy-divider"></div>
 
-      
-
         <!-- FAIXA QUALIDADE -->
         <section class="faixa-qualidade circuit-bg">
             <h2 class="reveal">Qualidade em Serviço</h2>
@@ -565,12 +579,11 @@
 
         <div class="energy-divider"></div>
 
-      
         <!-- NOSSOS QUADROS E PAINÉIS (DETALHAMENTO TÉCNICO) -->
         <section class="secao bg-cinza">
             <h2 class="titulo-secao reveal" style="color: var(--azul-escuro);">Nossos Quadros e Painéis</h2>
             <p class="apresentacao-intro reveal" style="color: var(--texto-secundario);">Fornecemos engenharia de alta patente para que cada entrega represente a segurança elétrica, padronização técnica, qualidade de execução e previsibilidade.</p>
-            <div class="grid-flip reveal" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+            <div class="grid-flip reveal" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                 
                 <!-- CARD SPCS -->
                 <div class="steel-panel high-voltage" style="padding: 30px; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -618,7 +631,6 @@
         <div class="energy-divider"></div>
         <div class="energy-divider"></div>
         
-
         <!-- GALERIA DE PROJETOS -->
         <section id="galeria" class="secao bg-cinza">
             <h2 class="titulo-secao reveal">Conheça Alguns de Nossos Projetos</h2>
@@ -673,6 +685,7 @@
                 <img src="public/rittal.jpg" alt="Rittal" loading="lazy" style="max-width: 200px;">
                 <img src="public/parceiros.jpg" alt="Parceiros Adicionais" loading="lazy" style="max-width: 200px;">
             </div>
+        </section>
 
         <!-- AVALIAÇÕES -->
         <section id="avaliacoes" class="secao bg-cinza">
@@ -824,6 +837,7 @@
             const menu = document.querySelector('#main-header nav ul');
             menu.classList.toggle('aberto');
         });
+        
         // Cronômetro dos Números no Banner (10 Segundos)
         const tempoDeAnimacao = 10000; // 10000 milissegundos = 10 segundos
         const contadores = document.querySelectorAll('.contador-animado');
