@@ -26,30 +26,32 @@
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: #f4f7f6; color: #333; height: 100vh; overflow: hidden; }
-/* Efeito Encolhido da Barra Lateral */
-#sidebarAdmin.encolhida {
-    width: 60px !important;
-    padding: 20px 5px !important;
-}
 
-#sidebarAdmin.encolhida .logo-area img,
-#sidebarAdmin.encolhida .logo-area p,
-#sidebarAdmin.encolhida .logo-area a,
-#sidebarAdmin.encolhida .logo-area button,
-#sidebarAdmin.encolhida .menu-abas,
-#sidebarAdmin.encolhida .busca-aside,
-#sidebarAdmin.encolhida #boxBtnNovoCliente {
-    display: none !important;
-}
+        /* Efeito Encolhido da Barra Lateral */
+        #sidebarAdmin.encolhida {
+            width: 60px !important;
+            padding: 20px 5px !important;
+        }
 
-/* Transição do painel principal para acompanhar o encolhimento */
-main {
-    transition: margin-left 0.3s ease;
-}
-main.expandido {
-    margin-left: 0px !important; 
-    width: calc(100% - 60px) !important;
-}
+        #sidebarAdmin.encolhida .logo-area img,
+        #sidebarAdmin.encolhida .logo-area p,
+        #sidebarAdmin.encolhida .logo-area a,
+        #sidebarAdmin.encolhida .logo-area button,
+        #sidebarAdmin.encolhida .menu-abas,
+        #sidebarAdmin.encolhida .busca-aside,
+        #sidebarAdmin.encolhida #boxBtnNovoCliente {
+            display: none !important;
+        }
+
+        /* Transição do painel principal para acompanhar o encolhimento */
+        main {
+            transition: margin-left 0.3s ease;
+        }
+        main.expandido {
+            margin-left: 0px !important; 
+            width: calc(100% - 60px) !important;
+        }
+        
         /* ================= TELA DE LOGIN ================= */
         #telaLogin { 
             background-color: #0a0e17; 
@@ -174,6 +176,56 @@ main.expandido {
         }
         .doc-card a { color: var(--azul-marca); font-weight: bold; text-decoration: none; }
         .btn-del-doc { background: transparent; border: none; color: var(--vermelho-marca); cursor: pointer; font-size: 1.2rem; }
+
+        /* ================= RESPONSIVIDADE MOBILE (CELULAR) ================= */
+        @media (max-width: 768px) {
+            #telaPainel { flex-direction: column; }
+            
+            /* Sidebar no celular vira um menu no topo */
+            aside { 
+                width: 100% !important; height: auto; max-height: 50vh; 
+                z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+            }
+            
+            /* Estado encolhido da sidebar no celular (vira uma barrinha com a Logo) */
+            #sidebarAdmin.encolhida { 
+                height: 70px !important; width: 100% !important; padding: 10px 20px !important; 
+                flex-direction: row; align-items: center; justify-content: space-between; 
+            }
+            #sidebarAdmin.encolhida .logo-area { display: block !important; padding: 0; border: none; }
+            #sidebarAdmin.encolhida .logo-area img { max-width: 100px; margin: 0; }
+            #sidebarAdmin.encolhida .logo-area p, 
+            #sidebarAdmin.encolhida .logo-area a, 
+            #sidebarAdmin.encolhida .logo-area button { display: none !important; }
+            
+            /* Ajuste do botão de encolher no mobile */
+            #btnToggleSidebar { top: 20px; right: 20px; transform: rotate(-90deg); }
+            #sidebarAdmin.encolhida #btnToggleSidebar { transform: rotate(90deg); top: 20px; right: 20px; }
+            
+            /* Ajustes do painel principal (main) para não espremer os formulários */
+            main { padding: 20px 15px !important; width: 100% !important; margin-left: 0 !important; }
+            main.expandido { width: 100% !important; margin-left: 0 !important; }
+            
+            .card-box { padding: 15px; margin-bottom: 20px; }
+            
+            /* Empilhando os campos de formulário */
+            .linha-form { flex-direction: column; gap: 15px; }
+            .form-group { width: 100%; }
+            
+            /* Botões ocupando 100% no celular */
+            #boxAcoesAdmin { flex-direction: column; gap: 10px; margin-top: 20px; }
+            #boxAcoesAdmin button, .btn-acao { width: 100%; justify-content: center; }
+            
+            /* Ajuste dos botões de Upload PDF/Link */
+            #formUpload > div:nth-child(2) { flex-direction: column; gap: 10px; }
+            
+            /* Cards de documentos */
+            .doc-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .doc-card button { align-self: flex-end; width: 100%; padding: 10px; border-radius: 4px; background: rgba(227, 27, 35, 0.1); }
+            
+            /* Ajuste no Login Container */
+            .login-container { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -298,12 +350,12 @@ main.expandido {
             <div id="painelCliente" class="painel-conteudo">
                 
                 <div class="card-box" style="border-top: 4px solid var(--azul-marca);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
                         <div>
                             <h2 id="viewCliNome" style="color: var(--azul-escuro);">Nome</h2>
                             <p>CNPJ: <span id="viewCliCnpj"></span> | Status: <span id="viewCliStatus" style="font-weight:bold;"></span></p>
                         </div>
-                        <div>
+                        <div style="display: flex; align-items: center;">
                             <a id="btnWppDireto" href="#" target="_blank" class="btn-acao" style="background: #25D366; text-decoration:none;">
                                 <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
                             </a>
@@ -404,7 +456,37 @@ main.expandido {
             </div>
         </main>
     </div>
-<!-- ================= SCRIPTS ================= -->
+
+    <!-- Modal Editar Membro da Equipe -->
+    <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: var(--bg-site, #fff); padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <h3 style="color: var(--azul-escuro, #1a365d); margin-bottom: 20px; border-bottom: 2px solid var(--amarelo-destaque, #f4c522); padding-bottom: 10px;">Editar Membro da Equipe</h3>
+            
+            <input type="hidden" id="editEquipeId">
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nome Completo:</label>
+                <input type="text" id="editEquipeNome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Usuário de Login:</label>
+                <input type="text" id="editEquipeUsuario" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Senha de Acesso:</label>
+                <input type="text" id="editEquipeSenha" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: space-between;">
+                <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" style="padding: 10px; border: none; background: #999; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
+                <button type="button" onclick="excluirMembro()" style="padding: 10px; border: none; background: #e31b23; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
+                <button type="button" onclick="salvarEdicaoMembro()" style="padding: 10px; border: none; background: #2b5c92; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-save"></i> Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
     <script>
         // Trava para verificar se o Supabase carregou corretamente
         if (typeof window.supabase === 'undefined') {
@@ -420,6 +502,7 @@ main.expandido {
         let equipeIdLogada = null;
         let clienteSelecionado = null;
 
+        // O código carrega a lista sozinho aqui, graças à chamada do iniciarPainel() -> abrirAba('clientes')
         if(sessionStorage.getItem('acessoCRM')) {
             isMaster = sessionStorage.getItem('tipoAcesso') === 'mestre';
             equipeIdLogada = sessionStorage.getItem('equipeId');
@@ -445,7 +528,6 @@ main.expandido {
 
             try {
                 if (modoLoginAtual === 'mestre') {
-                    // BUSCA EXCLUSIVA NA NOVA TABELA DO BANCO DE DADOS
                     const { data, error } = await supabaseClient.from('admin_master')
                         .select('*').eq('cnpj', ident).eq('senha', senha);
                     
@@ -464,7 +546,6 @@ main.expandido {
                     } else {
                         msg.style.display = 'block';
                         msg.innerText = 'Acesso negado. CNPJ ou Senha não conferem no banco.';
-                        console.log("Tentativa rejeitada. Verifique se a senha no Supabase é exatamente igual à digitada.");
                     }
                 } else {
                     const { data, error } = await supabaseClient.from('equipe_admin')
@@ -541,6 +622,14 @@ main.expandido {
             document.getElementById('estadoVazio').style.display = 'none';
             document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
             document.getElementById('painelNovoCliente').style.display = 'block';
+
+            // NOVO: Fecha a sidebar no celular ao clicar em Novo Cliente
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebarAdmin');
+                if (!sidebar.classList.contains('encolhida')) {
+                    document.getElementById('btnToggleSidebar').click();
+                }
+            }
         }
 
         document.getElementById('formNovoCliente').addEventListener('submit', async function(e) {
@@ -640,6 +729,14 @@ main.expandido {
                 carregarEquipeParaVinculo(cli.cnpj);
             }
             carregarArquivosClienteAdmin(cli.cnpj);
+
+            // NOVO: Recolhe a barra lateral automaticamente no celular após clicar
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebarAdmin');
+                if (!sidebar.classList.contains('encolhida')) {
+                    document.getElementById('btnToggleSidebar').click();
+                }
+            }
         }
 
         document.getElementById('formEditarCliente').addEventListener('submit', async function(e) {
@@ -745,7 +842,7 @@ main.expandido {
             }
         });
 
-      // ==============================================================
+        // ==============================================================
         // ===================== MÓDULO DA EQUIPE =======================
         // ==============================================================
         
@@ -758,7 +855,6 @@ main.expandido {
             
             if(data) {
                 data.forEach(m => {
-                    // O card com o OnClick enviando todos os dados, inclusive a SENHA
                     lista.innerHTML += `
                     <div class="item-lista" onclick="abrirModalMembro('${m.id}', '${m.nome}', '${m.usuario_login}', '${m.senha}')" style="cursor: pointer; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
                         <h4 style="color: #fff; font-size: 1rem; margin-bottom: 5px;"><i class="fa-solid fa-user"></i> ${m.nome}</h4>
@@ -767,14 +863,12 @@ main.expandido {
                 });
             }
             
-            // Exibe a tela da equipe (mantive sua estrutura)
             document.getElementById('estadoVazio').style.display = 'none';
             if(document.getElementById('painelEquipe')) {
                 document.getElementById('painelEquipe').style.display = 'block';
             }
         }
 
-        // Formulário para ADICIONAR NOVO membro
         document.getElementById('formEquipe').addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgEquipe');
@@ -789,7 +883,6 @@ main.expandido {
             msg.innerText = 'Membro cadastrado com sucesso!';
             setTimeout(() => msg.innerText = '', 3000);
         });
-    
 
         async function carregarEquipeParaVinculo(cnpj) {
             const container = document.getElementById('listaEquipeVinculo');
@@ -820,25 +913,25 @@ main.expandido {
             msg.innerText = 'Acessos atualizados e salvos!';
             setTimeout(() => msg.innerText = '', 3000);
         }
+
         // Ativa e desativa a expansão da Barra Lateral
-document.getElementById('btnToggleSidebar').addEventListener('click', function() {
-    const sidebar = document.getElementById('sidebarAdmin');
-    const mainContent = document.querySelector('main');
-    const icone = document.getElementById('iconeToggle');
-    
-    sidebar.classList.toggle('encolhida');
-    if(mainContent) mainContent.classList.toggle('expandido');
-    
-    if(sidebar.classList.contains('encolhida')) {
-        icone.classList.replace('fa-chevron-left', 'fa-chevron-right');
-    } else {
-        icone.classList.replace('fa-chevron-right', 'fa-chevron-left');
-    }
-});
+        document.getElementById('btnToggleSidebar').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebarAdmin');
+            const mainContent = document.querySelector('main');
+            const icone = document.getElementById('iconeToggle');
+            
+            sidebar.classList.toggle('encolhida');
+            if(mainContent) mainContent.classList.toggle('expandido');
+            
+            if(sidebar.classList.contains('encolhida')) {
+                icone.classList.replace('fa-chevron-left', 'fa-chevron-right');
+            } else {
+                icone.classList.replace('fa-chevron-right', 'fa-chevron-left');
+            }
+        });
 
-// ================= FUNÇÕES DO MODAL DE EDIÇÃO =================
+        // ================= FUNÇÕES DO MODAL DE EDIÇÃO =================
 
-        // Abre a janela preenchendo os dados
         function abrirModalMembro(id, nome, usuario, senha) {
             document.getElementById('editEquipeId').value = id;
             document.getElementById('editEquipeNome').value = nome;
@@ -848,7 +941,6 @@ document.getElementById('btnToggleSidebar').addEventListener('click', function()
             document.getElementById('modalEditarEquipe').style.display = 'flex';
         }
 
-        // Salva a alteração no Supabase
         async function salvarEdicaoMembro() {
             const id = document.getElementById('editEquipeId').value;
             const nome = document.getElementById('editEquipeNome').value;
@@ -871,7 +963,6 @@ document.getElementById('btnToggleSidebar').addEventListener('click', function()
                 alert("Usuário atualizado com sucesso!");
                 document.getElementById('modalEditarEquipe').style.display = 'none';
                 
-                // Recarrega a lista para mostrar a alteração
                 carregarListaEquipe();
                 
             } catch (error) {
@@ -880,7 +971,6 @@ document.getElementById('btnToggleSidebar').addEventListener('click', function()
             }
         }
 
-        // Deleta do Supabase
         async function excluirMembro() {
             const id = document.getElementById('editEquipeId').value;
             
@@ -896,7 +986,6 @@ document.getElementById('btnToggleSidebar').addEventListener('click', function()
                     alert("Usuário excluído com sucesso!");
                     document.getElementById('modalEditarEquipe').style.display = 'none';
                     
-                    // Recarrega a lista
                     carregarListaEquipe();
                     
                 } catch (error) {
@@ -906,33 +995,5 @@ document.getElementById('btnToggleSidebar').addEventListener('click', function()
             }
         }
     </script>
-    <!-- Modal Editar Membro da Equipe -->
-<div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
-    <div style="background: var(--bg-site, #fff); padding: 30px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-        <h3 style="color: var(--azul-escuro, #1a365d); margin-bottom: 20px; border-bottom: 2px solid var(--amarelo-destaque, #f4c522); padding-bottom: 10px;">Editar Membro da Equipe</h3>
-        
-        <input type="hidden" id="editEquipeId">
-        
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Nome Completo:</label>
-            <input type="text" id="editEquipeNome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-        
-        <div style="margin-bottom: 25px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Usuário de Login:</label>
-            <input type="text" id="editEquipeUsuario" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-        <div style="margin-bottom: 25px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 5px;">Senha de Acesso:</label>
-            <input type="text" id="editEquipeSenha" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-        </div>
-        
-        <div style="display: flex; gap: 10px; justify-content: space-between;">
-            <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" style="padding: 10px; border: none; background: #999; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
-            <button type="button" onclick="excluirMembro()" style="padding: 10px; border: none; background: #e31b23; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
-            <button type="button" onclick="salvarEdicaoMembro()" style="padding: 10px; border: none; background: #2b5c92; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-save"></i> Salvar</button>
-        </div>
-    </div>
-</div>
 </body>
 </html>
