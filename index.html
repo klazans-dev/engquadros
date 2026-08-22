@@ -375,17 +375,31 @@
     </header>
 
     <main>
-        <section id="hero" class="hero-wrapper">
+      <section id="hero" class="hero-wrapper">
             <div class="slider-container">
                 <div class="slide active"><img src="public/banner0.jpg" alt="Logo EngQuadros"></div>
             </div>
+            
             <div class="hero-botoes reveal">
                 <a href="#contato" class="btn btn-primario"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
                 <a href="public/catalogo.pdf" download="catalogo.pdf" class="btn btn-secundario" target="_blank"><i class="fa-solid fa-file-pdf"></i> Baixar Catálogo</a>
             </div>
+
+            <!-- ESTATÍSTICAS ANIMADAS (GLASSMORPHISM) -->
+            <div class="hero-stats reveal" style="margin-top: 40px; display: flex; gap: 50px; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 25px 60px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 3; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 3rem; color: var(--amarelo-destaque); font-weight: 700; text-shadow: 0 0 15px rgba(244, 197, 34, 0.3);">+<span class="contador-animado" data-target="11000">0</span></h3>
+                    <p style="color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Painéis Entregues</p>
+                </div>
+                
+                <div style="width: 2px; background: rgba(255,255,255,0.15);"></div>
+                
+                <div style="text-align: center;">
+                    <h3 style="font-size: 3rem; color: var(--amarelo-destaque); font-weight: 700; text-shadow: 0 0 15px rgba(244, 197, 34, 0.3);">+<span class="contador-animado" data-target="2000">0</span>m²</h3>
+                    <p style="color: #fff; font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">De Parque Fabril</p>
+                </div>
+            </div>
         </section>
-        
-        <div class="energy-divider"></div>
 
         <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
         <section id="apresentacao" class="secao">
@@ -393,17 +407,7 @@
             <p class="apresentacao-intro reveal">Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.</p>
 
             <!-- NÚMEROS DO CATÁLOGO -->
-            <div class="grid-numeros reveal" style="display: flex; justify-content: center; gap: 50px; margin-bottom: 80px; text-align: center; flex-wrap: wrap;">
-                <div class="numero-card" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 4px solid var(--vermelho-marca); min-width: 250px;">
-                    <h3 style="font-size: 3rem; color: var(--azul-escuro);">+11.000</h3>
-                    <p style="color: var(--texto-secundario); font-weight: bold;">Painéis Entregues</p>
-                </div>
-                <div class="numero-card" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: var(--sombra-industrial); border-top: 4px solid var(--azul-marca); min-width: 250px;">
-                    <h3 style="font-size: 3rem; color: var(--azul-escuro);">+2.000m²</h3>
-                    <p style="color: var(--texto-secundario); font-weight: bold;">De Parque Fabril</p>
-                </div>
-            </div>
-
+            
             <!-- PILARES EM PAISAGEM (Lado a Lado) -->
             <div class="pilares-paisagem reveal" style="margin-bottom: 80px;">
                 <h3 style="color: var(--azul-escuro); margin-bottom: 40px; font-size: 2rem; font-weight: 700; text-align: center;">Nossos 3 Pilares Exemplares</h3>
@@ -429,14 +433,53 @@
                         <i class="fa-solid fa-shield-halved" style="color: var(--amarelo-destaque); font-size: 2.5rem; margin-bottom: 20px;"></i>
                         <h4 style="color: var(--azul-escuro); margin-bottom: 15px; font-size: 1.3rem;">Engenharia segura</h4>
                         <p style="color: var(--texto-secundario); font-size: 1rem; line-height: 1.6;">Base construída pela confiança, entregando resultados verdadeiros e garantidos.</p>
+                
                     </div>
                 </div>
             </div>
-
-            <!-- IMAGEM ELETROCENTRO EM DESTAQUE -->
-            <div class="eletrocentro-destaque reveal" style="text-align: center;">
-                <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" loading="lazy" style="max-width: 100%; width: 700px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+              <!-- MISSÃO DA EMPRESA -->
+        <section id="missao" class="secao bg-cinza">
+            <div class="missao-bg reveal">
+                <p class="missao-overhead">Nossa Missão</p>
+                <h2 class="titulo-secao" style="margin-bottom: 20px;">Objetivo e Área de Aplicação</h2>
+                <p class="missao-intro">Fabricar painéis em baixa tensão que atendam as demandas de cada cliente, de forma personalizada, sempre garantindo a segurança, qualidade e confiabilidade.</p>
+                <div class="grid-missao">
+                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-users-gear"></i></div><p><strong>Profissionais Experientes:</strong> Equipe altamente qualificada em montagem e instalação em sistemas complexos.</p></div>
+                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-industry"></i></div><p><strong>Atuação Multisetorial:</strong> Indústrias, Shopping Centers, Hospitais e Construtoras, seguindo as normas técnicas aplicáveis.</p></div>
+                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-microscope"></i></div><p><strong>Inovação Constante:</strong> Aprimoramento de processos através de pesquisas e atualizações constantes.</p></div>
+                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-laptop-code"></i></div><p><strong>Engenharia Avançada:</strong> Modernos softwares de projeto para garantir qualidade diferenciada e prazos reduzidos.</p></div>
+                </div>
             </div>
+        </section>
+          <!-- SERVIÇOS -->
+        <section id="servicos" class="secao">
+            <h2 class="titulo-secao reveal">Nossas Soluções</h2>
+            <div class="grid-servicos">
+                <div class="card-servico reveal">
+                    <i class="fa-solid fa-solar-panel"></i>
+                    <h3>Painéis Elétricos</h3>
+                    <p>Projeto, montagem e fabricação de painéis SPCS, Média e Baixa Tensão (QGBTs, CCMs).</p>
+                </div>
+                <div class="card-servico reveal">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <h3>Eletrocentro</h3>
+                    <p>Estruturas modulares plug-and-play para projetos industriais, testadas em fábrica.</p>
+                </div>
+                <div class="card-servico reveal">
+                    <i class="fa-solid fa-microchip"></i>
+                    <h3>Automação</h3>
+                    <p>Integração de sistemas de controle industrial para máxima eficiência e monitoramento.</p>
+                </div>
+                <div class="card-servico reveal">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <h3>Retrofit e Normas</h3>
+                    <p>Atualização de sistemas antigos para conformidade total com as normas NR-10.</p>
+                </div>
+            </div>
+        </section>
+
+
+           
         </section>
 
         <div class="energy-divider"></div>
@@ -505,20 +548,7 @@
 
         <div class="energy-divider"></div>
 
-        <!-- MISSÃO DA EMPRESA -->
-        <section id="missao" class="secao bg-cinza">
-            <div class="missao-bg reveal">
-                <p class="missao-overhead">Nossa Missão</p>
-                <h2 class="titulo-secao" style="margin-bottom: 20px;">Objetivo e Área de Aplicação</h2>
-                <p class="missao-intro">Fabricar painéis em baixa tensão que atendam as demandas de cada cliente, de forma personalizada, sempre garantindo a segurança, qualidade e confiabilidade.</p>
-                <div class="grid-missao">
-                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-users-gear"></i></div><p><strong>Profissionais Experientes:</strong> Equipe altamente qualificada em montagem e instalação em sistemas complexos.</p></div>
-                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-industry"></i></div><p><strong>Atuação Multisetorial:</strong> Indústrias, Shopping Centers, Hospitais e Construtoras, seguindo as normas técnicas aplicáveis.</p></div>
-                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-microscope"></i></div><p><strong>Inovação Constante:</strong> Aprimoramento de processos através de pesquisas e atualizações constantes.</p></div>
-                    <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-laptop-code"></i></div><p><strong>Engenharia Avançada:</strong> Modernos softwares de projeto para garantir qualidade diferenciada e prazos reduzidos.</p></div>
-                </div>
-            </div>
-        </section>
+      
 
         <!-- FAIXA QUALIDADE -->
         <section class="faixa-qualidade circuit-bg">
@@ -535,33 +565,7 @@
 
         <div class="energy-divider"></div>
 
-        <!-- SERVIÇOS -->
-        <section id="servicos" class="secao">
-            <h2 class="titulo-secao reveal">Nossas Soluções</h2>
-            <div class="grid-servicos">
-                <div class="card-servico reveal">
-                    <i class="fa-solid fa-solar-panel"></i>
-                    <h3>Painéis Elétricos</h3>
-                    <p>Projeto, montagem e fabricação de painéis SPCS, Média e Baixa Tensão (QGBTs, CCMs).</p>
-                </div>
-                <div class="card-servico reveal">
-                    <i class="fa-solid fa-network-wired"></i>
-                    <h3>Eletrocentro</h3>
-                    <p>Estruturas modulares plug-and-play para projetos industriais, testadas em fábrica.</p>
-                </div>
-                <div class="card-servico reveal">
-                    <i class="fa-solid fa-microchip"></i>
-                    <h3>Automação</h3>
-                    <p>Integração de sistemas de controle industrial para máxima eficiência e monitoramento.</p>
-                </div>
-                <div class="card-servico reveal">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <h3>Retrofit e Normas</h3>
-                    <p>Atualização de sistemas antigos para conformidade total com as normas NR-10.</p>
-                </div>
-            </div>
-        </section>
-
+      
         <!-- NOSSOS QUADROS E PAINÉIS (DETALHAMENTO TÉCNICO) -->
         <section class="secao bg-cinza">
             <h2 class="titulo-secao reveal" style="color: var(--azul-escuro);">Nossos Quadros e Painéis</h2>
@@ -613,10 +617,15 @@
         </section>
         <div class="energy-divider"></div>
         <div class="energy-divider"></div>
+        
 
         <!-- GALERIA DE PROJETOS -->
         <section id="galeria" class="secao bg-cinza">
             <h2 class="titulo-secao reveal">Conheça Alguns de Nossos Projetos</h2>
+             <!-- IMAGEM ELETROCENTRO EM DESTAQUE -->
+            <div class="eletrocentro-destaque reveal" style="text-align: center;">
+                <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" loading="lazy" style="max-width: 100%; width: 700px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            </div><br>
             <p class="apresentacao-intro reveal" style="text-align: justify; margin-bottom: 40px; font-size: 1rem;">
                 A ENGQUADROS desenvolve e aprimora seu processo de montagem de painéis elétricos através de pesquisas e atualizações técnicas constantes, avaliando os métodos de gerenciamento, inovando em produtos e ensaios, promovendo treinamentos a seus colaboradores, visando maior satisfação dos clientes. Começando com nosso bom atendimento, contamos com softwares para um melhor desempenho na elaboração da proposta técnica comercial, com isso, conseguimos o melhor padrão de propostas, tanto na parte comercial e técnica.
             </p>
@@ -658,14 +667,12 @@
                 <img src="public/ype.jpg" alt="Ypê" loading="lazy">
             </div>
             <div class="divisor-parceiros"></div>
-            <h3 style="text-align: center; color: var(--texto-secundario); margin-bottom: 30px;" class="reveal">Parceiros</h3>
+           <h3 style="text-align: center; color: var(--texto-secundario); margin-bottom: 30px;" class="reveal">Parceiros</h3>
             <div class="grid-clientes reveal" style="gap: 80px;">
                 <img src="public/siemens.jpg" alt="Siemens" loading="lazy" style="max-width: 200px;">
                 <img src="public/rittal.jpg" alt="Rittal" loading="lazy" style="max-width: 200px;">
+                <img src="public/parceiros.jpg" alt="Parceiros Adicionais" loading="lazy" style="max-width: 200px;">
             </div>
-        </section>
-
-        <div class="energy-divider"></div>
 
         <!-- AVALIAÇÕES -->
         <section id="avaliacoes" class="secao bg-cinza">
@@ -817,6 +824,54 @@
             const menu = document.querySelector('#main-header nav ul');
             menu.classList.toggle('aberto');
         });
+        // Cronômetro dos Números no Banner (10 Segundos)
+        const tempoDeAnimacao = 10000; // 10000 milissegundos = 10 segundos
+        const contadores = document.querySelectorAll('.contador-animado');
+        let animacaoJaRodou = false;
+
+        function iniciarContagem() {
+            if (animacaoJaRodou) return;
+            animacaoJaRodou = true;
+
+            contadores.forEach(contador => {
+                const valorFinal = parseInt(contador.getAttribute('data-target'));
+                const inicioTempo = performance.now();
+
+                function atualizarNumero(tempoAtual) {
+                    const tempoPassado = tempoAtual - inicioTempo;
+                    const progresso = Math.min(tempoPassado / tempoDeAnimacao, 1);
+                    
+                    // Fórmula para o número começar rápido e ir desacelerando no final (Ease Out)
+                    const easeOut = 1 - Math.pow(1 - progresso, 3);
+                    
+                    const valorAtual = Math.floor(easeOut * valorFinal);
+                    
+                    // Coloca o ponto separador de milhar (ex: 11.000)
+                    contador.innerText = valorAtual.toLocaleString('pt-BR');
+
+                    if (progresso < 1) {
+                        requestAnimationFrame(atualizarNumero);
+                    } else {
+                        contador.innerText = valorFinal.toLocaleString('pt-BR');
+                    }
+                }
+                
+                requestAnimationFrame(atualizarNumero);
+            });
+        }
+
+        // Ativa a contagem apenas quando a seção aparecer na tela
+        const observerContador = new IntersectionObserver((entradas) => {
+            if (entradas[0].isIntersecting) {
+                iniciarContagem();
+            }
+        });
+        
+        const containerStats = document.querySelector('.hero-stats');
+        if(containerStats) {
+            observerContador.observe(containerStats);
+        }
     </script>
+
 </body>
 </html>
