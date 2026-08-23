@@ -20,20 +20,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: var(--fundo-site); color: #333; height: 100vh; overflow: hidden; }
 
-        /* ================= TELA DE LOGIN ================= */
-        #telaLogin { background: linear-gradient(135deg, var(--azul-escuro) 0%, #0a0e17 100%); display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
-        .login-box { background: #fff; padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); position: relative; overflow: hidden; }
-        .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px; background: var(--amarelo-destaque); }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--azul-escuro); font-size: 0.9rem; }
-        .input-group input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; font-size: 1rem; transition: 0.3s; }
-        .input-group input:focus { border-color: var(--azul-marca); outline: none; box-shadow: 0 0 0 3px rgba(43,92,146,0.1); }
-        .btn-entrar { width: 100%; padding: 14px; background: var(--azul-marca); color: #fff; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; }
-        .btn-entrar:hover { background: var(--azul-escuro); transform: translateY(-2px); }
-        #msgLogin { color: var(--vermelho-marca); font-size: 0.9rem; margin-top: 15px; display: none; font-weight: bold; }
-
         /* ================= LAYOUT PRINCIPAL ================= */
-        #telaPainel { display: none; height: 100vh; width: 100vw; display: flex; }
+        #telaPainel { height: 100vh; width: 100vw; display: flex; }
         
         aside { width: 280px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 10px rgba(0,0,0,0.02); }
         .logo-area { padding: 30px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
@@ -115,29 +103,8 @@
 </head>
 <body>
 
-    <!-- ================= LOGIN ================= -->
-    <div id="telaLogin">
-        <div class="login-box">
-            <img src="public/logo.png" alt="EngQuadros" style="max-width: 200px; margin-bottom: 30px;">
-            <h3 style="color: var(--azul-escuro); margin-bottom: 20px;">Acesso do Cliente</h3>
-            
-            <form id="formLoginCliente">
-                <div class="input-group">
-                    <label>Seu CNPJ</label>
-                    <input type="text" id="loginCnpj" placeholder="Digite apenas os números" required autocomplete="off">
-                </div>
-                <div class="input-group">
-                    <label>Senha de Acesso</label>
-                    <input type="password" id="loginSenha" required>
-                </div>
-                <button type="submit" class="btn-entrar" id="btnAcessar">Entrar no Painel</button>
-                <div id="msgLogin">Credenciais incorretas. Tente novamente.</div>
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= PAINEL ================= -->
-    <div id="telaPainel">
+    <!-- ================= PAINEL DO CLIENTE ================= -->
+    <div id="telaPainel" style="display: none;">
         <aside>
             <div class="logo-area">
                 <img src="public/logo.png" alt="EngQuadros" style="max-width: 150px;">
@@ -224,67 +191,57 @@
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let clienteLogado = null;
-        let nomeClienteLogado = '';
+        let nomeClienteLogado = 'Cliente';
 
-        // Valida Sessão Ativa
-        if (sessionStorage.getItem('clienteCnpj')) {
-            clienteLogado = sessionStorage.getItem('clienteCnpj');
-            nomeClienteLogado = sessionStorage.getItem('clienteNome');
+        // ================= BLINDAGEM INTELIGENTE DE ROTA =================
+        // O painel agora não te chuta agressivamente. Ele caça o CNPJ em todos os lugares possíveis do navegador.
+        
+        // 1. Tenta ver se o login.html mandou pela URL (ex: painel-cliente.html?cnpj=123)
+        const urlParams = new URLSearchParams(window.location.search);
+        const cnpjUrl = urlParams.get('cnpj');
+
+        // 2. Caça na memória do navegador (LocalStorage ou SessionStorage)
+        clienteLogado = cnpjUrl || sessionStorage.getItem('clienteCnpj') || localStorage.getItem('clienteCnpj') || sessionStorage.getItem('cnpj') || localStorage.getItem('cnpj');
+        
+        // Tenta achar o nome do cliente
+        const nomeSalvo = sessionStorage.getItem('clienteNome') || localStorage.getItem('clienteNome');
+        if (nomeSalvo) nomeClienteLogado = nomeSalvo;
+
+        // LÓGICA DE DECISÃO
+        if (clienteLogado) {
+            // Se achou o CNPJ, salva na sessão atual para ele não se perder e INICIA O PAINEL
+            sessionStorage.setItem('clienteCnpj', clienteLogado);
+            document.getElementById('telaPainel').style.display = 'flex';
             iniciarPainelCliente();
         } else {
-            document.getElementById('telaLogin').style.display = 'flex';
+            // Se NÃO achou o CNPJ, ele avisa na tela ao invés de jogar em um loop infinito pro login
+            document.body.innerHTML = `
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background:#f8fafc; font-family:sans-serif; text-align:center; padding: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 4rem; color: #e31b23; margin-bottom: 20px;"></i>
+                    <h2 style="color:#1a365d;">Sessão não identificada</h2>
+                    <p style="color:#64748b; margin-top:10px; max-width: 450px;">
+                        O painel precisa saber qual é o seu CNPJ para carregar os arquivos corretos e garantir a segurança dos dados.
+                    </p>
+                    <div style="margin-top: 15px; padding: 15px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; text-align: left; max-width: 450px; font-size: 0.85rem;">
+                        <strong style="color:var(--azul-marca);">Aviso para a Engenharia:</strong><br>
+                        Certifique-se de que o seu arquivo <em>login.html</em> está enviando o CNPJ no sucesso do login. Exemplo de código no seu login.html:<br>
+                        <code style="background:#eee; padding:2px 5px; display:block; margin-top:5px; color:#e31b23;">sessionStorage.setItem('clienteCnpj', cnpjDoCliente);</code>
+                    </div>
+                    <a href="login.html" style="margin-top:25px; padding:12px 25px; background:#2b5c92; color:#fff; text-decoration:none; border-radius:6px; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> Voltar para o Login Seguro</a>
+                </div>
+            `;
         }
-
-        // ================= AUTENTICAÇÃO =================
-        document.getElementById('formLoginCliente').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnAcessar');
-            const msg = document.getElementById('msgLogin');
-            const cnpj = document.getElementById('loginCnpj').value.replace(/\D/g, '').trim(); // Remove pontuação
-            const senha = document.getElementById('loginSenha').value.trim();
-            
-            msg.style.display = 'none';
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Validando...';
-            
-            try {
-                // Busca o cliente no banco garantindo que ele está ativo
-                const { data, error } = await supabaseClient.from('clientes')
-                    .select('*')
-                    .eq('cnpj', cnpj)
-                    .eq('chave_mestre', senha)
-                    .eq('status', 'ativo');
-                
-                if (error) throw error;
-
-                if (data && data.length > 0) {
-                    sessionStorage.setItem('clienteCnpj', data[0].cnpj);
-                    sessionStorage.setItem('clienteNome', data[0].razao_social);
-                    window.location.reload();
-                } else {
-                    msg.innerText = "Acesso negado. Dados incorretos ou conta inativa.";
-                    msg.style.display = 'block';
-                }
-            } catch (err) {
-                msg.innerText = "Falha de comunicação com o servidor.";
-                msg.style.display = 'block';
-            } finally {
-                btn.innerHTML = 'Entrar no Painel';
-            }
-        });
 
         function sair() {
             sessionStorage.clear();
-            window.location.reload();
+            localStorage.clear();
+            window.location.href = 'login.html';
         }
 
         // ================= NAVEGAÇÃO =================
         function iniciarPainelCliente() {
-            document.getElementById('telaLogin').style.display = 'none';
-            document.getElementById('telaPainel').style.display = 'flex';
-            
             document.getElementById('nomeClienteSidebar').innerText = nomeClienteLogado;
             document.getElementById('cnpjClienteSidebar').innerText = `CNPJ: ${clienteLogado}`;
-            
             abrirAba('obras');
         }
 
@@ -293,19 +250,15 @@
         }
 
         function abrirAba(aba) {
-            // Ajuste Visual Menu
             document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('ativa'));
             const abaAtiva = document.getElementById('aba' + aba.charAt(0).toUpperCase() + aba.slice(1));
             if(abaAtiva) abaAtiva.classList.add('ativa');
             
-            // Controle de Telas
             document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
             document.getElementById('painel' + aba.charAt(0).toUpperCase() + aba.slice(1)).style.display = 'block';
             
-            // Fecha menu mobile se aberto
             document.getElementById('menuLateral').classList.remove('aberto');
 
-            // Carregamento de Dados Dinâmico
             if (aba === 'obras') carregarObras();
             if (aba === 'arquivos') carregarArquivos();
             if (aba === 'suporte') carregarChamados();
@@ -339,7 +292,6 @@
                     const prog = obra.progresso || 0;
                     const nomeO = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     
-                    // Lógica visual da cor da barra
                     let corBarra = prog === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, var(--amarelo-destaque), #10b981)';
 
                     html += `
@@ -388,7 +340,6 @@
                     const tipoTexto = isPdf ? 'Documento PDF' : 'Link Externo';
                     const obsHtml = arq.observacao ? `<p style="margin-top:5px; padding: 5px 10px; background: #f1f5f9; border-left: 2px solid var(--amarelo-destaque); border-radius: 4px; font-size: 0.8rem;"><i class="fa-solid fa-circle-info"></i> ${arq.observacao}</p>` : '';
                     
-                    // Inteligência do Aceite Eletrônico
                     const statusAprovacao = arq.status_aprovacao || 'pendente';
                     let boxAcao = '';
                     
@@ -431,7 +382,6 @@
                     
                     if (error) throw error;
                     
-                    // Recarrega a lista para mostrar o selo verde
                     carregarArquivos();
                 } catch (e) {
                     alert("Ocorreu um erro ao registrar a aprovação. Tente novamente.");
@@ -522,7 +472,7 @@
 
                 document.getElementById('formChamadoCliente').reset();
                 msg.style.display = 'block';
-                carregarChamados(); // Atualiza a lista na hora
+                carregarChamados(); 
 
                 setTimeout(() => { msg.style.display = 'none'; }, 4000);
             } catch (e) {

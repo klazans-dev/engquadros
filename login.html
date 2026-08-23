@@ -119,7 +119,8 @@
             if (error || data.length === 0) {
                 msgErro.style.display = 'block';
             } else {
-                sessionStorage.setItem('clienteLogado', data[0].cnpj);
+                // A CORREÇÃO ESTÁ NESTA LINHA ABAIXO: clienteCnpj
+                sessionStorage.setItem('clienteCnpj', data[0].cnpj);
                 sessionStorage.setItem('clienteNome', data[0].razao_social);
                 window.location.href = 'painel-cliente.html';
             }
