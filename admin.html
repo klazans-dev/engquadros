@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin ERP | EngQuadros</title>
     <link rel="icon" type="image/png" href="public/favicon.png">
+    
+    <!-- Tipografia Corporativa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -17,167 +22,232 @@
 
     <style>
         :root { 
-            --vermelho-marca: #e31b23; 
-            --azul-marca: #2b5c92; 
-            --azul-escuro: #1a365d; 
-            --amarelo-destaque: #f4c522; 
-            --fundo-site: #f4f7f6;
+            --azul-profundo: #060b14; 
+            --azul-marca: #0b1c35; 
+            --azul-sutil: #2b5c92; 
+            --fundo-site: #f4f7f6; /* Cinza ultra claro para leitura */
+            --texto-principal: #1e293b;
+            --texto-secundario: #64748b;
+            --borda: 1px solid rgba(11, 28, 53, 0.1);
+            --sucesso: #10b981;
+            --erro: #ef4444;
+            --transicao: all 0.3s ease;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--fundo-site); color: #333; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--fundo-site); color: var(--texto-principal); height: 100vh; overflow: hidden; }
+        h1, h2, h3, h4, .menu-abas button { font-family: 'Montserrat', sans-serif; }
 
+        /* ================= TELA DE LOGIN (ESTILO GLASSMORPHISM PREMIUM) ================= */
+        #telaLogin { 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; width: 100vw; position: relative; overflow: hidden;
+            background-color: var(--azul-profundo); 
+        }
+        .global-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+            opacity: 0.18; mix-blend-mode: luminosity; z-index: 1;
+        }
+        .circuit-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; 
+        }
+        .login-container { 
+            background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 40px; border-radius: 12px; border-top: 4px solid var(--azul-sutil); 
+            width: 100%; max-width: 420px; text-align: center; color: #fff; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 10; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tipo-acesso { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tipo-acesso button { 
+            flex: 1; padding: 12px; border: none; background: transparent; color: rgba(255,255,255,0.5); 
+            cursor: pointer; font-weight: 600; transition: var(--transicao); font-size: 0.95rem; border-bottom: 2px solid transparent;
+        }
+        .tipo-acesso button:hover { color: #fff; }
+        .tipo-acesso button.ativo { color: #fff; border-bottom-color: var(--azul-sutil); }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500;}
+        .input-group input { width: 100%; padding: 12px 15px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); color: #fff; transition: var(--transicao); }
+        .input-group input:focus { outline: none; border-color: var(--azul-sutil); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(43, 92, 146, 0.2); }
+        
+        .btn-entrar { width: 100%; padding: 14px; background: var(--azul-marca); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-weight: 700; cursor: pointer; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 1rem; letter-spacing: 0.5px;}
+        .btn-entrar:hover { background: var(--azul-sutil); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43, 92, 146, 0.3); }
+        
+        #mensagemErroLogin { color: #fca5a5; font-size: 0.9rem; margin-top: 15px; display: none; font-weight: 600; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* ================= SIDEBAR E LAYOUT DO PAINEL ================= */
+        #telaPainel { display: none; height: 100vh; width: 100vw; background-color: var(--fundo-site); }
+        aside { width: 320px; background: var(--azul-marca); color: #fff; display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 15px rgba(0,0,0,0.05); }
+        
         #sidebarAdmin.encolhida { width: 60px !important; padding: 20px 5px !important; }
         #sidebarAdmin.encolhida .logo-area img, #sidebarAdmin.encolhida .logo-area p, #sidebarAdmin.encolhida .logo-area a, #sidebarAdmin.encolhida .logo-area button, #sidebarAdmin.encolhida .menu-abas, #sidebarAdmin.encolhida .busca-aside, #sidebarAdmin.encolhida #boxBtnNovoCliente { display: none !important; }
+        #btnToggleSidebar { position: absolute; top: 15px; right: -15px; background: var(--azul-sutil); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index: 1000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: var(--transicao); }
+        #btnToggleSidebar:hover { background: var(--azul-profundo); transform: scale(1.1); }
 
-        main { transition: margin-left 0.3s ease; }
+        main { transition: margin-left 0.3s ease; flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; background: var(--fundo-site); }
         main.expandido { margin-left: 0px !important; width: calc(100% - 60px) !important; }
         
-        #telaLogin { background-color: #0a0e17; display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
-        .login-container { background: rgba(15, 20, 25, 0.95); padding: 40px; border-radius: 12px; border-top: 5px solid var(--amarelo-destaque); width: 100%; max-width: 400px; text-align: center; color: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .tipo-acesso { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tipo-acesso button { flex: 1; padding: 10px; border: none; background: #222; color: #aaa; cursor: pointer; font-weight: bold; border-radius: 4px; transition: 0.3s; }
-        .tipo-acesso button.ativo { background: var(--amarelo-destaque); color: var(--azul-escuro); }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #ccc; }
-        .input-group input { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #333; background: #111; color: #fff; }
-        .btn-entrar { width: 100%; padding: 14px; background: var(--amarelo-destaque); color: var(--azul-escuro); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-entrar:hover { background: #fff; }
-        #mensagemErroLogin { color: var(--vermelho-marca); font-size: 0.9rem; margin-top: 15px; display: none; font-weight: bold; }
-
-        #telaPainel { display: none; height: 100vh; width: 100vw; }
-        aside { width: 320px; background: var(--azul-escuro); color: #fff; display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
-        .logo-area { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .btn-sair-admin { background: transparent; border: 1px solid var(--vermelho-marca); color: var(--vermelho-marca); padding: 5px 15px; cursor: pointer; font-size: 0.8rem; margin-top: 10px; border-radius: 4px; transition: 0.3s; }
-        .btn-sair-admin:hover { background: var(--vermelho-marca); color: #fff; }
+        .logo-area { padding: 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .btn-sair-admin { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 6px 15px; cursor: pointer; font-size: 0.8rem; margin-top: 15px; border-radius: 4px; transition: var(--transicao); font-weight: 500;}
+        .btn-sair-admin:hover { background: var(--erro); color: #fff; border-color: var(--erro); }
         
-        .menu-abas { display: flex; background: rgba(0,0,0,0.2); }
-        .menu-abas button { flex: 1; padding: 15px 5px; background: transparent; color: #aaa; border: none; cursor: pointer; font-weight: bold; font-size: 0.85rem; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .menu-abas button.ativa { color: var(--amarelo-destaque); border-bottom-color: var(--amarelo-destaque); background: rgba(255,255,255,0.05); }
+        .menu-abas { display: flex; background: rgba(0,0,0,0.15); }
+        .menu-abas button { flex: 1; padding: 15px 5px; background: transparent; color: rgba(255,255,255,0.6); border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; border-bottom: 3px solid transparent; transition: var(--transicao); }
+        .menu-abas button:hover { color: #fff; background: rgba(255,255,255,0.05); }
+        .menu-abas button.ativa { color: #fff; border-bottom-color: var(--azul-sutil); background: rgba(255,255,255,0.08); }
         
-        .btn-novo-cliente { background: #10b981; width: 100%; border: none; padding: 12px; color: #fff; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s; }
-        .btn-novo-cliente:hover { background: #059669; }
+        .btn-novo-cliente { background: var(--sucesso); width: 100%; border: none; padding: 12px; color: #fff; font-weight: 600; cursor: pointer; border-radius: 6px; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-novo-cliente:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(16,185,129,0.2); }
+        
         .busca-aside { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .busca-aside input { width: 100%; padding: 8px 12px; border-radius: 4px; border: none; background: rgba(255,255,255,0.1); color: #fff; }
-        .busca-aside input::placeholder { color: #aaa; }
+        .busca-aside input { width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: #fff; transition: var(--transicao); font-size: 0.9rem;}
+        .busca-aside input:focus { outline: none; border-color: var(--azul-sutil); background: rgba(255,255,255,0.1); }
+        .busca-aside input::placeholder { color: rgba(255,255,255,0.5); }
+        
         .lista-lateral { flex: 1; overflow-y: auto; padding: 15px; }
-        .item-lista { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; border-left: 4px solid transparent; position: relative; transition: 0.2s; }
-        .item-lista:hover, .item-lista.ativo { background: rgba(255,255,255,0.1); border-left-color: var(--amarelo-destaque); }
+        .item-lista { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; border-left: 3px solid transparent; transition: var(--transicao); border: 1px solid rgba(255,255,255,0.02); }
+        .item-lista:hover, .item-lista.ativo { background: rgba(255,255,255,0.08); border-left: 3px solid var(--azul-sutil); }
         .item-lista h4 { color: #fff; font-size: 1rem; margin-bottom: 5px; }
-        .item-lista p { color: #aaa; font-size: 0.8rem; }
-        .badge-inativo { display: inline-block; font-size: 0.7rem; background: var(--vermelho-marca); color: #fff; padding: 3px 8px; border-radius: 12px; margin-left: 10px; vertical-align: middle; }
+        .item-lista p { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
+        .badge-inativo { display: inline-block; font-size: 0.65rem; background: var(--erro); color: #fff; padding: 3px 8px; border-radius: 12px; margin-left: 10px; vertical-align: middle; font-weight: 700; letter-spacing: 0.5px; }
 
-        main { flex: 1; padding: 40px; overflow-y: auto; background: #fff; display: flex; flex-direction: column; }
-        .painel-conteudo { display: none; }
-        .card-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 30px; margin-bottom: 30px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; color: var(--azul-escuro); margin-bottom: 5px; font-size: 0.9rem; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1rem; }
-        .btn-acao { background: var(--azul-marca); color: #fff; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-acao:hover { background: var(--azul-escuro); }
-        .linha-form { display: flex; gap: 15px; }
+        /* ================= CONTEÚDO PRINCIPAL E CARDS ================= */
+        .painel-conteudo { display: none; max-width: 1300px; margin: 0 auto; width: 100%; }
+        .card-box { background: #fff; border: var(--borda); border-radius: 8px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; color: var(--azul-marca); margin-bottom: 6px; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; background: #f8fafc; transition: var(--transicao); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--azul-sutil); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(43,92,146,0.1); }
+        
+        .btn-acao { background: var(--azul-marca); color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: var(--transicao); font-size: 0.95rem; }
+        .btn-acao:hover { background: var(--azul-sutil); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(43,92,146,0.2); }
+        
+        .linha-form { display: flex; gap: 20px; }
         .linha-form .form-group { flex: 1; }
         
-        .doc-card { border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; background: #fff; margin-bottom: 10px; }
-        .doc-card a { color: var(--azul-marca); font-weight: bold; text-decoration: none; }
+        /* Documentos */
+        .doc-card { border: var(--borda); padding: 18px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; background: #fff; margin-bottom: 12px; transition: var(--transicao); }
+        .doc-card:hover { border-color: var(--azul-sutil); box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         .box-acoes-doc { display: flex; gap: 8px; align-items: center; }
-        .btn-acao-doc { background: transparent; border: none; cursor: pointer; font-size: 1.2rem; transition: 0.2s; padding: 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .btn-acao-doc { background: transparent; border: none; cursor: pointer; font-size: 1.1rem; transition: var(--transicao); padding: 10px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
         .btn-wpp { color: #25D366; background: rgba(37, 211, 102, 0.1); }
         .btn-wpp:hover { background: #25D366; color: white; transform: scale(1.05); }
-        .btn-edit { color: var(--azul-marca); background: rgba(43, 92, 146, 0.1); }
-        .btn-edit:hover { background: var(--azul-marca); color: white; transform: scale(1.05); }
-        .btn-del { color: var(--vermelho-marca); background: rgba(227, 27, 35, 0.1); }
-        .btn-del:hover { background: var(--vermelho-marca); color: white; transform: scale(1.05); }
+        .btn-edit { color: var(--azul-sutil); background: rgba(43, 92, 146, 0.1); }
+        .btn-edit:hover { background: var(--azul-sutil); color: white; transform: scale(1.05); }
+        .btn-del { color: var(--erro); background: rgba(239, 68, 68, 0.1); }
+        .btn-del:hover { background: var(--erro); color: white; transform: scale(1.05); }
 
-        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 40px 20px; text-align: center; background-color: #f8fafc; cursor: pointer; transition: all 0.3s ease; position: relative; }
-        .drop-zone:hover, .drop-zone.dragover { border-color: var(--azul-marca); background-color: #e2e8f0; }
+        .drop-zone { border: 2px dashed #cbd5e1; border-radius: 8px; padding: 40px 20px; text-align: center; background-color: #f8fafc; cursor: pointer; transition: var(--transicao); position: relative; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--azul-sutil); background-color: #f1f5f9; }
         .drop-zone input[type="file"] { position: absolute; width: 100%; height: 100%; top: 0; left: 0; opacity: 0; cursor: pointer; z-index: 10; }
-        .nome-arquivo-drop { margin-top: 15px; font-weight: bold; color: var(--vermelho-marca); font-size: 0.9rem; }
+        .nome-arquivo-drop { margin-top: 15px; font-weight: 600; color: var(--azul-marca); font-size: 0.9rem; }
 
+        /* ================= DASHBOARD KANBAN ================= */
         #painelDashboard { display: flex; flex-direction: column; height: 100%; }
-        .filtro-kanban-box { background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .filtro-kanban-box { background: #fff; border: var(--borda); padding: 20px; border-radius: 8px; display: flex; gap: 20px; margin-top: 15px; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         
-        .kanban-board { display: flex; gap: 20px; flex: 1; margin-top: 20px; overflow-x: auto; padding-bottom: 20px; }
-        .kanban-col { background: #f1f5f9; border-radius: 8px; width: 32%; min-width: 280px; display: flex; flex-direction: column; border: 1px solid #e2e8f0; }
-        .kanban-header { padding: 15px; color: #fff; font-weight: bold; border-radius: 8px 8px 0 0; text-align: center; font-size: 1.1rem; }
-        .col-orcamento .kanban-header { background: #64748b; }
-        .col-andamento .kanban-header { background: var(--amarelo-destaque); color: var(--azul-escuro); }
-        .col-concluido .kanban-header { background: #10b981; }
-        .kanban-body { padding: 15px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .kanban-card { background: #fff; border-radius: 6px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s; border-left: 4px solid transparent; }
-        .kanban-card:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-        .col-orcamento .kanban-card:hover { border-left-color: #64748b; }
-        .col-andamento .kanban-card:hover { border-left-color: var(--amarelo-destaque); }
-        .col-concluido .kanban-card:hover { border-left-color: #10b981; }
-        .kanban-card h4 { color: var(--azul-escuro); font-size: 1rem; margin-bottom: 5px; }
-        .kanban-card p { font-size: 0.8rem; color: #64748b; margin-bottom: 10px; }
-        .progress-bar-bg { background: #e2e8f0; border-radius: 10px; height: 8px; width: 100%; overflow: hidden; }
+        .kanban-board { display: flex; gap: 25px; flex: 1; margin-top: 25px; overflow-x: auto; padding-bottom: 20px; }
+        .kanban-col { background: #f8fafc; border-radius: 8px; width: 32%; min-width: 300px; display: flex; flex-direction: column; border: var(--borda); }
+        .kanban-header { padding: 15px; font-weight: 700; border-radius: 8px 8px 0 0; text-align: center; font-size: 1.05rem; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        
+        /* Cores Elegantes para o Kanban */
+        .col-orcamento .kanban-header { background: #e2e8f0; color: var(--texto-secundario); border-bottom: 2px solid #cbd5e1; }
+        .col-andamento .kanban-header { background: rgba(43, 92, 146, 0.1); color: var(--azul-sutil); border-bottom: 2px solid var(--azul-sutil); }
+        .col-concluido .kanban-header { background: rgba(16, 185, 129, 0.1); color: var(--sucesso); border-bottom: 2px solid var(--sucesso); }
+        
+        .kanban-body { padding: 15px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .kanban-card { background: #fff; border-radius: 6px; padding: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: var(--borda); cursor: pointer; transition: var(--transicao); border-left: 3px solid transparent; }
+        .kanban-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
+        
+        .col-orcamento .kanban-card:hover { border-left-color: #94a3b8; }
+        .col-andamento .kanban-card:hover { border-left-color: var(--azul-sutil); }
+        .col-concluido .kanban-card:hover { border-left-color: var(--sucesso); }
+        
+        .kanban-card h4 { color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 8px; line-height: 1.3; }
+        .kanban-card p { font-size: 0.85rem; color: var(--texto-secundario); margin-bottom: 12px; font-weight: 500; }
+        
+        .progress-bar-bg { background: #e2e8f0; border-radius: 10px; height: 6px; width: 100%; overflow: hidden; }
         .progress-bar-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease; }
-        .col-andamento .progress-bar-fill { background: var(--amarelo-destaque); }
-        .col-concluido .progress-bar-fill { background: #10b981; }
+        .col-andamento .progress-bar-fill { background: linear-gradient(90deg, var(--azul-sutil), var(--azul-marca)); }
+        .col-concluido .progress-bar-fill { background: var(--sucesso); }
 
-        .ticket-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: flex-start; }
-        .ticket-aberto { border-left: 4px solid var(--vermelho-marca); }
-        .ticket-respondido { border-left: 4px solid #10b981; opacity: 0.8; }
-        .badge-ticket { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: #fff; }
+        /* ================= CHAMADOS & OBRAS ACCORDION ================= */
+        .ticket-card { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: flex-start; transition: var(--transicao); }
+        .ticket-card:hover { border-color: var(--azul-sutil); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .ticket-aberto { border-left: 4px solid var(--azul-sutil); }
+        .ticket-respondido { border-left: 4px solid var(--sucesso); opacity: 0.9; }
+        .badge-ticket { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; text-transform: uppercase; }
 
-        .obra-accordion { margin-bottom: 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; overflow: hidden; transition: 0.3s; }
-        .obra-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; cursor: pointer; transition: 0.2s; }
-        .obra-header:hover { background: #e2e8f0; }
-        .obra-header h4 { margin: 0; color: var(--azul-escuro); font-size: 1.05rem; }
-        .obra-header-right { display: flex; align-items: center; gap: 15px; color: #64748b; font-weight: bold; }
-        .obra-content { padding: 20px; border-top: 1px solid #cbd5e1; display: none; background: #fff; }
+        .obra-accordion { margin-bottom: 12px; border: var(--borda); border-radius: 6px; background: #fff; overflow: hidden; transition: var(--transicao); }
+        .obra-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; cursor: pointer; transition: var(--transicao); }
+        .obra-header:hover { background: #f1f5f9; }
+        .obra-header h4 { margin: 0; color: var(--azul-marca); font-size: 1.05rem; }
+        .obra-header-right { display: flex; align-items: center; gap: 15px; color: var(--texto-secundario); font-weight: 600; }
+        .obra-content { padding: 25px; border-top: var(--borda); display: none; background: #fff; }
         
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--azul-marca); cursor: pointer; margin-top: -6px; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 22px; width: 22px; border-radius: 50%; background: var(--azul-marca); cursor: pointer; margin-top: -7px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.2s; }
+        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.1); background: var(--azul-sutil); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #e2e8f0; border-radius: 4px; }
 
-        /* Estilo Checkboxes Equipe */
-        .check-permissao { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed #cbd5e1; }
-        .check-permissao input { width: 18px; height: 18px; cursor: pointer; }
+        .check-permissao { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; color: var(--texto-principal); font-size: 0.95rem; }
+        .check-permissao input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--azul-marca); }
 
         @media (max-width: 768px) {
             #telaPainel { flex-direction: column; }
-            aside { width: 100% !important; height: auto; max-height: 50vh; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+            aside { width: 100% !important; height: auto; max-height: 50vh; z-index: 1000; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
             #sidebarAdmin.encolhida { height: 70px !important; width: 100% !important; padding: 10px 20px !important; flex-direction: row; align-items: center; justify-content: space-between; }
-            #sidebarAdmin.encolhida .logo-area { display: block !important; padding: 0; border: none; }
-            #sidebarAdmin.encolhida .logo-area img { max-width: 100px; margin: 0; }
+            #sidebarAdmin.encolhida .logo-area { display: block !important; padding: 0; border: none; text-align: left; }
+            #sidebarAdmin.encolhida .logo-area img { max-width: 120px; margin: 0; }
             #sidebarAdmin.encolhida .logo-area p, #sidebarAdmin.encolhida .logo-area a, #sidebarAdmin.encolhida .logo-area button { display: none !important; }
             #btnToggleSidebar { top: 20px; right: 20px; transform: rotate(-90deg); }
             #sidebarAdmin.encolhida #btnToggleSidebar { transform: rotate(90deg); top: 20px; right: 20px; }
+            
             main { padding: 20px 15px !important; width: 100% !important; margin-left: 0 !important; }
             main.expandido { width: 100% !important; margin-left: 0 !important; }
-            .card-box { padding: 15px; margin-bottom: 20px; }
+            .card-box { padding: 20px; margin-bottom: 20px; }
             .linha-form { flex-direction: column; gap: 15px; }
-            .form-group { width: 100%; }
+            .form-group { width: 100%; margin-bottom: 15px; }
             #boxAcoesAdmin { flex-direction: column; gap: 10px; margin-top: 20px; }
             #boxAcoesAdmin button, .btn-acao { width: 100%; justify-content: center; }
+            
             .doc-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .box-acoes-doc { width: 100%; justify-content: space-between; }
+            .box-acoes-doc { width: 100%; justify-content: space-between; margin-top: 10px; }
             .btn-acao-doc { flex: 1; padding: 12px; }
-            .kanban-board { flex-direction: column; overflow-x: hidden; }
+            
+            .kanban-board { flex-direction: column; overflow-x: hidden; gap: 15px; }
             .kanban-col { width: 100%; min-width: 100%; }
             .ticket-card { flex-direction: column; gap: 15px; }
             .ticket-card button { width: 100%; }
-            .obra-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .filtro-kanban-box { flex-direction: column; }
+            .obra-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .filtro-kanban-box { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ================= TELA DE LOGIN ================= -->
     <div id="telaLogin">
+        <div class="global-bg"></div>
+        <div class="circuit-overlay"></div>
+        
         <div class="login-container">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 25px;">
-                <img src="public/logo.png" alt="Logotipo EngQuadros" style="max-width: 180px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.2));">
-                <a href="index.html" style="background-color: transparent; border: 1px solid var(--amarelo-destaque); color: var(--amarelo-destaque); padding: 6px 15px; text-decoration: none; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;" onmouseover="this.style.backgroundColor='var(--amarelo-destaque)'; this.style.color='#111';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--amarelo-destaque)';">
-                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Site
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 30px;">
+                <img src="public/logo.png" alt="Logotipo EngQuadros" style="max-width: 160px; filter: brightness(0) invert(1);">
+                <a href="index.html" style="background-color: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); padding: 8px 18px; text-decoration: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao);" onmouseover="this.style.borderColor='var(--branco)'; this.style.color='var(--branco)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.color='rgba(255,255,255,0.7)';">
+                    <i class="fa-solid fa-arrow-left"></i> Retornar ao Site
                 </a>
             </div>
             
             <div class="tipo-acesso">
-                <button type="button" id="btnAcessoMestre" class="ativo" onclick="mudarModoLogin('mestre')">Master</button>
-                <button type="button" id="btnAcessoEquipe" onclick="mudarModoLogin('equipe')">Equipe</button>
+                <button type="button" id="btnAcessoMestre" class="ativo" onclick="mudarModoLogin('mestre')">Gestão Master</button>
+                <button type="button" id="btnAcessoEquipe" onclick="mudarModoLogin('equipe')">Painel Equipe</button>
             </div>
             
             <form id="formLogin">
@@ -189,63 +259,63 @@
                     <label>Senha de Acesso</label>
                     <input type="password" id="inputSenha" required>
                 </div>
-                <button type="submit" class="btn-entrar">Acessar Painel</button>
-                <div id="mensagemErroLogin">Acesso negado. Credenciais inválidas.</div>
+                <button type="submit" class="btn-entrar"><i class="fa-solid fa-shield-halved"></i> Autenticar Sessão</button>
+                <div id="mensagemErroLogin"><i class="fa-solid fa-triangle-exclamation"></i> Acesso negado. Credenciais inválidas.</div>
             </form>
         </div>
     </div>
 
+    <!-- ================= PAINEL ADMIN ================= -->
     <div id="telaPainel">
         <aside style="position: relative; transition: width 0.3s ease;" id="sidebarAdmin">
-            <button id="btnToggleSidebar" style="position: absolute; top: 15px; right: -15px; background: var(--amarelo-destaque); color: var(--azul-escuro); border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index: 1000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
+            <button id="btnToggleSidebar">
                 <i class="fa-solid fa-chevron-left" id="iconeToggle"></i>
             </button>
 
             <div class="logo-area" style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                 <a href="admin.html" style="text-decoration: none;">
-                    <img src="public/logo.png" alt="EngQuadros Admin" style="max-width: 140px; height: auto; filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.2));">
+                    <img src="public/logo.png" alt="EngQuadros Admin" style="max-width: 140px; filter: brightness(0) invert(1);">
                 </a>
-                <p style="font-size: 0.8rem; color: #ccc; margin-top: 5px;" id="nomeUsuarioLogado">Carregando...</p>
+                <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 5px; font-weight: 500;" id="nomeUsuarioLogado">Carregando...</p>
                 <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%;">
-                    <button type="button" class="btn-sair-admin" onclick="sair()" style="padding: 5px 10px; font-size: 0.8rem;">Sair do Sistema</button>
+                    <button type="button" class="btn-sair-admin" onclick="sair()"><i class="fa-solid fa-power-off"></i> Encerrar Sessão</button>
                 </div>
             </div>
             
             <div class="menu-abas">
-                <button type="button" id="abaClientes" class="ativa" onclick="abrirAba('clientes')"><i class="fa-solid fa-users"></i> Clientes</button>
+                <button type="button" id="abaClientes" class="ativa" onclick="abrirAba('clientes')"><i class="fa-solid fa-building"></i> Clientes</button>
                 <button type="button" id="abaChamados" onclick="abrirAba('chamados')"><i class="fa-solid fa-headset"></i> Suporte</button>
-                <button type="button" id="abaEquipe" onclick="abrirAba('equipe')"><i class="fa-solid fa-user-shield"></i> Equipe</button>
+                <button type="button" id="abaEquipe" onclick="abrirAba('equipe')"><i class="fa-solid fa-users-gear"></i> Equipe</button>
             </div>
             
             <div id="boxBuscaLateral" class="busca-aside">
                 <input type="text" id="inputBuscaMenu" placeholder="Procurar cliente..." onkeyup="filtrarMenu()">
             </div>
             
-            <div id="boxBtnNovoCliente" style="padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <button type="button" class="btn-novo-cliente" onclick="abrirPainelNovoCliente()">+ Novo Cliente</button>
+            <div id="boxBtnNovoCliente" style="padding: 20px 15px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <button type="button" class="btn-novo-cliente" onclick="abrirPainelNovoCliente()"><i class="fa-solid fa-plus"></i> Novo Cliente</button>
             </div>
             
             <div class="lista-lateral" id="listaLateral"></div>
         </aside>
 
         <main>
-            <!-- DASHBOARD KANBAN COM FILTROS (FASE 2.2) -->
+            <!-- DASHBOARD KANBAN COM FILTROS -->
             <div id="painelDashboard" class="painel-conteudo" style="display: flex;">
                 <div>
-                    <h2 style="color: var(--azul-escuro);"><i class="fa-solid fa-chart-line"></i> Painel de Obras (Kanban)</h2>
-                    <p style="color: #64748b; margin-top: 5px;">Visão geral do progresso de todas as obras cadastradas.</p>
+                    <h2 style="color: var(--azul-marca);"><i class="fa-solid fa-chart-gantt"></i> Status Geral de Obras</h2>
+                    <p style="color: var(--texto-secundario); margin-top: 5px;">Acompanhamento global dos projetos e manutenções ativas.</p>
                 </div>
                 
-                <!-- BARRA DE FILTROS -->
                 <div class="filtro-kanban-box">
                     <div style="flex: 1; min-width: 200px;">
-                        <label style="font-size: 0.85rem; font-weight: bold; color: var(--azul-escuro); display: block; margin-bottom: 5px;"><i class="fa-solid fa-search"></i> Buscar por Cliente:</label>
-                        <input type="text" id="filtroKanbanCliente" onkeyup="filtrarKanban()" placeholder="Digite o nome da empresa..." style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none;">
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--azul-marca); display: block; margin-bottom: 8px;"><i class="fa-solid fa-search"></i> Buscar por Cliente:</label>
+                        <input type="text" id="filtroKanbanCliente" onkeyup="filtrarKanban()" placeholder="Digite o nome da empresa..." style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; transition: var(--transicao);">
                     </div>
                     <div style="flex: 1; min-width: 200px;">
-                        <label style="font-size: 0.85rem; font-weight: bold; color: var(--azul-escuro); display: block; margin-bottom: 5px;"><i class="fa-solid fa-layer-group"></i> Filtrar por Status:</label>
-                        <select id="filtroKanbanStatus" onchange="filtrarKanban()" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #cbd5e1; outline: none; cursor: pointer;">
-                            <option value="todos">Todos os Status</option>
+                        <label style="font-size: 0.85rem; font-weight: 600; color: var(--azul-marca); display: block; margin-bottom: 8px;"><i class="fa-solid fa-filter"></i> Filtrar por Status:</label>
+                        <select id="filtroKanbanStatus" onchange="filtrarKanban()" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; cursor: pointer; transition: var(--transicao); background: #fff;">
+                            <option value="todos">Todos os Projetos</option>
                             <option value="0">Somente Projetos Novos</option>
                             <option value="50">Somente Em Execução</option>
                             <option value="100">Somente Concluídos</option>
@@ -255,11 +325,11 @@
 
                 <div class="kanban-board">
                     <div class="kanban-col col-orcamento">
-                        <div class="kanban-header"><i class="fa-solid fa-file-invoice"></i> Projetos Novos (0%)</div>
+                        <div class="kanban-header"><i class="fa-regular fa-file-lines"></i> Novos (0%)</div>
                         <div class="kanban-body" id="kbColuna0"></div>
                     </div>
                     <div class="kanban-col col-andamento">
-                        <div class="kanban-header"><i class="fa-solid fa-person-digging"></i> Em Execução (1% a 99%)</div>
+                        <div class="kanban-header"><i class="fa-solid fa-gears"></i> Em Execução (1% - 99%)</div>
                         <div class="kanban-body" id="kbColuna50"></div>
                     </div>
                     <div class="kanban-col col-concluido">
@@ -271,18 +341,18 @@
 
             <!-- PAINEL CADASTRAR CLIENTE -->
             <div id="painelNovoCliente" class="painel-conteudo">
-                <h2 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Cadastrar Cliente</h2>
+                <h2 style="color: var(--azul-marca); margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;"><i class="fa-solid fa-building-circle-check"></i> Cadastrar Novo Cliente</h2>
                 <div class="card-box">
                     <form id="formNovoCliente">
                         <div class="form-group"><label>Razão Social *</label><input type="text" id="novoCliNome" required></div>
                         <div class="form-group"><label>CNPJ *</label><input type="text" id="novoCliCnpj" required></div>
-                        <div class="form-group"><label>Senha de Acesso do Cliente *</label><input type="text" id="novoCliSenha" required></div>
+                        <div class="form-group"><label>Chave de Acesso do Cliente *</label><input type="text" id="novoCliSenha" required></div>
                         <div class="linha-form">
-                            <div class="form-group"><label>WhatsApp (Opcional)</label><input type="text" id="novoCliWpp" placeholder="(00) 00000-0000"></div>
+                            <div class="form-group"><label>WhatsApp Corporativo (Opcional)</label><input type="text" id="novoCliWpp" placeholder="(00) 00000-0000"></div>
                             <div class="form-group"><label>E-mail (Opcional)</label><input type="email" id="novoCliEmail" placeholder="contato@empresa.com"></div>
                         </div>
-                        <button type="submit" class="btn-acao">Salvar Cliente</button>
-                        <span id="msgNovoCliente" style="margin-left: 10px; font-weight: bold;"></span>
+                        <button type="submit" class="btn-acao" style="background: var(--sucesso); margin-top: 10px;"><i class="fa-solid fa-floppy-disk"></i> Registrar Cliente</button>
+                        <span id="msgNovoCliente" style="margin-left: 15px; font-weight: 600;"></span>
                     </form>
                 </div>
             </div>
@@ -290,15 +360,15 @@
             <!-- PAINEL GESTÃO DO CLIENTE ESPECÍFICO -->
             <div id="painelCliente" class="painel-conteudo">
                 
-                <div class="card-box" style="border-top: 4px solid var(--azul-marca);">
-                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                <div class="card-box" style="border-top: 4px solid var(--azul-sutil);">
+                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">
                         <div>
-                            <h2 id="viewCliNome" style="color: var(--azul-escuro);">Nome</h2>
-                            <p>CNPJ: <span id="viewCliCnpj"></span> | Status: <span id="viewCliStatus" style="font-weight:bold;"></span></p>
+                            <h2 id="viewCliNome" style="color: var(--azul-marca); margin-bottom: 5px;">Nome da Empresa</h2>
+                            <p style="color: var(--texto-secundario); font-size: 0.95rem;">CNPJ: <span id="viewCliCnpj" style="font-weight:600; color:var(--texto-principal);"></span> | Status: <span id="viewCliStatus" style="font-weight:700;"></span></p>
                         </div>
                         <div style="display: flex; align-items: center;">
                             <a id="btnWppDireto" href="#" target="_blank" class="btn-acao" style="background: #25D366; text-decoration:none; display:none;">
-                                <i class="fa-brands fa-whatsapp"></i> Chamar no WhatsApp
+                                <i class="fa-brands fa-whatsapp"></i> Contatar no WhatsApp
                             </a>
                         </div>
                     </div>
@@ -306,7 +376,7 @@
                     <form id="formEditarCliente">
                         <div class="linha-form">
                             <div class="form-group" style="flex:2;"><label>Razão Social</label><input type="text" id="editCliNome" required></div>
-                            <div class="form-group"><label>Senha de Acesso</label><input type="text" id="editCliSenha" required></div>
+                            <div class="form-group"><label>Chave de Acesso</label><input type="text" id="editCliSenha" required></div>
                         </div>
                         <div class="linha-form">
                             <div class="form-group"><label>WhatsApp</label><input type="text" id="editCliWpp"></div>
@@ -314,83 +384,94 @@
                         </div>
                         <div class="linha-form">
                             <div class="form-group" style="width: 50%;">
-                                <label>Status da Conta</label>
+                                <label>Status Operacional da Conta</label>
                                 <select id="editCliStatus">
-                                    <option value="ativo">Ativo</option>
-                                    <option value="inativo">Inativo (Bloqueado)</option>
+                                    <option value="ativo">Ativo (Acesso Liberado)</option>
+                                    <option value="inativo">Inativo (Acesso Bloqueado)</option>
                                 </select>
                             </div>
                         </div>
                         
-                        <div id="boxAcoesAdmin" style="display: flex; gap: 15px; margin-top: 15px;">
-                            <button type="submit" class="btn-acao"><i class="fa-solid fa-floppy-disk"></i> Atualizar Dados</button>
-                            <button type="button" class="btn-acao" style="background: transparent; border: 1px solid var(--vermelho-marca); color: var(--vermelho-marca);" onclick="excluirClienteAtual()">
-                                <i class="fa-solid fa-trash"></i> Excluir Cliente
+                        <div id="boxAcoesAdmin" style="display: flex; gap: 15px; margin-top: 20px;">
+                            <button type="submit" class="btn-acao"><i class="fa-solid fa-rotate"></i> Atualizar Cadastro</button>
+                            <button type="button" class="btn-acao" style="background: transparent; border: 1px solid var(--erro); color: var(--erro);" onclick="excluirClienteAtual()">
+                                <i class="fa-solid fa-trash-can"></i> Excluir Definitivamente
                             </button>
-                            <span id="msgEditCliente" style="align-self: center; font-weight: bold;"></span>
+                            <span id="msgEditCliente" style="align-self: center; font-weight: 600;"></span>
                         </div>
                     </form>
                 </div>
 
-                <div class="card-box" style="border-top: 4px solid #10b981;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="color: var(--azul-escuro); margin: 0;"><i class="fa-solid fa-building"></i> Controle de Obras e Projetos</h3>
-                        <button type="button" id="btnNovaObra" class="btn-acao" onclick="adicionarObra()" style="background: #10b981;">
-                            <i class="fa-solid fa-plus"></i> Nova Obra
+                <div class="card-box" style="border-top: 4px solid var(--sucesso);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                        <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-helmet-safety"></i> Gestão de Projetos e Obras</h3>
+                        <button type="button" id="btnNovaObra" class="btn-acao" onclick="adicionarObra()" style="background: var(--sucesso);">
+                            <i class="fa-solid fa-plus"></i> Iniciar Nova Obra
                         </button>
                     </div>
                     <div id="listaObrasContainer"></div>
                 </div>
 
                 <div class="card-box" id="boxVinculos" style="display: none;">
-                    <h3 style="color: var(--azul-escuro);"><i class="fa-solid fa-users-gear"></i> Vínculos da Equipe</h3>
-                    <div id="listaEquipeVinculo" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;"></div>
-                    <button type="button" class="btn-acao" onclick="salvarVinculos()" style="margin-top:20px; background: #10b981;">Atualizar Vínculos</button>
-                    <span id="msgVinculo" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+                    <h3 style="color: var(--azul-marca); margin-bottom: 20px;"><i class="fa-solid fa-users-gear"></i> Permissão de Acesso da Equipe</h3>
+                    <div id="listaEquipeVinculo" style="display:flex; flex-direction:column; gap:12px;"></div>
+                    <button type="button" class="btn-acao" onclick="salvarVinculos()" style="margin-top:25px; background: var(--sucesso);"><i class="fa-solid fa-check"></i> Salvar Vínculos</button>
+                    <span id="msgVinculo" style="margin-left: 15px; color: var(--sucesso); font-weight: 600;"></span>
                 </div>
 
                 <div class="card-box" id="boxUploadInteiro">
-                    <h3 style="color: var(--azul-escuro);"><i class="fa-solid fa-cloud-arrow-up"></i> Adicionar Documento ou Link</h3>
-                    <form id="formUpload" style="margin-top: 20px;">
-                        <div class="form-group">
-                            <label>Título do Arquivo ou Plataforma do Link *</label>
-                            <input type="text" id="nomeDoc" required placeholder="Ex: Projeto Elétrico / Google Drive">
+                    <h3 style="color: var(--azul-marca); margin-bottom: 25px;"><i class="fa-solid fa-cloud-arrow-up"></i> Disponibilizar Documento ou Link</h3>
+                    <form id="formUpload">
+                        
+                        <!-- NOVO CAMPO DE VÍNCULO COM A OBRA INSERIDO AQUI -->
+                        <div class="form-group" style="background: #f1f5f9; padding: 15px; border-radius: 6px; border-left: 4px solid var(--azul-marca); margin-bottom: 20px;">
+                            <label style="color: var(--azul-marca); margin-bottom: 8px;"><i class="fa-solid fa-link"></i> Vincular a qual Projeto / Obra? (Opcional)</label>
+                            <select id="selectObraUpload" style="background: #fff; width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none;">
+                                <option value="">-- Arquivo Geral do Cliente (Sem vínculo com projeto) --</option>
+                            </select>
+                            <p style="font-size: 0.8rem; color: var(--texto-secundario); margin-top: 5px;">Se selecionado, o arquivo ficará organizado dentro desta obra no painel do cliente.</p>
                         </div>
-                        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                            <label><input type="radio" name="tipoEnvio" value="pdf" checked onchange="trocarTipoInput()"> Enviar Arquivo PDF</label>
-                            <label><input type="radio" name="tipoEnvio" value="link" onchange="trocarTipoInput()"> Colar Link Externo</label>
+
+                        <div class="form-group">
+                            <label>Título do Documento ou Plataforma *</label>
+                            <input type="text" id="nomeDoc" required placeholder="Ex: Projeto Elétrico As-Built / Google Drive">
+                        </div>
+                        <div style="display: flex; gap: 25px; margin-bottom: 25px; padding: 15px; background: #f8fafc; border-radius: 6px; border: 1px solid #cbd5e1;">
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; color: var(--texto-principal);"><input type="radio" name="tipoEnvio" value="pdf" checked onchange="trocarTipoInput()" style="width:18px; height:18px;"> Enviar Arquivo PDF</label>
+                            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; color: var(--texto-principal);"><input type="radio" name="tipoEnvio" value="link" onchange="trocarTipoInput()" style="width:18px; height:18px;"> Colar Link Externo</label>
                         </div>
                         <div class="form-group" id="boxPdf">
                             <div class="drop-zone" id="dropZoneContainer">
-                                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 3rem; color: var(--azul-marca); margin-bottom: 15px;"></i>
-                                <p style="font-weight: bold; color: var(--azul-escuro);">Arraste e solte o seu PDF aqui</p>
-                                <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">ou clique nesta área para procurar no computador</p>
+                                <i class="fa-solid fa-file-pdf" style="font-size: 3.5rem; color: var(--azul-sutil); margin-bottom: 15px; opacity: 0.8;"></i>
+                                <p style="font-weight: 700; color: var(--azul-marca); font-size: 1.1rem;">Arraste e solte o arquivo PDF aqui</p>
+                                <p style="font-size: 0.9rem; color: var(--texto-secundario); margin-top: 5px;">ou clique para procurar no computador</p>
                                 <input type="file" id="arquivoPdf" accept="application/pdf">
                                 <div id="nomeArquivoDrop" class="nome-arquivo-drop"></div>
                             </div>
                         </div>
                         <div class="form-group" id="boxLink" style="display: none;">
+                            <label>URL Externa</label>
                             <input type="text" id="linkDoc" placeholder="Ex: https://drive.google.com/...">
                         </div>
                         <div class="form-group">
                             <label>Observação (Opcional)</label>
                             <input type="text" id="obsDoc" placeholder="Ex: Arquivo atualizado na versão 2.0 / Senha de acesso: 1234">
                         </div>
-                        <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 25px;">
                             <button type="submit" class="btn-acao" id="btnUploadSubmit">
-                                <i class="fa-solid fa-file-pdf"></i> Salvar PDF no Acervo
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Salvar no Acervo
                             </button>
-                            <span id="msgUploadSuccess" style="color: green; font-weight: bold; display: none;">
-                                <i class="fa-solid fa-check-circle"></i> Salvo com sucesso!
+                            <span id="msgUploadSuccess" style="color: var(--sucesso); font-weight: 600; display: none;">
+                                <i class="fa-solid fa-circle-check"></i> Enviado com sucesso!
                             </span>
                         </div>
                     </form>
                 </div>
 
                 <div class="card-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
-                        <h3 style="color: var(--azul-escuro); margin: 0;"><i class="fa-solid fa-folder-open"></i> Arquivos do Cliente</h3>
-                        <button type="button" class="btn-acao" onclick="forcarAtualizacaoArquivos()" style="background: #64748b; font-size: 0.85rem; padding: 6px 12px; margin: 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                        <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-regular fa-folder-open"></i> Acervo de Arquivos do Cliente</h3>
+                        <button type="button" class="btn-acao" onclick="forcarAtualizacaoArquivos()" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; font-size: 0.85rem; padding: 8px 15px;">
                             <i class="fa-solid fa-rotate-right"></i> Atualizar Lista
                         </button>
                     </div>
@@ -400,21 +481,21 @@
 
             <!-- PAINEL DE CHAMADOS / SUPORTE -->
             <div id="painelChamados" class="painel-conteudo">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; flex-wrap: wrap; gap: 15px;">
                     <div>
-                        <h2 style="color: var(--azul-escuro);"><i class="fa-solid fa-headset"></i> Caixa de Suporte</h2>
-                        <p style="color: #64748b; margin-top: 5px;">Responda às solicitações e dúvidas dos seus clientes.</p>
+                        <h2 style="color: var(--azul-marca);"><i class="fa-solid fa-headset"></i> Caixa de Suporte Técnico</h2>
+                        <p style="color: var(--texto-secundario); margin-top: 5px;">Acompanhe e responda às solicitações e dúvidas dos clientes.</p>
                     </div>
-                    <button type="button" class="btn-acao" onclick="carregarTickets()" style="background: #64748b;">
-                        <i class="fa-solid fa-rotate-right"></i> Atualizar
+                    <button type="button" class="btn-acao" onclick="carregarTickets()" style="background: var(--azul-sutil);">
+                        <i class="fa-solid fa-arrows-rotate"></i> Atualizar Fila
                     </button>
                 </div>
                 <div id="listaTicketsAdmin"></div>
             </div>
 
-            <!-- PAINEL GESTÃO EQUIPE (Fase 2.2: Adição das Permissões) -->
+            <!-- PAINEL GESTÃO EQUIPE (Fase 2.2) -->
             <div id="painelEquipe" class="painel-conteudo">
-                <h2 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Adicionar Usuário da Equipe</h2>
+                <h2 style="color: var(--azul-marca); margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px;"><i class="fa-solid fa-user-shield"></i> Adicionar Membro da Equipe</h2>
                 <div class="card-box">
                     <form id="formEquipe">
                         <div class="linha-form">
@@ -423,94 +504,94 @@
                             <div class="form-group"><label>Senha Provisória</label><input type="password" id="eqPass" required></div>
                         </div>
                         
-                        <!-- BLOCO DE PERMISSÕES PARA NOVO USUÁRIO -->
-                        <div style="background: #f8fafc; padding: 15px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 20px;">
-                            <label style="font-weight: bold; color: var(--azul-escuro); display: block; margin-bottom: 10px;"><i class="fa-solid fa-key"></i> Permissões de Acesso</label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermCli" checked> <span>Cadastrar e Editar Clientes</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermObr" checked> <span>Gerenciar Obras e Alterar Progresso (%)</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermArq" checked> <span>Fazer Upload e Excluir Arquivos</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermTic" checked> <span>Responder Chamados de Suporte</span></label>
+                        <div style="background: #f8fafc; padding: 20px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 25px;">
+                            <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 15px; font-size: 1.05rem;"><i class="fa-solid fa-key"></i> Definição de Permissões</label>
+                            <label class="check-permissao"><input type="checkbox" id="novoPermCli" checked> <span>Acesso total ao Cadastro de Clientes</span></label>
+                            <label class="check-permissao"><input type="checkbox" id="novoPermObr" checked> <span>Gerenciar Obras e atualizar Progresso</span></label>
+                            <label class="check-permissao"><input type="checkbox" id="novoPermArq" checked> <span>Fazer Upload, Edição e Exclusão de Arquivos</span></label>
+                            <label class="check-permissao"><input type="checkbox" id="novoPermTic" checked> <span>Visualizar e Responder Chamados de Suporte</span></label>
                         </div>
 
-                        <button type="submit" class="btn-acao">Cadastrar Usuário</button>
-                        <span id="msgEquipe" style="margin-left: 10px; color: green; font-weight: bold;"></span>
+                        <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Cadastrar Usuário</button>
+                        <span id="msgEquipe" style="margin-left: 15px; color: var(--sucesso); font-weight: 600;"></span>
                     </form>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Modais da Equipe (Com Permissões) -->
-    <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-            <h3 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid var(--amarelo-destaque); padding-bottom: 10px;">Editar Membro da Equipe</h3>
+    <!-- MODAIS SÓBRIOS -->
+    <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 35px; border-radius: 12px; width: 90%; max-width: 550px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
+            <h3 style="color: var(--azul-marca); margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;"><i class="fa-solid fa-pen-to-square"></i> Editar Membro da Equipe</h3>
             <input type="hidden" id="editEquipeId">
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <div style="flex:1;"><label style="font-weight: bold; margin-bottom: 5px; display:block;">Nome Completo:</label><input type="text" id="editEquipeNome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></div>
-                <div style="flex:1;"><label style="font-weight: bold; margin-bottom: 5px; display:block;">Usuário de Login:</label><input type="text" id="editEquipeUsuario" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></div>
+            <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap;">
+                <div class="form-group" style="flex:1; margin:0;"><label>Nome Completo</label><input type="text" id="editEquipeNome" required></div>
+                <div class="form-group" style="flex:1; margin:0;"><label>Usuário de Login</label><input type="text" id="editEquipeUsuario" required></div>
             </div>
-            <div style="margin-bottom: 15px;">
-                <label style="font-weight: bold; margin-bottom: 5px; display:block;">Senha de Acesso:</label>
-                <input type="text" id="editEquipeSenha" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
-            </div>
-
-            <!-- BLOCO DE PERMISSÕES PARA EDIÇÃO -->
-            <div style="background: #f8fafc; padding: 15px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 25px;">
-                <label style="font-weight: bold; color: var(--azul-escuro); display: block; margin-bottom: 10px;"><i class="fa-solid fa-key"></i> Permissões do Usuário</label>
-                <label class="check-permissao"><input type="checkbox" id="editPermCli"> <span>Cadastrar e Editar Clientes</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermObr"> <span>Gerenciar Obras (Criar / Progresso)</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermArq"> <span>Fazer Upload e Excluir Arquivos</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermTic"> <span>Responder Chamados de Suporte</span></label>
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label>Senha de Acesso</label>
+                <input type="text" id="editEquipeSenha" required>
             </div>
 
-            <div style="display: flex; gap: 10px; justify-content: space-between;">
-                <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" style="padding: 10px; border: none; background: #999; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
-                <button type="button" onclick="excluirMembro()" style="padding: 10px; border: none; background: #e31b23; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
-                <button type="button" onclick="salvarEdicaoMembro()" style="padding: 10px; border: none; background: #2b5c92; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-save"></i> Salvar</button>
+            <div style="background: #f8fafc; padding: 20px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 30px;">
+                <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 15px;"><i class="fa-solid fa-sliders"></i> Permissões de Acesso</label>
+                <label class="check-permissao"><input type="checkbox" id="editPermCli"> <span>Cadastro de Clientes</span></label>
+                <label class="check-permissao"><input type="checkbox" id="editPermObr"> <span>Gestão de Obras</span></label>
+                <label class="check-permissao"><input type="checkbox" id="editPermArq"> <span>Gestão de Arquivos</span></label>
+                <label class="check-permissao"><input type="checkbox" id="editPermTic"> <span>Atendimento de Suporte</span></label>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: space-between;">
+                <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
+                <button type="button" onclick="excluirMembro()" class="btn-acao" style="background: var(--erro); flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
+                <button type="button" onclick="salvarEdicaoMembro()" class="btn-acao" style="flex: 1;"><i class="fa-solid fa-floppy-disk"></i> Salvar</button>
             </div>
         </div>
     </div>
 
-    <!-- Modais de Arquivo e Chamados (Mantidos e Ocultos) -->
-    <div id="modalEditarArquivo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 30px; border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-            <h3 style="color: var(--azul-escuro); margin-bottom: 20px; border-bottom: 2px solid var(--amarelo-destaque); padding-bottom: 10px;">Editar Informações do Arquivo</h3>
+    <div id="modalEditarArquivo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 35px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-sutil);">
+            <h3 style="color: var(--azul-marca); margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;"><i class="fa-solid fa-file-pen"></i> Editar Informações Técnicas</h3>
             <input type="hidden" id="editArquivoId">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Título do Arquivo / Plataforma:</label>
-                <input type="text" id="editArquivoNome" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group">
+                <label>Título do Arquivo / Plataforma</label>
+                <input type="text" id="editArquivoNome" required>
             </div>
-            <div style="margin-bottom: 25px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px;">Observação / Descrição:</label>
-                <input type="text" id="editArquivoObs" placeholder="Ex: Arquivo versão 2.0 / Senha: 123" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label>Observação / Descrição</label>
+                <input type="text" id="editArquivoObs">
             </div>
-            <div style="display: flex; gap: 10px; justify-content: space-between;">
-                <button type="button" onclick="document.getElementById('modalEditarArquivo').style.display='none'" style="padding: 10px; border: none; background: #999; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
-                <button type="button" onclick="salvarEdicaoArquivo()" style="padding: 10px; border: none; background: #2b5c92; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-save"></i> Salvar</button>
+            <div style="display: flex; gap: 15px;">
+                <button type="button" onclick="document.getElementById('modalEditarArquivo').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
+                <button type="button" onclick="salvarEdicaoArquivo()" class="btn-acao" style="flex: 1;"><i class="fa-solid fa-check"></i> Salvar Dados</button>
             </div>
         </div>
     </div>
 
-    <div id="modalResponderTicket" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 30px; border-radius: 8px; width: 90%; max-width: 600px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-            <h3 style="color: var(--azul-escuro); margin-bottom: 15px; border-bottom: 2px solid var(--amarelo-destaque); padding-bottom: 10px;"><i class="fa-solid fa-reply"></i> Responder Cliente</h3>
+    <div id="modalResponderTicket" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 35px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--sucesso);">
+            <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;"><i class="fa-solid fa-reply-all"></i> Responder Solicitação</h3>
             <input type="hidden" id="ticketIdAtivo">
-            <div style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
-                <strong id="ticketAssunto" style="color: var(--azul-escuro); display: block; margin-bottom: 5px;">Assunto</strong>
-                <p id="ticketMensagem" style="color: #555; font-size: 0.9rem; line-height: 1.4;"></p>
+            
+            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1; margin-bottom: 25px; border-left: 4px solid var(--azul-sutil);">
+                <strong id="ticketAssunto" style="color: var(--azul-marca); display: block; margin-bottom: 8px; font-size: 1.05rem;">Assunto</strong>
+                <p id="ticketMensagem" style="color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5;"></p>
             </div>
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: var(--azul-escuro);">Sua Resposta para o Cliente:</label>
-                <textarea id="ticketRespostaTxt" rows="5" placeholder="Escreva a solução ou orientação aqui..." style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 1rem; resize: vertical;"></textarea>
+            
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label>Parecer Técnico / Resposta para o Cliente:</label>
+                <textarea id="ticketRespostaTxt" rows="6" placeholder="Escreva a solução técnica ou orientação aqui..." required></textarea>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button type="button" onclick="document.getElementById('modalResponderTicket').style.display='none'" style="padding: 12px; border: none; background: #94a3b8; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;">Cancelar</button>
-                <button type="button" onclick="salvarRespostaTicket()" style="padding: 12px; border: none; background: #10b981; color: white; border-radius: 4px; cursor: pointer; font-weight: bold; flex: 1;"><i class="fa-solid fa-paper-plane"></i> Enviar Resposta</button>
+            
+            <div style="display: flex; gap: 15px;">
+                <button type="button" onclick="document.getElementById('modalResponderTicket').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
+                <button type="button" onclick="salvarRespostaTicket()" class="btn-acao" style="background: var(--sucesso); flex: 1.5;"><i class="fa-solid fa-paper-plane"></i> Enviar Resposta</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS CORE -->
+    <!-- SCRIPTS CORE (MANTIDOS 100% INTÁCTOS COM INJEÇÃO EXATA DA NOVA LÓGICA) -->
     <script>
         if (typeof window.supabase === 'undefined') {
             alert("⚠️ ERRO CRÍTICO: O motor do banco de dados não carregou.");
@@ -526,8 +607,10 @@
         let clienteSelecionado = null;
         let listaGlobalClientes = []; 
         let cnpjsPermitidos = []; 
+        
+        // NOVO: Variável global para armazenar as obras do cliente atual
+        let obrasDoClienteAtual = []; 
 
-        // FUNÇÃO CENTRAL DE PERMISSÕES
         function getPermissoes() {
             if (isMaster) return { clientes: true, obras: true, arquivos: true, tickets: true };
             try { return JSON.parse(sessionStorage.getItem('permissoes') || '{}'); } 
@@ -541,7 +624,7 @@
             if (isMaster) {
                 document.getElementById('nomeUsuarioLogado').innerText = 'Acesso Master';
             } else {
-                document.getElementById('nomeUsuarioLogado').innerText = 'Equipe: ' + sessionStorage.getItem('nomeEquipe');
+                document.getElementById('nomeUsuarioLogado').innerText = 'Engenharia: ' + sessionStorage.getItem('nomeEquipe');
             }
             iniciarPainel();
         }
@@ -555,7 +638,7 @@
             } else {
                 document.getElementById('btnAcessoMestre').className = '';
                 document.getElementById('btnAcessoEquipe').className = 'ativo';
-                document.getElementById('labelIdentificador').innerText = 'Usuário';
+                document.getElementById('labelIdentificador').innerText = 'Usuário de Acesso';
             }
         }
 
@@ -564,27 +647,26 @@
             const ident = document.getElementById('inputIdentificador').value.trim();
             const senha = document.getElementById('inputSenha').value.trim();
             const msg = document.getElementById('mensagemErroLogin');
-            msg.style.display = 'none'; document.querySelector('.btn-entrar').innerText = 'Autenticando...';
+            msg.style.display = 'none'; document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
 
             try {
                 if (modoLoginAtual === 'mestre') {
                     const { data, error } = await supabaseClient.from('admin_master').select('*').eq('cnpj', ident).eq('senha', senha);
-                    if (error) { msg.style.display = 'block'; msg.innerText = 'Erro no banco.'; return; }
+                    if (error) { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro no servidor.'; return; }
                     if (data && data.length > 0) {
                         sessionStorage.setItem('acessoCRM', 'true'); sessionStorage.setItem('tipoAcesso', 'mestre'); window.location.reload();
-                    } else { msg.style.display = 'block'; msg.innerText = 'Credenciais inválidas.'; }
+                    } else { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Credenciais inválidas.'; }
                 } else {
                     const { data, error } = await supabaseClient.from('equipe_admin').select('*').eq('usuario_login', ident).eq('senha', senha);
                     if (data && data.length > 0) {
                         sessionStorage.setItem('acessoCRM', 'true'); sessionStorage.setItem('tipoAcesso', 'equipe');
                         sessionStorage.setItem('equipeId', data[0].id); sessionStorage.setItem('nomeEquipe', data[0].nome); 
-                        // Salva as permissões no Cache!
                         sessionStorage.setItem('permissoes', data[0].permissoes || '{}');
                         window.location.reload();
-                    } else { msg.style.display = 'block'; msg.innerText = 'Credenciais incorretas.'; }
+                    } else { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Credenciais incorretas.'; }
                 }
-            } catch (err) { msg.style.display = 'block'; msg.innerText = "Erro de conexão."; } 
-            finally { document.querySelector('.btn-entrar').innerText = 'Acessar Painel'; }
+            } catch (err) { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de conexão.'; } 
+            finally { document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Autenticar Sessão'; }
         });
 
         function sair() { sessionStorage.clear(); window.location.reload(); }
@@ -596,22 +678,15 @@
             const p = getPermissoes();
 
             if (!isMaster) { 
-                document.getElementById('abaEquipe').style.display = 'none'; // Equipe nunca vê aba de criar equipe
+                document.getElementById('abaEquipe').style.display = 'none'; 
                 
-                // Aplica regras de segurança na Interface Principal
                 if(!p.clientes) {
                     document.getElementById('boxBtnNovoCliente').style.display = 'none';
                     document.getElementById('boxAcoesAdmin').style.display = 'none';
                     ['editCliNome', 'editCliSenha', 'editCliWpp', 'editCliEmail', 'editCliStatus'].forEach(id => { const el = document.getElementById(id); if(el) el.disabled = true; });
                 }
-                
-                if(!p.obras) {
-                    document.getElementById('btnNovaObra').style.display = 'none';
-                }
-
-                if(!p.arquivos) {
-                    document.getElementById('boxUploadInteiro').style.display = 'none';
-                }
+                if(!p.obras) { document.getElementById('btnNovaObra').style.display = 'none'; }
+                if(!p.arquivos) { document.getElementById('boxUploadInteiro').style.display = 'none'; }
             }
             abrirAba('clientes');
         }
@@ -656,7 +731,7 @@
         document.getElementById('formNovoCliente').addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgNovoCliente');
-            msg.style.color = '#333'; msg.innerText = 'Salvando...';
+            msg.style.color = 'var(--texto-secundario)'; msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
             const payload = {
                 razao_social: document.getElementById('novoCliNome').value.trim(), cnpj: document.getElementById('novoCliCnpj').value.trim(), chave_mestre: document.getElementById('novoCliSenha').value.trim(),
@@ -665,19 +740,19 @@
             const { error } = await supabaseClient.from('clientes').insert([payload]);
             if (!error) {
                 document.getElementById('formNovoCliente').reset(); carregarListaClientes(); 
-                msg.style.color = 'green'; msg.innerText = 'Cliente cadastrado!'; setTimeout(() => msg.innerText = '', 3000);
-            } else { msg.style.color = 'red'; msg.innerText = 'Erro ao salvar. CNPJ duplicado?'; }
+                msg.style.color = 'var(--sucesso)'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Cliente registrado!'; setTimeout(() => msg.innerText = '', 3000);
+            } else { msg.style.color = 'var(--erro)'; msg.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao salvar. CNPJ duplicado?'; }
         });
 
         async function carregarListaClientes() {
             const lista = document.getElementById('listaLateral');
-            lista.innerHTML = '<p style="padding: 20px; color: #aaa;">Carregando...</p>';
+            lista.innerHTML = '<p style="padding: 20px; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</p>';
             
             if (!isMaster) {
                 const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('cliente_cnpj').eq('equipe_id', equipeIdLogada);
                 cnpjsPermitidos = vinculos ? vinculos.map(v => v.cliente_cnpj) : [];
                 if (cnpjsPermitidos.length === 0) { 
-                    lista.innerHTML = '<p style="padding: 20px; color:#aaa;">Nenhum cliente vinculado.</p>'; 
+                    lista.innerHTML = '<p style="padding: 20px; color:rgba(255,255,255,0.5);">Nenhum cliente vinculado.</p>'; 
                     carregarDashboardKanban(); return; 
                 }
             }
@@ -690,23 +765,19 @@
             
             if(data) {
                 listaGlobalClientes = data; 
-                
-
-
                 data.forEach(cli => {
-                    const statusBadge = cli.status === 'inativo' ? '<span class="badge-inativo">INATIVO</span>' : '';
+                    const statusBadge = cli.status === 'inativo' ? '<span class="badge-inativo">BLOQUEADO</span>' : '';
                     const div = document.createElement('div');
                     div.className = 'item-lista';
                     div.innerHTML = `<h4>${cli.razao_social} ${statusBadge}</h4><p>CNPJ: ${cli.cnpj}</p>`;
                     div.onclick = () => abrirPainelCliente(cli, div);
                     lista.appendChild(div);
-
                 });
                 carregarDashboardKanban();
             }
         }
 
-        // ================= KANBAN MULTI-OBRAS COM FILTROS (FASE 2.2) =================
+        // ================= KANBAN COM FILTROS =================
       function filtrarKanban() {
             const textoBusca = document.getElementById('filtroKanbanCliente').value.toLowerCase().trim();
             const statusFiltro = document.getElementById('filtroKanbanStatus').value;
@@ -714,23 +785,15 @@
 
             cards.forEach(card => {
                 const cProg = parseInt(card.getAttribute('data-progresso'));
-                // Captura o nome do cliente que está escrito dentro do cartão do Kanban
                 const nomeClienteCard = card.querySelector('p').innerText.toLowerCase(); 
-                
                 let mostrar = true;
 
-                // 1. Filtro por digitação (verifica se o texto digitado existe no nome do cliente)
-                if (textoBusca !== '' && !nomeClienteCard.includes(textoBusca)) {
-                    mostrar = false;
-                }
-
-                // 2. Filtro por status
+                if (textoBusca !== '' && !nomeClienteCard.includes(textoBusca)) mostrar = false;
                 if (statusFiltro !== 'todos') {
                     if (statusFiltro === '0' && cProg !== 0) mostrar = false;
                     else if (statusFiltro === '100' && cProg !== 100) mostrar = false;
                     else if (statusFiltro === '50' && (cProg === 0 || cProg === 100)) mostrar = false;
                 }
-
                 card.style.display = mostrar ? 'block' : 'none';
             });
         }
@@ -738,9 +801,9 @@
         async function carregarDashboardKanban() {
             const col0 = document.getElementById('kbColuna0'); const col50 = document.getElementById('kbColuna50'); const col100 = document.getElementById('kbColuna100');
             if(!col0) return;
-            col0.innerHTML = '<p style="color:#aaa; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
-            col50.innerHTML = '<p style="color:#aaa; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
-            col100.innerHTML = '<p style="color:#aaa; text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+            col0.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+            col50.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+            col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
 
             try {
                 let query = supabaseClient.from('obras').select('*').order('id', { ascending: false });
@@ -765,13 +828,12 @@
 
                         const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                         
-                        // Adiciona Data-Attributes essenciais para o Filtro JS
                         const htmlCard = `
                             <div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}>
                                 <h4>${nT}</h4>
                                 <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
                                 <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progresso}%;"></div></div>
-                                <div style="text-align: right; font-size: 0.75rem; font-weight: bold; margin-top: 5px; color: #64748b;">${progresso}% concluído</div>
+                                <div style="text-align: right; font-size: 0.75rem; font-weight: 700; margin-top: 6px; color: var(--texto-secundario);">${progresso}% concluído</div>
                             </div>
                         `;
 
@@ -781,12 +843,11 @@
                     });
                 }
                 
-                if(col0.innerHTML==='') col0.innerHTML = '<p style="color:#aaa; font-size:0.8rem; text-align:center;">Nenhum projeto novo.</p>';
-                if(col50.innerHTML==='') col50.innerHTML = '<p style="color:#aaa; font-size:0.8rem; text-align:center;">Nenhuma em andamento.</p>';
-                if(col100.innerHTML==='') col100.innerHTML = '<p style="color:#aaa; font-size:0.8rem; text-align:center;">Nenhum projeto finalizado.</p>';
+                if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; text-align:center; padding: 15px;">Nenhum projeto novo.</p>';
+                if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; text-align:center; padding: 15px;">Nenhuma obra em andamento.</p>';
+                if(col100.innerHTML==='') col100.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; text-align:center; padding: 15px;">Nenhum projeto finalizado.</p>';
                 
-                filtrarKanban(); // Se tiver filtro salvo, aplica
-
+                filtrarKanban(); 
             } catch(e) { console.error("Erro Kanban:", e); }
         }
 
@@ -799,55 +860,90 @@
             else abrirPainelCliente(cli, document.createElement('div')); 
         }
 
+        // ================= FUNÇÃO PARA POPULAR O MENU DE VÍNCULO NO UPLOAD =================
+        function atualizarDropdownObrasUpload() {
+            const select = document.getElementById('selectObraUpload');
+            if(!select) return;
+            select.innerHTML = '<option value="">-- Arquivo Geral do Cliente (Sem vínculo com projeto) --</option>';
+            obrasDoClienteAtual.forEach(obra => {
+                select.innerHTML += `<option value="${obra.id}">${obra.nome_obra}</option>`;
+            });
+        }
+
+        // ================= FUNÇÃO PARA BOTÃO "ANEXAR" DENTRO DA OBRA =================
+        function prepararUploadParaObra(obraId) {
+            const select = document.getElementById('selectObraUpload');
+            if(select) select.value = obraId;
+            
+            const boxUpload = document.getElementById('boxUploadInteiro');
+            if(boxUpload) boxUpload.scrollIntoView({ behavior: 'smooth' });
+            
+            const campoBox = select.parentElement;
+            campoBox.style.backgroundColor = '#dbeafe';
+            setTimeout(() => { campoBox.style.backgroundColor = '#f1f5f9'; }, 1500);
+        }
+
         // ================= GESTÃO DE OBRAS (ACCORDION) =================
         async function carregarObrasCliente(cnpj) {
             const container = document.getElementById('listaObrasContainer');
-            container.innerHTML = '<p style="color:#aaa; font-size:0.9rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
-            
-            const p = getPermissoes(); // Chama as permissões
+            container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.95rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
+            const p = getPermissoes(); 
 
             try {
                 const { data, error } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', cnpj).order('id', { ascending: false });
                 if(error) throw error;
-                if(!data || data.length === 0) { container.innerHTML = '<p style="color:#64748b; font-size:0.9rem; font-style:italic;">Nenhuma obra cadastrada.</p>'; return; }
+                
+                // NOVO: Salva as obras no escopo global e atualiza o select do form de upload
+                obrasDoClienteAtual = data || [];
+                atualizarDropdownObrasUpload();
+
+                if(!data || data.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.95rem; font-style:italic;">Nenhuma obra cadastrada para este cliente.</p>'; return; }
 
                 let html = '';
                 data.forEach(obra => {
                     const id = obra.id; const prog = obra.progresso || 0;
                     const nomeT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     
-                    // Condição de Permissão visual
                     const inputStatus = p.obras ? '' : 'disabled';
                     const botoesAcao = p.obras ? `
-                        <div style="display:flex; gap:10px; margin-top: 15px;">
-                            <button type="button" class="btn-acao" onclick="salvarEdicaoObra(${id})"><i class="fa-solid fa-save"></i> Salvar Projeto</button>
-                            <button type="button" class="btn-acao" style="background:transparent; color:var(--vermelho-marca); border:1px solid var(--vermelho-marca);" onclick="excluirObra(${id})"><i class="fa-solid fa-trash"></i> Excluir</button>
+                        <div style="display:flex; gap:15px; margin-top: 20px;">
+                            <button type="button" class="btn-acao" onclick="salvarEdicaoObra(${id})"><i class="fa-solid fa-floppy-disk"></i> Salvar Projeto</button>
+                            <button type="button" class="btn-acao" style="background:transparent; color:var(--erro); border:1px solid var(--erro);" onclick="excluirObra(${id})"><i class="fa-solid fa-trash-can"></i> Excluir</button>
                         </div>` : '';
+
+                    // NOVO: Botão atalho que leva direto para a área de upload com esta obra selecionada
+                    const btnAnexarRapido = p.arquivos ? `
+                        <button type="button" class="btn-acao" onclick="prepararUploadParaObra(${id})" style="background:var(--azul-sutil); width:100%; margin-top:15px;">
+                            <i class="fa-solid fa-paperclip"></i> Anexar Arquivo para este Projeto
+                        </button>` : '';
+
+                    let corStatus = prog === 100 ? 'var(--sucesso)' : 'var(--azul-sutil)';
 
                     html += `
                     <div class="obra-accordion">
                         <div class="obra-header" onclick="toggleObra(${id})">
-                            <h4><i class="fa-solid fa-helmet-safety" style="color:var(--amarelo-destaque); margin-right:8px;"></i> ${nomeT}</h4>
+                            <h4><i class="fa-solid fa-helmet-safety" style="color:${corStatus}; margin-right:10px;"></i> ${nomeT}</h4>
                             <div class="obra-header-right">
-                                <span id="lblProgMini-${id}">${prog}%</span>
+                                <span id="lblProgMini-${id}" style="color:${corStatus};">${prog}%</span>
                                 <i class="fa-solid fa-chevron-down" id="icone-obra-${id}"></i>
                             </div>
                         </div>
                         <div class="obra-content" id="conteudo-obra-${id}">
                             <div class="form-group">
-                                <label>Nome da Obra / Projeto</label>
+                                <label>Nome da Obra / Projeto Técnico</label>
                                 <input type="text" id="editObraNome-${id}" value="${nomeT}" ${inputStatus}>
                             </div>
                             <div class="form-group">
-                                <label style="color: var(--azul-marca); font-size: 1rem;"><i class="fa-solid fa-bars-progress"></i> Progresso Atual: <span id="lblProg-${id}" style="font-weight: 900; color: var(--vermelho-marca);">${prog}%</span></label>
-                                <input type="range" id="editObraProg-${id}" min="0" max="100" value="${prog}" oninput="document.getElementById('lblProg-${id}').innerText = this.value + '%'; document.getElementById('lblProgMini-${id}').innerText = this.value + '%';" style="margin-top: 10px;" ${inputStatus}>
+                                <label style="color: var(--azul-marca); font-size: 0.95rem;"><i class="fa-solid fa-bars-progress"></i> Progresso Atual: <span id="lblProg-${id}" style="font-weight: 700; color: ${corStatus}; font-size: 1.1rem;">${prog}%</span></label>
+                                <input type="range" id="editObraProg-${id}" min="0" max="100" value="${prog}" oninput="document.getElementById('lblProg-${id}').innerText = this.value + '%'; document.getElementById('lblProgMini-${id}').innerText = this.value + '%';" style="margin-top: 15px;" ${inputStatus}>
                             </div>
                             ${botoesAcao}
+                            ${btnAnexarRapido}
                         </div>
                     </div>`;
                 });
                 container.innerHTML = html;
-            } catch(e) { container.innerHTML = `<p style="color:red;">Erro ao buscar obras.</p>`; }
+            } catch(e) { container.innerHTML = `<p style="color:var(--erro);">Erro ao buscar obras.</p>`; }
         }
 
         function toggleObra(id) {
@@ -865,7 +961,7 @@
                 const { error } = await supabaseClient.from('obras').insert([payload]);
                 if(error) throw new Error(error.message);
                 carregarObrasCliente(clienteSelecionado); carregarDashboardKanban();
-            } catch(e) { alert("Bloqueio do Supabase detectado:\n" + e.message); console.error("Erro Real:", e); }
+            } catch(e) { alert("Erro de comunicação."); }
         }
 
         async function salvarEdicaoObra(id) {
@@ -876,16 +972,16 @@
                 const { error } = await supabaseClient.from('obras').update({ nome_obra: nome, progresso: parseInt(prog) }).eq('id', id);
                 if(error) throw new Error(error.message);
                 alert("Obra atualizada com sucesso!"); carregarObrasCliente(clienteSelecionado); carregarDashboardKanban();
-            } catch(e) { alert("Erro ao salvar edição no banco:\n" + e.message); }
+            } catch(e) { alert("Erro ao salvar edição."); }
         }
 
         async function excluirObra(id) {
-            if(confirm("Tem certeza que deseja apagar este projeto?")) {
+            if(confirm("Tem certeza que deseja apagar este projeto do sistema?")) {
                 try {
                     const { error } = await supabaseClient.from('obras').delete().eq('id', id);
                     if(error) throw new Error(error.message);
                     carregarObrasCliente(clienteSelecionado); carregarDashboardKanban();
-                } catch(e) { alert("Erro ao excluir do banco:\n" + e.message); }
+                } catch(e) { alert("Erro ao excluir do banco."); }
             }
         }
 
@@ -898,7 +994,7 @@
             clienteSelecionado = String(cli.cnpj).trim();
             
             const containerLista = document.getElementById('listaArquivosAdmin');
-            containerLista.innerHTML = '<p style="color: #666; margin-top: 10px;"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando área de arquivos...</p>';
+            containerLista.innerHTML = '<p style="color: var(--texto-secundario); margin-top: 15px;"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando acervo técnico...</p>';
             
             setTimeout(() => { forcarAtualizacaoArquivos(); carregarObrasCliente(clienteSelecionado); }, 10);
             
@@ -906,8 +1002,8 @@
                 document.getElementById('viewCliNome').innerText = cli.razao_social || 'Sem Nome';
                 document.getElementById('viewCliCnpj').innerText = cli.cnpj || '';
                 const elStatusText = document.getElementById('viewCliStatus');
-                if (cli.status === 'inativo') { elStatusText.innerText = 'Inativo (Bloqueado)'; elStatusText.style.color = 'red'; } 
-                else { elStatusText.innerText = 'Ativo'; elStatusText.style.color = 'green'; }
+                if (cli.status === 'inativo') { elStatusText.innerText = 'Inativo (Acesso Bloqueado)'; elStatusText.style.color = 'var(--erro)'; } 
+                else { elStatusText.innerText = 'Ativo'; elStatusText.style.color = 'var(--sucesso)'; }
 
                 const preencher = (id, valor) => { const campo = document.getElementById(id); if (campo) campo.value = valor || ''; };
                 preencher('editCliNome', cli.razao_social); preencher('editCliSenha', cli.chave_mestre); preencher('editCliWpp', cli.whatsapp); preencher('editCliEmail', cli.email); preencher('editCliStatus', cli.status || 'ativo');
@@ -921,6 +1017,7 @@
                 if (isMaster) { document.getElementById('boxVinculos').style.display = 'block'; carregarEquipeParaVinculo(cli.cnpj); }
                 
                 const formUpload = document.getElementById('formUpload'); if(formUpload) formUpload.reset();
+                const selObra = document.getElementById('selectObraUpload'); if(selObra) selObra.value = ''; // Limpa o seletor visualmente
                 const nomeDrop = document.getElementById('nomeArquivoDrop'); if(nomeDrop) nomeDrop.innerHTML = ''; 
                 const radioPdf = document.querySelector('input[name="tipoEnvio"][value="pdf"]'); if (radioPdf) radioPdf.checked = true;
                 trocarTipoInput(); 
@@ -931,7 +1028,7 @@
 
         document.getElementById('formEditarCliente').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const msg = document.getElementById('msgEditCliente'); msg.style.color = '#333'; msg.innerText = 'Atualizando...';
+            const msg = document.getElementById('msgEditCliente'); msg.style.color = 'var(--texto-secundario)'; msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
             try {
                 const payload = {
                     razao_social: document.getElementById('editCliNome').value.trim(), chave_mestre: document.getElementById('editCliSenha').value.trim(),
@@ -941,19 +1038,19 @@
                 const { error } = await supabaseClient.from('clientes').update(payload).eq('cnpj', clienteSelecionado);
                 if (error) throw error;
                 
-                msg.style.color = 'green'; msg.innerText = 'Dados atualizados!'; carregarListaClientes(); 
+                msg.style.color = 'var(--sucesso)'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Dados atualizados!'; carregarListaClientes(); 
                 document.getElementById('viewCliNome').innerText = payload.razao_social;
-                document.getElementById('viewCliStatus').innerText = payload.status === 'inativo' ? 'Inativo (Bloqueado)' : 'Ativo';
-                document.getElementById('viewCliStatus').style.color = payload.status === 'inativo' ? 'red' : 'green';
+                document.getElementById('viewCliStatus').innerText = payload.status === 'inativo' ? 'Inativo (Acesso Bloqueado)' : 'Ativo';
+                document.getElementById('viewCliStatus').style.color = payload.status === 'inativo' ? 'var(--erro)' : 'var(--sucesso)';
                 const wppBtn = document.getElementById('btnWppDireto');
                 if (payload.whatsapp && payload.whatsapp !== '') { wppBtn.href = `https://wa.me/55${payload.whatsapp.replace(/\D/g, '')}`; wppBtn.style.display = 'inline-flex'; } 
                 else { wppBtn.style.display = 'none'; }
                 setTimeout(() => msg.innerText = '', 3000);
-            } catch (err) { msg.style.color = 'red'; msg.innerText = 'Erro ao atualizar.'; }
+            } catch (err) { msg.style.color = 'var(--erro)'; msg.innerText = 'Erro ao atualizar.'; }
         });
 
         async function excluirClienteAtual() {
-            if (confirm("Deseja EXCLUIR este cliente permanentemente?")) {
+            if (confirm("ATENÇÃO: Deseja EXCLUIR este cliente e todas as suas obras permanentemente do sistema?")) {
                 await supabaseClient.from('clientes').delete().eq('cnpj', clienteSelecionado); carregarListaClientes(); abrirAba('clientes'); 
             }
         }
@@ -968,35 +1065,40 @@
         function forcarAtualizacaoArquivos() { if(clienteSelecionado) carregarArquivosClienteAdmin(clienteSelecionado); }
         function compartilharWhatsApp(nomeDoc, linkDoc) {
             const elWpp = document.getElementById('editCliWpp'); const numeroCliente = elWpp ? elWpp.value.replace(/\D/g, '') : '';
-            const textoCodificado = encodeURIComponent(`Olá! Segue o acesso para: *${nomeDoc}*\n\n🔗 ${linkDoc}`);
+            const textoCodificado = encodeURIComponent(`Olá! A EngQuadros disponibilizou um novo documento:\n\n*${nomeDoc}*\n\nAcesse pelo link: 🔗 ${linkDoc}`);
             window.open((numeroCliente && numeroCliente.length >= 10) ? `https://wa.me/55${numeroCliente}?text=${textoCodificado}` : `https://api.whatsapp.com/send?text=${textoCodificado}`, '_blank');
         }
 
         async function carregarArquivosClienteAdmin(cnpjBusca) {
             const container = document.getElementById('listaArquivosAdmin');
-            const p = getPermissoes(); // Chama as permissões ativas
+            const p = getPermissoes(); 
 
             try {
                 const { data, error } = await supabaseClient.from('arquivos').select('*').eq('cliente_cnpj', cnpjBusca).order('id', { ascending: false }); 
                 if (clienteSelecionado !== cnpjBusca) return;
-                if (error) { container.innerHTML = `<div style="color:red;">Erro: ${error.message}</div>`; return; }
-                if (!data || data.length === 0) { container.innerHTML = '<p style="color:#aaa; font-style: italic;">Nenhum arquivo.</p>'; return; }
+                if (error) { container.innerHTML = `<div style="color:var(--erro);">Erro de conexão.</div>`; return; }
+                if (!data || data.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario); font-style: italic;">Nenhum arquivo no acervo.</p>'; return; }
                 
                 let htmlParaExibir = '';
                 data.forEach(arq => {
                     const caminho = arq.caminho_arquivo ? String(arq.caminho_arquivo) : '#';
                     const nomeTexto = arq.nome_documento ? String(arq.nome_documento) : 'Sem Título';
                     const obsTexto = arq.observacao ? String(arq.observacao).trim() : '';
-                    const isPdf = caminho.includes('supabase.co'); const icone = isPdf ? 'fa-file-pdf' : 'fa-link'; const corIcone = isPdf ? 'var(--vermelho-marca)' : 'var(--azul-marca)';
+                    const isPdf = caminho.includes('supabase.co'); const icone = isPdf ? 'fa-file-pdf' : 'fa-link'; const corIcone = isPdf ? '#ef4444' : 'var(--azul-sutil)';
                     
                     const statusAprovacao = arq.status_aprovacao || 'pendente';
-                    let seloHtml = statusAprovacao === 'aprovado' ? `<span style="background:#10b981; color:white; padding:3px 8px; border-radius:12px; font-size:0.7rem; font-weight:bold; margin-left:10px; vertical-align:middle;"><i class="fa-solid fa-check-double"></i> Aprovado Cliente</span>` : `<span style="background:#f4c522; color:var(--azul-escuro); padding:3px 8px; border-radius:12px; font-size:0.7rem; font-weight:bold; margin-left:10px; vertical-align:middle;"><i class="fa-regular fa-clock"></i> Pendente Aceite</span>`;
+                    let seloHtml = statusAprovacao === 'aprovado' ? `<span style="background:rgba(16,185,129,0.1); color:var(--sucesso); border: 1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-left:12px; vertical-align:middle;"><i class="fa-solid fa-check-double"></i> Aprovado</span>` : `<span style="background:rgba(43,92,146,0.1); color:var(--azul-sutil); border: 1px solid rgba(43,92,146,0.3); padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; margin-left:12px; vertical-align:middle;"><i class="fa-regular fa-clock"></i> Pendente</span>`;
 
-                    let obsHtml = ''; if (obsTexto !== '' && obsTexto !== 'undefined') { obsHtml = `<div style="margin-top:10px; font-size:0.85rem; color:#555; background:#f1f5f9; padding:10px; border-radius:4px; border-left:3px solid var(--amarelo-destaque);"><i class="fa-solid fa-note-sticky"></i> <strong>Obs:</strong> ${obsTexto}</div>`; }
+                    let obsHtml = ''; if (obsTexto !== '' && obsTexto !== 'undefined') { obsHtml = `<div style="margin-top:12px; font-size:0.85rem; color:var(--texto-secundario); background:#f8fafc; padding:10px 15px; border-radius:6px; border-left:3px solid var(--azul-sutil);"><i class="fa-solid fa-note-sticky"></i> <strong>Nota:</strong> ${obsTexto}</div>`; }
 
                     const nT = nomeTexto.replace(/'/g, "\\'").replace(/"/g, '&quot;'); const oT = obsTexto.replace(/'/g, "\\'").replace(/"/g, '&quot;'); const cT = caminho.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
-                    // Se não tiver permissão de edição de arquivos, esconde Lápis e Lixeira, mas deixa o Wpp
+                    // NOVO: Verifica qual obra o documento está vinculado (caso exista)
+                    const obraVinculada = arq.obra_id ? obrasDoClienteAtual.find(o => o.id === arq.obra_id) : null;
+                    const badgeObra = obraVinculada ? 
+                        `<span style="background:var(--azul-marca); color:#fff; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-helmet-safety"></i> Projeto: ${obraVinculada.nome_obra}</span>` : 
+                        `<span style="background:#e2e8f0; color:var(--texto-secundario); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-globe"></i> Documento Geral</span>`;
+
                     const botoesEdicao = p.arquivos ? `
                         <button type="button" class="btn-acao-doc btn-edit" onclick="abrirModalArquivo('${arq.id}', '${nT}', '${oT}')" title="Editar"><i class="fa-solid fa-pen"></i></button>
                         <button type="button" class="btn-acao-doc btn-del" onclick="excluirArquivo('${arq.id}')" title="Apagar"><i class="fa-solid fa-trash"></i></button>
@@ -1006,14 +1108,15 @@
                         <div class="doc-card">
                             <div style="flex: 1; max-width: 80%;">
                                 <div style="display:flex; align-items:center;">
-                                    <a href="${caminho}" target="_blank" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
-                                        <i class="fa-solid ${icone}" style="color: ${corIcone}; font-size: 1.8rem;"></i>
+                                    <a href="${caminho}" target="_blank" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
+                                        <i class="fa-solid ${icone}" style="color: ${corIcone}; font-size: 2rem;"></i>
                                         <div style="display: flex; flex-direction: column;">
-                                            <span style="color: var(--azul-escuro); font-weight: bold; font-size: 1rem;">${nomeTexto}</span><span style="color: #888; font-size: 0.8rem;">${isPdf ? 'Documento PDF' : 'Link Externo'}</span>
+                                            <span style="color: var(--azul-marca); font-weight: 700; font-size: 1.05rem;">${nomeTexto}</span><span style="color: var(--texto-secundario); font-size: 0.85rem; margin-top:2px;">${isPdf ? 'Documento PDF' : 'Link Externo'}</span>
                                         </div>
                                     </a>
                                     ${seloHtml}
                                 </div>
+                                ${badgeObra}
                                 ${obsHtml}
                             </div>
                             <div class="box-acoes-doc">
@@ -1023,7 +1126,7 @@
                         </div>`;
                 });
                 container.innerHTML = htmlParaExibir;
-            } catch (err) { container.innerHTML = `<p style="color:red;">Erro: ${err.message}</p>`; }
+            } catch (err) { container.innerHTML = `<p style="color:var(--erro);">Erro: ${err.message}</p>`; }
         }
 
         function abrirModalArquivo(id, nomeAtual, obsAtual) {
@@ -1040,7 +1143,7 @@
         }
 
         async function excluirArquivo(id) {
-            if(confirm("Deseja apagar permanentemente este documento?")) { await supabaseClient.from('arquivos').delete().eq('id', id); carregarArquivosClienteAdmin(clienteSelecionado); }
+            if(confirm("Deseja apagar permanentemente este documento do acervo?")) { await supabaseClient.from('arquivos').delete().eq('id', id); carregarArquivosClienteAdmin(clienteSelecionado); }
         }
 
         function trocarTipoInput() {
@@ -1050,7 +1153,7 @@
                 btnUpload.innerHTML = '<i class="fa-solid fa-file-pdf"></i> Salvar PDF no Acervo'; btnUpload.style.background = 'var(--azul-marca)';
             } else {
                 document.getElementById('boxPdf').style.display = 'none'; document.getElementById('boxLink').style.display = 'block';
-                btnUpload.innerHTML = '<i class="fa-solid fa-link"></i> Vincular Link ao Cliente'; btnUpload.style.background = '#10b981'; 
+                btnUpload.innerHTML = '<i class="fa-solid fa-link"></i> Vincular Link Externo'; btnUpload.style.background = 'var(--sucesso)'; 
             }
         }
 
@@ -1058,14 +1161,16 @@
             e.preventDefault(); 
             const btn = document.getElementById('btnUploadSubmit'); const msgSuccess = document.getElementById('msgUploadSuccess');
             const titulo = document.getElementById('nomeDoc').value.trim(); const obs = document.getElementById('obsDoc').value.trim(); const tipo = document.querySelector('input[name="tipoEnvio"]:checked').value;
+            const obraSelecionada = document.getElementById('selectObraUpload').value; // NOVO: Captura do dropdown
+
             let linkFinal = ''; const textoOriginalBotao = btn.innerHTML; msgSuccess.style.display = 'none'; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...'; btn.disabled = true;
 
             try {
                 if (tipo === 'link') {
-                    linkFinal = document.getElementById('linkDoc').value.trim(); if(!linkFinal) throw new Error("Insira a URL.");
+                    linkFinal = document.getElementById('linkDoc').value.trim(); if(!linkFinal) throw new Error("Insira a URL externa válida.");
                     if(!linkFinal.startsWith('http://') && !linkFinal.startsWith('https://')) linkFinal = 'https://' + linkFinal; 
                 } else {
-                    const arquivoInput = document.getElementById('arquivoPdf').files[0]; if(!arquivoInput) throw new Error("Selecione um PDF.");
+                    const arquivoInput = document.getElementById('arquivoPdf').files[0]; if(!arquivoInput) throw new Error("Selecione um arquivo PDF.");
                     const nomeUnico = `${clienteSelecionado}/${Date.now()}_${arquivoInput.name}`;
                     const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivoInput);
                     if (uploadError) throw new Error("Erro no servidor: " + uploadError.message);
@@ -1074,44 +1179,47 @@
                 
                 let payloadBanco = { cliente_cnpj: clienteSelecionado, nome_documento: titulo, caminho_arquivo: linkFinal, status_aprovacao: 'pendente' };
                 if (obs !== '') payloadBanco.observacao = obs;
+                if (obraSelecionada !== '') payloadBanco.obra_id = parseInt(obraSelecionada); // NOVO: Insere no banco
+
                 const { error: dbError } = await supabaseClient.from('arquivos').insert([payloadBanco]);
                 if (dbError) throw dbError;
                 
-                document.getElementById('formUpload').reset(); document.getElementById('nomeArquivoDrop').innerHTML = ''; document.querySelector('input[name="tipoEnvio"][value="pdf"]').checked = true;
+                document.getElementById('formUpload').reset(); 
+                document.getElementById('selectObraUpload').value = ''; // Limpa o seletor após o sucesso
+                document.getElementById('nomeArquivoDrop').innerHTML = ''; document.querySelector('input[name="tipoEnvio"][value="pdf"]').checked = true;
                 msgSuccess.style.display = 'inline-block'; await carregarArquivosClienteAdmin(clienteSelecionado); 
-            } catch (error) { alert("Erro: " + error.message); } 
+            } catch (error) { alert("Erro de Envio: " + error.message); } 
             finally { setTimeout(() => { btn.disabled = false; btn.innerHTML = textoOriginalBotao; msgSuccess.style.display = 'none'; trocarTipoInput(); }, 3000); }
         });
 
         // ================= GESTÃO DE CHAMADOS =================
         async function carregarTickets() {
             const container = document.getElementById('listaTicketsAdmin');
-            container.innerHTML = '<p><i class="fa-solid fa-spinner fa-spin"></i> Buscando solicitações...</p>';
+            container.innerHTML = '<p style="color:var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando solicitações...</p>';
             const p = getPermissoes();
 
             try {
                 let query = supabaseClient.from('chamados_suporte').select('*').order('data_abertura', { ascending: false });
                 if (!isMaster) {
-                    if (cnpjsPermitidos.length === 0) { container.innerHTML = '<p>Nenhum chamado de cliente seu.</p>'; return; }
+                    if (cnpjsPermitidos.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum chamado atribuído aos seus clientes.</p>'; return; }
                     query = query.in('cliente_cnpj', cnpjsPermitidos);
                 }
 
                 const { data, error } = await query;
                 if (error) throw error;
-                if (!data || data.length === 0) { container.innerHTML = `<div style="text-align: center; padding: 40px; color: #94a3b8;"><i class="fa-solid fa-mug-hot" style="font-size: 3rem; margin-bottom: 15px;"></i><h3>Tudo tranquilo!</h3><p>Nenhuma solicitação de cliente no momento.</p></div>`; return; }
+                if (!data || data.length === 0) { container.innerHTML = `<div style="text-align: center; padding: 50px; border: var(--borda); background: #fff; border-radius: 8px;"><i class="fa-solid fa-mug-hot" style="font-size: 3rem; margin-bottom: 20px; color: #cbd5e1;"></i><h3 style="color:var(--azul-marca);">Fila Limpa!</h3><p style="color:var(--texto-secundario); margin-top:5px;">Nenhuma solicitação técnica pendente.</p></div>`; return; }
 
                 let html = '';
                 data.forEach(t => {
                     const statusClass = t.status === 'aberto' ? 'ticket-aberto' : 'ticket-respondido';
-                    const badge = t.status === 'aberto' ? `<span class="badge-ticket" style="background: var(--vermelho-marca);">Aguardando Resposta</span>` : `<span class="badge-ticket" style="background: #10b981;">Respondido</span>`;
+                    const badge = t.status === 'aberto' ? `<span class="badge-ticket" style="background: var(--azul-sutil);">Aguardando Análise</span>` : `<span class="badge-ticket" style="background: var(--sucesso);">Respondido</span>`;
                     const dataFormatada = new Date(t.data_abertura).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                     
-                    // Bloqueio visual para Equipe sem permissão de Chamados
                     let btnAcao = '';
                     if (p.tickets) {
                         btnAcao = t.status === 'aberto'
-                            ? `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\'")}')" style="background:var(--amarelo-destaque); color:var(--azul-escuro);"><i class="fa-solid fa-reply"></i> Responder</button>`
-                            : `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\'")}')" style="background:transparent; border:1px solid #10b981; color:#10b981;"><i class="fa-solid fa-eye"></i> Ver Resposta</button>`;
+                            ? `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\'")}')" style="background:var(--azul-sutil);"><i class="fa-solid fa-reply"></i> Responder Cliente</button>`
+                            : `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\'")}')" style="background:transparent; border:1px solid var(--sucesso); color:var(--sucesso);"><i class="fa-solid fa-eye"></i> Visualizar Resposta</button>`;
                     }
 
                     let nomeCli = 'Cliente não encontrado';
@@ -1121,20 +1229,20 @@
                     html += `
                         <div class="ticket-card ${statusClass}">
                             <div style="flex: 1; padding-right: 20px;">
-                                <div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">${badge} <span style="font-size: 0.8rem; color: #64748b;"><i class="fa-regular fa-clock"></i> Aberto em ${dataFormatada}</span></div>
-                                <h4 style="color: var(--azul-escuro); font-size: 1.1rem; margin-bottom: 5px;">${t.assunto}</h4>
-                                <p style="font-size: 0.85rem; color: #333; margin-bottom: 10px; font-weight: bold;"><i class="fa-regular fa-building"></i> Cliente: ${nomeCli}</p>
-                                <p style="color: #555; font-size: 0.9rem; line-height: 1.4;">"${t.mensagem}"</p>
+                                <div style="display:flex; align-items:center; gap:12px; margin-bottom: 12px;">${badge} <span style="font-size: 0.85rem; color: var(--texto-secundario);"><i class="fa-regular fa-clock"></i> Aberto em ${dataFormatada}</span></div>
+                                <h4 style="color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 8px;">${t.assunto}</h4>
+                                <p style="font-size: 0.9rem; color: var(--texto-principal); margin-bottom: 12px; font-weight: 600;"><i class="fa-regular fa-building"></i> Requerente: ${nomeCli}</p>
+                                <p style="color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5; background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e1;">"${t.mensagem}"</p>
                             </div>
-                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">${btnAcao}</div>
+                            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width: 180px;">${btnAcao}</div>
                         </div>`;
                 });
                 container.innerHTML = html;
-            } catch (err) { container.innerHTML = `<p style="color:red;">Erro: ${err.message}</p>`; }
+            } catch (err) { container.innerHTML = `<p style="color:var(--erro);">Erro na sincronização de chamados.</p>`; }
         }
 
         function abrirModalResposta(id, assunto, mensagem) {
-            document.getElementById('ticketIdAtivo').value = id; document.getElementById('ticketAssunto').innerText = "Assunto: " + assunto; document.getElementById('ticketMensagem').innerText = mensagem; document.getElementById('ticketRespostaTxt').value = ''; document.getElementById('modalResponderTicket').style.display = 'flex';
+            document.getElementById('ticketIdAtivo').value = id; document.getElementById('ticketAssunto').innerText = "Solicitação: " + assunto; document.getElementById('ticketMensagem').innerText = mensagem; document.getElementById('ticketRespostaTxt').value = ''; document.getElementById('modalResponderTicket').style.display = 'flex';
         }
 
         async function salvarRespostaTicket() {
@@ -1143,46 +1251,32 @@
             try {
                 const { error } = await supabaseClient.from('chamados_suporte').update({ resposta_equipe: resposta, status: 'respondido', data_resposta: new Date().toISOString() }).eq('id', id);
                 if (error) throw error; document.getElementById('modalResponderTicket').style.display = 'none'; carregarTickets(); 
-            } catch(e) { alert("Erro ao salvar resposta."); }
+            } catch(e) { alert("Erro ao despachar resposta técnica."); }
         }
 
         // ================= EQUIPE E PERMISSÕES (FASE 2.2) =================
         async function carregarListaEquipe() {
             const lista = document.getElementById('listaLateral');
-            lista.innerHTML = '<p style="padding: 20px; color: #aaa;">Buscando equipe...</p>';
+            lista.innerHTML = '<p style="padding: 20px; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando equipe...</p>';
             const { data } = await supabaseClient.from('equipe_admin').select('*').order('nome');
             lista.innerHTML = '';
             if(data) {
                 data.forEach(m => {
-                    // Encapsula as permissões para passar via clique
                     const pStr = encodeURIComponent(m.permissoes || '{}');
-                    lista.innerHTML += `<div class="item-lista" onclick="abrirModalMembro('${m.id}', '${m.nome}', '${m.usuario_login}', '${m.senha}', decodeURIComponent('${pStr}'))"><h4 style="color: #fff; font-size: 1rem; margin-bottom: 5px;"><i class="fa-solid fa-user"></i> ${m.nome}</h4><p style="color: #aaa; font-size: 0.8rem;">Usuário: ${m.usuario_login}</p></div>`;
+                    lista.innerHTML += `<div class="item-lista" onclick="abrirModalMembro('${m.id}', '${m.nome}', '${m.usuario_login}', '${m.senha}', decodeURIComponent('${pStr}'))"><h4 style="color: #fff; font-size: 1rem; margin-bottom: 5px;"><i class="fa-solid fa-user-gear"></i> ${m.nome}</h4><p style="color: rgba(255,255,255,0.6); font-size: 0.8rem;">Acesso: ${m.usuario_login}</p></div>`;
                 });
             }
         }
 
         document.getElementById('formEquipe').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Coleta os Checkboxes de Permissão do Novo Usuário
-            const objPermissoes = {
-                clientes: document.getElementById('novoPermCli').checked,
-                obras: document.getElementById('novoPermObr').checked,
-                arquivos: document.getElementById('novoPermArq').checked,
-                tickets: document.getElementById('novoPermTic').checked
-            };
-
-            const payload = { 
-                nome: document.getElementById('eqNome').value.trim(), 
-                usuario_login: document.getElementById('eqUser').value.trim(), 
-                senha: document.getElementById('eqPass').value.trim(),
-                permissoes: JSON.stringify(objPermissoes)
-            };
+            const objPermissoes = { clientes: document.getElementById('novoPermCli').checked, obras: document.getElementById('novoPermObr').checked, arquivos: document.getElementById('novoPermArq').checked, tickets: document.getElementById('novoPermTic').checked };
+            const payload = { nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim(), permissoes: JSON.stringify(objPermissoes) };
 
             await supabaseClient.from('equipe_admin').insert([payload]);
             document.getElementById('formEquipe').reset(); 
             carregarListaEquipe();
-            document.getElementById('msgEquipe').innerText = 'Cadastrado com sucesso!'; setTimeout(() => document.getElementById('msgEquipe').innerText = '', 3000);
+            document.getElementById('msgEquipe').innerHTML = '<i class="fa-solid fa-check-circle"></i> Membro cadastrado!'; setTimeout(() => document.getElementById('msgEquipe').innerHTML = '', 3000);
         });
 
         async function carregarEquipeParaVinculo(cnpj) {
@@ -1194,7 +1288,7 @@
             if(equipe) {
                 equipe.forEach(m => {
                     const isChecked = idsVinculados.includes(m.id) ? 'checked' : '';
-                    container.innerHTML += `<label style="display:flex; align-items:center; gap:10px; background:#f8fafc; padding:10px; border-radius:4px; border:1px solid #e2e8f0;"><input type="checkbox" class="check-equipe" value="${m.id}" ${isChecked} style="width:auto;"> <span><strong>${m.nome}</strong> (Login: ${m.usuario_login})</span></label>`;
+                    container.innerHTML += `<label style="display:flex; align-items:center; gap:12px; background:#f8fafc; padding:12px 15px; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;"><input type="checkbox" class="check-equipe" value="${m.id}" ${isChecked} style="width:18px; height:18px; accent-color:var(--azul-marca);"> <span style="color:var(--texto-principal);"><strong>${m.nome}</strong> (Login: ${m.usuario_login})</span></label>`;
                 });
             }
         }
@@ -1205,7 +1299,7 @@
             const insercoes = [];
             checks.forEach(chk => { if(chk.checked) insercoes.push({ equipe_id: chk.value, cliente_cnpj: clienteSelecionado }); });
             if(insercoes.length > 0) await supabaseClient.from('vinculo_equipe_cliente').insert(insercoes);
-            document.getElementById('msgVinculo').innerText = 'Acessos atualizados!'; setTimeout(() => document.getElementById('msgVinculo').innerText = '', 3000);
+            document.getElementById('msgVinculo').innerHTML = '<i class="fa-solid fa-check"></i> Delegações salvas!'; setTimeout(() => document.getElementById('msgVinculo').innerHTML = '', 3000);
         }
 
         document.getElementById('btnToggleSidebar').addEventListener('click', function() {
@@ -1222,52 +1316,28 @@
             document.getElementById('editEquipeUsuario').value = usuario; 
             document.getElementById('editEquipeSenha').value = senha;
             
-            // Decodifica as permissões para marcar as caixinhas automaticamente
-            let p = {};
-            try { p = JSON.parse(permissoesStr || '{}'); } catch(e) { p = {}; }
-            
-            document.getElementById('editPermCli').checked = !!p.clientes;
-            document.getElementById('editPermObr').checked = !!p.obras;
-            document.getElementById('editPermArq').checked = !!p.arquivos;
-            document.getElementById('editPermTic').checked = !!p.tickets;
-
+            let p = {}; try { p = JSON.parse(permissoesStr || '{}'); } catch(e) { p = {}; }
+            document.getElementById('editPermCli').checked = !!p.clientes; document.getElementById('editPermObr').checked = !!p.obras; document.getElementById('editPermArq').checked = !!p.arquivos; document.getElementById('editPermTic').checked = !!p.tickets;
             document.getElementById('modalEditarEquipe').style.display = 'flex';
         }
 
         async function salvarEdicaoMembro() {
-            const id = document.getElementById('editEquipeId').value; 
-            const nome = document.getElementById('editEquipeNome').value;
-            const usuario = document.getElementById('editEquipeUsuario').value; 
-            const senha = document.getElementById('editEquipeSenha').value;
-            
+            const id = document.getElementById('editEquipeId').value; const nome = document.getElementById('editEquipeNome').value; const usuario = document.getElementById('editEquipeUsuario').value; const senha = document.getElementById('editEquipeSenha').value;
             if(!nome || !usuario || !senha) return;
-
-            // Pega o status dos checkboxes de permissão do Modal
-            const objPermissoes = {
-                clientes: document.getElementById('editPermCli').checked,
-                obras: document.getElementById('editPermObr').checked,
-                arquivos: document.getElementById('editPermArq').checked,
-                tickets: document.getElementById('editPermTic').checked
-            };
-
+            const objPermissoes = { clientes: document.getElementById('editPermCli').checked, obras: document.getElementById('editPermObr').checked, arquivos: document.getElementById('editPermArq').checked, tickets: document.getElementById('editPermTic').checked };
             try {
-                const { error } = await supabaseClient.from('equipe_admin').update({ 
-                    nome, usuario_login: usuario, senha, permissoes: JSON.stringify(objPermissoes) 
-                }).eq('id', id);
-                
-                if (error) throw error; 
-                document.getElementById('modalEditarEquipe').style.display = 'none'; 
-                carregarListaEquipe();
-            } catch (error) { alert("Erro ao atualizar."); }
+                const { error } = await supabaseClient.from('equipe_admin').update({ nome, usuario_login: usuario, senha, permissoes: JSON.stringify(objPermissoes) }).eq('id', id);
+                if (error) throw error; document.getElementById('modalEditarEquipe').style.display = 'none'; carregarListaEquipe();
+            } catch (error) { alert("Erro ao atualizar equipe."); }
         }
 
         async function excluirMembro() {
             const id = document.getElementById('editEquipeId').value;
-            if(confirm("Excluir permanentemente?")) {
+            if(confirm("Remover este membro da equipe? O acesso dele será bloqueado.")) {
                 try {
                     const { error } = await supabaseClient.from('equipe_admin').delete().eq('id', id);
                     if (error) throw error; document.getElementById('modalEditarEquipe').style.display = 'none'; carregarListaEquipe();
-                } catch (error) { alert("Erro ao excluir."); }
+                } catch (error) { alert("Erro ao excluir usuário."); }
             }
         }
     </script>

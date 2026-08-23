@@ -5,97 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Cliente | EngQuadros</title>
     <link rel="icon" type="image/png" href="public/favicon.png">
+    
+    <!-- Tipografia Corporativa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         :root { 
-            --vermelho-marca: #e31b23; 
-            --azul-marca: #2b5c92; 
-            --azul-escuro: #1a365d; 
-            --amarelo-destaque: #f4c522; 
-            --fundo-site: #f8fafc;
+            --azul-marca: #0b1c35; 
+            --azul-sutil: #2b5c92; 
+            --fundo-site: #f4f7f6;
+            --texto-principal: #1e293b;
+            --texto-secundario: #64748b;
+            --borda: 1px solid rgba(11, 28, 53, 0.1);
+            --sucesso: #10b981;
+            --alerta: #f59e0b;
+            --erro: #ef4444;
+            --transicao: all 0.3s ease;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: var(--fundo-site); color: #333; height: 100vh; overflow: hidden; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--fundo-site); color: var(--texto-principal); height: 100vh; overflow: hidden; }
+        h1, h2, h3, h4, .menu-btn { font-family: 'Montserrat', sans-serif; }
 
         /* ================= LAYOUT PRINCIPAL ================= */
         #telaPainel { height: 100vh; width: 100vw; display: flex; }
         
-        aside { width: 280px; background: #fff; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; z-index: 10; box-shadow: 2px 0 10px rgba(0,0,0,0.02); }
-        .logo-area { padding: 30px 20px; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        aside { width: 280px; background: var(--azul-marca); display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 15px rgba(0,0,0,0.05); }
+        .logo-area { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
         .menu-lateral { padding: 20px 0; flex: 1; }
-        .menu-btn { width: 100%; text-align: left; padding: 15px 25px; background: transparent; border: none; cursor: pointer; font-size: 1rem; font-weight: 600; color: #64748b; transition: 0.2s; display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
-        .menu-btn:hover { background: #f1f5f9; color: var(--azul-escuro); }
-        .menu-btn.ativo { background: #f8fafc; color: var(--azul-marca); border-left-color: var(--azul-marca); }
+        .menu-btn { width: 100%; text-align: left; padding: 15px 25px; background: transparent; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.6); transition: var(--transicao); display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
+        .menu-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .menu-btn.ativa { background: rgba(255,255,255,0.08); color: #fff; border-left-color: var(--azul-sutil); }
         
-        .btn-sair { background: transparent; border: 1px solid #cbd5e1; color: #64748b; padding: 8px 15px; cursor: pointer; font-size: 0.85rem; border-radius: 4px; transition: 0.3s; margin-top: 15px; font-weight: bold; }
-        .btn-sair:hover { background: var(--vermelho-marca); color: #fff; border-color: var(--vermelho-marca); }
+        .btn-sair { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 8px 15px; cursor: pointer; font-size: 0.85rem; border-radius: 4px; transition: var(--transicao); margin-top: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-sair:hover { background: var(--erro); border-color: var(--erro); color: #fff; }
 
         main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
-        .painel-conteudo { display: none; }
-        .header-section { margin-bottom: 30px; }
-        .header-section h2 { color: var(--azul-escuro); font-size: 1.8rem; }
-        .header-section p { color: #64748b; margin-top: 5px; }
+        .painel-conteudo { display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .header-section { margin-bottom: 30px; border-bottom: var(--borda); padding-bottom: 15px; }
+        .header-section h2 { color: var(--azul-marca); font-size: 1.8rem; letter-spacing: -0.5px; }
+        .header-section p { color: var(--texto-secundario); margin-top: 5px; font-size: 1rem; }
 
         /* ================= DASHBOARD (OBRAS) ================= */
-        .obras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
-        .obra-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; }
-        .obra-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); border-color: #cbd5e1; }
-        .obra-card h4 { color: var(--azul-escuro); font-size: 1.2rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .progress-container { background: #e2e8f0; border-radius: 20px; height: 10px; width: 100%; overflow: hidden; margin-bottom: 10px; }
-        .progress-fill { height: 100%; border-radius: 20px; transition: width 1s ease-in-out; background: linear-gradient(90deg, var(--amarelo-destaque), #10b981); }
-        .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: bold; color: #64748b; }
+        .obras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 20px; }
+        .obra-card { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: var(--transicao); border-top: 3px solid var(--azul-sutil); }
+        .obra-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(11,28,53,0.06); }
+        .obra-card h4 { color: var(--azul-marca); font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .progress-container { background: #e2e8f0; border-radius: 20px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 10px; }
+        .progress-fill { height: 100%; border-radius: 20px; transition: width 1s ease-in-out; background: linear-gradient(90deg, var(--azul-sutil), var(--azul-marca)); }
+        .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 8px; }
+        
+        .btn-ver-arquivos { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: var(--azul-marca); font-weight: 600; padding: 10px; margin-top: 15px; border-radius: 6px; cursor: pointer; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-ver-arquivos:hover { background: var(--azul-sutil); color: #fff; border-color: var(--azul-sutil); }
 
         /* ================= ARQUIVOS E APROVAÇÃO ================= */
         .doc-list { display: flex; flex-direction: column; gap: 15px; }
-        .doc-item { background: #fff; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .doc-info { display: flex; align-items: center; gap: 15px; }
-        .doc-icone { font-size: 2rem; color: var(--azul-marca); }
-        .doc-detalhes h4 { color: var(--azul-escuro); font-size: 1.1rem; margin-bottom: 3px; }
-        .doc-detalhes p { color: #64748b; font-size: 0.85rem; }
+        .doc-item { background: #fff; border: var(--borda); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: var(--transicao); }
+        .doc-item:hover { border-color: var(--azul-sutil); }
+        .doc-info { display: flex; align-items: center; gap: 18px; }
+        .doc-icone { font-size: 2.2rem; color: var(--azul-marca); opacity: 0.9; }
+        .doc-detalhes h4 { color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 3px; }
+        .doc-detalhes p { color: var(--texto-secundario); font-size: 0.85rem; }
         
-        .btn-aprovar { background: #10b981; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 6px rgba(16,185,129,0.2); }
-        .btn-aprovar:hover { background: #059669; transform: scale(1.05); }
-        .btn-abrir { background: #f1f5f9; color: var(--azul-escuro); border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-abrir:hover { background: #e2e8f0; }
-        .selo-aprovado { color: #10b981; font-weight: bold; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; background: rgba(16,185,129,0.1); padding: 8px 15px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); }
+        .btn-aprovar { background: var(--sucesso); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao); }
+        .btn-aprovar:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(16,185,129,0.2); }
+        .btn-abrir { background: #fff; color: var(--azul-marca); border: 1px solid var(--azul-sutil); padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao); }
+        .btn-abrir:hover { background: var(--azul-sutil); color: #fff; }
+        .selo-aprovado { color: var(--sucesso); font-weight: 600; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; background: rgba(16,185,129,0.1); padding: 8px 15px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); }
 
         /* ================= SUPORTE REMOTO ================= */
         .suporte-container { display: flex; gap: 30px; align-items: flex-start; }
-        .form-chamado { background: #fff; padding: 25px; border-radius: 8px; border: 1px solid #e2e8f0; flex: 1; }
+        .form-chamado { background: #fff; padding: 30px; border-radius: 8px; border: var(--borda); flex: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
         .lista-chamados { flex: 1.5; display: flex; flex-direction: column; gap: 15px; }
         
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-weight: 600; color: var(--azul-escuro); margin-bottom: 5px; font-size: 0.9rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
-        .btn-enviar-chamado { background: var(--azul-marca); color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; width: 100%; }
-        .btn-enviar-chamado:hover { background: var(--azul-escuro); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; color: var(--azul-marca); margin-bottom: 8px; font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; transition: var(--transicao); font-family: 'Inter'; background: #f8fafc; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--azul-sutil); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(43,92,146,0.1); }
+        .btn-enviar-chamado { background: var(--azul-marca); color: #fff; border: none; padding: 14px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transicao); width: 100%; font-size: 1rem; }
+        .btn-enviar-chamado:hover { background: var(--azul-sutil); }
 
-        .ticket-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; border-left: 4px solid var(--amarelo-destaque); }
-        .ticket-box.respondido { border-left-color: #10b981; }
-        .ticket-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .ticket-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; color: #fff; }
-        .ticket-resposta { background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px dashed #cbd5e1; margin-top: 15px; }
+        .ticket-box { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; border-left: 4px solid var(--azul-sutil); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .ticket-box.respondido { border-left-color: var(--sucesso); }
+        .ticket-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center; }
+        .ticket-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ticket-resposta { background: #f8fafc; padding: 15px 20px; border-radius: 6px; border: 1px dashed #cbd5e1; margin-top: 15px; border-left: 3px solid var(--sucesso); }
         
         /* Mobile Responsividade */
-        #btnMenuMobile { display: none; background: transparent; border: none; font-size: 1.5rem; color: var(--azul-escuro); cursor: pointer; }
+        #btnMenuMobile { display: none; background: transparent; border: none; font-size: 1.5rem; color: var(--azul-marca); cursor: pointer; }
         @media (max-width: 768px) {
             #telaPainel { flex-direction: column; }
-            aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e2e8f0; flex-direction: row; justify-content: space-between; align-items: center; padding: 10px 20px; z-index: 100; }
-            .logo-area { padding: 0; border: none; }
+            aside { width: 100%; height: auto; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .logo-area { padding: 0; border: none; text-align: left; }
             .logo-area img { max-width: 120px; }
             .logo-area p, .btn-sair { display: none; }
-            #btnMenuMobile { display: block; }
-            .menu-lateral { display: none; position: absolute; top: 60px; left: 0; width: 100%; background: #fff; box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 10px 0; }
+            #btnMenuMobile { display: block; color: #fff; }
+            .menu-lateral { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: var(--azul-marca); box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 10px 0; }
             .menu-lateral.aberto { display: block; }
-            .btn-sair-mobile { display: block !important; padding: 15px 25px; color: var(--vermelho-marca); font-weight: bold; }
+            .btn-sair-mobile { display: block !important; padding: 15px 25px; color: #fca5a5; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.1); }
             
             main { padding: 20px 15px; }
-            .doc-item { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .doc-item > div { width: 100%; display: flex; justify-content: space-between; }
+            .doc-item { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .doc-item > div { width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
             .suporte-container { flex-direction: column; }
             .form-chamado, .lista-chamados { width: 100%; flex: auto; }
         }
@@ -103,23 +120,23 @@
 </head>
 <body>
 
-    <!-- ================= PAINEL DO CLIENTE ================= -->
     <div id="telaPainel" style="display: none;">
         <aside>
             <div class="logo-area">
-                <img src="public/logo.png" alt="EngQuadros" style="max-width: 150px;">
-                <p id="nomeClienteSidebar" style="font-size: 0.9rem; color: var(--azul-escuro); font-weight: bold; margin-top: 15px;">Carregando...</p>
-                <p id="cnpjClienteSidebar" style="font-size: 0.75rem; color: #64748b;">...</p>
-                <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-right-from-bracket"></i> Sair do Sistema</button>
+                <img src="public/logo.png" alt="EngQuadros" style="max-width: 140px; filter: brightness(0) invert(1);">
+                <p id="nomeClienteSidebar" style="font-size: 0.95rem; color: #fff; font-weight: 600; margin-top: 20px; font-family: 'Montserrat';">Carregando...</p>
+                <p id="cnpjClienteSidebar" style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 2px;">...</p>
+                <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-right-from-bracket"></i> Encerrar Sessão</button>
             </div>
             
             <button id="btnMenuMobile" onclick="toggleMenuMobile()"><i class="fa-solid fa-bars"></i></button>
 
             <div class="menu-lateral" id="menuLateral">
-                <button class="menu-btn ativa" id="abaObras" onclick="abrirAba('obras')"><i class="fa-solid fa-chart-pie"></i> Progresso das Obras</button>
-                <button class="menu-btn" id="abaArquivos" onclick="abrirAba('arquivos')"><i class="fa-solid fa-folder-open"></i> Acervo de Projetos</button>
+                <button class="menu-btn ativa" id="abaObras" onclick="abrirAba('obras')"><i class="fa-solid fa-chart-pie"></i> Progresso de Obras</button>
+                <!-- NOVO: Limpa o filtro quando clica no menu lateral -->
+                <button class="menu-btn" id="abaArquivos" onclick="obraFiltroAtual=null; abrirAba('arquivos')"><i class="fa-regular fa-folder-open"></i> Acervo de Projetos</button>
                 <button class="menu-btn" id="abaSuporte" onclick="abrirAba('suporte')"><i class="fa-solid fa-headset"></i> Suporte Técnico</button>
-                <button class="menu-btn btn-sair-mobile" onclick="sair()" style="display: none;"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                <button class="menu-btn btn-sair-mobile" onclick="sair()" style="display: none;"><i class="fa-solid fa-power-off"></i> Sair do Sistema</button>
             </div>
         </aside>
 
@@ -131,7 +148,7 @@
                     <p>Acompanhe em tempo real a evolução das suas obras ativas conosco.</p>
                 </div>
                 <div class="obras-grid" id="gridObras">
-                    <p style="color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando seus projetos...</p>
+                    <p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando seus projetos...</p>
                 </div>
             </div>
 
@@ -139,10 +156,10 @@
             <div id="painelArquivos" class="painel-conteudo">
                 <div class="header-section">
                     <h2>Acervo de Projetos e Arquivos</h2>
-                    <p>Visualize, baixe e aprove eletronicamente os documentos enviados pela nossa equipe de engenharia.</p>
+                    <p>Visualize, baixe e aprove eletronicamente os documentos técnicos enviados pela engenharia.</p>
                 </div>
                 <div class="doc-list" id="listaArquivosCliente">
-                    <p style="color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>
+                    <p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>
                 </div>
             </div>
 
@@ -150,24 +167,24 @@
             <div id="painelSuporte" class="painel-conteudo">
                 <div class="header-section">
                     <h2>Suporte Remoto</h2>
-                    <p>Abra chamados para tirar dúvidas ou solicitar revisões de projeto com nossa equipe.</p>
+                    <p>Abra chamados para tirar dúvidas ou solicitar revisões com nossa equipe de especialistas.</p>
                 </div>
                 
                 <div class="suporte-container">
                     <!-- Abrir Chamado -->
                     <div class="form-chamado">
-                        <h3 style="color: var(--azul-escuro); margin-bottom: 20px;"><i class="fa-solid fa-envelope-open-text"></i> Abrir Solicitação</h3>
+                        <h3 style="color: var(--azul-marca); margin-bottom: 25px; font-size: 1.3rem;"><i class="fa-regular fa-envelope"></i> Nova Solicitação</h3>
                         <form id="formChamadoCliente">
                             <div class="form-group">
                                 <label>Assunto Principal</label>
-                                <input type="text" id="assuntoChamado" required placeholder="Ex: Dúvida no Projeto Elétrico da Obra B">
+                                <input type="text" id="assuntoChamado" required placeholder="Ex: Dúvida no QGBT da Obra Norte">
                             </div>
                             <div class="form-group">
                                 <label>Detalhes da Solicitação</label>
-                                <textarea id="mensagemChamado" rows="5" required placeholder="Descreva sua dúvida ou solicitação..."></textarea>
+                                <textarea id="mensagemChamado" rows="5" required placeholder="Descreva sua dúvida técnica ou solicitação detalhadamente..."></textarea>
                             </div>
-                            <button type="submit" class="btn-enviar-chamado" id="btnSalvarChamado">Enviar Solicitação Remota</button>
-                            <div id="msgChamado" style="margin-top: 10px; font-weight: bold; color: #10b981; display: none;">Chamado enviado com sucesso!</div>
+                            <button type="submit" class="btn-enviar-chamado" id="btnSalvarChamado">Enviar ao Suporte</button>
+                            <div id="msgChamado" style="margin-top: 15px; font-weight: 600; color: var(--sucesso); display: none; text-align: center;"><i class="fa-solid fa-check-circle"></i> Chamado enviado com sucesso!</div>
                         </form>
                     </div>
 
@@ -192,42 +209,31 @@
 
         let clienteLogado = null;
         let nomeClienteLogado = 'Cliente';
-
-        // ================= BLINDAGEM INTELIGENTE DE ROTA =================
-        // O painel agora não te chuta agressivamente. Ele caça o CNPJ em todos os lugares possíveis do navegador.
         
-        // 1. Tenta ver se o login.html mandou pela URL (ex: painel-cliente.html?cnpj=123)
+        let obrasGlobaisCliente = [];
+        let obraFiltroAtual = null; // NOVO: Guarda o ID da obra filtrada
+
         const urlParams = new URLSearchParams(window.location.search);
         const cnpjUrl = urlParams.get('cnpj');
 
-        // 2. Caça na memória do navegador (LocalStorage ou SessionStorage)
         clienteLogado = cnpjUrl || sessionStorage.getItem('clienteCnpj') || localStorage.getItem('clienteCnpj') || sessionStorage.getItem('cnpj') || localStorage.getItem('cnpj');
         
-        // Tenta achar o nome do cliente
         const nomeSalvo = sessionStorage.getItem('clienteNome') || localStorage.getItem('clienteNome');
         if (nomeSalvo) nomeClienteLogado = nomeSalvo;
 
-        // LÓGICA DE DECISÃO
         if (clienteLogado) {
-            // Se achou o CNPJ, salva na sessão atual para ele não se perder e INICIA O PAINEL
             sessionStorage.setItem('clienteCnpj', clienteLogado);
             document.getElementById('telaPainel').style.display = 'flex';
             iniciarPainelCliente();
         } else {
-            // Se NÃO achou o CNPJ, ele avisa na tela ao invés de jogar em um loop infinito pro login
             document.body.innerHTML = `
-                <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background:#f8fafc; font-family:sans-serif; text-align:center; padding: 20px;">
-                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 4rem; color: #e31b23; margin-bottom: 20px;"></i>
-                    <h2 style="color:#1a365d;">Sessão não identificada</h2>
+                <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background:#f4f7f6; font-family:'Inter', sans-serif; text-align:center; padding: 20px;">
+                    <i class="fa-solid fa-shield-halved" style="font-size: 4rem; color: #0b1c35; margin-bottom: 20px;"></i>
+                    <h2 style="color:#0b1c35; font-family:'Montserrat';">Acesso Restrito</h2>
                     <p style="color:#64748b; margin-top:10px; max-width: 450px;">
-                        O painel precisa saber qual é o seu CNPJ para carregar os arquivos corretos e garantir a segurança dos dados.
+                        Por questões de segurança corporativa, não foi possível identificar a sua sessão ativa.
                     </p>
-                    <div style="margin-top: 15px; padding: 15px; background: #fff; border: 1px dashed #cbd5e1; border-radius: 8px; text-align: left; max-width: 450px; font-size: 0.85rem;">
-                        <strong style="color:var(--azul-marca);">Aviso para a Engenharia:</strong><br>
-                        Certifique-se de que o seu arquivo <em>login.html</em> está enviando o CNPJ no sucesso do login. Exemplo de código no seu login.html:<br>
-                        <code style="background:#eee; padding:2px 5px; display:block; margin-top:5px; color:#e31b23;">sessionStorage.setItem('clienteCnpj', cnpjDoCliente);</code>
-                    </div>
-                    <a href="login.html" style="margin-top:25px; padding:12px 25px; background:#2b5c92; color:#fff; text-decoration:none; border-radius:6px; font-weight:bold;"><i class="fa-solid fa-arrow-left"></i> Voltar para o Login Seguro</a>
+                    <a href="login.html" style="margin-top:25px; padding:12px 28px; background:#0b1c35; color:#fff; text-decoration:none; border-radius:6px; font-weight:600;"><i class="fa-solid fa-lock-open"></i> Voltar ao Login Seguro</a>
                 </div>
             `;
         }
@@ -238,7 +244,6 @@
             window.location.href = 'login.html';
         }
 
-        // ================= NAVEGAÇÃO =================
         function iniciarPainelCliente() {
             document.getElementById('nomeClienteSidebar').innerText = nomeClienteLogado;
             document.getElementById('cnpjClienteSidebar').innerText = `CNPJ: ${clienteLogado}`;
@@ -264,10 +269,16 @@
             if (aba === 'suporte') carregarChamados();
         }
 
-        // ================= CARREGAR OBRAS (DASHBOARD) =================
+        // NOVO: Função que aplica o filtro antes de abrir a aba
+        function filtrarArquivosPorObra(obraId) {
+            obraFiltroAtual = obraId;
+            abrirAba('arquivos');
+        }
+
+        // DASHBOARD
         async function carregarObras() {
             const container = document.getElementById('gridObras');
-            container.innerHTML = '<p style="color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando dados...</p>';
+            container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando dados...</p>';
 
             try {
                 const { data, error } = await supabaseClient.from('obras')
@@ -276,13 +287,15 @@
                     .order('id', { ascending: false });
 
                 if (error) throw error;
+                
+                obrasGlobaisCliente = data || [];
 
                 if (!data || data.length === 0) {
                     container.innerHTML = `
-                        <div style="grid-column: 1 / -1; background: #fff; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0;">
-                            <i class="fa-solid fa-helmet-safety" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                            <h3 style="color: var(--azul-escuro);">Nenhum projeto ativo</h3>
-                            <p style="color: #64748b; margin-top: 5px;">Você ainda não possui obras ou projetos registrados em andamento.</p>
+                        <div style="grid-column: 1 / -1; background: #fff; padding: 50px; border-radius: 8px; text-align: center; border: var(--borda);">
+                            <i class="fa-solid fa-hard-hat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--azul-marca);">Nenhum projeto ativo</h3>
+                            <p style="color: var(--texto-secundario); margin-top: 8px;">Você ainda não possui obras ou projetos registrados em andamento.</p>
                         </div>`;
                     return;
                 }
@@ -292,34 +305,43 @@
                     const prog = obra.progresso || 0;
                     const nomeO = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
                     
-                    let corBarra = prog === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, var(--amarelo-destaque), #10b981)';
+                    let corBarra = prog === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, var(--azul-sutil), var(--azul-marca))';
+                    let corTexto = prog === 100 ? 'var(--sucesso)' : 'var(--azul-marca)';
 
                     html += `
                         <div class="obra-card">
-                            <h4><i class="fa-regular fa-building" style="color: var(--amarelo-destaque);"></i> ${nomeO}</h4>
+                            <h4><i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${nomeO}</h4>
                             <div class="progress-text">
-                                <span>Progresso Geral</span>
-                                <span style="color: ${prog === 100 ? '#10b981' : 'var(--azul-escuro)'}; font-size: 1rem;">${prog}%</span>
+                                <span>Status Técnico</span>
+                                <span style="color: ${corTexto}; font-size: 1.1rem;">${prog}%</span>
                             </div>
-                            <div class="progress-container" style="margin-top: 8px;">
+                            <div class="progress-container">
                                 <div class="progress-fill" style="width: ${prog}%; background: ${corBarra};"></div>
                             </div>
-                            <p style="font-size: 0.75rem; color: #94a3b8; text-align: right; margin-top: 5px;">Atualizado pela engenharia</p>
+                            <p style="font-size: 0.75rem; color: #94a3b8; text-align: right; margin-top: 8px;">Atualizado pela engenharia</p>
+                            
+                            <!-- NOVO: Chama o filtro específico da obra -->
+                            <button class="btn-ver-arquivos" onclick="filtrarArquivosPorObra(${obra.id})"><i class="fa-regular fa-folder-open"></i> Ver Arquivos do Projeto</button>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } catch (e) {
-                container.innerHTML = '<p style="color: red;">Erro ao buscar dados do projeto.</p>';
+                container.innerHTML = '<p style="color: var(--erro);">Erro ao buscar dados do projeto.</p>';
             }
         }
 
-        // ================= CARREGAR E APROVAR ARQUIVOS =================
+        // ARQUIVOS (AGORA COM FILTRO)
         async function carregarArquivos() {
             const container = document.getElementById('listaArquivosCliente');
-            container.innerHTML = '<p style="color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando acervo...</p>';
+            container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando acervo...</p>';
 
             try {
+                if (obrasGlobaisCliente.length === 0) {
+                    const { data: obrasData } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', clienteLogado);
+                    obrasGlobaisCliente = obrasData || [];
+                }
+
                 const { data, error } = await supabaseClient.from('arquivos')
                     .select('*')
                     .eq('cliente_cnpj', clienteLogado)
@@ -327,18 +349,34 @@
 
                 if (error) throw error;
 
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="color:#64748b;">Nenhum documento ou projeto foi disponibilizado ainda.</p>';
+                // LÓGICA DO FILTRO APLICADA AQUI
+                let arquivosFiltrados = data || [];
+                let htmlAvisoFiltro = '';
+
+                if (obraFiltroAtual) {
+                    arquivosFiltrados = arquivosFiltrados.filter(arq => arq.obra_id === obraFiltroAtual);
+                    const obraEncontrada = obrasGlobaisCliente.find(o => o.id === obraFiltroAtual);
+                    const nomeDaObra = obraEncontrada ? obraEncontrada.nome_obra : 'Projeto Selecionado';
+
+                    htmlAvisoFiltro = `
+                        <div style="background: #e0f2fe; border: 1px solid #bae6fd; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <span style="color: var(--azul-sutil); font-weight: 600; font-size: 0.95rem;"><i class="fa-solid fa-filter"></i> Filtrando arquivos exclusivos do projeto: ${nomeDaObra}</span>
+                            <button onclick="obraFiltroAtual = null; carregarArquivos();" style="background: transparent; border: 1px solid var(--azul-sutil); color: var(--azul-sutil); padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: var(--transicao);"><i class="fa-solid fa-xmark"></i> Remover Filtro</button>
+                        </div>
+                    `;
+                }
+
+                if (!arquivosFiltrados || arquivosFiltrados.length === 0) {
+                    container.innerHTML = htmlAvisoFiltro + '<p style="color:var(--texto-secundario);">Nenhum documento encontrado para esta visualização.</p>';
                     return;
                 }
 
-                let html = '';
-                data.forEach(arq => {
+                let html = htmlAvisoFiltro;
+                arquivosFiltrados.forEach(arq => {
                     const isPdf = String(arq.caminho_arquivo).includes('supabase.co');
                     const icone = isPdf ? 'fa-file-pdf' : 'fa-link';
-                    const corIcone = isPdf ? 'var(--vermelho-marca)' : 'var(--azul-marca)';
-                    const tipoTexto = isPdf ? 'Documento PDF' : 'Link Externo';
-                    const obsHtml = arq.observacao ? `<p style="margin-top:5px; padding: 5px 10px; background: #f1f5f9; border-left: 2px solid var(--amarelo-destaque); border-radius: 4px; font-size: 0.8rem;"><i class="fa-solid fa-circle-info"></i> ${arq.observacao}</p>` : '';
+                    const tipoTexto = isPdf ? 'Documento Técnico' : 'Link Externo';
+                    const obsHtml = arq.observacao ? `<p style="margin-top:8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid var(--azul-sutil); border-radius: 4px; font-size: 0.85rem; color: var(--texto-secundario);"><i class="fa-solid fa-circle-info"></i> ${arq.observacao}</p>` : '';
                     
                     const statusAprovacao = arq.status_aprovacao || 'pendente';
                     let boxAcao = '';
@@ -349,17 +387,23 @@
                         boxAcao = `<button class="btn-aprovar" onclick="aprovarDocumento('${arq.id}')"><i class="fa-solid fa-signature"></i> Aprovar Projeto</button>`;
                     }
 
+                    const obraVinculada = arq.obra_id ? obrasGlobaisCliente.find(o => o.id === arq.obra_id) : null;
+                    const badgeObra = obraVinculada ? 
+                        `<span style="background:var(--azul-marca); color:#fff; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-helmet-safety"></i> Projeto: ${obraVinculada.nome_obra}</span>` : 
+                        `<span style="background:#e2e8f0; color:var(--texto-secundario); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-globe"></i> Documento Geral</span>`;
+
                     html += `
                         <div class="doc-item">
-                            <div class="doc-info">
-                                <i class="fa-solid ${icone} doc-icone" style="color: ${corIcone};"></i>
+                            <div class="doc-info" style="align-items:flex-start;">
+                                <i class="fa-solid ${icone} doc-icone" style="margin-top: 5px;"></i>
                                 <div class="doc-detalhes">
                                     <h4>${arq.nome_documento}</h4>
                                     <p>${tipoTexto}</p>
+                                    ${badgeObra}
                                     ${obsHtml}
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="display: flex; gap: 12px; align-items: center;">
                                 ${boxAcao}
                                 <a href="${arq.caminho_arquivo}" target="_blank" class="btn-abrir"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>
                             </div>
@@ -368,12 +412,12 @@
                 });
                 container.innerHTML = html;
             } catch (e) {
-                container.innerHTML = '<p style="color: red;">Erro ao buscar acervo.</p>';
+                container.innerHTML = '<p style="color: var(--erro);">Erro ao buscar acervo.</p>';
             }
         }
 
         async function aprovarDocumento(idArquivo) {
-            if (confirm("Ao aprovar este projeto, seu aceite digital será registrado no sistema. Deseja confirmar?")) {
+            if (confirm("Confirmação Eletrônica: Ao aprovar este projeto, seu aceite será registrado oficialmente no sistema de engenharia. Deseja confirmar?")) {
                 try {
                     const { error } = await supabaseClient.from('arquivos').update({
                         status_aprovacao: 'aprovado',
@@ -381,7 +425,6 @@
                     }).eq('id', idArquivo);
                     
                     if (error) throw error;
-                    
                     carregarArquivos();
                 } catch (e) {
                     alert("Ocorreu um erro ao registrar a aprovação. Tente novamente.");
@@ -389,10 +432,10 @@
             }
         }
 
-        // ================= SUPORTE REMOTO (TICKETS) =================
+        // SUPORTE
         async function carregarChamados() {
             const container = document.getElementById('listaChamadosCliente');
-            container.innerHTML = '<p style="color: #64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando solicitações...</p>';
+            container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando solicitações...</p>';
 
             try {
                 const { data, error } = await supabaseClient.from('chamados_suporte')
@@ -404,9 +447,9 @@
 
                 if (!data || data.length === 0) {
                     container.innerHTML = `
-                        <div style="background: #f8fafc; padding: 30px; text-align: center; border: 1px dashed #cbd5e1; border-radius: 8px;">
-                            <i class="fa-regular fa-comments" style="font-size: 2rem; color: #94a3b8; margin-bottom: 10px;"></i>
-                            <p style="color: #64748b;">Você não possui chamados em aberto.</p>
+                        <div style="background: #fff; padding: 40px; text-align: center; border: var(--borda); border-radius: 8px;">
+                            <i class="fa-regular fa-comments" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 15px;"></i>
+                            <p style="color: var(--texto-secundario); font-weight: 500;">Você não possui chamados técnicos em aberto.</p>
                         </div>`;
                     return;
                 }
@@ -415,8 +458,8 @@
                 data.forEach(t => {
                     const statusClass = t.status === 'aberto' ? '' : 'respondido';
                     const badge = t.status === 'aberto' 
-                        ? `<span class="ticket-badge" style="background: var(--vermelho-marca);">Aguardando Análise</span>`
-                        : `<span class="ticket-badge" style="background: #10b981;">Respondido</span>`;
+                        ? `<span class="ticket-badge" style="background: var(--azul-sutil);">Em Análise</span>`
+                        : `<span class="ticket-badge" style="background: var(--sucesso);">Respondido</span>`;
                     
                     const dataAbertura = new Date(t.data_abertura).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                     
@@ -425,8 +468,8 @@
                         const dataResp = new Date(t.data_resposta).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                         htmlResposta = `
                             <div class="ticket-resposta">
-                                <span style="display: block; font-size: 0.8rem; color: #10b981; font-weight: bold; margin-bottom: 5px;"><i class="fa-solid fa-reply"></i> Resposta da Engenharia em ${dataResp}</span>
-                                <p style="color: var(--azul-escuro); font-size: 0.95rem; line-height: 1.4;">${t.resposta_equipe}</p>
+                                <span style="display: block; font-size: 0.8rem; color: var(--sucesso); font-weight: 700; margin-bottom: 8px;"><i class="fa-solid fa-reply"></i> Resposta Técnica em ${dataResp}</span>
+                                <p style="color: var(--texto-principal); font-size: 0.95rem; line-height: 1.5;">${t.resposta_equipe}</p>
                             </div>
                         `;
                     }
@@ -435,17 +478,17 @@
                         <div class="ticket-box ${statusClass}">
                             <div class="ticket-header">
                                 ${badge}
-                                <span style="font-size: 0.75rem; color: #94a3b8;"><i class="fa-regular fa-clock"></i> ${dataAbertura}</span>
+                                <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 500;"><i class="fa-regular fa-clock"></i> ${dataAbertura}</span>
                             </div>
-                            <h4 style="color: var(--azul-escuro); font-size: 1.1rem; margin-bottom: 5px;">${t.assunto}</h4>
-                            <p style="color: #64748b; font-size: 0.9rem; line-height: 1.4;">"${t.mensagem}"</p>
+                            <h4 style="color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 8px;">${t.assunto}</h4>
+                            <p style="color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5;">"${t.mensagem}"</p>
                             ${htmlResposta}
                         </div>
                     `;
                 });
                 container.innerHTML = html;
             } catch (e) {
-                container.innerHTML = '<p style="color: red;">Erro ao carregar histórico de chamados.</p>';
+                container.innerHTML = '<p style="color: var(--erro);">Erro ao carregar histórico.</p>';
             }
         }
 
@@ -457,7 +500,7 @@
             const assunto = document.getElementById('assuntoChamado').value.trim();
             const mensagem = document.getElementById('mensagemChamado').value.trim();
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
             btn.disabled = true;
 
             try {
@@ -476,9 +519,9 @@
 
                 setTimeout(() => { msg.style.display = 'none'; }, 4000);
             } catch (e) {
-                alert("Erro reportado pelo banco: " + e.message);
+                alert("Erro: " + e.message);
             } finally {
-                btn.innerHTML = 'Enviar Solicitação Remota';
+                btn.innerHTML = 'Enviar ao Suporte';
                 btn.disabled = false;
             }
         });
