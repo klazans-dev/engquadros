@@ -5,47 +5,111 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Cliente | EngQuadros</title>
     <link rel="icon" type="image/png" href="public/favicon.png">
+    
+    <!-- Tipografia Corporativa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
-        :root { --vermelho-marca: #e31b23; --azul-marca: #2b5c92; --azul-escuro: #1a365d; --amarelo-destaque: #f4c522; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        :root { 
+            --azul-profundo: #060b14; 
+            --azul-marca: #0b1c35; 
+            --azul-sutil: #2b5c92; 
+            --branco: #ffffff;
+            --sucesso: #10b981;
+            --erro: #ef4444;
+            --transicao: all 0.3s ease;
+        }
         
-        body { background-color: #0a0e17; background-image: linear-gradient(rgba(0, 168, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 168, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; display: flex; justify-content: center; align-items: center; min-height: 100vh; color: #fff; padding: 20px; }
-
-        .auth-container { background: rgba(15, 20, 25, 0.95); padding: 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); border-top: 5px solid var(--azul-marca); width: 100%; max-width: 500px; border-bottom: 1px solid rgba(43, 92, 146, 0.3); border-left: 1px solid rgba(43, 92, 146, 0.3); border-right: 1px solid rgba(43, 92, 146, 0.3); }
-
-        .logo { max-width: 180px; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
-        .abas-auth { display: flex; margin-bottom: 30px; border-bottom: 1px solid #333; }
-        .abas-auth button { flex: 1; padding: 12px; background: transparent; color: #aaa; border: none; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .abas-auth button.ativo { color: var(--amarelo-destaque); border-bottom-color: var(--amarelo-destaque); }
+        body { 
+            background-color: var(--azul-profundo); 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; color: var(--branco); padding: 20px; 
+            overflow: hidden;
+        }
 
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; font-size: 0.85rem; color: #ccc; }
-        .input-group input { width: 100%; padding: 10px 15px; border-radius: 6px; border: 1px solid #333; background: #111; color: #fff; font-size: 0.95rem; }
-        .input-group input:focus { outline: none; border-color: var(--azul-marca); box-shadow: 0 0 10px rgba(43, 92, 146, 0.5); }
+        h1, h2, h3, button, .abas-auth button { font-family: 'Montserrat', sans-serif; }
+
+        /* BACKGROUND INDUSTRIAL IGUAL AO SITE */
+        .global-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+            z-index: -5; opacity: 0.18; mix-blend-mode: luminosity;
+        }
+
+        .circuit-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -4;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; 
+        }
+
+        /* CONTAINER GLASSMORPHISM */
+        .auth-container { 
+            background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 45px 40px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
+            border: 1px solid rgba(255, 255, 255, 0.1); border-top: 4px solid var(--azul-sutil); 
+            width: 100%; max-width: 480px; position: relative; z-index: 10;
+        }
+
+        .logo { max-width: 160px; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
+        
+        .abas-auth { display: flex; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .abas-auth button { 
+            flex: 1; padding: 12px; background: transparent; color: rgba(255,255,255,0.5); 
+            border: none; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; 
+            transition: var(--transicao); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .abas-auth button:hover { color: var(--branco); }
+        .abas-auth button.ativo { color: var(--branco); border-bottom-color: var(--azul-sutil); }
+
+        .input-group { margin-bottom: 18px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+        .input-group input { 
+            width: 100%; padding: 12px 15px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); 
+            background: rgba(255,255,255,0.03); color: var(--branco); font-size: 0.95rem; transition: var(--transicao);
+        }
+        .input-group input:focus { outline: none; border-color: var(--azul-sutil); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 3px rgba(43, 92, 146, 0.2); }
 
         .linha-dupla { display: flex; gap: 15px; }
         .linha-dupla .input-group { flex: 1; }
 
-        .btn-acao { width: 100%; padding: 14px; background: var(--azul-marca); color: #fff; border: none; border-radius: 6px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-acao:hover { background: var(--vermelho-marca); }
+        .btn-acao { 
+            width: 100%; padding: 14px; background: var(--azul-marca); color: var(--branco); 
+            border: none; border-radius: 6px; font-size: 1rem; font-weight: 700; 
+            cursor: pointer; transition: var(--transicao); margin-top: 15px; letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-acao:hover { background: var(--azul-sutil); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43, 92, 146, 0.3); }
         
-        .mensagem { font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; font-weight: bold; }
-        .voltar { display: block; margin-top: 25px; color: #aaa; text-decoration: none; font-size: 0.9rem; transition: 0.3s; text-align: center; }
-        .voltar:hover { color: var(--amarelo-destaque); }
+        .btn-sucesso { background: var(--sucesso); border-color: var(--sucesso); }
+        .btn-sucesso:hover { background: #0ea5e9; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
+
+        .mensagem { font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; font-weight: 600; padding: 10px; border-radius: 6px; }
+        .msg-erro { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .msg-ok { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+        .voltar { display: block; margin-top: 30px; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9rem; transition: var(--transicao); text-align: center; font-weight: 500; }
+        .voltar:hover { color: var(--branco); }
     </style>
 </head>
 <body>
+
+    <div class="global-bg"></div>
+    <div class="circuit-overlay"></div>
 
     <div class="auth-container">
         <img src="public/logo.png" alt="EngQuadros" class="logo">
         
         <div class="abas-auth">
-            <button id="btnAbaLogin" class="ativo" onclick="alternarAba('login')">Fazer Login</button>
-            <button id="btnAbaCadastro" onclick="alternarAba('cadastro')">Cadastrar-se</button>
+            <button id="btnAbaLogin" class="ativo" onclick="alternarAba('login')">Área do Cliente</button>
+            <button id="btnAbaCadastro" onclick="alternarAba('cadastro')">Novo Cadastro</button>
         </div>
 
         <!-- FORMULÁRIO DE LOGIN -->
@@ -55,11 +119,11 @@
                 <input type="text" id="loginCnpj" placeholder="Somente números" required autocomplete="off">
             </div>
             <div class="input-group">
-                <label>Chave Mestre (Senha)</label>
+                <label>Chave de Acesso (Senha)</label>
                 <input type="password" id="loginSenha" required>
             </div>
-            <button type="submit" class="btn-acao"><i class="fa-solid fa-right-to-bracket"></i> Acessar Portal</button>
-            <div id="msgErroLogin" class="mensagem" style="color: var(--vermelho-marca);">CNPJ ou Senha incorretos.</div>
+            <button type="submit" class="btn-acao"><i class="fa-solid fa-lock-open"></i> Acessar Portal</button>
+            <div id="msgErroLogin" class="mensagem msg-erro"><i class="fa-solid fa-triangle-exclamation"></i> CNPJ ou Senha incorretos.</div>
         </form>
 
         <!-- FORMULÁRIO DE CADASTRO -->
@@ -81,16 +145,17 @@
                 <input type="email" id="cadEmail" required>
             </div>
             <div class="input-group">
-                <label>Crie uma Chave Mestre (Senha)</label>
+                <label>Crie uma Chave de Acesso (Senha)</label>
                 <input type="password" id="cadSenha" required>
             </div>
-            <button type="submit" class="btn-acao" style="background: #10b981;"><i class="fa-solid fa-user-plus"></i> Criar Cadastro</button>
+            <button type="submit" class="btn-acao btn-sucesso"><i class="fa-solid fa-user-check"></i> Finalizar Cadastro</button>
             <div id="msgCadastro" class="mensagem"></div>
         </form>
 
-        <a href="index.html" class="voltar"><i class="fa-solid fa-arrow-left"></i> Voltar ao site principal</a>
+        <a href="index.html" class="voltar"><i class="fa-solid fa-arrow-left"></i> Retornar ao site institucional</a>
     </div>
 
+    <!-- SCRIPT ORIGINAL MANTIDO -->
     <script>
         const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
         const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
@@ -110,16 +175,20 @@
             const cnpjInput = document.getElementById('loginCnpj').value.trim();
             const chaveInput = document.getElementById('loginSenha').value.trim();
             const msgErro = document.getElementById('msgErroLogin');
+            const btn = document.querySelector('#formLogin .btn-acao');
             
             msgErro.style.display = 'none';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
+            btn.disabled = true;
 
             const { data, error } = await supabaseClient.from('clientes')
                 .select('*').eq('cnpj', cnpjInput).eq('chave_mestre', chaveInput);
 
             if (error || data.length === 0) {
                 msgErro.style.display = 'block';
+                btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
+                btn.disabled = false;
             } else {
-                // A CORREÇÃO ESTÁ NESTA LINHA ABAIXO: clienteCnpj
                 sessionStorage.setItem('clienteCnpj', data[0].cnpj);
                 sessionStorage.setItem('clienteNome', data[0].razao_social);
                 window.location.href = 'painel-cliente.html';
@@ -142,30 +211,29 @@
             };
 
             btn.disabled = true;
-            btn.innerHTML = 'Processando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
 
             // Insere no banco
             const { error } = await supabaseClient.from('clientes').insert([novoCliente]);
 
             if (error) {
                 msg.style.display = 'block';
-                msg.style.color = 'var(--vermelho-marca)';
-                msg.innerText = 'Erro: Este CNPJ já está cadastrado ou houve falha na rede.';
+                msg.className = 'mensagem msg-erro';
+                msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CNPJ já cadastrado ou erro na rede.';
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar Cadastro';
+                btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Finalizar Cadastro';
             } else {
                 msg.style.display = 'block';
-                msg.style.color = '#10b981'; // Verde
-                msg.innerText = 'Cadastro realizado! Faça login para continuar.';
+                msg.className = 'mensagem msg-ok';
+                msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Cadastro realizado! Faça login.';
                 document.getElementById('formCadastro').reset();
                 
-                // Volta para a aba de login após 2 segundos
                 setTimeout(() => {
                     alternarAba('login');
                     btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar Cadastro';
+                    btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Finalizar Cadastro';
                     msg.style.display = 'none';
-                }, 2000);
+                }, 2500);
             }
         });
     </script>
