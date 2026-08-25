@@ -561,81 +561,195 @@
                 </div>
             </div>
 
-            <!-- NOVA TELA: PRODUTOS E SERVIÇOS (MARKUP / ELÉTRICA) -->
+        
+           <!-- NOVA TELA: PRODUTOS E SERVIÇOS (MARKUP / ELÉTRICA) -->
+            <!-- NOVA TELA: PRODUTOS E SERVIÇOS (TELA CHEIA PARA EDIÇÃO) -->
             <div id="painelProdutos" class="painel-conteudo">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
-                    <div>
-                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-box-open"></i> Gestão de Produtos e Serviços</h2>
-                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Controle de margem de lucro (Markup) e especificações técnicas de engenharia.</p>
+                
+                <!-- =============== TELA 1: LISTAGEM =============== -->
+                <div id="containerListaProdutos">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-box-open"></i> Gestão de Produtos e Serviços</h2>
+                            <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Controle de componentes, margem (Markup) e especificações.</p>
+                        </div>
+                        <button type="button" class="btn-novo-cliente" onclick="toggleFormProduto()">
+                            <i class="fa-solid fa-plus"></i> Novo Produto
+                        </button>
+                    </div>
+
+                    <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
+                        <input type="text" id="inputBuscaProduto" placeholder="Procurar produto por nome ou categoria..." onkeyup="filtrarProdutosCentral()">
+                    </div>
+
+                    <!-- Formulário Oculto (Cadastro Rápido) -->
+                    <div id="boxFormProduto" class="card-box" style="display: none; border-top: 4px solid var(--sucesso); animation: fadeIn 0.3s ease;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
+                            <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;"><i class="fa-solid fa-plus"></i> Cadastrar Novo Item</h3>
+                            <button type="button" onclick="toggleFormProduto()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                        
+                        <form id="formNovoProduto">
+                            <div class="linha-form">
+                                <div class="form-group" style="flex: 2;"><label>Nome do Produto / Serviço *</label><input type="text" id="prodNome" required></div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Categoria</label>
+                                    <select id="prodCategoria">
+                                        <option value="Painel">Painel / Quadro</option>
+                                        <option value="Componente">Componente Avulso</option>
+                                        <option value="Servico">Serviço de Mão de Obra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--sucesso);">
+                                <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-calculator"></i> Precificação e Margem</h4>
+                                <div class="linha-form">
+                                    <div class="form-group"><label>Custo Base (R$)</label><input type="number" step="0.01" id="prodCusto" oninput="calcularMarkup()" required></div>
+                                    <div class="form-group"><label>Markup (%)</label><input type="number" step="0.1" id="prodMarkup" oninput="calcularMarkup()" required></div>
+                                    <div class="form-group"><label>Preço Venda (R$)</label><input type="number" step="0.01" id="prodPreco" readonly style="background: #e2e8f0; font-weight: bold; color: var(--azul-marca);"></div>
+                                </div>
+                            </div>
+                            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--azul-sutil);">
+                                <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-bolt"></i> Especificações Elétricas (Opcional)</h4>
+                                <div class="linha-form">
+                                    <div class="form-group"><label>Tensão (Volts)</label><input type="text" id="prodTensao"></div>
+                                    <div class="form-group"><label>Corrente Máx (A)</label><input type="text" id="prodCorrente"></div>
+                                    <div class="form-group"><label>Potência (W / kW)</label><input type="text" id="prodPotencia"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-acao" style="background: var(--sucesso); width: 100%; font-size: 1rem; padding: 12px;"><i class="fa-solid fa-floppy-disk"></i> Gravar no Banco de Dados</button>
+                            <div style="text-align: center; margin-top: 10px;"><span id="msgNovoProduto" style="font-weight: 600;"></span></div>
+                        </form>
+                    </div>
+
+                    <!-- Grade de Produtos -->
+                    <div id="listaProdutosCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;"></div>
+                </div>
+
+                <!-- =============== TELA 2: EDIÇÃO EM TELA CHEIA (Oculta) =============== -->
+                <div id="containerEdicaoProduto" style="display: none; animation: fadeIn 0.3s ease; background: transparent;">
+                    <button type="button" onclick="fecharEdicaoProduto()" style="background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; color: var(--texto-secundario); padding: 8px 15px; cursor: pointer; font-size: 0.9rem; margin-bottom: 20px; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.2s;">
+                        <i class="fa-solid fa-arrow-left"></i> Voltar à Lista
+                    </button>
+
+                    <h3 style="color: var(--azul-marca); font-size: 1.4rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-pen-to-square"></i> <span id="tituloEdicaoProduto">Editando Produto</span>
+                    </h3>
+                    <input type="hidden" id="fullEditProdId">
+
+                    <!-- Aba 1: DADOS PRINCIPAIS -->
+                    <div class="card-accordion" style="margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div class="section-header" onclick="toggleMainSection('fullSubProdDados', 'fullIconSubDados')" style="cursor: pointer; padding: 15px 20px;">
+                            <h5 style="margin: 0; color: var(--azul-marca); font-size: 1.05rem;"><i class="fa-solid fa-box-open"></i> Cadastro e Classificação</h5>
+                            <i class="fa-solid fa-chevron-up" id="fullIconSubDados"></i> <!-- chevron-up porque começa aberto -->
+                        </div>
+                        
+                        <div class="section-content" id="fullSubProdDados" style="display: block; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
+                            <div class="linha-form">
+                                <div class="form-group" style="flex: 2;"><label>Descrição Completa do Produto</label><input type="text" id="fullEditProdNome" required></div>
+                                <div class="form-group" style="flex: 1;"><label>Código SKU / Referência</label><input type="text" id="fullEditProdSku"></div>
+                            </div>
+                            <div class="linha-form">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Categoria / Tipo</label>
+                                    <select id="fullEditProdCategoria">
+                                        <option value="Painel">Painel / Quadro</option>
+                                        <option value="Componente">Componente Avulso</option>
+                                        <option value="Servico">Serviço de Mão de Obra</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="flex: 1;"><label>Unidade de Medida (Ex: UN, KG, MT)</label><input type="text" id="fullEditProdUnidade"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba 2: PRECIFICAÇÃO -->
+                    <div class="card-accordion" style="margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div class="section-header" onclick="toggleMainSection('fullSubProdPreco', 'fullIconSubPreco')" style="cursor: pointer; padding: 15px 20px;">
+                            <h5 style="margin: 0; color: var(--sucesso); font-size: 1.05rem;"><i class="fa-solid fa-calculator"></i> Precificação e Custos</h5>
+                            <i class="fa-solid fa-chevron-down" id="fullIconSubPreco"></i>
+                        </div>
+                        <div class="section-content" id="fullSubProdPreco" style="display: none; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
+                            <div class="linha-form">
+                                <div class="form-group"><label>Custo Base / Aquisição (R$)</label><input type="number" step="0.01" id="fullEditProdCusto" oninput="calcularMarkupFull()"></div>
+                                <div class="form-group"><label>Markup Desejado (%)</label><input type="number" step="0.1" id="fullEditProdMarkup" oninput="calcularMarkupFull()"></div>
+                                <div class="form-group"><label>Preço Final de Venda (R$)</label><input type="number" step="0.01" id="fullEditProdPreco" readonly style="background: #e2e8f0; font-weight: bold; color: var(--azul-marca); font-size: 1.1rem;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba 3: TRIBUTAÇÃO -->
+                    <div class="card-accordion" style="margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div class="section-header" onclick="toggleMainSection('fullSubProdFisc', 'fullIconSubFisc')" style="cursor: pointer; padding: 15px 20px;">
+                            <h5 style="margin: 0; color: #d97706; font-size: 1.05rem;"><i class="fa-solid fa-file-invoice-dollar"></i> Tributações, NCM e CFOP</h5>
+                            <i class="fa-solid fa-chevron-down" id="fullIconSubFisc"></i>
+                        </div>
+                        <div class="section-content" id="fullSubProdFisc" style="display: none; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
+                            <div class="linha-form">
+                                <div class="form-group"><label>NCM</label><input type="text" id="fullEditProdNcm"></div>
+                                <div class="form-group"><label>CEST</label><input type="text" id="fullEditProdCest"></div>
+                                <div class="form-group"><label>CFOP Padrão (Saída)</label><input type="text" id="fullEditProdCfop"></div>
+                                <div class="form-group"><label>Origem ICMS (0, 1, 2...)</label><input type="text" id="fullEditProdIcms"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba 4: ENGENHARIA -->
+                    <div class="card-accordion" style="margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div class="section-header" onclick="toggleMainSection('fullSubProdTec', 'fullIconSubTec')" style="cursor: pointer; padding: 15px 20px;">
+                            <h5 style="margin: 0; color: #3b82f6; font-size: 1.05rem;"><i class="fa-solid fa-bolt"></i> Especificações Elétricas</h5>
+                            <i class="fa-solid fa-chevron-down" id="fullIconSubTec"></i>
+                        </div>
+                        <div class="section-content" id="fullSubProdTec" style="display: none; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
+                            <div class="linha-form">
+                                <div class="form-group"><label>Tensão Nominal</label><input type="text" id="fullEditProdTensao" placeholder="Ex: 220V, 380V Trifásico"></div>
+                                <div class="form-group"><label>Corrente Máxima (Amperes)</label><input type="text" id="fullEditProdCorrente" placeholder="Ex: 100A"></div>
+                                <div class="form-group"><label>Potência (W ou kW)</label><input type="text" id="fullEditProdPotencia" placeholder="Ex: 15kW"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Aba 5: IMAGEM DO PRODUTO -->
+                    <div class="card-accordion" style="margin-bottom: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                        <div class="section-header" onclick="toggleMainSection('fullSubProdImg', 'fullIconSubImg')" style="cursor: pointer; padding: 15px 20px;">
+                            <h5 style="margin: 0; color: #8b5cf6; font-size: 1.05rem;"><i class="fa-solid fa-image"></i> Foto / Imagem do Produto</h5>
+                            <i class="fa-solid fa-chevron-down" id="fullIconSubImg"></i>
+                        </div>
+                        <div class="section-content" id="fullSubProdImg" style="display: none; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
+                            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+                                <!-- Caixinha de Preview da Imagem -->
+                                <div id="previewImgWrapper" style="width: 130px; height: 130px; border: 2px dashed #cbd5e1; border-radius: 8px; overflow: hidden; display: flex; justify-content: center; align-items: center; background: #f8fafc; flex-shrink: 0;">
+                                    <i class="fa-solid fa-image" style="color: #cbd5e1; font-size: 2.5rem;"></i>
+                                </div>
+                                
+                                <!-- Controles de Upload e Link -->
+                                <div style="flex: 1; min-width: 250px;">
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <label>Link da Imagem (URL da Internet)</label>
+                                        <input type="text" id="fullEditProdImgUrl" placeholder="Cole o link aqui..." oninput="atualizarPreviewImg()">
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 15px;">
+                                        <span style="font-size: 0.85rem; color: var(--texto-secundario); font-weight: bold;">OU</span>
+                                        <label for="uploadImgProduto" class="btn-acao" style="background: #e2e8f0; color: var(--azul-marca); padding: 8px 15px; font-size: 0.85rem; cursor: pointer; display: inline-block; border-radius: 6px; margin: 0;">
+                                            <i class="fa-solid fa-upload"></i> Selecionar Imagem do Computador
+                                        </label>
+                                        <input type="file" id="uploadImgProduto" accept="image/*" style="display: none;" onchange="comprimirESalvarImagem(event)">
+                                    </div>
+                                    <p style="font-size: 0.75rem; color: var(--texto-secundario); margin-top: 10px;">
+                                        O sistema comprime a imagem automaticamente para não pesar o seu banco de dados.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÕES DE AÇÃO -->
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <button type="button" onclick="excluirProdutoFull()" class="btn-acao" style="background: #fff; border: 1px solid var(--erro); color: var(--erro); flex: 1; font-weight: 600;"><i class="fa-solid fa-trash"></i> Apagar Produto</button>
+                        <button type="button" onclick="salvarEdicaoProdutoFull()" id="btnSalvarProdFull" class="btn-acao" style="flex: 3; background: var(--sucesso); font-size: 1.1rem; padding: 15px;"><i class="fa-solid fa-check"></i> Gravar Alterações no Banco de Dados</button>
                     </div>
                 </div>
 
-                <div class="card-box">
-                    <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;"><i class="fa-solid fa-plus"></i> Cadastrar Novo Item</h3>
-                    <form id="formNovoProduto">
-                        <div class="linha-form">
-                            <div class="form-group" style="flex: 2;">
-                                <label>Nome do Produto / Serviço *</label>
-                                <input type="text" id="prodNome" required placeholder="Ex: Painel de Automação Trifásico">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label>Categoria</label>
-                                <select id="prodCategoria">
-                                    <option value="Painel">Painel / Quadro</option>
-                                    <option value="Componente">Componente Avulso</option>
-                                    <option value="Servico">Serviço de Mão de Obra</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- FINANÇAS E MARKUP -->
-                        <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--sucesso);">
-                            <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-calculator"></i> Precificação e Margem</h4>
-                            <div class="linha-form">
-                                <div class="form-group">
-                                    <label>Custo Base (R$)</label>
-                                    <input type="number" step="0.01" id="prodCusto" oninput="calcularMarkup()" placeholder="Ex: 1500.00" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Markup / Margem (%)</label>
-                                    <input type="number" step="0.1" id="prodMarkup" oninput="calcularMarkup()" placeholder="Ex: 35" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Preço Final de Venda (R$)</label>
-                                    <input type="number" step="0.01" id="prodPreco" readonly style="background: #e2e8f0; font-weight: bold; color: var(--azul-marca);">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- ESPECIFICAÇÕES DE ENGENHARIA -->
-                        <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--azul-sutil);">
-                            <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-bolt"></i> Especificações de Engenharia Elétrica</h4>
-                            <div class="linha-form">
-                                <div class="form-group">
-                                    <label>Tensão (Volts)</label>
-                                    <input type="text" id="prodTensao" placeholder="Ex: 220V / 380V">
-                                </div>
-                                <div class="form-group">
-                                    <label>Corrente Máx (Amperes)</label>
-                                    <input type="text" id="prodCorrente" placeholder="Ex: 100A">
-                                </div>
-                                <div class="form-group">
-                                    <label>Potência (W / kW)</label>
-                                    <input type="text" id="prodPotencia" placeholder="Ex: 15kW">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn-acao" style="background: var(--sucesso); width: 100%; font-size: 1rem; padding: 12px;">
-                            <i class="fa-solid fa-floppy-disk"></i> Cadastrar Item no Banco de Dados
-                        </button>
-                        <div style="text-align: center; margin-top: 10px;"><span id="msgNovoProduto" style="font-weight: 600;"></span></div>
-                    </form>
-                </div>
-
-                <div id="listaProdutosCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;">
-                    <!-- Preenchido pelo JS (Supabase) -->
-                </div>
             </div>
 
             <!-- PAINEL CADASTRAR NOVO CLIENTE -->
@@ -1062,6 +1176,49 @@
     </div>
 
     <!-- ================= MODAIS ================= -->
+    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+    <div id="modalEditarProduto" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; overflow-y: auto;">
+        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-sutil); margin: 20px auto;">
+            <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Produto / Serviço</h3>
+            <input type="hidden" id="editProdId">
+            
+            <div class="linha-form">
+                <div class="form-group" style="flex: 2;"><label>Nome do Produto</label><input type="text" id="editProdNome" required></div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Categoria</label>
+                    <select id="editProdCategoria">
+                        <option value="Painel">Painel / Quadro</option>
+                        <option value="Componente">Componente Avulso</option>
+                        <option value="Servico">Serviço de Mão de Obra</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 15px;">
+                <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-calculator"></i> Precificação</label>
+                <div class="linha-form">
+                    <div class="form-group"><label>Custo Base</label><input type="number" step="0.01" id="editProdCusto" oninput="calcularMarkupEdit()"></div>
+                    <div class="form-group"><label>Markup (%)</label><input type="number" step="0.1" id="editProdMarkup" oninput="calcularMarkupEdit()"></div>
+                    <div class="form-group"><label>Preço Venda</label><input type="number" step="0.01" id="editProdPreco" readonly style="background: #e2e8f0; font-weight: bold;"></div>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px;">
+                <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-bolt"></i> Especificações</label>
+                <div class="linha-form">
+                    <div class="form-group"><label>Tensão</label><input type="text" id="editProdTensao"></div>
+                    <div class="form-group"><label>Corrente</label><input type="text" id="editProdCorrente"></div>
+                    <div class="form-group"><label>Potência</label><input type="text" id="editProdPotencia"></div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: space-between;">
+                <button type="button" onclick="document.getElementById('modalEditarProduto').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
+                <button type="button" onclick="excluirProduto()" class="btn-acao" style="background: transparent; border: 1px solid var(--erro); color: var(--erro); flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
+                <button type="button" onclick="salvarEdicaoProduto()" id="btnSalvarEditProd" class="btn-acao" style="flex: 1.5; background: var(--azul-sutil);"><i class="fa-solid fa-floppy-disk"></i> Salvar Edição</button>
+            </div>
+        </div>
+    </div>
     <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Membro da Equipe</h3>
@@ -1411,11 +1568,12 @@
             }
         }
 
-        // ================= GESTÃO DE PRODUTOS E SERVIÇOS =================
+  
+        // ================= GESTÃO DE PRODUTOS E SERVIÇOS (TELA CHEIA) =================
         async function carregarListaProdutos() {
             const lista = document.getElementById('listaProdutosCentral');
             if(!lista) return;
-            lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando produtos e componentes...</p>';
+            lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando produtos...</p>';
             
             try {
                 const { data, error } = await supabaseClient.from('produtos').select('*').order('nome');
@@ -1424,16 +1582,38 @@
                 
                 if(data && data.length > 0) {
                     data.forEach(p => {
+                        const precoVenda = parseFloat(p.preco_venda || 0).toFixed(2).replace('.', ',');
+                        const pCodificado = encodeURIComponent(JSON.stringify(p));
+                        
+                        // Busca a imagem no JSON
+                        let imgThumb = '';
+                        if (p.dados_tecnicos) {
+                            try {
+                                const dt = typeof p.dados_tecnicos === 'string' ? JSON.parse(p.dados_tecnicos) : p.dados_tecnicos;
+                                imgThumb = dt.imagem_url || '';
+                            } catch(e) {}
+                        }
+
+                        // Cria a miniatura HTML
+                        const divImagem = imgThumb 
+                            ? `<div style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid #e2e8f0;"><img src="${imgThumb}" style="width: 100%; height: 100%; object-fit: cover;"></div>` 
+                            : `<div style="width: 50px; height: 50px; border-radius: 6px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0;"><i class="fa-solid fa-box-open" style="color: #cbd5e1; font-size: 1.2rem;"></i></div>`;
+
                         lista.innerHTML += `
-                        <div class="card-box" style="padding: 15px; margin-bottom: 0; border-left: 4px solid var(--azul-sutil); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <span style="background: #e2e8f0; color: var(--texto-secundario); font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; display: inline-block;">${p.categoria || 'Geral'}</span>
-                                <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 5px;">${p.nome}</h4>
-                                <p style="color: var(--texto-secundario); font-size: 0.8rem;"><i class="fa-solid fa-bolt"></i> ${p.tensao || 'N/A'} | Máx: ${p.corrente_maxima || 'N/A'} | ${p.potencia || 'N/A'}</p>
+                        <div class="card-box item-produto-card" onclick="abrirEdicaoProduto('${pCodificado}')" style="cursor: pointer; padding: 15px; margin-bottom: 0; border-left: 4px solid var(--azul-sutil); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
+                                ${divImagem}
+                                <div>
+                                    <span style="background: #e2e8f0; color: var(--texto-secundario); font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; display: inline-block;">${p.tipo || 'Painel'}</span>
+                                    <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 0;">${p.nome}</h4>
+                                    <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 5px;">Cód: ${p.sku || 'N/A'}</p>
+                                </div>
                             </div>
-                            <div style="text-align: right;">
-                                <p style="font-weight: bold; color: var(--azul-marca); font-size: 1.1rem;">R$ ${parseFloat(p.preco_final).toFixed(2).replace('.', ',')}</p>
-                                <p style="font-size: 0.75rem; color: var(--sucesso); font-weight: 600;"><i class="fa-solid fa-arrow-trend-up"></i> Markup: ${p.markup}%</p>
+                            <div style="text-align: right; display: flex; align-items: center; gap: 15px;">
+                                <div>
+                                    <p style="font-weight: bold; color: var(--azul-marca); font-size: 1.1rem;">R$ ${precoVenda}</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 1.2rem;"></i>
                             </div>
                         </div>`;
                     });
@@ -1445,34 +1625,404 @@
             }
         }
 
+        // --- FUNÇÕES DE TRANSIÇÃO E EDIÇÃO EM TELA CHEIA ---
+        function calcularMarkupFull() {
+            let custo = parseFloat(document.getElementById('fullEditProdCusto').value.replace(',','.')) || 0;
+            let markup = parseFloat(document.getElementById('fullEditProdMarkup').value.replace(',','.')) || 0;
+            let precoFinal = custo + (custo * (markup / 100));
+            document.getElementById('fullEditProdPreco').value = precoFinal.toFixed(2);
+        }
+
+       function atualizarPreviewImg() {
+            const url = document.getElementById('fullEditProdImgUrl').value.trim();
+            const wrapper = document.getElementById('previewImgWrapper');
+            if (url) {
+                wrapper.innerHTML = `<img src="${url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                wrapper.innerHTML = `<i class="fa-solid fa-image" style="color: #cbd5e1; font-size: 2.5rem;"></i>`;
+            }
+        }
+
+        // Função genial que comprime a imagem direto no navegador do usuário
+        function comprimirESalvarImagem(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 400; // Mantém leve
+                    const MAX_HEIGHT = 400;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height && width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    } else if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Converte para Base64 (Texto)
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% de qualidade
+                    document.getElementById('fullEditProdImgUrl').value = dataUrl;
+                    atualizarPreviewImg();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function abrirEdicaoProduto(produtoEncoded) {
+            const p = JSON.parse(decodeURIComponent(produtoEncoded));
+            
+            document.getElementById('tituloEdicaoProduto').innerText = p.nome;
+            document.getElementById('fullEditProdId').value = p.id;
+            
+            document.getElementById('fullEditProdNome').value = p.nome || '';
+            document.getElementById('fullEditProdSku').value = p.sku || '';
+            document.getElementById('fullEditProdCategoria').value = p.tipo || 'Painel';
+            document.getElementById('fullEditProdUnidade').value = p.unidade || 'UN';
+            
+            document.getElementById('fullEditProdCusto').value = p.preco_custo || 0;
+            document.getElementById('fullEditProdMarkup').value = p.margem_lucro || 0;
+            document.getElementById('fullEditProdPreco').value = p.preco_venda || 0;
+
+            document.getElementById('fullEditProdNcm').value = p.ncm || '';
+            document.getElementById('fullEditProdCest').value = p.cest || '';
+            document.getElementById('fullEditProdCfop').value = p.cfop || '';
+            document.getElementById('fullEditProdIcms').value = p.origem_icms || '';
+
+            // Lendo o JSON
+            let tensao = ''; let corrente = ''; let potencia = ''; let imagem = '';
+            if (p.dados_tecnicos) {
+                try {
+                    const dt = typeof p.dados_tecnicos === 'string' ? JSON.parse(p.dados_tecnicos) : p.dados_tecnicos;
+                    tensao = dt.tensao || ''; corrente = dt.corrente_maxima || ''; potencia = dt.potencia || '';
+                    imagem = dt.imagem_url || '';
+                } catch(e) {}
+            }
+            document.getElementById('fullEditProdTensao').value = tensao;
+            document.getElementById('fullEditProdCorrente').value = corrente;
+            document.getElementById('fullEditProdPotencia').value = potencia;
+            
+            // Injeta a Imagem
+            document.getElementById('fullEditProdImgUrl').value = imagem;
+            atualizarPreviewImg();
+
+            document.getElementById('containerListaProdutos').style.display = 'none';
+            document.getElementById('containerEdicaoProduto').style.display = 'block';
+        }
+
+        async function salvarEdicaoProdutoFull() {
+            const id = document.getElementById('fullEditProdId').value;
+            const btn = document.getElementById('btnSalvarProdFull');
+            const htmlOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando Banco...';
+
+            const objTecnico = {
+                tensao: document.getElementById('fullEditProdTensao').value.trim(),
+                corrente_maxima: document.getElementById('fullEditProdCorrente').value.trim(),
+                potencia: document.getElementById('fullEditProdPotencia').value.trim(),
+                imagem_url: document.getElementById('fullEditProdImgUrl').value.trim() // Salva a imagem aqui!
+            };
+
+            const payload = { 
+                nome: document.getElementById('fullEditProdNome').value.trim(), 
+                sku: document.getElementById('fullEditProdSku').value.trim(),
+                tipo: document.getElementById('fullEditProdCategoria').value,
+                unidade: document.getElementById('fullEditProdUnidade').value.trim(),
+                ncm: document.getElementById('fullEditProdNcm').value.trim(),
+                cest: document.getElementById('fullEditProdCest').value.trim(),
+                cfop: document.getElementById('fullEditProdCfop').value.trim(),
+                origem_icms: document.getElementById('fullEditProdIcms').value.trim(),
+                preco_custo: parseFloat(document.getElementById('fullEditProdCusto').value.replace(',','.')),
+                margem_lucro: parseFloat(document.getElementById('fullEditProdMarkup').value.replace(',','.')),
+                preco_venda: parseFloat(document.getElementById('fullEditProdPreco').value.replace(',','.')),
+                dados_tecnicos: objTecnico 
+            };
+
+            try {
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                if (error) throw error;
+                
+                carregarListaProdutos(); 
+                fecharEdicaoProduto(); 
+            } catch(e) {
+                alert("Erro ao editar o produto.");
+            } finally {
+                btn.innerHTML = htmlOriginal;
+            }
+        }
+
+        function fecharEdicaoProduto() {
+            document.getElementById('containerEdicaoProduto').style.display = 'none';
+            document.getElementById('containerListaProdutos').style.display = 'block';
+        }
+
+       
+
+        async function excluirProdutoFull() {
+            const id = document.getElementById('fullEditProdId').value;
+            if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
+                try {
+                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
+                    if (error) throw error;
+                    
+                    carregarListaProdutos();
+                    fecharEdicaoProduto(); // Volta pra lista após apagar
+                } catch (error) {
+                    alert("Erro ao excluir o produto do banco.");
+                }
+            }
+        }
+        async function salvarEdicaoProdutoInline(id) {
+            const btn = document.getElementById(`btnSalvarProd-${id}`);
+            const htmlOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
+
+            // Agrupa os dados elétricos
+            const objTecnico = {
+                tensao: document.getElementById(`editProdTensao-${id}`).value.trim(),
+                corrente_maxima: document.getElementById(`editProdCorrente-${id}`).value.trim(),
+                potencia: document.getElementById(`editProdPotencia-${id}`).value.trim()
+            };
+
+            // Coleta TUDO (Fiscal, Comercial, Técnico e Custos)
+            const payload = { 
+                nome: document.getElementById(`editProdNome-${id}`).value.trim(), 
+                sku: document.getElementById(`editProdSku-${id}`).value.trim(),
+                tipo: document.getElementById(`editProdCategoria-${id}`).value,
+                unidade: document.getElementById(`editProdUnidade-${id}`).value.trim(),
+                ncm: document.getElementById(`editProdNcm-${id}`).value.trim(),
+                cest: document.getElementById(`editProdCest-${id}`).value.trim(),
+                cfop: document.getElementById(`editProdCfop-${id}`).value.trim(),
+                origem_icms: document.getElementById(`editProdIcms-${id}`).value.trim(),
+                preco_custo: parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')),
+                margem_lucro: parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')),
+                preco_venda: parseFloat(document.getElementById(`editProdPreco-${id}`).value.replace(',','.')),
+                dados_tecnicos: objTecnico 
+            };
+
+            try {
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                if (error) throw error;
+                carregarListaProdutos(); 
+            } catch(e) {
+                alert("Erro ao editar o produto.");
+                btn.innerHTML = htmlOriginal;
+            }
+        }
+
+        // ================= FUNÇÕES AUXILIARES DE EDIÇÃO INLINE =================
+        function calcularMarkupEdit(id) {
+            let custo = parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')) || 0;
+            let markup = parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')) || 0;
+            let precoFinal = custo + (custo * (markup / 100));
+            document.getElementById(`editProdPreco-${id}`).value = precoFinal.toFixed(2);
+        }
+
+        async function salvarEdicaoProdutoInline(id) {
+            const btn = document.getElementById(`btnSalvarProd-${id}`);
+            const htmlOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
+
+            const objTecnico = {
+                tensao: document.getElementById(`editProdTensao-${id}`).value.trim(),
+                corrente_maxima: document.getElementById(`editProdCorrente-${id}`).value.trim(),
+                potencia: document.getElementById(`editProdPotencia-${id}`).value.trim()
+            };
+
+            const payload = { 
+                nome: document.getElementById(`editProdNome-${id}`).value.trim(), 
+                tipo: document.getElementById(`editProdCategoria-${id}`).value,
+                preco_custo: parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')),
+                margem_lucro: parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')),
+                preco_venda: parseFloat(document.getElementById(`editProdPreco-${id}`).value.replace(',','.')),
+                dados_tecnicos: objTecnico 
+            };
+
+            try {
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                if (error) throw error;
+                carregarListaProdutos(); 
+            } catch(e) {
+                alert("Erro ao editar o produto.");
+                btn.innerHTML = htmlOriginal;
+            }
+        }
+
+        async function excluirProdutoInline(id) {
+            if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
+                try {
+                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
+                    if (error) throw error;
+                    carregarListaProdutos();
+                } catch (error) {
+                    alert("Erro ao excluir o produto do banco.");
+                }
+            }
+        }
+        // ================= FUNÇÕES DE EDIÇÃO DE PRODUTO =================
+        function calcularMarkupEdit() {
+            let custo = parseFloat(document.getElementById('editProdCusto').value.replace(',','.')) || 0;
+            let markup = parseFloat(document.getElementById('editProdMarkup').value.replace(',','.')) || 0;
+            let precoFinal = custo + (custo * (markup / 100));
+            document.getElementById('editProdPreco').value = precoFinal.toFixed(2);
+        }
+
+        function abrirModalProduto(produtoEncoded) {
+            const p = JSON.parse(decodeURIComponent(produtoEncoded));
+            
+            // Preenche IDs e campos principais
+            document.getElementById('editProdId').value = p.id;
+            document.getElementById('editProdNome').value = p.nome || '';
+            document.getElementById('editProdCategoria').value = p.tipo || 'Painel';
+            document.getElementById('editProdCusto').value = p.preco_custo || 0;
+            document.getElementById('editProdMarkup').value = p.margem_lucro || 0;
+            document.getElementById('editProdPreco').value = p.preco_venda || 0;
+
+            // Extrai e preenche os campos do JSON (Dados Técnicos)
+            let tensao = ''; let corrente = ''; let potencia = '';
+            if (p.dados_tecnicos) {
+                try {
+                    const dt = typeof p.dados_tecnicos === 'string' ? JSON.parse(p.dados_tecnicos) : p.dados_tecnicos;
+                    tensao = dt.tensao || '';
+                    corrente = dt.corrente_maxima || '';
+                    potencia = dt.potencia || '';
+                } catch(e) {}
+            }
+            document.getElementById('editProdTensao').value = tensao;
+            document.getElementById('editProdCorrente').value = corrente;
+            document.getElementById('editProdPotencia').value = potencia;
+
+            // Mostra o Modal na tela
+            document.getElementById('modalEditarProduto').style.display = 'flex';
+        }
+
+        async function salvarEdicaoProduto() {
+            const id = document.getElementById('editProdId').value;
+            if(!id) return;
+
+            const btn = document.getElementById('btnSalvarEditProd');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+            const objTecnico = {
+                tensao: document.getElementById('editProdTensao').value.trim(),
+                corrente_maxima: document.getElementById('editProdCorrente').value.trim(),
+                potencia: document.getElementById('editProdPotencia').value.trim()
+            };
+
+            const payload = { 
+                nome: document.getElementById('editProdNome').value.trim(), 
+                tipo: document.getElementById('editProdCategoria').value,
+                preco_custo: parseFloat(document.getElementById('editProdCusto').value.replace(',','.')),
+                margem_lucro: parseFloat(document.getElementById('editProdMarkup').value.replace(',','.')),
+                preco_venda: parseFloat(document.getElementById('editProdPreco').value.replace(',','.')),
+                dados_tecnicos: objTecnico 
+            };
+
+            try {
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                if (error) throw error;
+                
+                document.getElementById('modalEditarProduto').style.display = 'none';
+                carregarListaProdutos(); // Atualiza a lista pra mostrar as alterações!
+            } catch(e) {
+                alert("Erro ao editar o produto. O servidor rejeitou a requisição.");
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Edição';
+            }
+        }
+
+        async function excluirProduto() {
+            const id = document.getElementById('editProdId').value;
+            if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
+                try {
+                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
+                    if (error) throw error;
+                    
+                    document.getElementById('modalEditarProduto').style.display = 'none';
+                    carregarListaProdutos(); // Atualiza a lista após sumir com o card
+                } catch (error) {
+                    alert("Erro ao excluir o produto do banco.");
+                }
+            }
+        }
+// Alternar visualização do formulário de produto
+        function toggleFormProduto() {
+            const form = document.getElementById('boxFormProduto');
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+                document.getElementById('formNovoProduto').reset();
+                document.getElementById('prodPreco').value = '';
+            }
+        }
+
+        // Filtro de pesquisa de produtos
+        function filtrarProdutosCentral() {
+            const termo = document.getElementById('inputBuscaProduto').value.toLowerCase().trim();
+            const cardsProdutos = document.querySelectorAll('.item-produto-card');
+            
+            cardsProdutos.forEach(card => {
+                const conteudo = card.innerText.toLowerCase();
+                card.style.display = conteudo.includes(termo) ? 'flex' : 'none';
+            });
+        }
         document.getElementById('formNovoProduto')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgNovoProduto'); 
             msg.style.color = 'var(--texto-secundario)'; 
             msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cadastrando item...';
             
-            const payload = { 
-                nome: document.getElementById('prodNome').value.trim(), 
-                categoria: document.getElementById('prodCategoria').value,
-                custo_base: parseFloat(document.getElementById('prodCusto').value.replace(',','.')),
-                markup: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')),
-                preco_final: parseFloat(document.getElementById('prodPreco').value.replace(',','.')),
+            // Agrupando dados elétricos para o campo JSONB
+            const objTecnico = {
                 tensao: document.getElementById('prodTensao').value.trim(),
                 corrente_maxima: document.getElementById('prodCorrente').value.trim(),
                 potencia: document.getElementById('prodPotencia').value.trim()
+            };
+
+            // Criando o payload EXATAMENTE como exige o seu SQL
+            const payload = { 
+                nome: document.getElementById('prodNome').value.trim(), 
+                tipo: document.getElementById('prodCategoria').value,
+                unidade: 'UN', // Coluna obrigatória no seu banco
+                preco_custo: parseFloat(document.getElementById('prodCusto').value.replace(',','.')),
+                margem_lucro: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')),
+                preco_venda: parseFloat(document.getElementById('prodPreco').value.replace(',','.')),
+                dados_tecnicos: objTecnico 
             };
             
             try {
                 const { error } = await supabaseClient.from('produtos').insert([payload]);
                 if (error) throw error;
+                
                 document.getElementById('formNovoProduto').reset();
                 carregarListaProdutos(); 
                 msg.style.color = 'var(--sucesso)'; 
                 msg.innerHTML = '<i class="fa-solid fa-check"></i> Produto inserido com sucesso!'; 
+                
+                // Fecha o formulário automaticamente se ele estiver aberto
+                const formBox = document.getElementById('boxFormProduto');
+                if(formBox) {
+                    setTimeout(() => { formBox.style.display = 'none'; }, 1500);
+                }
+                
                 setTimeout(() => { msg.innerText = ''; }, 3000); 
             } catch(e) {
+                console.error("Erro Salvar Produto:", e);
                 msg.style.color = 'var(--erro)'; 
-                msg.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao salvar produto.';
+                msg.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro: ' + (e.message || JSON.stringify(e));
             }
         });
 

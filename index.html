@@ -58,8 +58,8 @@
             background-size: cover;
             background-position: center;
             z-index: -5;
-            opacity: 0.18; /* Sutil e Elegante */
-            mix-blend-mode: luminosity; /* Puxa apenas o azul escuro da marca, tira as cores originais da foto */
+            opacity: 0.18; 
+            mix-blend-mode: luminosity; 
         }
 
         /* --- CIRCUITO SUTIL NO FUNDO --- */
@@ -118,17 +118,26 @@
         .btn-outline-dark { background-color: transparent; border: 1px solid var(--azul-marca); color: var(--azul-marca); }
         .btn-outline-dark:hover { background-color: var(--azul-marca); color: var(--branco); }
 
-        /* --- SESSÃO HERO (COM BANNER ORIGINAL) --- */
-        .hero-wrapper { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; }
-        .slider-container { position: relative; width: 100%; max-width: 1400px; height: 500px; overflow: hidden; display: flex; align-items: center; justify-content: center; z-index: 1; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; display: flex; justify-content: center; align-items: center; background: rgba(6, 11, 20, 0.5); }
-        .slide.active { opacity: 1; z-index: 2; }
-        .slide img { width: 100%; height: 100%; object-fit: contain; padding: 20px; }
+        /* ==========================================================
+           --- SESSÃO HERO (COM VÍDEO NO FUNDO - ESTILO ABB) --- 
+           ========================================================== */
+        .hero-wrapper { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: transparent; overflow: hidden; }
         
-        .hero-botoes { position: relative; z-index: 3; margin-top: 30px; display: flex; gap: 20px; }
+        /* Controle do vídeo em tela cheia */
+        .hero-video-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); min-width: 100%; min-height: 100%; object-fit: cover; z-index: 0; }
+        
+        /* Degradê escuro por cima do vídeo para leitura perfeita */
+        .hero-video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(6, 11, 20, 0.85) 0%, rgba(6, 11, 20, 0.3) 100%); z-index: 1; }
+        
+        /* Título e Texto principal */
+        .hero-texto-central { position: relative; z-index: 3; text-align: center; max-width: 900px; padding: 0 20px; margin-top: 80px; }
+        .hero-texto-central h1 { color: var(--branco); font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 700; margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .hero-texto-central p { color: rgba(255,255,255,0.85); font-size: 1.15rem; margin-bottom: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.5); font-weight: 500;}
 
-        /* ESTATÍSTICAS ANIMADAS (Limpas) */
-        .hero-stats { margin-top: 40px; display: flex; gap: 50px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 25px 60px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 3; }
+        .hero-botoes { position: relative; z-index: 3; margin-top: 40px; display: flex; gap: 20px; }
+
+        /* Estatísticas (Mantidas iguais, apenas ajustado o z-index) */
+        .hero-stats { position: relative; z-index: 3; margin-top: 50px; display: flex; gap: 50px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 25px 60px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
         .hero-stats h3 { font-size: 3rem; color: var(--branco); font-weight: 700; line-height: 1.1; }
         .hero-stats p { color: rgba(255,255,255,0.7); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-top: 5px; }
         .stats-divider { width: 1px; background: rgba(255,255,255,0.2); }
@@ -136,11 +145,8 @@
         /* --- PADRÕES DE SEÇÃO (GLASSMORPHISM P/ REVELAR O FUNDO) --- */
         .secao { padding: 100px 50px; position: relative; z-index: 2; }
         
-        /* Seções Claras (Mantém a leitura perfeita mas deixa o fundo sutilmente vazar) */
         .bg-claro { background-color: rgba(255, 255, 255, 0.96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .bg-cinza { background-color: rgba(248, 250, 252, 0.96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-        
-        /* Seções Escuras (Revelam mais o background industrial) */
         .bg-escuro { background-color: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
 
         .conteudo-secao { max-width: 1200px; margin: 0 auto; }
@@ -268,15 +274,17 @@
             #main-header nav ul.aberto { display: flex !important; }
             #main-header nav ul div { flex-direction: column; margin-left: 0 !important; width: 100%; }
             #main-header nav ul div a { width: 100%; justify-content: center; }
+            
+            .hero-texto-central h1 { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BACKGROUND INDUSTRIAL FIXO (IMAGEM + BLEND MODE AZUL) -->
+    <!-- BACKGROUND INDUSTRIAL FIXO -->
     <div class="global-bg"></div>
 
-    <!-- BACKGROUND SUTIL DE CIRCUITO CLARO (APENAS AZUL E BRANCO) -->
+    <!-- BACKGROUND SUTIL DE CIRCUITO -->
     <div class="circuit-overlay">
         <div class="circuit-line vertical c1"></div>
         <div class="circuit-line vertical c2"></div>
@@ -323,21 +331,33 @@
     </header>
 
     <main>
-        <!-- SESSÃO HERO (COM SEU BANNER ORIGINAL) -->
+        <!-- ==========================================================
+             SESSÃO HERO (AGORA COM VÍDEO DE FUNDO ESTILO ABB)
+             ========================================================== -->
         <section id="hero" class="hero-wrapper">
-            <div class="slider-container">
-                <div class="slide active">
-                    <!-- ARQUIVO ORIGINAL INSERIDO AQUI -->
-                    <img src="public/banner0.jpg" alt="A segurança ideal em painéis elétricos">
-                </div>
-            </div>
             
+            <!-- VÍDEO DE FUNDO EM LOOP -->
+            <video autoplay loop muted playsinline class="hero-video-bg">
+                <!-- Certifique-se de baixar um vídeo MP4 e salvar na pasta 'public' -->
+                <source src="public/video-engenharia.mp4" type="video/mp4">
+            </video>
+            
+            <!-- MÁSCARA ESCURA (OVERLAY) -->
+            <div class="hero-video-overlay"></div>
+            
+            <!-- TEXTO DE IMPACTO CENTRALIZADO -->
+            <div class="hero-texto-central reveal">
+                <h1>A segurança ideal em painéis elétricos</h1>
+                <p>Projetos e soluções de alta performance estruturados para atender desde grandes plantas industriais até demandas específicas.</p>
+            </div>
+
+            <!-- BOTÕES MANTIDOS DO ORIGINAL -->
             <div class="hero-botoes reveal">
                 <a href="#contato" class="btn btn-secundario" style="background: var(--branco); color: var(--azul-marca); border-color: var(--branco);"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
                 <a href="public/catalogo.pdf" download="catalogo.pdf" class="btn btn-secundario"><i class="fa-solid fa-file-pdf"></i> Baixar Catálogo</a>
             </div>
 
-            <!-- ESTATÍSTICAS ANIMADAS -->
+            <!-- ESTATÍSTICAS MANTIDAS DO ORIGINAL -->
             <div class="hero-stats reveal">
                 <div style="text-align: center;">
                     <h3>+<span class="contador-animado" data-target="11000">0</span></h3>
@@ -353,7 +373,7 @@
             </div>
         </section>
 
-        <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO (FUNDO CLARO) -->
+        <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
         <section id="apresentacao" class="secao bg-claro">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">A Engenharia Segura</h2>
@@ -383,7 +403,7 @@
             </div>
         </section>
 
-        <!-- MISSÃO DA EMPRESA (FUNDO CINZA CLARO SUTIL) -->
+        <!-- MISSÃO DA EMPRESA -->
         <section id="missao" class="secao bg-cinza">
             <div class="conteudo-secao">
                 <div class="missao-bg reveal">
@@ -400,7 +420,7 @@
             </div>
         </section>
 
-        <!-- SERVIÇOS (FUNDO CLARO) -->
+        <!-- SERVIÇOS -->
         <section id="servicos" class="secao bg-claro">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Nossas Soluções</h2>
@@ -429,7 +449,7 @@
             </div>
         </section>
 
-        <!-- FAIXA DE SELOS E NORMAS (FUNDO ESCURO -> REVELA BACKGROUND INDUSTRIAL) -->
+        <!-- FAIXA DE SELOS E NORMAS -->
         <section class="faixa-certificacoes bg-escuro reveal">
             <div class="conteudo-secao" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px;">
                 <h3 style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px; font-family: 'Montserrat';">
@@ -450,7 +470,7 @@
             </div>
         </section>
 
-        <!-- ENGENHARIA EM FOCO (FUNDO ESCURO -> REVELA BACKGROUND INDUSTRIAL) -->
+        <!-- ENGENHARIA EM FOCO -->
         <section class="secao bg-escuro" style="padding-top: 100px; padding-bottom: 100px;">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao titulo-branco reveal">Engenharia em Foco</h2>
@@ -497,7 +517,7 @@
 
         <div class="energy-divider dark"></div>
 
-        <!-- FAIXA QUALIDADE (FUNDO ESCURO -> REVELA BACKGROUND INDUSTRIAL) -->
+        <!-- FAIXA QUALIDADE -->
         <section class="faixa-qualidade bg-escuro">
             <div class="conteudo-secao">
                 <h2 class="reveal" style="font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 700;">Qualidade em Serviço</h2>
@@ -514,7 +534,7 @@
 
         <div class="energy-divider dark"></div>
 
-        <!-- NOSSOS QUADROS E PAINÉIS (FUNDO CINZA CLARO) -->
+        <!-- NOSSOS QUADROS E PAINÉIS -->
         <section class="secao bg-cinza">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Nossos Quadros e Painéis</h2>
@@ -562,7 +582,7 @@
         
         <div class="energy-divider"></div>
         
-        <!-- GALERIA DE PROJETOS (FUNDO CLARO) -->
+        <!-- GALERIA DE PROJETOS -->
         <section id="galeria" class="secao bg-claro" style="padding-top: 80px;">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Conheça Alguns de Nossos Projetos</h2>
@@ -592,7 +612,7 @@
             </div>
         </section>
 
-        <!-- CAPACIDADE TÉCNICA CTA (FUNDO ESCURO -> REVELA BACKGROUND INDUSTRIAL) -->
+        <!-- CAPACIDADE TÉCNICA CTA -->
         <section class="bg-escuro reveal" style="padding: 70px 20px; text-align: center; color: var(--branco); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <div class="conteudo-secao">
                 <h2 style="font-size: 2rem; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 15px;">Capacidade técnica comprovada</h2>
@@ -601,7 +621,7 @@
             </div>
         </section>
 
-        <!-- EMPRESAS E PARCEIROS (FUNDO CINZA CLARO) -->
+        <!-- EMPRESAS E PARCEIROS -->
         <section id="parceiros" class="secao bg-cinza">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Empresas que confiam em nós</h2>
@@ -625,7 +645,7 @@
             </div>
         </section>
 
-        <!-- AVALIAÇÕES (FUNDO CLARO) -->
+        <!-- AVALIAÇÕES -->
         <section id="avaliacoes" class="secao bg-claro">
             <div class="conteudo-secao">
                 <div class="reveal" style="text-align: center; margin-bottom: 40px;">
@@ -663,7 +683,7 @@
             </div>
         </section>
 
-        <!-- CONTATO (FUNDO CINZA CLARO) -->
+        <!-- CONTATO -->
         <section id="contato" class="secao bg-cinza">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Solicite uma Cotação Técnica</h2>
