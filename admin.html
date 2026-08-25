@@ -1769,6 +1769,7 @@
         }
 
        
+        
 
         async function excluirProdutoFull() {
             const id = document.getElementById('fullEditProdId').value;
@@ -2474,9 +2475,12 @@
                         if(cliMatch) nomeCli = cliMatch.razao_social;
 
                         const card = document.createElement('div');
-                        card.className = 'card-op'; 
+                        card.className = 'card-op item-pcp-card'; // Adicionado item-pcp-card para busca
                         card.setAttribute('draggable', 'true'); 
                         card.setAttribute('data-obra-id', obra.id);
+                        
+                        // === 1. MÁGICA DA COR: Aplica a cor da coluna atual na borda lateral do card ===
+                        card.style.borderLeft = `5px solid ${etapa.cor}`;
                         
                         card.addEventListener('dragstart', e => { 
                             e.dataTransfer.setData('text/plain', obra.id); 
@@ -2488,16 +2492,28 @@
                         
                         const cliJson = cliMatch ? encodeURIComponent(JSON.stringify(cliMatch)) : '';
                         const btnArquivos = cliMatch ? `<button onclick="abrirClienteViaKanban('${cliJson}')" style="flex: 1; padding: 5px; font-size:0.7rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--azul-sutil); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-folder-open"></i> Acessar</button>` : '';
-                        const numOrcamento = obra.numero_orcamento ? `<div style="font-size: 0.65rem; background: #e2e8f0; color: var(--azul-marca); padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; font-weight: bold;"><i class="fa-solid fa-file-invoice"></i> ORC: ${obra.numero_orcamento}</div>` : '';
+                        
+                        // === 2. SISTEMA DE ORÇAMENTO (Sincronizado com a cor) ===
+                        // Puxa o campo novo "codigo_orcamento" ou o antigo "numero_orcamento"
+                        const codOrc = obra.codigo_orcamento || obra.numero_orcamento || '';
+                        
+                        const tagOrcamento = codOrc ? `<div style="font-size: 0.75rem; color: ${etapa.cor}; margin-bottom: 5px; font-weight: 700;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${codOrc}</div>` : '';
 
+                        // === MONTAGEM DO HTML DO CARD ===
                         card.innerHTML = `
-                            <h5>${obra.nome_obra}</h5>
-                            ${numOrcamento}
-                            <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
-                            <p><i class="fa-regular fa-calendar"></i> ${formataBr(obra.data_fim)}</p>
+                            <h5 style="color: var(--azul-marca); font-size: 0.95rem; margin: 0 0 5px 0;">${obra.nome_obra}</h5>
+                            
+                            ${tagOrcamento}
+                            
+                            <p style="color: var(--texto-secundario); font-size: 0.75rem; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <i class="fa-regular fa-building"></i> ${nomeCli}
+                            </p>
+                            <p style="color: var(--texto-secundario); font-size: 0.75rem; margin: 0 0 10px 0;">
+                                <i class="fa-regular fa-calendar"></i> ${formataBr(obra.data_fim)}
+                            </p>
                             
                             <div style="display: flex; gap: 5px; margin-top: 8px;">
-                                <button onclick="abrirGestaoObra(${obra.id}, '${obra.nome_obra.replace(/'/g, "\\'")}', '${nomeCli.replace(/'/g, "\\'")}')" style="flex: 1; padding: 5px; font-size:0.7rem; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--azul-marca); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-list-check"></i> Processos</button>
+                                <button onclick="abrirGestaoObra(${obra.id}, '${obra.nome_obra.replace(/'/g, "\\'")}', '${nomeCli.replace(/'/g, "\\'")}')" style="flex: 1; padding: 5px; font-size:0.7rem; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--texto-secundario); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-list-check"></i> Processos</button>
                                 ${btnArquivos}
                             </div>
                             
