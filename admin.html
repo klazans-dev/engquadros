@@ -115,6 +115,9 @@
         .linha-circuito:nth-child(1)::after { animation-duration: 2.2s; animation-delay: 0s; }
         .linha-circuito:nth-child(2)::after { animation-duration: 1.7s; animation-delay: 0.8s; }
         .linha-circuito:nth-child(3)::after { animation-duration: 2.6s; animation-delay: 1.3s; }
+        .linha-circuito:nth-child(4)::after { animation-duration: 2.2s; animation-delay: 0.3s; }
+        .linha-circuito:nth-child(5)::after { animation-duration: 1.7s; animation-delay: 0.5s; }
+        .linha-circuito:nth-child(6)::after { animation-duration: 2.6s; animation-delay: 1.0s; }
         @keyframes circuitoMove { 0% { left: -80px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
         .saas-title { color: white; font-size: 2.2rem; margin-top: 25px; font-weight: 700; letter-spacing: -0.5px; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .saas-subtitle { color: #94a3b8; font-size: 1.1rem; margin-top: 15px; max-width: 600px; margin-inline: auto; line-height: 1.6; }
@@ -320,10 +323,7 @@
                     <i class="fa-solid fa-industry"></i>
                     <span class="txt-menu">Operacional</span>
                 </a>
-                <a href="#" class="item-menu" id="abaAtendimento" onclick="abrirModulo('atendimento')">
-                    <i class="fa-solid fa-headset"></i>
-                    <span class="txt-menu">Atendimento</span>
-                </a>
+                
                 <!-- NOVOS MÓDULOS -->
                 <a href="#" class="item-menu" id="abaVendas" onclick="abrirModulo('vendas')">
                     <i class="fa-solid fa-cart-shopping"></i>
@@ -340,6 +340,10 @@
                 <a href="#" class="item-menu" id="abaRelatorios" onclick="abrirModulo('relatorios')">
                     <i class="fa-solid fa-chart-pie"></i>
                     <span class="txt-menu">Relatórios</span>
+                </a>
+                <a href="#" class="item-menu" id="abaAtendimento" onclick="abrirModulo('atendimento')">
+                    <i class="fa-solid fa-headset"></i>
+                    <span class="txt-menu">Atendimento ao cliente</span>
                 </a>
                 <!-- FIM NOVOS MÓDULOS -->
                 <a href="#" class="item-menu" id="abaSistema" onclick="abrirModulo('sistema')">
@@ -363,33 +367,35 @@
                 <div class="saas-hero">
                     <div class="circuit-container">
                         <div class="marca-box marca-callinfo">
-                            <img src="public/SAAS.png" alt="Callinfo" class="logo-animada" style="max-height: 60px; margin-bottom: 15px; filter: drop-shadow(0 0 12px rgba(6, 182, 212, 0.6));">
-                            <h3 style="margin:0; font-size:1.3rem;">Callinfo</h3>
-                            <p style="font-size: 0.8rem; color: #06b6d4; margin-top: 5px; font-weight: 600;">Tecnologia & Automação</p>
+                            <img src="public/SAAS.png" alt="Callinfo" class="logo-animada" style="max-height: 170px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));">
+                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado</h3>
+                            <p style="font-size: 1.1rem; color: #06b6d4; margin-top: 16px; font-weight: 600;"></p>
                         </div>
                         <div class="conexoes">
                             <div class="linha-circuito"></div>
                             <div class="linha-circuito"></div>
                             <div class="linha-circuito"></div>
+                            <div class="linha-circuito"></div>
+                            <div class="linha-circuito"></div>
+                            <div class="linha-circuito"></div>
                         </div>
                         <div class="marca-box" id="boxTenantSaaS">
-                            <img src="public/favicon.png" alt="Empresa Cliente" id="logoEmpresaSaaS" class="logo-animada" style="max-height: 60px; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));">
+                            <img src="public/favicon.png" alt="Empresa Cliente" id="logoEmpresaSaaS" class="logo-animada" style="max-height: 150px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));">
                             <h3 style="margin:0; font-size:1.3rem;" id="nomeEmpresaSaaS">Sua Empresa</h3>
                             <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;" id="nichoEmpresaSaaS">Gestão Corporativa</p>
                         </div>
                     </div>
                     
                     <h1 class="saas-title">Bem-vindo ao seu Workspace Inteligente</h1>
-                    <p class="saas-subtitle">Potência, automação e gestão em tempo real. Tudo desenvolvido pela <strong>Callinfo Tecnologia</strong> para escalar a performance da sua operação.</p>
-                    
-                    <div style="display:flex; gap:20px; margin-top: 40px; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn-acao" onclick="abrirTelaAcao('gestaoClientes')" style="padding: 15px 35px; font-size: 1.1rem; border-radius: 8px;">
-                            <i class="fa-solid fa-users"></i> Gerenciar Clientes
-                        </button>
-                        <button class="btn-acao" onclick="abrirTelaAcao('fabricaPcp')" style="background: var(--azul-sutil); padding: 15px 35px; font-size: 1.1rem; border-radius: 8px;">
-                            <i class="fa-solid fa-industry"></i> Chão de Fábrica
-                        </button>
+                    <p class="saas-subtitle">Potência, automação e gestão em tempo real. Tudo desenvolvido pela <strong>Callinfo Tecnologia</strong> para escalar a performance das suas operações.</p>
+                    <p class="saas-subtitle">Acesse os módulos do sistema através do menu lateral e explore as funcionalidades disponíveis para otimizar seus processos internos.</p>
+                    <p class="saas-subtitle">Para suporte ou dúvidas, entre em contato com nossa equipe de atendimento.</p> 
+                    <div style="margin-top: 30px;">
+                        <a href="https://wa.me/5522981063696" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background-color: #25D366; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.05rem; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(37, 211, 102, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(37, 211, 102, 0.2)';">
+                            <i class="fa-brands fa-whatsapp" style="font-size: 1.4rem;"></i> Falar com o Suporte
+                        </a>
                     </div>
+                    
                 </div>
             </div>
 
@@ -762,16 +768,37 @@
                 </div>
                 
                 <div class="card-box">
-                    <form id="formNovoCliente">
-                        <div class="linha-form">
+                  <form id="formNovoCliente">
+                        <!-- NOVO BLOCO: Tipo e Papel -->
+                        <div class="linha-form" style="margin-bottom: 15px;">
                             <div class="form-group" style="flex: 1;">
-                                <label>CNPJ *</label>
-                                <div style="display: flex; gap: 8px;">
-                                    <input type="text" id="novoCliCnpj" required oninput="mascaraCNPJ(this)" maxlength="18" placeholder="00.000.000/0000-00">
-                                    <button type="button" class="btn-acao" onclick="buscarDadosCNPJ('novo')" style="background: var(--azul-sutil);"><i class="fa-solid fa-magnifying-glass"></i> Puxar Dados</button>
+                                <label>Tipo de Cadastro</label>
+                                <div style="display: flex; gap: 15px; margin-top: 8px;">
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="radio" name="novoCliTipo" value="J" checked onchange="alternarMascaraNovo()"> Pessoa Jurídica</label>
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="radio" name="novoCliTipo" value="F" onchange="alternarMascaraNovo()"> Pessoa Física</label>
                                 </div>
                             </div>
-                            <div class="form-group" style="flex: 2;"><label>Razão Social *</label><input type="text" id="novoCliNome" required></div>
+                            <div class="form-group" style="flex: 2;">
+                                <label>Papel no Sistema</label>
+                                <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #f8fafc; padding: 10px 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="novoCliIsCliente" checked> Cliente</label>
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="novoCliIsFornecedor"> Fornecedor</label>
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="novoCliIsVendedor"> Vendedor</label>
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="novoCliIsTransportadora"> Transportadora</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- APROVEITANDO O CAMPO EXISTENTE -->
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 1;">
+                                <label id="lblNovoCliDocumento">CNPJ *</label>
+                                <div style="display: flex; gap: 8px;">
+                                    <input type="text" id="novoCliCnpj" required oninput="mascaraDocumento(this)" maxlength="18" placeholder="00.000.000/0000-00">
+                                    <button type="button" id="btnBuscarNovoCli" class="btn-acao" onclick="buscarDadosCNPJ('novo')" style="background: var(--azul-sutil);"><i class="fa-solid fa-magnifying-glass"></i> Puxar Dados</button>
+                                </div>
+                            </div>
+                            <div class="form-group" style="flex: 2;"><label>Razão Social / Nome Completo *</label><input type="text" id="novoCliNome" required></div>
                         </div>
                         
                         <div class="linha-form">
@@ -819,14 +846,34 @@
                             <i class="fa-solid fa-chevron-down" id="iconeSecCli"></i>
                         </div>
                     </div>
-                    <div class="section-content" id="secEditarCliente">
+                   <div class="section-content" id="secEditarCliente">
                         <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
                             <h2 id="viewCliNome" style="color: var(--azul-marca); font-size: 1.2rem; margin-bottom: 4px;">Nome da Empresa</h2>
-                            <p style="color: var(--texto-secundario); font-size: 0.85rem;">CNPJ: <span id="viewCliCnpj" style="font-weight:600; color:var(--texto-principal);"></span></p>
+                            <p style="color: var(--texto-secundario); font-size: 0.85rem;">Documento: <span id="viewCliCnpj" style="font-weight:600; color:var(--texto-principal);"></span></p>
                         </div>
+                        
                         <form id="formEditarCliente">
+                            <div class="linha-form" style="margin-bottom: 15px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Tipo de Cadastro</label>
+                                    <div style="display: flex; gap: 15px; margin-top: 8px;">
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="radio" name="editCliTipo" value="J" checked> Pessoa Jurídica</label>
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="radio" name="editCliTipo" value="F"> Pessoa Física</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="flex: 2;">
+                                    <label>Papel no Sistema</label>
+                                    <div style="display: flex; gap: 15px; flex-wrap: wrap; background: #f8fafc; padding: 10px 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="editCliIsCliente"> Cliente</label>
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="editCliIsFornecedor"> Fornecedor</label>
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="editCliIsVendedor"> Vendedor</label>
+                                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox" id="editCliIsTransportadora"> Transportadora</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="linha-form">
-                                <div class="form-group" style="flex: 1.5;"><label>Razão Social</label><input type="text" id="editCliNome" required></div>
+                                <div class="form-group" style="flex: 1.5;"><label>Razão Social / Nome</label><input type="text" id="editCliNome" required></div>
                                 <div class="form-group" style="flex: 1;"><label>Chave de Acesso</label><input type="text" id="editCliSenha" required></div>
                                 <div class="form-group" style="flex: 1;">
                                     <label>Status da Conta</label>
@@ -866,18 +913,48 @@
                     </div>
                 </div>
 
-                <!-- Acordeão: Obras -->
+               <!-- Acordeão: Obras -->
                 <div class="card-accordion" style="border-top: 4px solid var(--sucesso);">
                     <div class="section-header" onclick="toggleMainSection('secProjetos', 'iconeSecProj')">
                         <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;"><i class="fa-solid fa-helmet-safety"></i> Gestão de Projetos</h3>
                         <div style="display:flex; align-items:center; gap: 12px;">
-                            <button type="button" id="btnNovaObra" class="btn-acao" onclick="event.stopPropagation(); adicionarObra();" style="background: var(--sucesso); padding: 5px 10px; font-size: 0.75rem; margin: 0;">
+                            <button type="button" id="btnNovaObra" class="btn-acao" onclick="event.stopPropagation(); toggleFormNovaObra();" style="background: var(--sucesso); padding: 5px 10px; font-size: 0.75rem; margin: 0;">
                                 <i class="fa-solid fa-plus"></i> Novo Projeto
                             </button>
                             <i class="fa-solid fa-chevron-down" id="iconeSecProj"></i>
                         </div>
                     </div>
                     <div class="section-content" id="secProjetos">
+                        
+                       <!-- FORMULÁRIO EMBUTIDO DE CRIAÇÃO -->
+                        <div id="formNovaObraContainer" style="display: none; background: #f8fafc; padding: 15px; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 15px; border-left: 4px solid var(--sucesso); animation: fadeIn 0.3s ease;">
+                            <h5 style="color: var(--azul-marca); margin-bottom: 12px; font-size: 0.95rem;"><i class="fa-solid fa-file-circle-plus"></i> Cadastrar Novo Projeto / Quadro</h5>
+                            <div class="linha-form" style="margin-bottom: 12px;">
+                                <div class="form-group" style="flex: 2;">
+                                    <label>Nome do Quadro / Projeto *</label>
+                                    <input type="text" id="novaObraNome" placeholder="Ex: Quadro de Distribuição Principal (QDP)">
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Nº Orçamento (Opcional)</label>
+                                    <input type="text" id="novaObraOrcamento" placeholder="Ex: ORC-2026/05">
+                                </div>
+                            </div>
+                            <div class="linha-form" style="margin-bottom: 12px;">
+                                <div class="form-group">
+                                    <label><i class="fa-regular fa-calendar"></i> Data de Início</label>
+                                    <input type="date" id="novaObraIni">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fa-solid fa-flag-checkered"></i> Previsão de Entrega</label>
+                                    <input type="date" id="novaObraFim">
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 5px;">
+                                <button type="button" onclick="toggleFormNovaObra()" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; padding: 8px 15px;">Cancelar</button>
+                                <button type="button" onclick="salvarNovaObraInline()" id="btnSalvarNovaObra" class="btn-acao" style="background: var(--sucesso); padding: 8px 15px;"><i class="fa-solid fa-check"></i> Criar Projeto e Enviar para o PCP</button>
+                            </div>
+                        </div>
+
                         <div id="listaObrasContainer"></div>
                     </div>
                 </div>
@@ -1176,7 +1253,37 @@
     </div>
 
     <!-- ================= MODAIS ================= -->
-    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+    <div id="modalEditarObraGlobal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; overflow-y: auto;">
+        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); margin: 20px auto; animation: fadeIn 0.3s ease;">
+            <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Dados do Projeto</h3>
+            <input type="hidden" id="editObraGlobalId">
+            <input type="hidden" id="editObraGlobalCnpj">
+            
+            <div class="linha-form">
+                <div class="form-group" style="flex: 2;"><label>Nome do Quadro / Projeto</label><input type="text" id="editObraGlobalNome" required></div>
+                <div class="form-group" style="flex: 1;"><label>Nº Orçamento</label><input type="text" id="editObraGlobalOrcamento"></div>
+            </div>
+            
+            <div class="linha-form">
+                <div class="form-group"><label>Data Início</label><input type="date" id="editObraGlobalIni"></div>
+                <div class="form-group"><label>Previsão de Fim</label><input type="date" id="editObraGlobalFim"></div>
+            </div>
+
+            <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top: 10px;">
+                <label style="color: var(--azul-marca);"><i class="fa-solid fa-bars-progress"></i> Progresso Global (%)</label>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <input type="range" id="editObraGlobalProg" min="0" max="100" oninput="document.getElementById('editObraGlobalProgLbl').innerText = this.value + '%';" style="flex: 1;">
+                    <span id="editObraGlobalProgLbl" style="font-weight: bold; color: var(--azul-marca); width: 40px; text-align: right;">0%</span>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" onclick="document.getElementById('modalEditarObraGlobal').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
+                <button type="button" onclick="salvarEdicaoObraGlobal()" id="btnSalvarObraGlobal" class="btn-acao" style="background: var(--azul-sutil);"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modalEditarProduto" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center; overflow-y: auto;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-sutil); margin: 20px auto;">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Produto / Serviço</h3>
@@ -1219,6 +1326,7 @@
             </div>
         </div>
     </div>
+    
     <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Membro da Equipe</h3>
@@ -1308,9 +1416,20 @@
                 <button type="button" onclick="document.getElementById('modalGestaoObra').style.display='none'" style="background: transparent; border: none; font-size: 1.5rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div id="containerChecklistObra" style="padding: 25px 30px; overflow-y: auto; flex: 1; background: #f1f5f9;"></div>
-            <div style="padding: 20px 30px; border-top: 1px solid #e2e8f0; background: #fff; position: sticky; bottom: 0; border-radius: 0 0 12px 12px; display: flex; justify-content: flex-end; gap: 15px;">
-                <button type="button" onclick="document.getElementById('modalGestaoObra').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
-                <button type="button" onclick="salvarChecklistObra()" class="btn-acao" style="background: var(--sucesso); padding-left: 25px; padding-right: 25px;"><i class="fa-solid fa-floppy-disk"></i> Salvar Gestão</button>
+            <!-- Substitua o rodapé do modalGestaoObra por este: -->
+            <div style="padding: 20px 30px; border-top: 1px solid #e2e8f0; background: #fff; position: sticky; bottom: 0; border-radius: 0 0 12px 12px; display: flex; justify-content: space-between; gap: 15px; flex-wrap: wrap;">
+                
+                <!-- Novo Botão de Imprimir -->
+                <div>
+                    <button type="button" onclick="imprimirChecklist()" class="btn-acao" style="background: #f1f5f9; color: var(--azul-marca); border: 1px solid #cbd5e1;">
+                        <i class="fa-solid fa-print"></i> Imprimir Relação
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" onclick="document.getElementById('modalGestaoObra').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
+                    <button type="button" onclick="salvarChecklistObra()" class="btn-acao" style="background: var(--sucesso); padding-left: 25px; padding-right: 25px;"><i class="fa-solid fa-floppy-disk"></i> Salvar Gestão</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1338,6 +1457,44 @@
         }
 
         // ================= AUTOMAÇÃO ERP (MÁSCARAS E APIS) =================
+        function alternarMascara() {
+            const tipo = document.querySelector('input[name="editCliTipo"]:checked').value;
+            // Adapte caso precise usar essa função também no formEditarCliente
+        }
+
+        function mascaraCPF(i) {
+            let v = i.value.replace(/\D/g,"");
+            v = v.replace(/(\d{3})(\d)/,"$1.$2");
+            v = v.replace(/(\d{3})(\d)/,"$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+            i.value = v;
+        }
+
+        function mascaraDocumento(i) {
+            const tipo = document.querySelector('input[name="novoCliTipo"]:checked').value;
+            if(tipo === 'J') mascaraCNPJ(i);
+            else mascaraCPF(i);
+        }
+
+        function alternarMascaraNovo() {
+            const tipo = document.querySelector('input[name="novoCliTipo"]:checked').value;
+            const lbl = document.getElementById('lblNovoCliDocumento');
+            const input = document.getElementById('novoCliCnpj');
+            const btn = document.getElementById('btnBuscarNovoCli');
+
+            input.value = '';
+            if(tipo === 'J') {
+                lbl.innerText = 'CNPJ *';
+                input.placeholder = '00.000.000/0000-00';
+                input.maxLength = 18;
+                btn.style.display = 'block'; 
+            } else {
+                lbl.innerText = 'CPF *';
+                input.placeholder = '000.000.000-00';
+                input.maxLength = 14;
+                btn.style.display = 'none'; 
+            }
+        }
         function mascaraCNPJ(i) {
             let v = i.value.replace(/\D/g,"");
             v = v.replace(/^(\d{2})(\d)/,"$1.$2");
@@ -1568,7 +1725,6 @@
             }
         }
 
-  
         // ================= GESTÃO DE PRODUTOS E SERVIÇOS (TELA CHEIA) =================
         async function carregarListaProdutos() {
             const lista = document.getElementById('listaProdutosCentral');
@@ -1643,7 +1799,6 @@
             }
         }
 
-        // Função genial que comprime a imagem direto no navegador do usuário
         function comprimirESalvarImagem(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1653,7 +1808,7 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 400; // Mantém leve
+                    const MAX_WIDTH = 400; 
                     const MAX_HEIGHT = 400;
                     let width = img.width;
                     let height = img.height;
@@ -1671,8 +1826,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
 
-                    // Converte para Base64 (Texto)
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% de qualidade
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7); 
                     document.getElementById('fullEditProdImgUrl').value = dataUrl;
                     atualizarPreviewImg();
                 };
@@ -1701,7 +1855,6 @@
             document.getElementById('fullEditProdCfop').value = p.cfop || '';
             document.getElementById('fullEditProdIcms').value = p.origem_icms || '';
 
-            // Lendo o JSON
             let tensao = ''; let corrente = ''; let potencia = ''; let imagem = '';
             if (p.dados_tecnicos) {
                 try {
@@ -1714,7 +1867,6 @@
             document.getElementById('fullEditProdCorrente').value = corrente;
             document.getElementById('fullEditProdPotencia').value = potencia;
             
-            // Injeta a Imagem
             document.getElementById('fullEditProdImgUrl').value = imagem;
             atualizarPreviewImg();
 
@@ -1732,7 +1884,7 @@
                 tensao: document.getElementById('fullEditProdTensao').value.trim(),
                 corrente_maxima: document.getElementById('fullEditProdCorrente').value.trim(),
                 potencia: document.getElementById('fullEditProdPotencia').value.trim(),
-                imagem_url: document.getElementById('fullEditProdImgUrl').value.trim() // Salva a imagem aqui!
+                imagem_url: document.getElementById('fullEditProdImgUrl').value.trim() 
             };
 
             const payload = { 
@@ -1768,9 +1920,6 @@
             document.getElementById('containerListaProdutos').style.display = 'block';
         }
 
-       
-        
-
         async function excluirProdutoFull() {
             const id = document.getElementById('fullEditProdId').value;
             if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
@@ -1779,100 +1928,13 @@
                     if (error) throw error;
                     
                     carregarListaProdutos();
-                    fecharEdicaoProduto(); // Volta pra lista após apagar
+                    fecharEdicaoProduto(); 
                 } catch (error) {
                     alert("Erro ao excluir o produto do banco.");
                 }
             }
         }
-        async function salvarEdicaoProdutoInline(id) {
-            const btn = document.getElementById(`btnSalvarProd-${id}`);
-            const htmlOriginal = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
 
-            // Agrupa os dados elétricos
-            const objTecnico = {
-                tensao: document.getElementById(`editProdTensao-${id}`).value.trim(),
-                corrente_maxima: document.getElementById(`editProdCorrente-${id}`).value.trim(),
-                potencia: document.getElementById(`editProdPotencia-${id}`).value.trim()
-            };
-
-            // Coleta TUDO (Fiscal, Comercial, Técnico e Custos)
-            const payload = { 
-                nome: document.getElementById(`editProdNome-${id}`).value.trim(), 
-                sku: document.getElementById(`editProdSku-${id}`).value.trim(),
-                tipo: document.getElementById(`editProdCategoria-${id}`).value,
-                unidade: document.getElementById(`editProdUnidade-${id}`).value.trim(),
-                ncm: document.getElementById(`editProdNcm-${id}`).value.trim(),
-                cest: document.getElementById(`editProdCest-${id}`).value.trim(),
-                cfop: document.getElementById(`editProdCfop-${id}`).value.trim(),
-                origem_icms: document.getElementById(`editProdIcms-${id}`).value.trim(),
-                preco_custo: parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')),
-                margem_lucro: parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')),
-                preco_venda: parseFloat(document.getElementById(`editProdPreco-${id}`).value.replace(',','.')),
-                dados_tecnicos: objTecnico 
-            };
-
-            try {
-                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
-                if (error) throw error;
-                carregarListaProdutos(); 
-            } catch(e) {
-                alert("Erro ao editar o produto.");
-                btn.innerHTML = htmlOriginal;
-            }
-        }
-
-        // ================= FUNÇÕES AUXILIARES DE EDIÇÃO INLINE =================
-        function calcularMarkupEdit(id) {
-            let custo = parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')) || 0;
-            let markup = parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')) || 0;
-            let precoFinal = custo + (custo * (markup / 100));
-            document.getElementById(`editProdPreco-${id}`).value = precoFinal.toFixed(2);
-        }
-
-        async function salvarEdicaoProdutoInline(id) {
-            const btn = document.getElementById(`btnSalvarProd-${id}`);
-            const htmlOriginal = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
-
-            const objTecnico = {
-                tensao: document.getElementById(`editProdTensao-${id}`).value.trim(),
-                corrente_maxima: document.getElementById(`editProdCorrente-${id}`).value.trim(),
-                potencia: document.getElementById(`editProdPotencia-${id}`).value.trim()
-            };
-
-            const payload = { 
-                nome: document.getElementById(`editProdNome-${id}`).value.trim(), 
-                tipo: document.getElementById(`editProdCategoria-${id}`).value,
-                preco_custo: parseFloat(document.getElementById(`editProdCusto-${id}`).value.replace(',','.')),
-                margem_lucro: parseFloat(document.getElementById(`editProdMarkup-${id}`).value.replace(',','.')),
-                preco_venda: parseFloat(document.getElementById(`editProdPreco-${id}`).value.replace(',','.')),
-                dados_tecnicos: objTecnico 
-            };
-
-            try {
-                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
-                if (error) throw error;
-                carregarListaProdutos(); 
-            } catch(e) {
-                alert("Erro ao editar o produto.");
-                btn.innerHTML = htmlOriginal;
-            }
-        }
-
-        async function excluirProdutoInline(id) {
-            if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
-                try {
-                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
-                    if (error) throw error;
-                    carregarListaProdutos();
-                } catch (error) {
-                    alert("Erro ao excluir o produto do banco.");
-                }
-            }
-        }
-        // ================= FUNÇÕES DE EDIÇÃO DE PRODUTO =================
         function calcularMarkupEdit() {
             let custo = parseFloat(document.getElementById('editProdCusto').value.replace(',','.')) || 0;
             let markup = parseFloat(document.getElementById('editProdMarkup').value.replace(',','.')) || 0;
@@ -1883,7 +1945,6 @@
         function abrirModalProduto(produtoEncoded) {
             const p = JSON.parse(decodeURIComponent(produtoEncoded));
             
-            // Preenche IDs e campos principais
             document.getElementById('editProdId').value = p.id;
             document.getElementById('editProdNome').value = p.nome || '';
             document.getElementById('editProdCategoria').value = p.tipo || 'Painel';
@@ -1891,7 +1952,6 @@
             document.getElementById('editProdMarkup').value = p.margem_lucro || 0;
             document.getElementById('editProdPreco').value = p.preco_venda || 0;
 
-            // Extrai e preenche os campos do JSON (Dados Técnicos)
             let tensao = ''; let corrente = ''; let potencia = '';
             if (p.dados_tecnicos) {
                 try {
@@ -1905,7 +1965,6 @@
             document.getElementById('editProdCorrente').value = corrente;
             document.getElementById('editProdPotencia').value = potencia;
 
-            // Mostra o Modal na tela
             document.getElementById('modalEditarProduto').style.display = 'flex';
         }
 
@@ -1936,7 +1995,7 @@
                 if (error) throw error;
                 
                 document.getElementById('modalEditarProduto').style.display = 'none';
-                carregarListaProdutos(); // Atualiza a lista pra mostrar as alterações!
+                carregarListaProdutos(); 
             } catch(e) {
                 alert("Erro ao editar o produto. O servidor rejeitou a requisição.");
             } finally {
@@ -1952,13 +2011,13 @@
                     if (error) throw error;
                     
                     document.getElementById('modalEditarProduto').style.display = 'none';
-                    carregarListaProdutos(); // Atualiza a lista após sumir com o card
+                    carregarListaProdutos(); 
                 } catch (error) {
                     alert("Erro ao excluir o produto do banco.");
                 }
             }
         }
-// Alternar visualização do formulário de produto
+
         function toggleFormProduto() {
             const form = document.getElementById('boxFormProduto');
             if (form.style.display === 'none' || form.style.display === '') {
@@ -1970,7 +2029,6 @@
             }
         }
 
-        // Filtro de pesquisa de produtos
         function filtrarProdutosCentral() {
             const termo = document.getElementById('inputBuscaProduto').value.toLowerCase().trim();
             const cardsProdutos = document.querySelectorAll('.item-produto-card');
@@ -1980,24 +2038,23 @@
                 card.style.display = conteudo.includes(termo) ? 'flex' : 'none';
             });
         }
+
         document.getElementById('formNovoProduto')?.addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgNovoProduto'); 
             msg.style.color = 'var(--texto-secundario)'; 
             msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cadastrando item...';
             
-            // Agrupando dados elétricos para o campo JSONB
             const objTecnico = {
                 tensao: document.getElementById('prodTensao').value.trim(),
                 corrente_maxima: document.getElementById('prodCorrente').value.trim(),
                 potencia: document.getElementById('prodPotencia').value.trim()
             };
 
-            // Criando o payload EXATAMENTE como exige o seu SQL
             const payload = { 
                 nome: document.getElementById('prodNome').value.trim(), 
                 tipo: document.getElementById('prodCategoria').value,
-                unidade: 'UN', // Coluna obrigatória no seu banco
+                unidade: 'UN', 
                 preco_custo: parseFloat(document.getElementById('prodCusto').value.replace(',','.')),
                 margem_lucro: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')),
                 preco_venda: parseFloat(document.getElementById('prodPreco').value.replace(',','.')),
@@ -2013,7 +2070,6 @@
                 msg.style.color = 'var(--sucesso)'; 
                 msg.innerHTML = '<i class="fa-solid fa-check"></i> Produto inserido com sucesso!'; 
                 
-                // Fecha o formulário automaticamente se ele estiver aberto
                 const formBox = document.getElementById('boxFormProduto');
                 if(formBox) {
                     setTimeout(() => { formBox.style.display = 'none'; }, 1500);
@@ -2088,13 +2144,55 @@
             document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
             document.getElementById('painelNovoCliente').style.display = 'block';
         }
+        
+        async function abrirPainelCliente(cli) {
+            document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none'); 
+            document.getElementById('painelCliente').style.display = 'block'; 
+            clienteSelecionado = String(cli.cnpj).trim();
+            ['secEditarCliente', 'secProjetos', 'secPermissoes', 'secUpload', 'secAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
+            ['iconeSecCli', 'iconeSecProj', 'iconeSecPerm', 'iconeSecUp', 'iconeSecAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.replace('fa-chevron-up', 'fa-chevron-down'); });
+            const containerLista = document.getElementById('listaArquivosAdmin'); 
+            containerLista.innerHTML = '<p style="color: var(--texto-secundario); margin-top: 10px;"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando acervo técnico...</p>';
+            setTimeout(() => { forcarAtualizacaoArquivos(); carregarObrasCliente(clienteSelecionado); }, 10);
+            try {
+                document.getElementById('viewCliNome').innerText = cli.razao_social || 'Sem Nome'; 
+                document.getElementById('viewCliCnpj').innerText = cli.cnpj || '';
+                const elStatusText = document.getElementById('viewCliStatusLabel');
+                if (cli.status === 'inativo') { elStatusText.innerText = 'Inativo (Acesso Bloqueado)'; elStatusText.style.background = 'var(--erro)'; } else { elStatusText.innerText = 'Ativo'; elStatusText.style.background = 'var(--sucesso)'; }
+                
+                const tipoCad = cli.tipo_pessoa || 'J';
+                const rad = document.querySelector(`input[name="editCliTipo"][value="${tipoCad}"]`);
+                if(rad) rad.checked = true;
+                
+                const cbCli = document.getElementById('editCliIsCliente'); if(cbCli) cbCli.checked = cli.is_cliente !== false; 
+                const cbForn = document.getElementById('editCliIsFornecedor'); if(cbForn) cbForn.checked = !!cli.is_fornecedor;
+                const cbVend = document.getElementById('editCliIsVendedor'); if(cbVend) cbVend.checked = !!cli.is_vendedor;
+                const cbTrans = document.getElementById('editCliIsTransportadora'); if(cbTrans) cbTrans.checked = !!cli.is_transportadora;
+                
+                const preencher = (id, valor) => { const campo = document.getElementById(id); if (campo) campo.value = valor || ''; };
+                
+                preencher('editCliNome', cli.razao_social); preencher('editCliSenha', cli.chave_mestre); preencher('editCliWpp', cli.whatsapp); preencher('editCliEmail', cli.email); preencher('editCliStatus', cli.status || 'ativo');
+                preencher('editCliCep', cli.cep); preencher('editCliEnd', cli.endereco); preencher('editCliNum', cli.numero); preencher('editCliBairro', cli.bairro); preencher('editCliCidade', cli.cidade); preencher('editCliUF', cli.uf);
+                
+                const wppBtn = document.getElementById('btnWppDireto');
+                if (cli.whatsapp && String(cli.whatsapp).trim() !== '') { wppBtn.href = `https://wa.me/55${String(cli.whatsapp).replace(/\D/g, '')}`; wppBtn.style.display = 'inline-flex'; } else { wppBtn.style.display = 'none'; }
+                if (isMaster) { document.getElementById('boxVinculos').style.display = 'block'; carregarEquipeParaVinculo(cli.cnpj); }
+                const formUpload = document.getElementById('formUpload'); if(formUpload) formUpload.reset(); const selObra = document.getElementById('selectObraUpload'); if(selObra) selObra.value = ''; const nomeDrop = document.getElementById('nomeArquivoDrop'); if(nomeDrop) nomeDrop.innerHTML = ''; const radioPdf = document.querySelector('input[name="tipoEnvio"][value="pdf"]'); if (radioPdf) radioPdf.checked = true; trocarTipoInput(); 
+            } catch (e) { console.error("Aviso:", e); }
+        }
 
         document.getElementById('formNovoCliente').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const msg = document.getElementById('msgNovoCliente'); msg.style.color = 'var(--texto-secundario)'; msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-          const payload = { 
+            const msg = document.getElementById('msgNovoCliente'); 
+            msg.style.color = 'var(--texto-secundario)'; 
+            msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            
+            const docFormatado = document.getElementById('novoCliCnpj').value.trim();
+
+            const payload = { 
                 razao_social: document.getElementById('novoCliNome').value.trim(), 
-                cnpj: document.getElementById('novoCliCnpj').value.trim(), 
+                cnpj: docFormatado, 
+                cpf_cnpj: docFormatado, 
                 chave_mestre: document.getElementById('novoCliSenha').value.trim(), 
                 whatsapp: document.getElementById('novoCliWpp').value.trim(), 
                 email: document.getElementById('novoCliEmail').value.trim(), 
@@ -2104,16 +2202,31 @@
                 bairro: document.getElementById('novoCliBairro').value.trim(),
                 cidade: document.getElementById('novoCliCidade').value.trim(),
                 uf: document.getElementById('novoCliUF').value.trim(),
-                status: 'ativo' 
+                status: 'ativo',
+                tipo_pessoa: document.querySelector('input[name="novoCliTipo"]:checked').value,
+                is_cliente: document.getElementById('novoCliIsCliente').checked,
+                is_fornecedor: document.getElementById('novoCliIsFornecedor').checked,
+                is_vendedor: document.getElementById('novoCliIsVendedor').checked,
+                is_transportadora: document.getElementById('novoCliIsTransportadora').checked
             };
-            const { error } = await supabaseClient.from('clientes').insert([payload]);
-            if (!error) { 
+
+            try {
+                const { error } = await supabaseClient.from('clientes').insert([payload]);
+                if (error) throw error;
+                
                 document.getElementById('formNovoCliente').reset(); 
                 carregarListaClientesGlobais(); 
-                msg.style.color = 'var(--sucesso)'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Cliente registrado!'; 
-                setTimeout(() => { msg.innerText = ''; abrirTelaAcao('gestaoClientes'); }, 2000); 
-            } 
-            else { msg.style.color = 'var(--erro)'; msg.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao salvar. CNPJ duplicado?'; }
+                msg.style.color = 'var(--sucesso)'; 
+                msg.innerHTML = '<i class="fa-solid fa-check"></i> Cadastro registrado com sucesso!'; 
+                
+                setTimeout(() => { 
+                    msg.innerText = ''; 
+                    abrirTelaAcao('gestaoClientes'); 
+                }, 2000); 
+            } catch (err) {
+                msg.style.color = 'var(--erro)'; 
+                msg.innerHTML = '<i class="fa-solid fa-xmark"></i> Erro ao salvar. Documento já cadastrado?';
+            }
         });
 
         function filtrarKanban() {
@@ -2127,29 +2240,71 @@
             });
         }
 
-        async function carregarDashboardKanban() {
-            const col0 = document.getElementById('kbColuna0'); const col50 = document.getElementById('kbColuna50'); const col100 = document.getElementById('kbColuna100'); if(!col0) return;
-            col0.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; col50.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
-            try {
-                let query = supabaseClient.from('obras').select('*').order('id', { ascending: false }); if (!isMaster && cnpjsPermitidos.length > 0) { query = query.in('cliente_cnpj', cnpjsPermitidos); }
-                const { data: obrasData, error } = await query; if (error) throw error;
-                col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
-                if(obrasData && obrasData.length > 0) {
-                    obrasData.forEach(obra => {
-                        const progresso = obra.progresso || 0; let nomeCli = 'Cliente não encontrado'; let objCliente = null;
-                        const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj)); if(cliMatch) { nomeCli = cliMatch.razao_social; objCliente = cliMatch; }
-                        let onClickAttr = ''; if (objCliente) { const cliJson = encodeURIComponent(JSON.stringify(objCliente)); onClickAttr = `onclick="abrirClienteViaKanban('${cliJson}')"`; }
-                        const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                        const htmlCard = `<div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}><h4>${nT}</h4><p><i class="fa-regular fa-building"></i> ${nomeCli}</p><div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${progresso}%;"></div></div><div style="text-align: right; font-size: 0.75rem; font-weight: 700; margin-top: 6px; color: var(--texto-secundario);">${progresso}% concluído</div></div>`;
-                        if (progresso === 0) col0.innerHTML += htmlCard; else if (progresso === 100) col100.innerHTML += htmlCard; else col50.innerHTML += htmlCard;
-                    });
-                }
-                if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos novos.</p>';
-                if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem obras em andamento.</p>';
-                if(col100.innerHTML==='') col100.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos finalizados.</p>';
-                filtrarKanban(); 
-            } catch(e) { console.error("Erro Kanban:", e); }
+      async function carregarDashboardKanban() {
+    const col0 = document.getElementById('kbColuna0'); 
+    const col50 = document.getElementById('kbColuna50'); 
+    const col100 = document.getElementById('kbColuna100'); 
+    if(!col0) return;
+    
+    col0.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
+    col50.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
+    col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+    
+    try {
+        let query = supabaseClient.from('obras').select('*').order('id', { ascending: false }); 
+        if (!isMaster && cnpjsPermitidos.length > 0) { 
+            query = query.in('cliente_cnpj', cnpjsPermitidos); 
         }
+        
+        const { data: obrasData, error } = await query; 
+        if (error) throw error;
+        
+        col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
+        
+        if(obrasData && obrasData.length > 0) {
+            obrasData.forEach(obra => {
+                const progresso = obra.progresso || 0; 
+                let nomeCli = 'Cliente não encontrado'; 
+                
+                const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj)); 
+                if(cliMatch) { 
+                    nomeCli = cliMatch.razao_social; 
+                }
+                
+                // MUDANÇA AQUI: Agora codificamos os dados da OBRA e chamamos a função de edição global
+                const oCodificada = encodeURIComponent(JSON.stringify(obra));
+                const onClickAttr = `onclick="abrirEdicaoObraGlobal('${oCodificada}')" style="cursor: pointer;"`;
+                
+                const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                
+                const htmlCard = `
+                <div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}>
+                    <h4>${nT}</h4>
+                    <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${progresso}%;"></div>
+                    </div>
+                    <div style="text-align: right; font-size: 0.75rem; font-weight: 700; margin-top: 6px; color: var(--texto-secundario);">
+                        ${progresso}% concluído
+                    </div>
+                </div>`;
+                
+                if (progresso === 0) col0.innerHTML += htmlCard; 
+                else if (progresso === 100) col100.innerHTML += htmlCard; 
+                else col50.innerHTML += htmlCard;
+            });
+        }
+        
+        if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos novos.</p>';
+        if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem obras em andamento.</p>';
+        if(col100.innerHTML==='') col100.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos finalizados.</p>';
+        
+        filtrarKanban(); 
+        
+    } catch(e) { 
+        console.error("Erro Kanban:", e); 
+    }
+}
 
         function abrirClienteViaKanban(cliEncoded) {
             const cli = JSON.parse(decodeURIComponent(cliEncoded)); 
@@ -2171,98 +2326,188 @@
         }
 
         async function carregarObrasCliente(cnpj) {
-            const container = document.getElementById('listaObrasContainer'); container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
+            const container = document.getElementById('listaObrasContainer'); 
+            container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
             const p = getPermissoes(); 
+            
             try {
                 const { data, error } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', cnpj).order('id', { ascending: false });
-                if(error) throw error; obrasDoClienteAtual = data || []; atualizarDropdownObrasUpload();
-                if(!data || data.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; font-style:italic;">Nenhum projeto cadastrado para este cliente.</p>'; return; }
+                if(error) throw error; 
+                obrasDoClienteAtual = data || []; 
+                atualizarDropdownObrasUpload();
+                
+                if(!data || data.length === 0) { 
+                    container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; font-style:italic;">Nenhum projeto cadastrado para este cliente.</p>'; 
+                    return; 
+                }
+                
                 let html = '';
+                let nomeCli = 'Cliente não encontrado';
+                const c = listaGlobalClientes.find(x => String(x.cnpj) === String(cnpj));
+                if(c) nomeCli = c.razao_social.replace(/'/g, "\\'");
+
                 data.forEach(obra => {
-                    const id = obra.id; const prog = obra.progresso || 0; const nomeT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                    const dIni = obra.data_inicio || ''; const dFim = obra.data_fim || '';
-                    const inputStatus = p.obras ? '' : 'disabled';
-                    const botoesAcao = p.obras ? `<div style="display:flex; gap:10px; margin-top: 15px;"><button type="button" class="btn-acao" onclick="salvarEdicaoObra(${id})"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button><button type="button" class="btn-acao" style="background:transparent; color:var(--erro); border:1px solid var(--erro);" onclick="excluirObra(${id})"><i class="fa-solid fa-trash-can"></i> Excluir</button></div>` : '';
-                    const btnAnexarRapido = p.arquivos ? `<button type="button" class="btn-acao" onclick="prepararUploadParaObra(${id})" style="background:var(--azul-sutil); width:100%; margin-top:10px;"><i class="fa-solid fa-paperclip"></i> Anexar Arquivo para este Projeto</button>` : '';
+                    const id = obra.id; 
+                    const prog = obra.progresso || 0; 
+                    const nomeT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    const dIni = obra.data_inicio || ''; 
+                    const dFim = obra.data_fim || '';
+                    const codOrc = obra.codigo_orcamento || obra.numero_orcamento || '';
+                    
+                    const oCodificada = encodeURIComponent(JSON.stringify(obra));
+                    
                     let corStatus = prog === 100 ? 'var(--sucesso)' : 'var(--azul-sutil)';
-                    let datasExibicao = ''; if(dIni || dFim) { const formataBr = (d) => { if(!d) return '--/--/----'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; }; datasExibicao = `<div style="font-size: 0.75rem; color: var(--texto-secundario); margin-top: 3px; font-weight: 500;"><i class="fa-regular fa-calendar-check"></i> Início: ${formataBr(dIni)} &nbsp;|&nbsp; <i class="fa-regular fa-calendar-xmark"></i> Entrega: ${formataBr(dFim)}</div>`; }
+                    
+                    let datasExibicao = ''; 
+                    if(dIni || dFim) { 
+                        const formataBr = (d) => { if(!d) return '--/--/----'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; }; 
+                        datasExibicao = `<div style="font-size: 0.75rem; color: var(--texto-secundario); margin-top: 5px; font-weight: 500;"><i class="fa-regular fa-calendar-check"></i> Início: ${formataBr(dIni)} &nbsp;|&nbsp; <i class="fa-regular fa-calendar-xmark"></i> Entrega: ${formataBr(dFim)}</div>`; 
+                    }
+                    
+                    const tagOrcamento = codOrc ? `<span style="font-size: 0.7rem; background: #e2e8f0; color: var(--texto-secundario); padding: 2px 6px; border-radius: 4px; margin-left: 10px; font-weight: 600;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${codOrc}</span>` : '';
 
                     html += `
-                    <div class="obra-accordion">
-                        <div class="obra-header" onclick="toggleObra(${id})">
-                            <div><h4><i class="fa-solid fa-helmet-safety" style="color:${corStatus}; margin-right:8px;"></i> ${nomeT}</h4>${datasExibicao}</div>
-                            <div class="obra-header-right"><span id="lblProgMini-${id}" style="color:${corStatus};">${prog}%</span><i class="fa-solid fa-chevron-down" id="icone-obra-${id}"></i></div>
+                    <div class="ticket-card" style="align-items: center; border-left: 4px solid ${corStatus}; padding: 15px; display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 12px; background: #fff;">
+                        <div onclick="abrirEdicaoObraGlobal('${oCodificada}')" style="flex: 1; min-width: 200px; cursor: pointer; transition: 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'" title="Clique para editar os dados do projeto">
+                            <h4 style="color: var(--azul-marca); font-size: 1rem; margin: 0; display: flex; align-items: center;">
+                                <i class="fa-solid fa-helmet-safety" style="color:${corStatus}; margin-right:8px;"></i> ${nomeT}
+                                ${tagOrcamento}
+                            </h4>
+                            ${datasExibicao}
                         </div>
-                        <div class="obra-content" id="conteudo-obra-${id}">
-                            <div class="form-group"><label>Nome da Obra / Projeto Técnico</label><input type="text" id="editObraNome-${id}" value="${nomeT}" ${inputStatus}></div>
-                            <div class="linha-form" style="margin-bottom: 12px;">
-                                <div class="form-group"><label><i class="fa-regular fa-calendar"></i> Data de Início</label><input type="date" id="editObraIni-${id}" value="${dIni}" ${inputStatus}></div>
-                                <div class="form-group"><label><i class="fa-solid fa-flag-checkered"></i> Previsão de Entrega</label><input type="date" id="editObraFim-${id}" value="${dFim}" ${inputStatus}></div>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <div style="text-align: right; margin-right: 10px; min-width: 45px;">
+                                <span style="font-size: 1.1rem; font-weight: 700; color: ${corStatus};">${prog}%</span>
                             </div>
-                            <div class="form-group">
-                                <label style="color: var(--azul-marca); font-size: 0.85rem;"><i class="fa-solid fa-bars-progress"></i> Progresso Atual: <span id="lblProg-${id}" style="font-weight: 700; color: ${corStatus}; font-size: 1rem;">${prog}%</span></label>
-                                <input type="range" id="editObraProg-${id}" min="0" max="100" value="${prog}" oninput="document.getElementById('lblProg-${id}').innerText = this.value + '%'; document.getElementById('lblProgMini-${id}').innerText = this.value + '%';" style="margin-top: 10px;" ${inputStatus}>
-                            </div>
-                            ${botoesAcao} ${btnAnexarRapido}
+                            <button type="button" onclick="abrirEdicaoObraGlobal('${oCodificada}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-marca); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Editar Projeto"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" onclick="abrirGestaoObra(${id}, '${nomeT}', '${nomeCli}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-sutil); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Processos (Checklist)"><i class="fa-solid fa-list-check"></i> Processos</button>
+                            ${p.arquivos ? `<button type="button" onclick="prepararUploadParaObra(${id})" class="btn-acao" style="background:#f1f5f9; color:var(--texto-secundario); border:1px solid #cbd5e1; padding: 8px; font-size: 0.8rem;" title="Anexar Arquivo"><i class="fa-solid fa-paperclip"></i></button>` : ''}
+                            ${p.obras ? `<button type="button" onclick="excluirObra(${id})" class="btn-acao" style="background:transparent; color:var(--erro); border:1px solid var(--erro); padding: 8px; font-size: 0.8rem;" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>` : ''}
                         </div>
                     </div>`;
                 });
                 container.innerHTML = html;
-            } catch(e) { container.innerHTML = `<p style="color:var(--erro);">Erro ao buscar obras.</p>`; }
+            } catch(e) { 
+                container.innerHTML = `<p style="color:var(--erro);">Erro ao buscar obras.</p>`; 
+            }
         }
 
-        function toggleObra(id) { const conteudo = document.getElementById(`conteudo-obra-${id}`); const icone = document.getElementById(`icone-obra-${id}`); if(conteudo.style.display === 'block') { conteudo.style.display = 'none'; icone.classList.replace('fa-chevron-up', 'fa-chevron-down'); } else { conteudo.style.display = 'block'; icone.classList.replace('fa-chevron-down', 'fa-chevron-up'); } }
+        function toggleFormNovaObra() {
+            const form = document.getElementById('formNovaObraContainer');
+            const sec = document.getElementById('secProjetos');
+            const icone = document.getElementById('iconeSecProj');
 
-        async function adicionarObra() {
-            const nome = prompt("Digite o nome da nova Obra ou Projeto:"); if(!nome || nome.trim() === "") return;
-            try { 
-                const payload = { cliente_cnpj: clienteSelecionado, nome_obra: nome.trim(), progresso: 0, etapa_pcp_id: 'etp1' }; 
-                const { error } = await supabaseClient.from('obras').insert([payload]); 
-                if(error) throw new Error(error.message); 
-                carregarObrasCliente(clienteSelecionado); carregarDashboardKanban(); carregarProjetosPCP();
-            } catch(e) { alert("Erro de comunicação ao criar obra."); }
+            if(sec.style.display === 'none' || sec.style.display === '') {
+                sec.style.display = 'block'; icone.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            }
+
+            if(form.style.display === 'none') {
+                form.style.display = 'block';
+                document.getElementById('novaObraNome').focus();
+            } else {
+                form.style.display = 'none';
+                document.getElementById('novaObraNome').value = '';
+                document.getElementById('novaObraOrcamento').value = '';
+                document.getElementById('novaObraIni').value = '';
+                document.getElementById('novaObraFim').value = '';
+            }
         }
 
-        async function salvarEdicaoObra(id) {
-            const nome = document.getElementById(`editObraNome-${id}`).value.trim(); const prog = document.getElementById(`editObraProg-${id}`).value; const dIni = document.getElementById(`editObraIni-${id}`).value; const dFim = document.getElementById(`editObraFim-${id}`).value;
-            if(!nome) { alert("O nome não pode ser vazio."); return; }
+        async function salvarNovaObraInline() {
+            const nome = document.getElementById('novaObraNome').value.trim();
+            const orc = document.getElementById('novaObraOrcamento').value.trim();
+            const dIni = document.getElementById('novaObraIni').value;
+            const dFim = document.getElementById('novaObraFim').value;
+            const btn = document.getElementById('btnSalvarNovaObra');
+
+            if(!nome) { alert("Por favor, digite o nome do projeto ou quadro."); return; }
+            const textoOriginal = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando...';
+
             try {
-                let payload = { nome_obra: nome, progresso: parseInt(prog) };
-                if (dIni) payload.data_inicio = dIni; else payload.data_inicio = null;
-                if (dFim) payload.data_fim = dFim; else payload.data_fim = null;
-                const { error } = await supabaseClient.from('obras').update(payload).eq('id', id); if(error) throw new Error(error.message);
-                alert("Projeto atualizado com sucesso!"); carregarObrasCliente(clienteSelecionado); carregarDashboardKanban(); carregarProjetosPCP();
-            } catch(e) { alert("Erro ao salvar edição."); }
+                const payload = {
+                    cliente_cnpj: clienteSelecionado,
+                    nome_obra: nome,
+                    codigo_orcamento: orc ? orc : null,
+                    data_inicio: dIni || null,
+                    data_fim: dFim || null,
+                    progresso: 0,
+                    etapa_pcp_id: 'etp1' 
+                };
+                
+                const { error } = await supabaseClient.from('obras').insert([payload]);
+                if(error) throw new Error(error.message);
+
+                toggleFormNovaObra(); 
+                carregarObrasCliente(clienteSelecionado); 
+                carregarDashboardKanban(); carregarProjetosPCP();
+            } catch(e) {
+                alert("Erro de comunicação ao criar obra.");
+            } finally { btn.innerHTML = textoOriginal; }
+        }
+
+        function abrirEdicaoObraGlobal(obraEncoded) {
+            const obra = JSON.parse(decodeURIComponent(obraEncoded));
+            document.getElementById('editObraGlobalId').value = obra.id;
+            document.getElementById('editObraGlobalCnpj').value = obra.cliente_cnpj;
+            document.getElementById('editObraGlobalNome').value = obra.nome_obra || '';
+            document.getElementById('editObraGlobalOrcamento').value = obra.codigo_orcamento || obra.numero_orcamento || '';
+            document.getElementById('editObraGlobalIni').value = obra.data_inicio || '';
+            document.getElementById('editObraGlobalFim').value = obra.data_fim || '';
+            
+            const prog = obra.progresso || 0;
+            document.getElementById('editObraGlobalProg').value = prog;
+            document.getElementById('editObraGlobalProgLbl').innerText = prog + '%';
+            
+            document.getElementById('modalEditarObraGlobal').style.display = 'flex';
+        }
+
+        async function salvarEdicaoObraGlobal() {
+            const id = document.getElementById('editObraGlobalId').value;
+            const cnpj = document.getElementById('editObraGlobalCnpj').value;
+            const nome = document.getElementById('editObraGlobalNome').value.trim();
+            const orc = document.getElementById('editObraGlobalOrcamento').value.trim();
+            const dIni = document.getElementById('editObraGlobalIni').value;
+            const dFim = document.getElementById('editObraGlobalFim').value;
+            const prog = document.getElementById('editObraGlobalProg').value;
+            const btn = document.getElementById('btnSalvarObraGlobal');
+            
+            if(!nome) return;
+            const originalHTML = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+            try {
+                let payload = { 
+                    nome_obra: nome, 
+                    codigo_orcamento: orc || null,
+                    progresso: parseInt(prog) || 0,
+                    data_inicio: dIni || null,
+                    data_fim: dFim || null
+                };
+                
+                const { error } = await supabaseClient.from('obras').update(payload).eq('id', id);
+                if(error) throw error;
+                
+                document.getElementById('modalEditarObraGlobal').style.display = 'none';
+                
+                carregarProjetosPCP();
+                carregarDashboardKanban();
+                if(clienteSelecionado === cnpj) { carregarObrasCliente(cnpj); }
+            } catch(e) { alert("Erro ao salvar edição."); } 
+            finally { btn.innerHTML = originalHTML; }
         }
 
         async function excluirObra(id) { if(confirm("Tem certeza que deseja apagar este projeto do sistema?")) { try { const { error } = await supabaseClient.from('obras').delete().eq('id', id); if(error) throw new Error(error.message); carregarObrasCliente(clienteSelecionado); carregarDashboardKanban(); carregarProjetosPCP(); } catch(e) { alert("Erro ao excluir do banco."); } } }
 
-        async function abrirPainelCliente(cli) {
-            document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none'); document.getElementById('painelCliente').style.display = 'block'; clienteSelecionado = String(cli.cnpj).trim();
-            ['secEditarCliente', 'secProjetos', 'secPermissoes', 'secUpload', 'secAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
-            ['iconeSecCli', 'iconeSecProj', 'iconeSecPerm', 'iconeSecUp', 'iconeSecAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.replace('fa-chevron-up', 'fa-chevron-down'); });
-            const containerLista = document.getElementById('listaArquivosAdmin'); containerLista.innerHTML = '<p style="color: var(--texto-secundario); margin-top: 10px;"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando acervo técnico...</p>';
-            setTimeout(() => { forcarAtualizacaoArquivos(); carregarObrasCliente(clienteSelecionado); }, 10);
-            try {
-                document.getElementById('viewCliNome').innerText = cli.razao_social || 'Sem Nome'; document.getElementById('viewCliCnpj').innerText = cli.cnpj || '';
-                const elStatusText = document.getElementById('viewCliStatusLabel');
-                if (cli.status === 'inativo') { elStatusText.innerText = 'Inativo (Acesso Bloqueado)'; elStatusText.style.background = 'var(--erro)'; } else { elStatusText.innerText = 'Ativo'; elStatusText.style.background = 'var(--sucesso)'; }
-                const preencher = (id, valor) => { const campo = document.getElementById(id); if (campo) campo.value = valor || ''; };
-                
-                preencher('editCliNome', cli.razao_social); preencher('editCliSenha', cli.chave_mestre); preencher('editCliWpp', cli.whatsapp); preencher('editCliEmail', cli.email); preencher('editCliStatus', cli.status || 'ativo');
-                preencher('editCliCep', cli.cep); preencher('editCliEnd', cli.endereco); preencher('editCliNum', cli.numero); preencher('editCliBairro', cli.bairro); preencher('editCliCidade', cli.cidade); preencher('editCliUF', cli.uf);
-                
-                const wppBtn = document.getElementById('btnWppDireto');
-                if (cli.whatsapp && String(cli.whatsapp).trim() !== '') { wppBtn.href = `https://wa.me/55${String(cli.whatsapp).replace(/\D/g, '')}`; wppBtn.style.display = 'inline-flex'; } else { wppBtn.style.display = 'none'; }
-                if (isMaster) { document.getElementById('boxVinculos').style.display = 'block'; carregarEquipeParaVinculo(cli.cnpj); }
-                const formUpload = document.getElementById('formUpload'); if(formUpload) formUpload.reset(); const selObra = document.getElementById('selectObraUpload'); if(selObra) selObra.value = ''; const nomeDrop = document.getElementById('nomeArquivoDrop'); if(nomeDrop) nomeDrop.innerHTML = ''; const radioPdf = document.querySelector('input[name="tipoEnvio"][value="pdf"]'); if (radioPdf) radioPdf.checked = true; trocarTipoInput(); 
-            } catch (e) { console.error("Aviso:", e); }
-        }
-
         document.getElementById('formEditarCliente').addEventListener('submit', async function(e) {
             e.preventDefault(); const msg = document.getElementById('msgEditCliente'); msg.style.color = 'var(--texto-secundario)'; msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
             try {
-               const payload = { 
+                const docSel = document.querySelector('input[name="editCliTipo"]:checked');
+                const pTipo = docSel ? docSel.value : 'J';
+                const pCli = document.getElementById('editCliIsCliente') ? document.getElementById('editCliIsCliente').checked : true;
+                const pForn = document.getElementById('editCliIsFornecedor') ? document.getElementById('editCliIsFornecedor').checked : false;
+                const pVend = document.getElementById('editCliIsVendedor') ? document.getElementById('editCliIsVendedor').checked : false;
+                const pTrans = document.getElementById('editCliIsTransportadora') ? document.getElementById('editCliIsTransportadora').checked : false;
+
+                const payload = { 
                     razao_social: document.getElementById('editCliNome').value.trim(), 
                     chave_mestre: document.getElementById('editCliSenha').value.trim(), 
                     whatsapp: document.getElementById('editCliWpp').value.trim(), 
@@ -2272,7 +2517,12 @@
                     bairro: document.getElementById('editCliBairro').value.trim(),
                     cidade: document.getElementById('editCliCidade').value.trim(),
                     uf: document.getElementById('editCliUF').value.trim(),
-                    status: document.getElementById('editCliStatus').value 
+                    status: document.getElementById('editCliStatus').value,
+                    tipo_pessoa: pTipo,
+                    is_cliente: pCli,
+                    is_fornecedor: pForn,
+                    is_vendedor: pVend,
+                    is_transportadora: pTrans
                 };
                 const campoEmail = document.getElementById('editCliEmail'); if (campoEmail) payload.email = campoEmail.value.trim();
                 const { error } = await supabaseClient.from('clientes').update(payload).eq('cnpj', clienteSelecionado); if (error) throw error;
@@ -2422,8 +2672,8 @@
             const cards = document.querySelectorAll('.card-op');
 
             cards.forEach(card => {
-                const conteudoCard = card.innerText.toLowerCase();
-                if (conteudoCard.includes(termo)) {
+                const textoCard = card.innerText.toLowerCase();
+                if (textoCard.includes(termo)) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -2431,478 +2681,494 @@
             });
         }
 
-        async function carregarProjetosPCP() {
+async function carregarProjetosPCP() {
             const board = document.getElementById('boardPCP');
-            board.innerHTML = '<p style="color:var(--texto-secundario); padding:20px;"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando projetos do chão de fábrica...</p>';
+            if(!board) return;
+            
+            // Monta a estrutura das colunas do Kanban
+            board.innerHTML = '';
+            etapasPCP.forEach(etapa => {
+                board.innerHTML += `
+                <div class="coluna-pcp" id="${etapa.id}" ondragover="permitirDrop(event)" ondrop="soltar(event)">
+                    <div class="coluna-header" style="border-bottom-color: ${etapa.cor}; color: var(--azul-marca);">
+                        ${etapa.nome} <span id="count_${etapa.id}" style="background: #e2e8f0; color: var(--texto-secundario); padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">0</span>
+                    </div>
+                    <div class="coluna-body" id="body_${etapa.id}"></div>
+                </div>`;
+            });
 
             try {
                 let query = supabaseClient.from('obras').select('*').order('id', { ascending: false });
-                if (!isMaster && cnpjsPermitidos.length > 0) { query = query.in('cliente_cnpj', cnpjsPermitidos); }
-
-                const { data: obrasData, error } = await query;
+                if (!isMaster && cnpjsPermitidos.length > 0) {
+                    query = query.in('cliente_cnpj', cnpjsPermitidos);
+                }
+                const { data, error } = await query;
                 if (error) throw error;
 
-                const listaObras = obrasData || [];
-                board.innerHTML = '';
+                const contadores = {};
+                etapasPCP.forEach(e => contadores[e.id] = 0);
 
-                etapasPCP.forEach(etapa => {
-                    const col = document.createElement('div');
-                    col.className = 'coluna-pcp'; 
-                    col.setAttribute('data-etapa-id', etapa.id);
-                    
-                    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
-                    col.addEventListener('dragleave', e => { col.classList.remove('drag-over'); });
-                    col.addEventListener('drop', e => soltarCardObraPCP(e, col));
-
-                    const obrasNaEtapa = listaObras.filter(o => (o.etapa_pcp_id || 'etp1') === etapa.id);
-
-                    col.innerHTML = `
-                        <div class="coluna-header" style="border-top: 3px solid ${etapa.cor};">
-                            <span>${etapa.nome}</span> 
-                            <span style="background: ${etapa.cor}20; color: ${etapa.cor}; padding: 1px 6px; border-radius: 10px; font-size: 0.75rem;">
-                                ${obrasNaEtapa.length}
-                            </span>
-                        </div>
-                        <div class="coluna-body" id="body-${etapa.id}"></div>
-                    `;
-                    board.appendChild(col);
-
-                    const bodyCol = col.querySelector('.coluna-body');
-                    
-                    obrasNaEtapa.forEach(obra => {
-                        let nomeCli = 'Cliente não encontrado';
-                        const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
-                        if(cliMatch) nomeCli = cliMatch.razao_social;
-
-                        const card = document.createElement('div');
-                        card.className = 'card-op item-pcp-card'; // Adicionado item-pcp-card para busca
-                        card.setAttribute('draggable', 'true'); 
-                        card.setAttribute('data-obra-id', obra.id);
+                if (data && data.length > 0) {
+                    data.forEach(obra => {
+                        let etapaAtual = obra.etapa_pcp_id || 'etp1';
+                        if (!contadores.hasOwnProperty(etapaAtual)) etapaAtual = 'etp1';
                         
-                        // === 1. MÁGICA DA COR: Aplica a cor da coluna atual na borda lateral do card ===
-                        card.style.borderLeft = `5px solid ${etapa.cor}`;
-                        
-                        card.addEventListener('dragstart', e => { 
-                            e.dataTransfer.setData('text/plain', obra.id); 
-                            setTimeout(() => card.style.opacity = '0.4', 0); 
-                        });
-                        card.addEventListener('dragend', () => card.style.opacity = '1');
-
-                        const formataBr = (d) => { if(!d) return 'Sem prazo'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; };
-                        
-                        const cliJson = cliMatch ? encodeURIComponent(JSON.stringify(cliMatch)) : '';
-                        const btnArquivos = cliMatch ? `<button onclick="abrirClienteViaKanban('${cliJson}')" style="flex: 1; padding: 5px; font-size:0.7rem; background:#f8fafc; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--azul-sutil); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-folder-open"></i> Acessar</button>` : '';
-                        
-                        // === 2. SISTEMA DE ORÇAMENTO (Sincronizado com a cor) ===
-                        // Puxa o campo novo "codigo_orcamento" ou o antigo "numero_orcamento"
-                        const codOrc = obra.codigo_orcamento || obra.numero_orcamento || '';
-                        
-                        const tagOrcamento = codOrc ? `<div style="font-size: 0.75rem; color: ${etapa.cor}; margin-bottom: 5px; font-weight: 700;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${codOrc}</div>` : '';
-
-                        // === MONTAGEM DO HTML DO CARD ===
-                        card.innerHTML = `
-                            <h5 style="color: var(--azul-marca); font-size: 0.95rem; margin: 0 0 5px 0;">${obra.nome_obra}</h5>
+                        const containerColuna = document.getElementById(`body_${etapaAtual}`);
+                        if (containerColuna) {
+                            contadores[etapaAtual]++;
+                            let nomeCli = 'Cliente não encontrado';
+                            const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
+                            if (cliMatch) nomeCli = cliMatch.razao_social;
                             
-                            ${tagOrcamento}
+                            const corBorda = etapasPCP.find(e => e.id === etapaAtual).cor;
                             
-                            <p style="color: var(--texto-secundario); font-size: 0.75rem; margin: 0 0 3px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                <i class="fa-regular fa-building"></i> ${nomeCli}
-                            </p>
-                            <p style="color: var(--texto-secundario); font-size: 0.75rem; margin: 0 0 10px 0;">
-                                <i class="fa-regular fa-calendar"></i> ${formataBr(obra.data_fim)}
-                            </p>
+                            const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
+                            const cliT = nomeCli ? nomeCli.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
                             
-                            <div style="display: flex; gap: 5px; margin-top: 8px;">
-                                <button onclick="abrirGestaoObra(${obra.id}, '${obra.nome_obra.replace(/'/g, "\\'")}', '${nomeCli.replace(/'/g, "\\'")}')" style="flex: 1; padding: 5px; font-size:0.7rem; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--texto-secundario); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-list-check"></i> Processos</button>
-                                ${btnArquivos}
-                            </div>
+                            // Codifica os dados da obra para o clique no card abrir o modal de edição global
+                            const oCodificada = encodeURIComponent(JSON.stringify(obra));
                             
-                            <button onclick="imprimirDetalhesProjeto(${obra.id})" style="margin-top: 5px; width: 100%; padding: 5px; font-size:0.7rem; background:transparent; border:1px solid #cbd5e1; border-radius:4px; cursor:pointer; color: var(--texto-secundario); font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-print"></i> Ficha de Produção</button>
-                        `;
-                        bodyCol.appendChild(card);
+                            containerColuna.innerHTML += `
+                            <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${corBorda}; cursor: pointer;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
+                                <h5>${obra.nome_obra}</h5>
+                                <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
+                                ${obra.codigo_orcamento ? `<p><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario);">${obra.progresso || 0}% Concluído</span>
+                                    
+                                    <div style="display: flex; gap: 5px;">
+                                        <!-- Botão de Upload (Clipe) -->
+                                        <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; transition: 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='var(--azul-marca)';" onmouseout="this.style.background='#f1f5f9'; this.style.color='var(--texto-secundario)';" title="Anexar Arquivo">
+                                            <i class="fa-solid fa-paperclip"></i>
+                                        </button>
+                                        
+                                        <!-- Botão de Processos -->
+                                        <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; transition: 0.2s;" onmouseover="this.style.background='var(--azul-marca)'" onmouseout="this.style.background='var(--azul-sutil)'" title="Abrir Processos">
+                                            <i class="fa-solid fa-list-check"></i> Processos
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }
                     });
+                }
+
+                // Atualiza contadores
+                etapasPCP.forEach(e => {
+                    const countEl = document.getElementById(`count_${e.id}`);
+                    if (countEl) countEl.innerText = contadores[e.id];
                 });
 
-                filtrarPCP();
-                
-            } catch(e) {
-                console.error("Erro PCP:", e);
-                board.innerHTML = '<p style="color:var(--erro); padding:20px;">Erro ao carregar chão de fábrica.</p>';
+            } catch (err) {
+                console.error("Erro ao carregar PCP:", err);
+            }
+        }
+        // --- DRAG AND DROP (KANBAN PCP) ---
+        function arrastar(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+            ev.target.style.opacity = '0.5';
+        }
+
+        function permitirDrop(ev) {
+            ev.preventDefault();
+            const coluna = ev.target.closest('.coluna-pcp');
+            if (coluna) {
+                document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+                coluna.classList.add('drag-over');
             }
         }
 
-        async function imprimirDetalhesProjeto(obraId) {
-            try {
-                const { data: obra } = await supabaseClient.from('obras').select('*').eq('id', obraId).single();
-                if(!obra) return;
+        async function soltar(ev) {
+            ev.preventDefault();
+            document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+            
+            const dataId = ev.dataTransfer.getData("text");
+            const card = document.getElementById(dataId);
+            if (!card) return;
+            
+            card.style.opacity = '1';
+            
+            const colunaDestino = ev.target.closest('.coluna-pcp');
+            if (colunaDestino) {
+                const bodyDestino = colunaDestino.querySelector('.coluna-body');
+                bodyDestino.appendChild(card);
                 
-                let nomeCli = 'Não identificado';
-                const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
-                if(cliMatch) nomeCli = cliMatch.razao_social;
-
-                const formataBr = (d) => { if(!d) return 'A definir'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; };
-
-                let checklist = obra.dados_checklist;
-                if (!checklist || checklist.length === 0) {
-                    checklist = processosPadrao.map(proc => ({
-                        nome: proc, status: 'pendente', prev_ini: '', prev_fim: '', real_ini: '', real_fim: ''
-                    }));
+                const novaEtapaId = colunaDestino.id;
+                const obraId = card.getAttribute('data-obraid');
+                
+                // Atualizar cor da borda do card
+                const etapaObj = etapasPCP.find(e => e.id === novaEtapaId);
+                if (etapaObj) {
+                    card.style.borderLeftColor = etapaObj.cor;
                 }
 
-                let chkHtml = '';
-                checklist.forEach((item, index) => {
-                    let stFormatado = item.status.toUpperCase();
-                    let corStatus = item.status === 'concluido' ? 'color: #059669;' : (item.status === 'andamento' ? 'color: #2563eb;' : 'color: #64748b;');
+                // Salvar no banco
+                try {
+                    await supabaseClient.from('obras').update({ etapa_pcp_id: novaEtapaId }).eq('id', obraId);
                     
-                    chkHtml += `
-                        <tr>
-                            <td>${index + 1}. ${item.nome}</td>
-                            <td style="font-weight: bold; ${corStatus}">${stFormatado}</td>
-                            <td>${formataBr(item.prev_ini)} a ${formataBr(item.prev_fim)}</td>
-                            <td>${formataBr(item.real_ini)} a ${formataBr(item.real_fim)}</td>
-                        </tr>
-                    `;
-                });
-
-                const win = window.open('', '_blank');
-                win.document.write(`
-                    <html>
-                    <head>
-                        <title>Ficha de Produção - ${obra.nome_obra}</title>
-                        <style>
-                            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; margin: 0; padding: 40px; }
-                            .header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #0b1c35; padding-bottom: 15px; margin-bottom: 30px; }
-                            h1 { margin: 0; font-size: 26px; color: #0b1c35; text-transform: uppercase; letter-spacing: 1px; }
-                            h2 { margin: 8px 0 0 0; font-size: 16px; color: #64748b; font-weight: normal; }
-                            .info-grid { display: flex; gap: 50px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 30px; }
-                            .info-box span { display: block; font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-                            .info-box strong { font-size: 18px; color: #0f172a; }
-                            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                            th { background: #0b1c35; color: #fff; padding: 12px; text-align: left; font-size: 13px; text-transform: uppercase; }
-                            td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-                            tr:nth-child(even) { background-color: #f8fafc; }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="header">
-                            <div>
-                                <h1>Ficha de Produção Operária</h1>
-                                <h2>Sistema de Gestão</h2>
-                            </div>
-                            <div style="text-align: right;">
-                                <strong style="font-size: 20px;">${obra.nome_obra}</strong><br>
-                                <span style="color: #64748b;">${nomeCli}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="info-grid">
-                            <div class="info-box"><span>Data de Início Prevista</span><strong>${formataBr(obra.data_inicio)}</strong></div>
-                            <div class="info-box"><span>Data Final de Entrega</span><strong>${formataBr(obra.data_fim)}</strong></div>
-                            <div class="info-box"><span>Progresso Global</span><strong>${obra.progresso}%</strong></div>
-                        </div>
-
-                        <h3 style="color: #0b1c35; margin-bottom: 10px;">Checklist de Processos Operacionais</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Etapa de Execução</th>
-                                    <th>Situação</th>
-                                    <th>Previsão (Início / Fim)</th>
-                                    <th>Execução (Início / Fim)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${chkHtml}
-                            </tbody>
-                        </table>
-                        
-                        <div style="margin-top: 50px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 20px;">
-                            Documento gerado eletronicamente em ${new Date().toLocaleDateString('pt-BR')}
-                        </div>
-
-                        <script>
-                            window.onload = function() { setTimeout(function(){ window.print(); }, 500); }
-                        <\/script>
-                    </body>
-                    </html>
-                `);
-                win.document.close();
-            } catch(err) {
-                console.error(err);
-                alert("Erro ao gerar a ficha de impressão do sistema.");
+                    // Disparar Notificação visual
+                    mostrarToastNotificacao(`Projeto movido para: ${etapaObj.nome}`);
+                    
+                    // Recalcular contadores (forma simples)
+                    carregarProjetosPCP();
+                } catch (e) {
+                    alert("Erro ao salvar mudança de etapa.");
+                    carregarProjetosPCP(); // reverte a view
+                }
             }
         }
 
-        function abrirModalConfigNotificacoes() {
-            let tWpp = localStorage.getItem('templateWpp') || "Olá *{cliente}*, seu projeto *{obra}* foi atualizado!\n\nNovo status de fábrica: *{etapa}*\n\nSoluções em Engenharia";
-            let tEmail = localStorage.getItem('templateEmail') || "Olá {cliente},\n\nInformamos que seu projeto {obra} avançou em nossa linha de produção e agora se encontra na etapa: {etapa}.\n\nAtenciosamente,\nEquipe.";
-            
-            document.getElementById('txtTemplateWpp').value = tWpp;
-            document.getElementById('txtTemplateEmail').value = tEmail;
-            document.getElementById('modalConfigNotificacoes').style.display = 'flex';
-        }
-
-        function salvarConfigNotificacoes() {
-            localStorage.setItem('templateWpp', document.getElementById('txtTemplateWpp').value);
-            localStorage.setItem('templateEmail', document.getElementById('txtTemplateEmail').value);
-            document.getElementById('modalConfigNotificacoes').style.display = 'none';
-        }
-
-        function mostrarToast(mensagem) {
-            const toast = document.getElementById('toastNotificacao');
-            document.getElementById('textoToast').innerText = mensagem;
-            toast.classList.add('mostrar');
-            setTimeout(() => { toast.classList.remove('mostrar'); }, 4000);
-        }
-
-        async function dispararNotificacaoBackground(obra, cliente, novaEtapa) {
-            mostrarToast(`Notificando ${cliente.razao_social} sobre atualização...`);
-
-            let tWpp = localStorage.getItem('templateWpp') || "Olá *{cliente}*, o projeto *{obra}* foi atualizado!\nStatus: *{etapa}*";
-            let tEmail = localStorage.getItem('templateEmail') || "Olá {cliente}, seu projeto {obra} foi atualizado. Status: {etapa}";
-
-            let msgWppFinal = tWpp.replace(/{cliente}/g, cliente.razao_social).replace(/{obra}/g, obra.nome_obra).replace(/{etapa}/g, novaEtapa.nome);
-            let msgEmailFinal = tEmail.replace(/{cliente}/g, cliente.razao_social).replace(/{obra}/g, obra.nome_obra).replace(/{etapa}/g, novaEtapa.nome);
-
-            try {
-                // INSIRA SUA URL DO MAKE.COM AQUI
-            } catch(e) { console.error("Erro na API de notificação:", e); }
-        }
-
-        async function soltarCardObraPCP(e, colunaDestino) {
-            e.preventDefault(); 
-            colunaDestino.classList.remove('drag-over');
-            
-            const obraId = e.dataTransfer.getData('text/plain'); 
-            const novaEtapaId = colunaDestino.getAttribute('data-etapa-id');
-            
-            if(!obraId || !novaEtapaId) return;
-
-            try {
-                const { data: obraAtual } = await supabaseClient.from('obras').select('*').eq('id', obraId).single();
-                if(obraAtual && (obraAtual.etapa_pcp_id || 'etp1') === novaEtapaId) return; 
-
-                const { error } = await supabaseClient.from('obras').update({ etapa_pcp_id: novaEtapaId }).eq('id', obraId);
-                if(error) throw error;
-                
-                carregarProjetosPCP();
-
-                if(obraAtual) {
-                    const clienteDaObra = listaGlobalClientes.find(c => String(c.cnpj) === String(obraAtual.cliente_cnpj));
-                    const etapaObj = etapasPCP.find(etp => etp.id === novaEtapaId);
-                    
-                    if(clienteDaObra && etapaObj) {
-                        dispararNotificacaoBackground(obraAtual, clienteDaObra, etapaObj);
-                    }
-                }
-            } catch(err) { alert("Erro do Supabase: " + (err.message || JSON.stringify(err))); }
-        }
+        document.addEventListener('dragend', function(ev) {
+            if (ev.target && ev.target.style) ev.target.style.opacity = '1';
+            document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+        });
 
         function toggleModoTV() {
             isModoTV = !isModoTV;
-            if (isModoTV) { 
-                document.body.classList.add('modo-tv-ativo'); 
-                document.getElementById('btnModoTv').innerHTML = '<i class="fa-solid fa-compress"></i> Sair do Modo TV'; 
-                document.getElementById('subPCP').style.display = 'none'; 
-            } else { 
-                document.body.classList.remove('modo-tv-ativo'); 
-                document.getElementById('btnModoTv').innerHTML = '<i class="fa-solid fa-tv"></i> Modo TV / Painel'; 
-                document.getElementById('subPCP').style.display = 'block'; 
+            if (isModoTV) {
+                document.body.classList.add('modo-tv-ativo');
+                document.getElementById('btnModoTv').innerHTML = '<i class="fa-solid fa-compress"></i> Sair Modo TV';
+            } else {
+                document.body.classList.remove('modo-tv-ativo');
+                document.getElementById('btnModoTv').innerHTML = '<i class="fa-solid fa-tv"></i> Modo TV / Painel';
             }
         }
 
-        // ================= GESTÃO DETALHADA DA OBRA (CHECKLIST DE PROCESSOS) =================
-        const processosPadrao = [
-            "Separação de material", "Envio do projeto", "Aprovação do projeto",
-            "Chegada dos materiais comprados", "Montagem mecânica", "Montagem elétrica",
-            "Testes / QC", "Expedição e entrega"
-        ];
-
+        // ================= GESTÃO DETALHADA / CHECKLIST DE OBRA =================
         async function abrirGestaoObra(obraId, nomeObra, nomeCliente) {
             document.getElementById('gestaoObraId').value = obraId;
             document.getElementById('gestaoObraTitulo').innerHTML = `<i class="fa-solid fa-server"></i> ${nomeObra}`;
             document.getElementById('gestaoObraCliente').innerHTML = `<i class="fa-regular fa-building"></i> ${nomeCliente}`;
             
             const container = document.getElementById('containerChecklistObra');
-            container.innerHTML = '<p style="text-align:center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando processos...</p>';
+            container.innerHTML = '<p style="color:var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando processos do quadro...</p>';
+            
             document.getElementById('modalGestaoObra').style.display = 'flex';
 
             try {
-                const { data: obra } = await supabaseClient.from('obras').select('dados_checklist').eq('id', obraId).single();
-                let checklist = obra.dados_checklist;
+                const { data, error } = await supabaseClient.from('obras').select('checklist_dados').eq('id', obraId).single();
+                if (error) throw error;
 
-                if (!checklist || checklist.length === 0) {
-                    checklist = processosPadrao.map(proc => ({
-                        nome: proc, status: 'pendente', prev_ini: '', prev_fim: '', real_ini: '', real_fim: ''
-                    }));
+                let chk = {};
+                if (data.checklist_dados) {
+                    try { chk = typeof data.checklist_dados === 'string' ? JSON.parse(data.checklist_dados) : data.checklist_dados; } 
+                    catch(e) { chk = {}; }
                 }
 
-                renderizarChecklistUI(checklist);
-            } catch(err) {
-                container.innerHTML = '<p style="color:red; text-align:center;">Erro ao ler banco de dados.</p>';
+                // Estrutura padrão de Checklist
+                const categorias = [
+                    { id: 'cat_eng', nome: 'Engenharia e Projetos', icon: 'fa-compass-drafting', itens: ['Diagrama Unifilar', 'Lista de Materiais', 'Projeto 3D / Layout'] },
+                    { id: 'cat_comp', nome: 'Compras e Suprimentos', icon: 'fa-cart-flatbed', itens: ['Aprovação de Orçamento', 'Pedido de Peças', 'Recebimento de Materiais'] },
+                    { id: 'cat_mec', nome: 'Montagem Mecânica', icon: 'fa-screwdriver-wrench', itens: ['Furação da Placa', 'Fixação de Canaletas', 'Fixação de Componentes'] },
+                    { id: 'cat_ele', nome: 'Montagem Elétrica', icon: 'fa-bolt', itens: ['Passagem de Cabos', 'Anilhamento', 'Conexão de Potência', 'Conexão de Comando'] },
+                    { id: 'cat_qa', nome: 'Qualidade e Testes', icon: 'fa-clipboard-check', itens: ['Teste de Continuidade', 'Teste de Isolação (Megger)', 'Teste Funcional a Quente'] }
+                ];
+
+                let html = '';
+                categorias.forEach(cat => {
+                    html += `
+                    <div class="card-accordion" style="margin-bottom: 15px; border-radius: 8px; border-top: 3px solid var(--azul-sutil);">
+                        <div class="section-header" style="padding: 12px 20px; background: #fff;">
+                            <h4 style="margin: 0; color: var(--azul-marca); font-size: 1rem;"><i class="fa-solid ${cat.icon}"></i> ${cat.nome}</h4>
+                        </div>
+                        <div style="padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0;">`;
+                    
+                    cat.itens.forEach((item, index) => {
+                        const itemId = `${cat.id}_item_${index}`;
+                        const valStatus = chk[itemId]?.status || 'pendente';
+                        const valData = chk[itemId]?.data || '';
+                        const valObs = chk[itemId]?.obs || '';
+
+                        html += `
+                        <div class="checklist-item">
+                            <div class="checklist-header">
+                                <h5>${item}</h5>
+                                <select class="checklist-status ${valStatus}" id="status_${itemId}" onchange="this.className='checklist-status '+this.value">
+                                    <option value="pendente" ${valStatus === 'pendente' ? 'selected' : ''}>Pendente</option>
+                                    <option value="andamento" ${valStatus === 'andamento' ? 'selected' : ''}>Em Andamento</option>
+                                    <option value="concluido" ${valStatus === 'concluido' ? 'selected' : ''}>Concluído</option>
+                                </select>
+                            </div>
+                            <div class="checklist-datas-grid">
+                                <div class="box-data">
+                                    <label>Conclusão</label>
+                                    <div class="linha-data-input"><input type="date" id="data_${itemId}" value="${valData}"></div>
+                                </div>
+                                <div class="box-data">
+                                    <label>Observação / Responsável</label>
+                                    <input type="text" id="obs_${itemId}" value="${valObs}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem;" placeholder="Ex: Faltou peça X">
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    
+                    html += `</div></div>`;
+                });
+
+                container.innerHTML = html;
+
+            } catch (err) {
+                container.innerHTML = `<p style="color:var(--erro);">Erro ao carregar checklist.</p>`;
             }
-        }
-
-        function renderizarChecklistUI(checklist) {
-            const container = document.getElementById('containerChecklistObra');
-            let html = '';
-
-            checklist.forEach((item, index) => {
-                const corStatus = item.status === 'pendente' ? 'pendente' : (item.status === 'andamento' ? 'andamento' : 'concluido');
-                
-                html += `
-                <div class="checklist-item" data-index="${index}">
-                    <div class="checklist-header">
-                        <h5 class="chk-nome">${index + 1}. ${item.nome}</h5>
-                        <select class="checklist-status ${corStatus}" onchange="this.className='checklist-status '+this.value">
-                            <option value="pendente" ${item.status === 'pendente' ? 'selected' : ''}>Pendente</option>
-                            <option value="andamento" ${item.status === 'andamento' ? 'selected' : ''}>Em Andamento</option>
-                            <option value="concluido" ${item.status === 'concluido' ? 'selected' : ''}>Concluído</option>
-                        </select>
-                    </div>
-                    <div class="checklist-datas-grid">
-                        <div class="box-data">
-                            <label><i class="fa-regular fa-calendar"></i> Previsão do Sistema</label>
-                            <div class="linha-data-input"><span>Início:</span> <input type="date" class="chk-p-ini" value="${item.prev_ini || ''}"></div>
-                            <div class="linha-data-input"><span>Fim:</span> <input type="date" class="chk-p-fim" value="${item.prev_fim || ''}"></div>
-                        </div>
-                        <div class="box-data">
-                            <label><i class="fa-solid fa-stopwatch"></i> Execução Real</label>
-                            <div class="linha-data-input"><span>Início:</span> <input type="date" class="chk-r-ini" value="${item.real_ini || ''}"></div>
-                            <div class="linha-data-input"><span>Fim:</span> <input type="date" class="chk-r-fim" value="${item.real_fim || ''}"></div>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            
-            container.innerHTML = html;
         }
 
         async function salvarChecklistObra() {
             const obraId = document.getElementById('gestaoObraId').value;
-            const btnSalvar = document.querySelector('#modalGestaoObra .btn-acao[onclick="salvarChecklistObra()"]');
-            btnSalvar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-            
-            const itemsHTML = document.querySelectorAll('.checklist-item');
-            let novoChecklist = [];
+            const btn = document.querySelector('#modalGestaoObra .btn-acao[onclick="salvarChecklistObra()"]');
+            const txtOrig = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
-            itemsHTML.forEach(div => {
-                novoChecklist.push({
-                    nome: div.querySelector('.chk-nome').innerText.replace(/^\d+\.\s*/, ''),
-                    status: div.querySelector('.checklist-status').value,
-                    prev_ini: div.querySelector('.chk-p-ini').value,
-                    prev_fim: div.querySelector('.chk-p-fim').value,
-                    real_ini: div.querySelector('.chk-r-ini').value,
-                    real_fim: div.querySelector('.chk-r-fim').value
-                });
+            const chkDados = {};
+            const inputsStatus = document.querySelectorAll('.checklist-status');
+            
+            let totalItens = inputsStatus.length;
+            let itensConcluidos = 0;
+
+            inputsStatus.forEach(sel => {
+                const itemId = sel.id.replace('status_', '');
+                const status = sel.value;
+                const data = document.getElementById(`data_${itemId}`).value;
+                const obs = document.getElementById(`obs_${itemId}`).value;
+                
+                chkDados[itemId] = { status, data, obs };
+                if (status === 'concluido') itensConcluidos++;
             });
 
+            // Atualiza progresso automático baseado no checklist
+            let novoProgresso = 0;
+            if (totalItens > 0) {
+                novoProgresso = Math.round((itensConcluidos / totalItens) * 100);
+            }
+
             try {
-                const { error } = await supabaseClient.from('obras').update({ dados_checklist: novoChecklist }).eq('id', obraId);
+                const { error } = await supabaseClient.from('obras').update({ 
+                    checklist_dados: JSON.stringify(chkDados),
+                    progresso: novoProgresso
+                }).eq('id', obraId);
+
                 if (error) throw error;
+
+                document.getElementById('modalGestaoObra').style.display = 'none';
+                mostrarToastNotificacao(`Checklist salvo! Progresso: ${novoProgresso}%`);
                 
-                btnSalvar.innerHTML = '<i class="fa-solid fa-check"></i> Salvo!';
-                setTimeout(() => {
-                    document.getElementById('modalGestaoObra').style.display = 'none';
-                    btnSalvar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Gestão';
-                }, 1500);
-            } catch(err) {
-                alert("Erro ao salvar a gestão do quadro no Supabase.");
-                btnSalvar.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Gestão';
+                carregarProjetosPCP();
+                carregarDashboardKanban();
+                if(clienteSelecionado) carregarObrasCliente(clienteSelecionado);
+
+            } catch (err) {
+                alert("Erro ao salvar a gestão do quadro.");
+            } finally {
+                btn.innerHTML = txtOrig;
             }
         }
 
-        // ================= GESTÃO DA CONTA DO TENANT (IDENTIDADE E TEMA) =================
+        // ================= NOTIFICAÇÕES TOAST E MODAL =================
+        function mostrarToastNotificacao(mensagem) {
+            const toast = document.getElementById('toastNotificacao');
+            document.getElementById('textoToast').innerText = mensagem;
+            toast.classList.add('mostrar');
+            setTimeout(() => { toast.classList.remove('mostrar'); }, 4000);
+        }
+
+        function abrirModalConfigNotificacoes() {
+            document.getElementById('txtTemplateWpp').value = sessionStorage.getItem('templateWpp') || `Olá {cliente}! A montagem do quadro {obra} avançou para a etapa: {etapa}. Qualquer dúvida, estamos à disposição.`;
+            document.getElementById('txtTemplateEmail').value = sessionStorage.getItem('templateEmail') || `Atualização de Projeto: {obra}\n\nPrezado cliente {cliente},\nInformamos que seu projeto encontra-se atualmente na etapa: {etapa}.`;
+            document.getElementById('modalConfigNotificacoes').style.display = 'flex';
+        }
+
+        function salvarConfigNotificacoes() {
+            sessionStorage.setItem('templateWpp', document.getElementById('txtTemplateWpp').value);
+            sessionStorage.setItem('templateEmail', document.getElementById('txtTemplateEmail').value);
+            document.getElementById('modalConfigNotificacoes').style.display = 'none';
+            mostrarToastNotificacao('Templates de mensagens salvos localmente.');
+        }
+
+        // ================= CONFIGURAÇÕES MASTER =================
         async function carregarConfiguracoesMaster() {
+            if(!isMaster) return;
             const cnpjLogado = sessionStorage.getItem('masterCnpj');
-            if (!cnpjLogado) return;
+            document.getElementById('configMasterCnpj').value = cnpjLogado;
             
             try {
                 const { data, error } = await supabaseClient.from('admin_master').select('*').eq('cnpj', cnpjLogado).single();
-                if (data) {
-                    document.getElementById('configMasterCnpj').value = data.cnpj || '';
+                if(error) throw error;
+
+                if(data) {
                     document.getElementById('configMasterNome').value = data.nome_fantasia || '';
                     document.getElementById('configMasterWpp').value = data.whatsapp || '';
                     document.getElementById('configMasterEmail').value = data.email || '';
                     document.getElementById('configMasterLogo').value = data.logo_url || '';
+                    
                     document.getElementById('configMasterCorPrimaria').value = data.cor_primaria || '#0b1c35';
                     document.getElementById('configMasterCorSecundaria').value = data.cor_secundaria || '#2b5c92';
                 }
-            } catch(e) {
-                console.log("Erro ao carregar dados do admin master:", e);
-            }
+            } catch(e) { console.error("Erro Config Master", e); }
         }
 
-        document.getElementById('formConfigMaster')?.addEventListener('submit', async function(e) {
+        document.getElementById('formConfigMaster').addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgConfigMaster');
             msg.style.color = 'var(--texto-secundario)';
-            msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando infraestrutura e temas...';
+            msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando identidade do SaaS...';
             
-            const cnpj = sessionStorage.getItem('masterCnpj');
-            const nome = document.getElementById('configMasterNome').value.trim();
-            const wpp = document.getElementById('configMasterWpp').value.trim();
-            const email = document.getElementById('configMasterEmail').value.trim();
-            const corPrimaria = document.getElementById('configMasterCorPrimaria').value;
-            const corSecundaria = document.getElementById('configMasterCorSecundaria').value;
-            let logo = document.getElementById('configMasterLogo').value.trim();
-
+            const cnpjLogado = sessionStorage.getItem('masterCnpj');
             const fileInput = document.getElementById('uploadLogoFile');
-            const botaoSubmit = e.target.querySelector('button[type="submit"]');
-            botaoSubmit.disabled = true;
+            let logoUrlFinal = document.getElementById('configMasterLogo').value.trim();
 
             try {
-                if (fileInput.files.length > 0) {
-                    msg.innerHTML = '<i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> Fazendo upload da imagem...';
-                    const arquivoLogo = fileInput.files[0];
-                    const nomeUnico = `logo_${cnpj.replace(/\D/g, '')}_${Date.now()}.${arquivoLogo.name.split('.').pop()}`;
-                    const { error: uploadError } = await supabaseClient.storage.from('logos').upload(nomeUnico, arquivoLogo);
-                    
-                    if (uploadError) throw new Error("Erro no upload da imagem: " + uploadError.message);
-                    
-                    const { data: urlData } = supabaseClient.storage.from('logos').getPublicUrl(nomeUnico);
-                    logo = urlData.publicUrl;
-                    document.getElementById('configMasterLogo').value = logo;
-                    fileInput.value = ''; 
+                // Upload de Logo se houver arquivo
+                if(fileInput.files.length > 0) {
+                    const arquivo = fileInput.files[0];
+                    const nomeUnico = `logos/${cnpjLogado}_${Date.now()}_${arquivo.name}`;
+                    const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivo);
+                    if(!uploadError) {
+                        const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico);
+                        logoUrlFinal = urlData.publicUrl;
+                    }
                 }
 
-                const payload = { 
-                    nome_fantasia: nome, 
-                    whatsapp: wpp, 
-                    email: email, 
-                    logo_url: logo,
-                    cor_primaria: corPrimaria,
-                    cor_secundaria: corSecundaria
+                const cPrimaria = document.getElementById('configMasterCorPrimaria').value;
+                const cSecundaria = document.getElementById('configMasterCorSecundaria').value;
+                const nFantasia = document.getElementById('configMasterNome').value.trim();
+
+                const payload = {
+                    nome_fantasia: nFantasia,
+                    whatsapp: document.getElementById('configMasterWpp').value.trim(),
+                    email: document.getElementById('configMasterEmail').value.trim(),
+                    logo_url: logoUrlFinal,
+                    cor_primaria: cPrimaria,
+                    cor_secundaria: cSecundaria
                 };
+
+                const { error } = await supabaseClient.from('admin_master').update(payload).eq('cnpj', cnpjLogado);
+                if(error) throw error;
+
+                // Atualizar sessão e UI em tempo real
+                sessionStorage.setItem('masterNome', nFantasia);
+                sessionStorage.setItem('masterLogo', logoUrlFinal);
+                sessionStorage.setItem('masterCorPrimaria', cPrimaria);
+                sessionStorage.setItem('masterCorSecundaria', cSecundaria);
                 
-                const { error } = await supabaseClient.from('admin_master').update(payload).eq('cnpj', cnpj);
-                if (error) throw error;
-                
+                aplicarTemaCores(cPrimaria, cSecundaria);
+                document.getElementById('nomeEmpresaSaaS').innerText = nFantasia;
+                if(logoUrlFinal) document.getElementById('logoEmpresaSaaS').src = logoUrlFinal;
+
                 msg.style.color = 'var(--sucesso)';
-                msg.innerHTML = '<i class="fa-solid fa-check"></i> Tema e Identidade atualizados com sucesso!';
-                
-                // Aplica a cor em tempo real para a sessão
-                aplicarTemaCores(corPrimaria, corSecundaria);
-                
-                // Salva local para agilizar carregamento
-                sessionStorage.setItem('masterNome', nome);
-                sessionStorage.setItem('masterLogo', logo);
-                sessionStorage.setItem('masterCorPrimaria', corPrimaria);
-                sessionStorage.setItem('masterCorSecundaria', corSecundaria);
-                document.getElementById('nomeEmpresaSaaS').innerText = nome;
-                
-                const logoImg = document.getElementById('logoEmpresaSaaS');
-                if (logo && logo.trim() !== '') { logoImg.src = logo; } 
-                else { logoImg.src = 'public/favicon.png'; }
-                
-                setTimeout(() => msg.innerText = '', 3500);
-            } catch (err) {
+                msg.innerHTML = '<i class="fa-solid fa-check"></i> Identidade atualizada com sucesso!';
+                setTimeout(() => msg.innerHTML = '', 3000);
+
+            } catch(e) {
                 msg.style.color = 'var(--erro)';
-                msg.innerText = err.message || 'Erro ao salvar. Verifique a conexão.';
-            } finally {
-                botaoSubmit.disabled = false;
+                msg.innerHTML = 'Erro ao salvar. Verifique a conexão.';
             }
         });
+// ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
+        function imprimirChecklist() {
+            const titulo = document.getElementById('gestaoObraTitulo').innerText;
+            const cliente = document.getElementById('gestaoObraCliente').innerText;
+            
+            // Monta a estrutura HTML da folha de impressão
+            let htmlPrint = `
+                <html>
+                <head>
+                    <title>Relatório de Processos - ${titulo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+                        h2 { color: #0b1c35; margin-bottom: 5px; font-size: 24px; }
+                        h4 { color: #64748b; margin-top: 0; margin-bottom: 25px; font-size: 14px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 12px; }
+                        th { background-color: #f1f5f9; color: #0b1c35; font-weight: bold; text-transform: uppercase; }
+                        .status-pendente { color: #64748b; font-weight: bold; }
+                        .status-andamento { color: #d97706; font-weight: bold; }
+                        .status-concluido { color: #10b981; font-weight: bold; }
+                        .categoria-titulo { background-color: #e2e8f0; font-weight: bold; text-align: center; font-size: 14px; color: #0b1c35; }
+                    </style>
+                </head>
+                <body>
+                    <h2>${titulo}</h2>
+                    <h4>${cliente} | Data de Emissão: ${new Date().toLocaleDateString('pt-BR')}</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 35%;">Processo (Etapa)</th>
+                                <th style="width: 15%;">Status</th>
+                                <th style="width: 15%;">Data Prev./Conclusão</th>
+                                <th style="width: 35%;">Observação / Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            // Lê as informações diretamente do modal que está aberto na tela
+            const categoriasDOM = document.querySelectorAll('#containerChecklistObra .card-accordion');
+            
+            categoriasDOM.forEach(cat => {
+                const nomeCat = cat.querySelector('h4').innerText;
+                htmlPrint += `<tr><td colspan="4" class="categoria-titulo">${nomeCat}</td></tr>`;
+                
+                const itens = cat.querySelectorAll('.checklist-item');
+                itens.forEach(item => {
+                    const nomeProcesso = item.querySelector('h5').innerText;
+                    const selectStatus = item.querySelector('.checklist-status');
+                    const statusText = selectStatus.options[selectStatus.selectedIndex].text;
+                    const statusVal = selectStatus.value; // pendente, andamento, concluido
+                    
+                    const dataConclusao = item.querySelector('input[type="date"]').value;
+                    const formataData = dataConclusao ? dataConclusao.split('-').reverse().join('/') : '--/--/----';
+                    
+                    const obs = item.querySelector('input[type="text"]').value || '--';
+                    
+                    htmlPrint += `
+                        <tr>
+                            <td>${nomeProcesso}</td>
+                            <td class="status-${statusVal}">${statusText}</td>
+                            <td>${formataData}</td>
+                            <td>${obs}</td>
+                        </tr>
+                    `;
+                });
+            });
+
+            htmlPrint += `
+                        </tbody>
+                    </table>
+                    <p style="text-align: right; font-size: 11px; color: #94a3b8; margin-top: 30px;">Gerado pelo ERP Callinfo Tecnologia</p>
+                </body>
+                </html>
+            `;
+
+            // Abre uma nova janela, escreve o HTML e aciona o modo de impressão do navegador
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(htmlPrint);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            // Pequeno delay para garantir que o CSS carregou na nova janela
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 500);
+        }
+
+        // ================= FUNÇÃO DE ATALHO DE UPLOAD VIA KANBAN =================
+        async function abrirUploadViaPCP(cnpj, obraId) {
+            // Localiza o cliente na lista global
+            const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(cnpj));
+            if (cliMatch) {
+                // Redireciona o usuário para o painel do Cliente
+                abrirTelaAcao('gestaoClientes');
+                await abrirPainelCliente(cliMatch);
+                
+                // Aguarda 1 segundo para a tela renderizar e abre a aba de Upload focada no projeto
+                setTimeout(() => {
+                    prepararUploadParaObra(obraId);
+                }, 1000);
+            } else {
+                alert("Erro: Cliente não localizado no banco de dados.");
+            }
+        }
     </script>
 </body>
 </html>
