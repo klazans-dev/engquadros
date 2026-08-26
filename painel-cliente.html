@@ -16,133 +16,162 @@
 
     <style>
         :root { 
+            --azul-profundo: #060b14; 
             --azul-marca: #0b1c35; 
             --azul-sutil: #2b5c92; 
-            --fundo-site: #f4f7f6;
+            --fundo-site: #f4f7f6; 
             --texto-principal: #1e293b;
             --texto-secundario: #64748b;
             --borda: 1px solid rgba(11, 28, 53, 0.1);
             --sucesso: #10b981;
-            --alerta: #f59e0b;
             --erro: #ef4444;
-            --transicao: all 0.3s ease;
+            --transicao: all 0.25s ease;
         }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
         
-        /* CORREÇÃO DO SCROLL MOBILE: Impede duplo scroll no corpo da página */
         body { background-color: var(--fundo-site); color: var(--texto-principal); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
         h1, h2, h3, h4, .menu-btn { font-family: 'Montserrat', sans-serif; }
+
+        /* ================= MOUSE PERSONALIZADO ================= */
+        body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%230b1c35" stroke="%23ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'), auto; }
+        a, button, select, input[type="file"], .item-lista, .kanban-card, .obra-header, .section-header { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%232b5c92" stroke="%23ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'), pointer !important; }
 
         /* ================= LAYOUT PRINCIPAL ================= */
         #telaPainel { height: 100vh; width: 100vw; display: flex; overflow: hidden; }
         
-        aside { width: 280px; background: var(--azul-marca); display: flex; flex-direction: column; z-index: 50; box-shadow: 4px 0 15px rgba(0,0,0,0.05); flex-shrink: 0; }
-        .logo-area { padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        aside { width: 280px; background: var(--azul-marca); color: #fff; display: flex; flex-direction: column; z-index: 50; box-shadow: 4px 0 15px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .logo-area { padding: 22px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .logo-area img { max-width: 120px; max-height: 50px; width: auto; height: auto; object-fit: contain; display: block; margin: 0 auto 12px auto; filter: brightness(0) invert(1); }
         
-        .menu-lateral { padding: 20px 0; flex: 1; overflow-y: auto; }
-        .menu-btn { width: 100%; text-align: left; padding: 15px 25px; background: transparent; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.6); transition: var(--transicao); display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
+        .menu-lateral { padding: 15px 0; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .menu-btn { width: 100%; text-align: left; padding: 13px 25px; background: transparent; border: none; cursor: pointer; font-size: 0.92rem; font-weight: 600; color: rgba(255,255,255,0.6); transition: var(--transicao); display: flex; align-items: center; gap: 12px; border-left: 4px solid transparent; }
         .menu-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .menu-btn.ativa { background: rgba(255,255,255,0.08); color: #fff; border-left-color: var(--azul-sutil); }
         
-        .btn-sair { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 8px 15px; cursor: pointer; font-size: 0.85rem; border-radius: 4px; transition: var(--transicao); margin-top: 15px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-sair { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: 9px 15px; cursor: pointer; font-size: 0.85rem; border-radius: 6px; transition: var(--transicao); margin-top: 10px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
         .btn-sair:hover { background: var(--erro); border-color: var(--erro); color: #fff; }
 
-        /* MAIN container com scroll independente */
-        main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; height: 100%; }
-        .painel-conteudo { display: none; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .header-section { margin-bottom: 30px; border-bottom: var(--borda); padding-bottom: 15px; }
-        .header-section h2 { color: var(--azul-marca); font-size: 1.8rem; letter-spacing: -0.5px; }
-        .header-section p { color: var(--texto-secundario); margin-top: 5px; font-size: 1rem; }
+        .btn-ajuda-sidebar { background: transparent; border: 1px solid var(--azul-sutil); color: rgba(255,255,255,0.9); padding: 9px 15px; cursor: pointer; font-size: 0.85rem; border-radius: 6px; transition: var(--transicao); margin-top: 8px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .btn-ajuda-sidebar:hover { background: rgba(43,92,146,0.3); color: #fff; }
+
+        /* ================= MAIN CONTAINER ================= */
+        main { flex: 1; padding: 20px 24px; overflow-y: auto; display: flex; flex-direction: column; height: 100%; background: var(--fundo-site); }
+        .painel-conteudo { display: none; width: 100%; animation: fadeIn 0.25s ease; }
+        .header-section { margin-bottom: 16px; border-bottom: var(--borda); padding-bottom: 10px; }
+        .header-section h2 { color: var(--azul-marca); font-size: 1.5rem; letter-spacing: -0.5px; }
+        .header-section p { color: var(--texto-secundario); margin-top: 3px; font-size: 0.9rem; }
+
+        /* ================= KANBAN DINÂMICO RESPONSIVO ================= */
+        .kanban-board-dinamico {
+            display: grid;
+            grid-template-columns: repeat(var(--num-colunas, 3), minmax(260px, 1fr));
+            gap: 16px;
+            margin-top: 10px;
+            align-items: start;
+        }
+        .kanban-coluna { background: #f8fafc; border-radius: 8px; padding: 12px; min-height: 380px; display: flex; flex-direction: column; border: var(--borda); box-shadow: 0 2px 6px rgba(0,0,0,0.01); }
+        .kanban-coluna h3 { font-size: 0.85rem; color: var(--azul-marca); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; padding-bottom: 8px; border-bottom: 2px solid var(--azul-sutil); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+        .kanban-cards-container { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        
+        .kanban-card-item { background: #fff; padding: 14px; border-radius: 6px; box-shadow: 0 3px 8px rgba(0,0,0,0.02); border: var(--borda); border-left: 4px solid var(--azul-sutil); transition: var(--transicao); display: flex; flex-direction: column; gap: 8px; }
+        .kanban-card-item:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(11,28,53,0.06); }
 
         /* ================= DASHBOARD (OBRAS) ================= */
-        .obras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-top: 20px; }
-        .obra-card { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: var(--transicao); border-top: 3px solid var(--azul-sutil); display: flex; flex-direction: column; }
-        .obra-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(11,28,53,0.06); }
-        .obra-card h4 { color: var(--azul-marca); font-size: 1.2rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .progress-container { background: #e2e8f0; border-radius: 20px; height: 8px; width: 100%; overflow: hidden; margin-bottom: 10px; }
-        .progress-fill { height: 100%; border-radius: 20px; transition: width 1s ease-in-out; background: linear-gradient(90deg, var(--azul-sutil), var(--azul-marca)); }
-        .progress-text { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 8px; }
+        .obras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 15px; }
+        .obra-card { background: #fff; border: var(--borda); border-radius: 8px; padding: 20px; box-shadow: 0 3px 8px rgba(0,0,0,0.02); transition: var(--transicao); border-top: 3px solid var(--azul-sutil); display: flex; flex-direction: column; }
+        .obra-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(11,28,53,0.06); }
+        .obra-card h4 { color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .progress-container { background: #e2e8f0; border-radius: 20px; height: 6px; width: 100%; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; border-radius: 20px; transition: width 0.8s ease; background: linear-gradient(90deg, var(--azul-sutil), var(--azul-marca)); }
+        .progress-text { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 600; color: var(--texto-secundario); margin-bottom: 4px; }
         
-        .btn-ver-arquivos { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: var(--azul-marca); font-weight: 600; padding: 10px; margin-top: 15px; border-radius: 6px; cursor: pointer; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-ver-arquivos { width: 100%; background: #f8fafc; border: 1px solid #cbd5e1; color: var(--azul-marca); font-weight: 600; padding: 8px; margin-top: 10px; border-radius: 6px; cursor: pointer; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 0.82rem; }
         .btn-ver-arquivos:hover, .btn-ver-arquivos.aberto { background: var(--azul-sutil); color: #fff; border-color: var(--azul-sutil); }
 
-        /* NOVO: DESIGN OTIMIZADO PARA ARQUIVOS INLINE DENTRO DA OBRA */
-        .arquivos-inline-container { margin-top: 15px; background: #f1f5f9; border-radius: 6px; border: 1px solid #e2e8f0; padding: 12px; display: flex; flex-direction: column; gap: 8px; animation: fadeInDown 0.3s ease; }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        /* GAVETA INLINE DE ARQUIVOS */
+        .arquivos-inline-container { margin-top: 10px; background: #f1f5f9; border-radius: 6px; border: 1px solid #e2e8f0; padding: 8px; display: flex; flex-direction: column; gap: 6px; animation: fadeInDown 0.2s ease; }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
         
-        .arquivo-inline-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px 12px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .info-arq-mini { display: flex; align-items: center; gap: 8px; color: var(--azul-marca); font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 60%; }
-        .info-arq-mini i { color: var(--azul-sutil); font-size: 1.2rem; }
+        .arquivo-inline-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 7px 10px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 0.8rem; }
+        .info-arq-mini { display: flex; align-items: center; gap: 6px; color: var(--azul-marca); font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 55%; }
+        .info-arq-mini i { color: var(--azul-sutil); font-size: 1rem; }
         
-        .botoes-mini-container { display: flex; gap: 6px; align-items: center; }
-        .btn-mini-acao { background: #fff; color: var(--azul-marca); border: 1px solid var(--azul-sutil); padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: var(--transicao); cursor: pointer; }
+        .botoes-mini-container { display: flex; gap: 5px; align-items: center; }
+        .btn-mini-acao { background: #fff; color: var(--azul-marca); border: 1px solid var(--azul-sutil); padding: 4px 8px; border-radius: 4px; text-decoration: none; font-size: 0.7rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; transition: var(--transicao); cursor: pointer; }
         .btn-mini-acao:hover { background: var(--azul-sutil); color: #fff; }
         .btn-mini-aprovar { background: var(--sucesso); color: #fff; border-color: var(--sucesso); }
-        .btn-mini-aprovar:hover { background: #059669; border-color: #059669; box-shadow: 0 2px 5px rgba(16,185,129,0.3); }
+        .btn-mini-aprovar:hover { background: #059669; border-color: #059669; }
 
-        /* ================= ARQUIVOS E APROVAÇÃO (ACERVO GERAL) ================= */
-        .doc-list { display: flex; flex-direction: column; gap: 15px; }
-        .doc-item { background: #fff; border: var(--borda); padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: var(--transicao); }
-        .doc-item:hover { border-color: var(--azul-sutil); }
-        .doc-info { display: flex; align-items: center; gap: 18px; }
-        .doc-icone { font-size: 2.2rem; color: var(--azul-marca); opacity: 0.9; }
-        .doc-detalhes h4 { color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 3px; }
-        .doc-detalhes p { color: var(--texto-secundario); font-size: 0.85rem; }
+        /* ================= ACERVO GERAL ================= */
+        .doc-list { display: flex; flex-direction: column; gap: 12px; }
+        .doc-item { background: #fff; border: var(--borda); padding: 16px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .doc-info { display: flex; align-items: center; gap: 15px; }
+        .doc-icone { font-size: 2rem; color: var(--azul-marca); opacity: 0.9; }
+        .doc-detalhes h4 { color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 2px; }
+        .doc-detalhes p { color: var(--texto-secundario); font-size: 0.82rem; }
         
-        .btn-aprovar { background: var(--sucesso); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao); }
-        .btn-aprovar:hover { background: #059669; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(16,185,129,0.2); }
-        .btn-abrir { background: #fff; color: var(--azul-marca); border: 1px solid var(--azul-sutil); padding: 9px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao); }
+        .btn-aprovar { background: var(--sucesso); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: var(--transicao); font-size: 0.85rem; }
+        .btn-aprovar:hover { background: #059669; }
+        .btn-abrir { background: #fff; color: var(--azul-marca); border: 1px solid var(--azul-sutil); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: var(--transicao); font-size: 0.85rem; }
         .btn-abrir:hover { background: var(--azul-sutil); color: #fff; }
-        .selo-aprovado { color: var(--sucesso); font-weight: 600; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; background: rgba(16,185,129,0.1); padding: 8px 15px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); }
+        .selo-aprovado { color: var(--sucesso); font-weight: 600; display: flex; align-items: center; gap: 5px; font-size: 0.85rem; background: rgba(16,185,129,0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.2); }
 
         /* ================= SUPORTE REMOTO ================= */
-        .suporte-container { display: flex; gap: 30px; align-items: flex-start; }
-        .form-chamado { background: #fff; padding: 30px; border-radius: 8px; border: var(--borda); flex: 1; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .lista-chamados { flex: 1.5; display: flex; flex-direction: column; gap: 15px; }
+        .suporte-container { display: flex; gap: 24px; align-items: flex-start; }
+        .form-chamado { background: #fff; padding: 24px; border-radius: 8px; border: var(--borda); flex: 1; box-shadow: 0 3px 8px rgba(0,0,0,0.02); }
+        .lista-chamados { flex: 1.4; display: flex; flex-direction: column; gap: 12px; }
         
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; color: var(--azul-marca); margin-bottom: 8px; font-size: 0.9rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; transition: var(--transicao); font-family: 'Inter'; background: #f8fafc; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; color: var(--azul-marca); margin-bottom: 6px; font-size: 0.85rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; transition: var(--transicao); font-family: 'Inter'; background: #f8fafc; }
         .form-group input:focus, .form-group textarea:focus { border-color: var(--azul-sutil); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(43,92,146,0.1); }
-        .btn-enviar-chamado { background: var(--azul-marca); color: #fff; border: none; padding: 14px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transicao); width: 100%; font-size: 1rem; }
+        .btn-enviar-chamado { background: var(--azul-marca); color: #fff; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: var(--transicao); width: 100%; font-size: 0.95rem; }
         .btn-enviar-chamado:hover { background: var(--azul-sutil); }
 
-        .ticket-box { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; border-left: 4px solid var(--azul-sutil); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .ticket-box { background: #fff; border: var(--borda); border-radius: 8px; padding: 20px; border-left: 4px solid var(--azul-sutil); box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .ticket-box.respondido { border-left-color: var(--sucesso); }
-        .ticket-header { display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center; }
-        .ticket-badge { padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
-        .ticket-resposta { background: #f8fafc; padding: 15px 20px; border-radius: 6px; border: 1px dashed #cbd5e1; margin-top: 15px; border-left: 3px solid var(--sucesso); }
+        .ticket-header { display: flex; justify-content: space-between; margin-bottom: 10px; align-items: center; }
+        .ticket-badge { padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ticket-resposta { background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px dashed #cbd5e1; margin-top: 12px; border-left: 3px solid var(--sucesso); }
         
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
         /* ================= MOBILE RESPONSIVIDADE ================= */
-        #btnMenuMobile { display: none; background: transparent; border: none; font-size: 1.5rem; color: var(--azul-marca); cursor: pointer; }
+        #btnMenuMobile { display: none; background: transparent; border: none; font-size: 1.5rem; color: #fff; cursor: pointer; }
         
         @media (max-width: 768px) {
             #telaPainel { flex-direction: column; }
             
-            /* Trava o Header e Menu lateral no mobile sem bugar o scroll */
-            aside { width: 100%; height: auto; flex-direction: row; justify-content: space-between; align-items: center; padding: 15px 20px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-            .logo-area { padding: 0; border: none; text-align: left; }
-            .logo-area img { max-width: 110px; }
-            .logo-area p, .btn-sair { display: none; }
-            #btnMenuMobile { display: block; color: #fff; }
+            aside { width: 100%; height: auto; flex-direction: row; justify-content: space-between; align-items: center; padding: 12px 20px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+            .logo-area { padding: 0; border: none; text-align: left; display: flex; align-items: center; gap: 15px; }
+            .logo-area img { max-width: 80px; max-height: 35px; margin: 0; }
+            .logo-area p, .btn-sair, .btn-ajuda-sidebar { display: none; }
+            #btnMenuMobile { display: block; }
             
-            .menu-lateral { display: none; position: absolute; top: 70px; left: 0; width: 100%; height: calc(100vh - 70px); background: var(--azul-marca); box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 10px 0; overflow-y: auto; }
-            .menu-lateral.aberto { display: block; }
-            .btn-sair-mobile { display: block !important; padding: 15px 25px; color: #fca5a5; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
+            .menu-lateral { display: none; position: absolute; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); background: var(--azul-marca); box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 10px 0; overflow-y: auto; }
+            .menu-lateral.aberto { display: flex; }
+            .btn-sair-mobile { display: block !important; padding: 14px 25px; color: #fca5a5; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 10px; }
             
-            /* O Main agora ocupa o resto da tela e tem scroll independente, resolvendo a dupla barra */
-            main { padding: 20px 15px; overflow-y: auto; height: calc(100vh - 70px); }
+            main { padding: 16px; overflow-y: auto; height: calc(100vh - 60px); }
             
-            /* Ajustes Finos nos Cards para celular */
-            .obra-card { padding: 20px 15px; }
-            .arquivo-inline-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .kanban-board-dinamico {
+                grid-template-columns: 1fr !important;
+            }
+
+            .obra-card { padding: 16px; }
+            .arquivo-inline-item { flex-direction: column; align-items: flex-start; gap: 10px; }
             .info-arq-mini { max-width: 100%; white-space: normal; }
             .botoes-mini-container { width: 100%; justify-content: flex-end; }
             .btn-mini-acao { width: 100%; justify-content: center; }
             
-            .doc-item { flex-direction: column; align-items: flex-start; gap: 20px; }
-            .doc-item > div { width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+            .doc-item { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .doc-item > div { width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
             .suporte-container { flex-direction: column; }
             .form-chamado, .lista-chamados { width: 100%; flex: auto; }
         }
@@ -153,35 +182,51 @@
     <div id="telaPainel" style="display: none;">
         <aside>
             <div class="logo-area">
-                <img src="public/logo.png" alt="EngQuadros" style="max-width: 140px; filter: brightness(0) invert(1);">
-                <p id="nomeClienteSidebar" style="font-size: 0.95rem; color: #fff; font-weight: 600; margin-top: 20px; font-family: 'Montserrat';">Carregando...</p>
-                <p id="cnpjClienteSidebar" style="font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 2px;">...</p>
-                <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-right-from-bracket"></i> Encerrar Sessão</button>
-                <button type="button" class="btn-acao" onclick="document.getElementById('modalManualCliente').style.display='flex'" style="background: transparent; border: 1px solid var(--azul-sutil); color: var(--azul-sutil);">
-    <i class="fa-solid fa-circle-question"></i> Como Usar</button>
-    
+                <img src="public/logo.png" alt="EngQuadros">
+                <div>
+                    <p id="nomeClienteSidebar" style="font-size: 0.9rem; color: #fff; font-weight: 600; font-family: 'Montserrat';">Carregando...</p>
+                    <p id="cnpjClienteSidebar" style="font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 2px;">...</p>
+                </div>
+                <button id="btnMenuMobile" onclick="toggleMenuMobile()"><i class="fa-solid fa-bars"></i></button>
             </div>
             
-            <button id="btnMenuMobile" onclick="toggleMenuMobile()"><i class="fa-solid fa-bars"></i></button>
-
             <div class="menu-lateral" id="menuLateral">
-                <button class="menu-btn ativa" id="abaObras" onclick="abrirAba('obras')"><i class="fa-solid fa-chart-pie"></i> Progresso de Obras</button>
-                <!-- Acervo continua como Histórico Geral -->
+                <!-- KANBAN EM PRIMEIRO LUGAR -->
+                <button class="menu-btn ativa" id="abaKanban" onclick="abrirAba('kanban')"><i class="fa-solid fa-columns"></i> Kanban de Projetos</button>
+                <button class="menu-btn" id="abaObras" onclick="abrirAba('obras')"><i class="fa-solid fa-chart-pie"></i> Progresso de Obras</button>
                 <button class="menu-btn" id="abaArquivos" onclick="abrirAba('arquivos')"><i class="fa-regular fa-folder-open"></i> Acervo Histórico / Geral</button>
                 <button class="menu-btn" id="abaSuporte" onclick="abrirAba('suporte')"><i class="fa-solid fa-headset"></i> Suporte Técnico</button>
+                
+                <div style="padding: 12px 20px; margin-top: auto;">
+                    <button type="button" class="btn-ajuda-sidebar" onclick="document.getElementById('modalManualCliente').style.display='flex'">
+                        <i class="fa-solid fa-circle-question"></i> Como Usar
+                    </button>
+                    <button class="btn-sair" onclick="sair()"><i class="fa-solid fa-right-from-bracket"></i> Encerrar Sessão</button>
+                </div>
                 <button class="menu-btn btn-sair-mobile" onclick="sair()" style="display: none;"><i class="fa-solid fa-power-off"></i> Sair do Sistema</button>
             </div>
         </aside>
 
         <main>
+            <!-- QUADRO KANBAN DINÂMICO (ABA PADRÃO INICIAL) -->
+            <div id="painelKanban" class="painel-conteudo" style="display: block;">
+                <div class="header-section">
+                    <h2>Quadro Kanban de Projetos</h2>
+                    <p>Visualização do fluxo das suas obras e entregas sincronizada diretamente com nossa engenharia.</p>
+                </div>
+                <div class="kanban-board-dinamico" id="kanbanBoardDinamico">
+                    <p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando etapas do sistema...</p>
+                </div>
+            </div>
+
             <!-- DASHBOARD DE OBRAS -->
-            <div id="painelObras" class="painel-conteudo" style="display: block;">
+            <div id="painelObras" class="painel-conteudo">
                 <div class="header-section">
                     <h2>Visão Geral dos Projetos</h2>
                     <p>Acompanhe em tempo real a evolução das suas obras ativas conosco.</p>
                 </div>
                 <div class="obras-grid" id="gridObras">
-                    <p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando seus projetos...</p>
+                    <p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando dados...</p>
                 </div>
             </div>
 
@@ -206,7 +251,7 @@
                 <div class="suporte-container">
                     <!-- Abrir Chamado -->
                     <div class="form-chamado">
-                        <h3 style="color: var(--azul-marca); margin-bottom: 25px; font-size: 1.3rem;"><i class="fa-regular fa-envelope"></i> Nova Solicitação</h3>
+                        <h3 style="color: var(--azul-marca); margin-bottom: 20px; font-size: 1.2rem;"><i class="fa-regular fa-envelope"></i> Nova Solicitação</h3>
                         <form id="formChamadoCliente">
                             <div class="form-group">
                                 <label>Assunto Principal</label>
@@ -214,10 +259,10 @@
                             </div>
                             <div class="form-group">
                                 <label>Detalhes da Solicitação</label>
-                                <textarea id="mensagemChamado" rows="5" required placeholder="Descreva sua dúvida técnica ou solicitação detalhadamente..."></textarea>
+                                <textarea id="mensagemChamado" rows="4" required placeholder="Descreva sua dúvida técnica ou solicitação detalhadamente..."></textarea>
                             </div>
                             <button type="submit" class="btn-enviar-chamado" id="btnSalvarChamado">Enviar ao Suporte</button>
-                            <div id="msgChamado" style="margin-top: 15px; font-weight: 600; color: var(--sucesso); display: none; text-align: center;"><i class="fa-solid fa-check-circle"></i> Chamado enviado com sucesso!</div>
+                            <div id="msgChamado" style="margin-top: 12px; font-weight: 600; color: var(--sucesso); display: none; text-align: center;"><i class="fa-solid fa-check-circle"></i> Chamado enviado com sucesso!</div>
                         </form>
                     </div>
 
@@ -254,7 +299,8 @@
 
         if (clienteLogado) {
             sessionStorage.setItem('clienteCnpj', clienteLogado);
-            document.getElementById('telaPainel').style.display = 'flex';
+            const elPainel = document.getElementById('telaPainel');
+            if (elPainel) elPainel.style.display = 'flex';
             iniciarPainelCliente();
         } else {
             document.body.innerHTML = `
@@ -276,13 +322,19 @@
         }
 
         function iniciarPainelCliente() {
-            document.getElementById('nomeClienteSidebar').innerText = nomeClienteLogado;
-            document.getElementById('cnpjClienteSidebar').innerText = `CNPJ: ${clienteLogado}`;
-            abrirAba('obras');
+            const elNome = document.getElementById('nomeClienteSidebar');
+            if (elNome) elNome.innerText = nomeClienteLogado;
+
+            const elCnpj = document.getElementById('cnpjClienteSidebar');
+            if (elCnpj) elCnpj.innerText = clienteLogado ? `CNPJ: ${clienteLogado}` : '';
+
+            // INICIA DIRETO NO KANBAN DE PROJETOS
+            abrirAba('kanban');
         }
 
         function toggleMenuMobile() {
-            document.getElementById('menuLateral').classList.toggle('aberto');
+            const menu = document.getElementById('menuLateral');
+            if (menu) menu.classList.toggle('aberto');
         }
 
         function abrirAba(aba) {
@@ -291,19 +343,212 @@
             if(abaAtiva) abaAtiva.classList.add('ativa');
             
             document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none');
-            document.getElementById('painel' + aba.charAt(0).toUpperCase() + aba.slice(1)).style.display = 'block';
+            const painelAlvo = document.getElementById('painel' + aba.charAt(0).toUpperCase() + aba.slice(1));
+            if (painelAlvo) painelAlvo.style.display = 'block';
             
-            document.getElementById('menuLateral').classList.remove('aberto');
+            const menu = document.getElementById('menuLateral');
+            if (menu) menu.classList.remove('aberto');
 
             if (aba === 'obras') carregarObras();
+            if (aba === 'kanban') carregarKanbanCliente();
             if (aba === 'arquivos') carregarArquivos();
             if (aba === 'suporte') carregarChamados();
         }
 
-        // ================= DASHBOARD COM GAVETA INLINE DE ARQUIVOS =================
-       // ================= DASHBOARD COM GAVETA INLINE DE ARQUIVOS =================
+        // ================= KANBAN DINÂMICO COM BOTÃO DE ACESSAR ANEXOS =================
+        async function carregarKanbanCliente() {
+            const boardContainer = document.getElementById('kanbanBoardDinamico');
+            if (!boardContainer) return;
+            
+            boardContainer.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
+
+            try {
+                const { data: etapas, error: errEtapas } = await supabaseClient
+                    .from('etapas_pcp')
+                    .select('*')
+                    .order('ordem_exibicao', { ascending: true });
+
+                if (errEtapas) throw errEtapas;
+
+                if (!etapas || etapas.length === 0) {
+                    boardContainer.innerHTML = '<p style="color: var(--texto-secundario);">Nenhuma etapa configurada no sistema no momento.</p>';
+                    return;
+                }
+
+                const { data: obras, error: errObras } = await supabaseClient
+                    .from('obras')
+                    .select('*')
+                    .eq('cliente_cnpj', clienteLogado)
+                    .order('id', { ascending: false });
+
+                if (errObras) throw errObras;
+                obrasGlobaisCliente = obras || [];
+
+                let columnsHtml = '';
+                
+                etapas.forEach(etapa => {
+                    const nomeEtapa = (etapa.nome || etapa.titulo || etapa.etapa || '').trim();
+                    const nomeEtapaLower = nomeEtapa.toLowerCase();
+                    
+                    const obrasDaEtapa = (obras || []).filter(obra => {
+                        let etapaObraId = String(obra.etapa_pcp_id || '');
+                        if (etapaObraId.startsWith('1')) etapaObraId = etapaObraId.replace('1', '');
+
+                        const matchId = (etapaObraId && String(etapa.id) === etapaObraId);
+                        const obraStatus = (obra.status || obra.fase || obra.etapa || '').trim().toLowerCase();
+                        const matchTexto = (obraStatus && obraStatus === nomeEtapaLower);
+
+                        return matchId || matchTexto;
+                    });
+
+                    columnsHtml += `
+                        <div class="kanban-coluna">
+                            <h3 style="border-bottom-color: ${etapa.cor || 'var(--azul-sutil)'};">
+                                <span><i class="fa-solid fa-layer-group" style="color: ${etapa.cor || 'var(--azul-sutil)'};"></i> ${nomeEtapa}</span> 
+                                <span style="font-size: 0.72rem; background: #e2e8f0; color: var(--azul-marca); padding: 2px 8px; border-radius: 10px; font-weight: 700;">${obrasDaEtapa.length}</span>
+                            </h3>
+                            <div class="kanban-cards-container">
+                    `;
+
+                    if (obrasDaEtapa.length === 0) {
+                        columnsHtml += `<p style="font-size: 0.8rem; color: #94a3b8; text-align: center; padding: 20px;">Nenhum projeto nesta etapa.</p>`;
+                    } else {
+                        obrasDaEtapa.forEach(obra => {
+                            const prog = obra.progresso || 0;
+                            const dIni = obra.data_inicio ? obra.data_inicio.split('-').reverse().join('/') : '--/--/----';
+                            const dFim = obra.data_fim ? obra.data_fim.split('-').reverse().join('/') : '--/--/----';
+                            let corBarra = prog === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, var(--azul-sutil), var(--azul-marca))';
+                            let corTexto = prog === 100 ? 'var(--sucesso)' : 'var(--azul-marca)';
+
+                            columnsHtml += `
+                                <div class="kanban-card-item" style="border-left-color: ${etapa.cor || 'var(--azul-sutil)'};">
+                                    <h4 style="color: var(--azul-marca); font-size: 0.9rem; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${obra.nome_obra}
+                                    </h4>
+                                    <div style="font-size: 0.75rem; color: var(--texto-secundario); display: flex; flex-direction: column; gap: 2px; background: #f8fafc; padding: 6px 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
+                                        <span>Início: <strong style="color:var(--azul-marca);">${dIni}</strong></span>
+                                        <span>Previsão: <strong style="color:var(--azul-marca);">${dFim}</strong></span>
+                                    </div>
+                                    <div>
+                                        <div class="progress-text">
+                                            <span>Progresso</span>
+                                            <span style="color: ${corTexto}; font-weight: 700;">${prog}%</span>
+                                        </div>
+                                        <div class="progress-container">
+                                            <div class="progress-fill" style="width: ${prog}%; background: ${corBarra};"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- BOTÃO DE ACESSAR ANEXOS/ARQUIVOS DIRETAMENTE NO KANBAN -->
+                                    <button class="btn-ver-arquivos" id="btn-gaveta-kanban-${obra.id}" onclick="toggleGavetaArquivosKanban(${obra.id})">
+                                        <i class="fa-regular fa-folder-open"></i> Acessar Arquivos
+                                    </button>
+                                    
+                                    <div id="gaveta-kanban-${obra.id}" class="arquivos-inline-container" style="display: none;"></div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    columnsHtml += `
+                            </div>
+                        </div>
+                    `;
+                });
+
+                boardContainer.innerHTML = columnsHtml;
+                boardContainer.style.setProperty('--num-colunas', Math.max(etapas.length, 1));
+
+            } catch (e) {
+                console.error("Erro ao carregar Kanban dinâmico:", e);
+                boardContainer.innerHTML = '<p style="font-size: 0.85rem; color: var(--erro); text-align: center;">Erro ao carregar as etapas do banco de dados.</p>';
+            }
+        }
+
+        async function toggleGavetaArquivosKanban(obraId) {
+            const gaveta = document.getElementById(`gaveta-kanban-${obraId}`);
+            const btn = document.getElementById(`btn-gaveta-kanban-${obraId}`);
+            if (!gaveta || !btn) return;
+            
+            if (gaveta.style.display === 'flex' || gaveta.style.display === 'block') {
+                gaveta.style.display = 'none';
+                btn.classList.remove('aberto');
+                btn.innerHTML = '<i class="fa-regular fa-folder-open"></i> Acessar Arquivos';
+                return;
+            }
+
+            gaveta.style.display = 'flex';
+            btn.classList.add('aberto');
+            btn.innerHTML = '<i class="fa-regular fa-folder-closed"></i> Ocultar Arquivos';
+            gaveta.innerHTML = '<p style="font-size: 0.75rem; color: var(--texto-secundario); text-align: center; padding: 6px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>';
+
+            try {
+                const { data, error } = await supabaseClient.from('arquivos')
+                    .select('*')
+                    .eq('cliente_cnpj', clienteLogado)
+                    .eq('obra_id', obraId)
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    gaveta.innerHTML = '<p style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 6px 0;">Nenhum arquivo vinculado.</p>';
+                    return;
+                }
+
+                let html = '';
+                data.forEach(arq => {
+                    const isPdf = String(arq.caminho_arquivo).includes('supabase.co');
+                    const icone = isPdf ? 'fa-file-pdf' : 'fa-link';
+                    const statusAprovacao = arq.status_aprovacao || 'pendente';
+                    
+                    let htmlBotaoAprovar = '';
+                    if (statusAprovacao === 'pendente') {
+                        htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoKanban('${arq.id}', ${obraId})" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
+                    } else {
+                        htmlBotaoAprovar = `<span style="color: var(--sucesso); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-check-double"></i> Aprovado</span>`;
+                    }
+
+                    html += `
+                        <div class="arquivo-inline-item">
+                            <div class="info-arq-mini">
+                                <i class="fa-solid ${icone}"></i>
+                                <span title="${arq.nome_documento}">${arq.nome_documento}</span>
+                            </div>
+                            <div class="botoes-mini-container">
+                                ${htmlBotaoAprovar}
+                                <a href="${arq.caminho_arquivo}" target="_blank" class="btn-mini-acao"><i class="fa-solid fa-download"></i> Acessar</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                gaveta.innerHTML = html;
+            } catch (e) {
+                gaveta.innerHTML = '<p style="font-size: 0.75rem; color: var(--erro); text-align: center;">Erro ao carregar.</p>';
+            }
+        }
+
+        async function aprovarDocumentoKanban(idArquivo, obraId) {
+            if (confirm("Confirmação Eletrônica: Deseja registrar a aprovação deste documento?")) {
+                try {
+                    const { error } = await supabaseClient.from('arquivos').update({
+                        status_aprovacao: 'aprovado',
+                        data_aprovacao: new Date().toISOString()
+                    }).eq('id', idArquivo);
+                    
+                    if (error) throw error;
+                    toggleGavetaArquivosKanban(obraId);
+                    setTimeout(() => toggleGavetaArquivosKanban(obraId), 100);
+                } catch (e) {
+                    alert("Erro ao registrar aprovação.");
+                }
+            }
+        }
+
+        // ================= DASHBOARD DE OBRAS =================
         async function carregarObras() {
             const container = document.getElementById('gridObras');
+            if (!container) return;
             container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando dados...</p>';
 
             try {
@@ -317,10 +562,10 @@
 
                 if (!data || data.length === 0) {
                     container.innerHTML = `
-                        <div style="grid-column: 1 / -1; background: #fff; padding: 50px; border-radius: 8px; text-align: center; border: var(--borda);">
-                            <i class="fa-solid fa-hard-hat" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                        <div style="grid-column: 1 / -1; background: #fff; padding: 40px; text-align: center; border: var(--borda); border-radius: 8px;">
+                            <i class="fa-solid fa-hard-hat" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 15px;"></i>
                             <h3 style="color: var(--azul-marca);">Nenhum projeto ativo</h3>
-                            <p style="color: var(--texto-secundario); margin-top: 8px;">Você ainda não possui obras ou projetos registrados em andamento.</p>
+                            <p style="color: var(--texto-secundario); margin-top: 6px;">Você ainda não possui obras ou projetos registrados em andamento.</p>
                         </div>`;
                     return;
                 }
@@ -332,7 +577,6 @@
                     let corBarra = prog === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : 'linear-gradient(90deg, var(--azul-sutil), var(--azul-marca))';
                     let corTexto = prog === 100 ? 'var(--sucesso)' : 'var(--azul-marca)';
 
-                    // ================= NOVO: TRATAMENTO DAS DATAS =================
                     const dIni = obra.data_inicio;
                     const dFim = obra.data_fim;
                     const formataBr = (d) => { if(!d) return '--/--/----'; const [a,m,dia] = d.split('-'); return `${dia}/${m}/${a}`; };
@@ -340,36 +584,29 @@
                     let htmlDatas = '';
                     if (dIni || dFim) {
                         htmlDatas = `
-                        <div style="font-size: 0.85rem; color: var(--texto-secundario); margin-top: 5px; margin-bottom: 18px; font-weight: 500; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                            <span><i class="fa-regular fa-calendar-check" style="color: var(--azul-sutil);"></i> Início: <strong style="color:var(--azul-marca);">${formataBr(dIni)}</strong></span>
+                        <div style="font-size: 0.82rem; color: var(--texto-secundario); margin-top: 4px; margin-bottom: 14px; font-weight: 500; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                            <span>Início: <strong style="color:var(--azul-marca);">${formataBr(dIni)}</strong></span>
                             <span style="color: #cbd5e1;">|</span> 
-                            <span><i class="fa-solid fa-flag-checkered" style="color: var(--azul-sutil);"></i> Previsão: <strong style="color:var(--azul-marca);">${formataBr(dFim)}</strong></span>
+                            <span>Previsão: <strong style="color:var(--azul-marca);">${formataBr(dFim)}</strong></span>
                         </div>`;
                     }
-                    // ==============================================================
 
                     html += `
                         <div class="obra-card">
-                            <h4 style="margin-bottom: ${htmlDatas ? '0' : '15px'};"><i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${nomeO}</h4>
-                            
-                            <!-- Exibição das Datas Injetada Aqui -->
+                            <h4 style="margin-bottom: ${htmlDatas ? '0' : '12px'};"><i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${nomeO}</h4>
                             ${htmlDatas}
-                            
                             <div class="progress-text">
                                 <span>Status Técnico</span>
-                                <span style="color: ${corTexto}; font-size: 1.1rem;">${prog}%</span>
+                                <span style="color: ${corTexto}; font-size: 1rem;">${prog}%</span>
                             </div>
                             <div class="progress-container">
                                 <div class="progress-fill" style="width: ${prog}%; background: ${corBarra};"></div>
                             </div>
-                            <p style="font-size: 0.75rem; color: #94a3b8; text-align: right; margin-top: 8px;">Atualizado pela engenharia</p>
                             
-                            <!-- Botão que abre a gaveta de arquivos ali mesmo -->
                             <button class="btn-ver-arquivos" id="btn-gaveta-${obra.id}" onclick="toggleGavetaArquivos(${obra.id})">
                                 <i class="fa-regular fa-folder-open"></i> Acessar Arquivos
                             </button>
                             
-                            <!-- Gaveta oculta que será populada via JS -->
                             <div id="gaveta-obra-${obra.id}" class="arquivos-inline-container" style="display: none;"></div>
                         </div>
                     `;
@@ -380,12 +617,11 @@
             }
         }
 
-        // Lógica da Gaveta Inline de Arquivos
         async function toggleGavetaArquivos(obraId) {
             const gaveta = document.getElementById(`gaveta-obra-${obraId}`);
             const btn = document.getElementById(`btn-gaveta-${obraId}`);
+            if (!gaveta || !btn) return;
             
-            // Se estiver aberta, fecha.
             if (gaveta.style.display === 'flex' || gaveta.style.display === 'block') {
                 gaveta.style.display = 'none';
                 btn.classList.remove('aberto');
@@ -393,11 +629,10 @@
                 return;
             }
 
-            // Se for abrir, mostra Loading
             gaveta.style.display = 'flex';
             btn.classList.add('aberto');
             btn.innerHTML = '<i class="fa-regular fa-folder-closed"></i> Ocultar Arquivos';
-            gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 10px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos da obra...</p>';
+            gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 8px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>';
 
             try {
                 const { data, error } = await supabaseClient.from('arquivos')
@@ -409,7 +644,7 @@
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 10px 0;"><i class="fa-solid fa-file-circle-xmark" style="font-size: 1.5rem; display:block; margin-bottom:8px; opacity:0.5;"></i> Nenhum arquivo técnico vinculado.</p>';
+                    gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 8px 0;">Nenhum arquivo vinculado.</p>';
                     return;
                 }
 
@@ -423,7 +658,7 @@
                     if (statusAprovacao === 'pendente') {
                         htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoInline('${arq.id}', ${obraId})" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
                     } else {
-                        htmlBotaoAprovar = `<span style="color: var(--sucesso); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px; background: rgba(16,185,129,0.1); padding: 4px 8px; border-radius: 4px;"><i class="fa-solid fa-check-double"></i> Aprovado</span>`;
+                        htmlBotaoAprovar = `<span style="color: var(--sucesso); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-check-double"></i> Aprovado</span>`;
                     }
 
                     html += `
@@ -446,7 +681,7 @@
         }
 
         async function aprovarDocumentoInline(idArquivo, obraId) {
-            if (confirm("Confirmação Eletrônica: Ao aprovar este projeto, seu aceite será registrado oficialmente. Deseja confirmar?")) {
+            if (confirm("Confirmação Eletrônica: Deseja registrar a aprovação deste documento?")) {
                 try {
                     const { error } = await supabaseClient.from('arquivos').update({
                         status_aprovacao: 'aprovado',
@@ -454,19 +689,18 @@
                     }).eq('id', idArquivo);
                     
                     if (error) throw error;
-                    
-                    // Recarrega a gaveta silenciosamente para atualizar o selo de aprovação
-                    document.getElementById(`gaveta-obra-${obraId}`).style.display = 'none';
                     toggleGavetaArquivos(obraId);
+                    setTimeout(() => toggleGavetaArquivos(obraId), 100);
                 } catch (e) {
-                    alert("Ocorreu um erro ao registrar a aprovação. Tente novamente.");
+                    alert("Erro ao registrar aprovação.");
                 }
             }
         }
 
-        // ================= ARQUIVOS (ACERVO GERAL / HISTÓRICO) =================
+        // ================= ACERVO (HISTÓRICO GERAL) =================
         async function carregarArquivos() {
             const container = document.getElementById('listaArquivosCliente');
+            if (!container) return;
             container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando acervo...</p>';
 
             try {
@@ -492,26 +726,26 @@
                     const isPdf = String(arq.caminho_arquivo).includes('supabase.co');
                     const icone = isPdf ? 'fa-file-pdf' : 'fa-link';
                     const tipoTexto = isPdf ? 'Documento Técnico' : 'Link Externo';
-                    const obsHtml = arq.observacao ? `<p style="margin-top:8px; padding: 8px 12px; background: #f8fafc; border-left: 3px solid var(--azul-sutil); border-radius: 4px; font-size: 0.85rem; color: var(--texto-secundario);"><i class="fa-solid fa-circle-info"></i> ${arq.observacao}</p>` : '';
+                    const obsHtml = arq.observacao ? `<p style="margin-top:6px; padding: 6px 10px; background: #f8fafc; border-left: 3px solid var(--azul-sutil); border-radius: 4px; font-size: 0.82rem; color: var(--texto-secundario);"><i class="fa-solid fa-circle-info"></i> ${arq.observacao}</p>` : '';
                     
                     const statusAprovacao = arq.status_aprovacao || 'pendente';
                     let boxAcao = '';
                     
                     if (statusAprovacao === 'aprovado') {
-                        boxAcao = `<div class="selo-aprovado" title="Aprovado por você"><i class="fa-solid fa-check-double"></i> Projeto Aprovado</div>`;
+                        boxAcao = `<div class="selo-aprovado"><i class="fa-solid fa-check-double"></i> Projeto Aprovado</div>`;
                     } else {
                         boxAcao = `<button class="btn-aprovar" onclick="aprovarDocumentoAcervoGeral('${arq.id}')"><i class="fa-solid fa-signature"></i> Aprovar Projeto</button>`;
                     }
 
                     const obraVinculada = arq.obra_id ? obrasGlobaisCliente.find(o => o.id === arq.obra_id) : null;
                     const badgeObra = obraVinculada ? 
-                        `<span style="background:var(--azul-marca); color:#fff; padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-helmet-safety"></i> Projeto: ${obraVinculada.nome_obra}</span>` : 
-                        `<span style="background:#e2e8f0; color:var(--texto-secundario); padding:4px 10px; border-radius:6px; font-size:0.75rem; font-weight:600; margin-top:8px; display:inline-block;"><i class="fa-solid fa-globe"></i> Documento Geral</span>`;
+                        `<span style="background:var(--azul-marca); color:#fff; padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; margin-top:6px; display:inline-block;"><i class="fa-solid fa-helmet-safety"></i> Projeto: ${obraVinculada.nome_obra}</span>` : 
+                        `<span style="background:#e2e8f0; color:var(--texto-secundario); padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; margin-top:6px; display:inline-block;"><i class="fa-solid fa-globe"></i> Documento Geral</span>`;
 
                     html += `
                         <div class="doc-item">
                             <div class="doc-info" style="align-items:flex-start;">
-                                <i class="fa-solid ${icone} doc-icone" style="margin-top: 5px;"></i>
+                                <i class="fa-solid ${icone} doc-icone" style="margin-top: 3px;"></i>
                                 <div class="doc-detalhes">
                                     <h4>${arq.nome_documento}</h4>
                                     <p>${tipoTexto}</p>
@@ -519,7 +753,7 @@
                                     ${obsHtml}
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="display: flex; gap: 10px; align-items: center;">
                                 ${boxAcao}
                                 <a href="${arq.caminho_arquivo}" target="_blank" class="btn-abrir"><i class="fa-solid fa-arrow-up-right-from-square"></i> Acessar</a>
                             </div>
@@ -533,7 +767,7 @@
         }
 
         async function aprovarDocumentoAcervoGeral(idArquivo) {
-            if (confirm("Confirmação Eletrônica: Ao aprovar este projeto, seu aceite será registrado oficialmente. Deseja confirmar?")) {
+            if (confirm("Confirmação Eletrônica: Deseja aprovar este projeto oficialmente?")) {
                 try {
                     const { error } = await supabaseClient.from('arquivos').update({
                         status_aprovacao: 'aprovado',
@@ -543,7 +777,7 @@
                     if (error) throw error;
                     carregarArquivos();
                 } catch (e) {
-                    alert("Ocorreu um erro ao registrar a aprovação. Tente novamente.");
+                    alert("Erro ao registrar a aprovação.");
                 }
             }
         }
@@ -551,6 +785,7 @@
         // ================= SUPORTE =================
         async function carregarChamados() {
             const container = document.getElementById('listaChamadosCliente');
+            if (!container) return;
             container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando solicitações...</p>';
 
             try {
@@ -563,9 +798,9 @@
 
                 if (!data || data.length === 0) {
                     container.innerHTML = `
-                        <div style="background: #fff; padding: 40px; text-align: center; border: var(--borda); border-radius: 8px;">
-                            <i class="fa-regular fa-comments" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 15px;"></i>
-                            <p style="color: var(--texto-secundario); font-weight: 500;">Você não possui chamados técnicos em aberto.</p>
+                        <div style="background: #fff; padding: 30px; text-align: center; border: var(--borda); border-radius: 8px;">
+                            <i class="fa-regular fa-comments" style="font-size: 2rem; color: #cbd5e1; margin-bottom: 12px;"></i>
+                            <p style="color: var(--texto-secundario); font-weight: 500; font-size: 0.9rem;">Você não possui chamados técnicos em aberto.</p>
                         </div>`;
                     return;
                 }
@@ -584,8 +819,8 @@
                         const dataResp = new Date(t.data_resposta).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                         htmlResposta = `
                             <div class="ticket-resposta">
-                                <span style="display: block; font-size: 0.8rem; color: var(--sucesso); font-weight: 700; margin-bottom: 8px;"><i class="fa-solid fa-reply"></i> Resposta Técnica em ${dataResp}</span>
-                                <p style="color: var(--texto-principal); font-size: 0.95rem; line-height: 1.5;">${t.resposta_equipe}</p>
+                                <span style="display: block; font-size: 0.78rem; color: var(--sucesso); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-reply"></i> Resposta Técnica em ${dataResp}</span>
+                                <p style="color: var(--texto-principal); font-size: 0.9rem; line-height: 1.4;">${t.resposta_equipe}</p>
                             </div>
                         `;
                     }
@@ -594,10 +829,10 @@
                         <div class="ticket-box ${statusClass}">
                             <div class="ticket-header">
                                 ${badge}
-                                <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 500;"><i class="fa-regular fa-clock"></i> ${dataAbertura}</span>
+                                <span style="font-size: 0.78rem; color: #94a3b8; font-weight: 500;"><i class="fa-regular fa-clock"></i> ${dataAbertura}</span>
                             </div>
-                            <h4 style="color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 8px;">${t.assunto}</h4>
-                            <p style="color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5;">"${t.mensagem}"</p>
+                            <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 6px;">${t.assunto}</h4>
+                            <p style="color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.4;">"${t.mensagem}"</p>
                             ${htmlResposta}
                         </div>
                     `;
@@ -608,72 +843,71 @@
             }
         }
 
-        document.getElementById('formChamadoCliente').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSalvarChamado');
-            const msg = document.getElementById('msgChamado');
-            
-            const assunto = document.getElementById('assuntoChamado').value.trim();
-            const mensagem = document.getElementById('mensagemChamado').value.trim();
+        const formChamadoEl = document.getElementById('formChamadoCliente');
+        if (formChamadoEl) {
+            formChamadoEl.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('btnSalvarChamado');
+                const msg = document.getElementById('msgChamado');
+                
+                const assunto = document.getElementById('assuntoChamado').value.trim();
+                const mensagem = document.getElementById('mensagemChamado').value.trim();
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
-            btn.disabled = true;
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+                    btn.disabled = true;
+                }
 
-            try {
-                const { error } = await supabaseClient.from('chamados_suporte').insert([{
-                    cliente_cnpj: clienteLogado,
-                    assunto: assunto,
-                    mensagem: mensagem,
-                    status: 'aberto'
-                }]);
+                try {
+                    const { error } = await supabaseClient.from('chamados_suporte').insert([{
+                        cliente_cnpj: clienteLogado,
+                        assunto: assunto,
+                        mensagem: mensagem,
+                        status: 'aberto'
+                    }]);
 
-                if (error) throw error;
+                    if (error) throw error;
 
-                document.getElementById('formChamadoCliente').reset();
-                msg.style.display = 'block';
-                carregarChamados(); 
+                    formChamadoEl.reset();
+                    if (msg) msg.style.display = 'block';
+                    carregarChamados(); 
 
-                setTimeout(() => { msg.style.display = 'none'; }, 4000);
-            } catch (e) {
-                alert("Erro: " + e.message);
-            } finally {
-                btn.innerHTML = 'Enviar ao Suporte';
-                btn.disabled = false;
-            }
-        });
+                    setTimeout(() => { if (msg) msg.style.display = 'none'; }, 4000);
+                } catch (e) {
+                    alert("Erro: " + e.message);
+                } finally {
+                    if (btn) {
+                        btn.innerHTML = 'Enviar ao Suporte';
+                        btn.disabled = false;
+                    }
+                }
+            });
+        }
     </script>
+
     <!-- MODAL: MANUAL DO CLIENTE -->
     <div id="modalManualCliente" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 3000; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: #fff; border-radius: 12px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); position: relative;">
+        <div style="background: #fff; border-radius: 12px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); position: relative;">
             
-            <div style="position: sticky; top: 0; background: #fff; padding: 25px 35px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
-                <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-book-open"></i> Guia do Portal do Cliente</h3>
-                <button type="button" onclick="document.getElementById('modalManualCliente').style.display='none'" style="background: transparent; border: none; font-size: 1.5rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            <div style="position: sticky; top: 0; background: #fff; padding: 20px 30px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+                <h3 style="color: var(--azul-marca); margin: 0; font-size: 1.2rem;"><i class="fa-solid fa-book-open"></i> Guia do Portal do Cliente</h3>
+                <button type="button" onclick="document.getElementById('modalManualCliente').style.display='none'" style="background: transparent; border: none; font-size: 1.4rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div style="padding: 35px; line-height: 1.7; color: var(--texto-principal);">
+            <div style="padding: 30px; line-height: 1.6; color: var(--texto-principal);">
                 
-                <div style="margin-bottom: 30px;">
-                    <h4 style="color: var(--azul-sutil); font-size: 1.1rem; margin-bottom: 10px;"><i class="fa-solid fa-bars-progress"></i> Acompanhamento de Obras</h4>
-                    <p style="font-size: 0.95rem;">Na tela inicial, você acompanha o status de todos os seus projetos ativos. A barra de progresso (0% a 100%) é atualizada em tempo real pela nossa equipe de engenharia, junto com as datas contratuais de Início e Previsão de Entrega.</p>
+                <div style="margin-bottom: 25px;">
+                    <h4 style="color: var(--azul-sutil); font-size: 1.05rem; margin-bottom: 8px;"><i class="fa-solid fa-bars-progress"></i> Quadro Kanban & Obras</h4>
+                    <p style="font-size: 0.9rem;">Acompanhe o andamento de todos os seus projetos divididos por etapas da engenharia em tempo real.</p>
                 </div>
 
-                <div style="margin-bottom: 30px; background: #f8fafc; padding: 20px; border-left: 4px solid var(--sucesso); border-radius: 6px;">
-                    <h4 style="color: var(--azul-marca); font-size: 1.1rem; margin-bottom: 10px;"><i class="fa-solid fa-file-signature"></i> Acervo Técnico e Aprovação (Aceite)</h4>
-                    <p style="font-size: 0.95rem; margin-bottom: 10px;">Abaixo de cada obra, existe o botão <strong>"Acessar Arquivos"</strong>. Ao clicar nele, uma gaveta se abrirá contendo plantas, relatórios e documentos (PDFs ou links).</p>
-                    <ul style="font-size: 0.9rem; padding-left: 20px; color: var(--texto-secundario);">
-                        <li style="margin-bottom: 8px;">Para visualizar ou baixar, clique em <strong>"Acessar"</strong>.</li>
-                        <li>Se o projeto necessitar da sua validação, clique no botão <strong style="color: var(--sucesso);">"Aprovar"</strong>. Isso gerará um registro jurídico de aceite em nosso sistema contendo sua validação de data e hora.</li>
-                    </ul>
+                <div style="margin-bottom: 25px; background: #f8fafc; padding: 16px; border-left: 4px solid var(--sucesso); border-radius: 6px;">
+                    <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 8px;"><i class="fa-solid fa-file-signature"></i> Acervo e Aprovação de Projetos</h4>
+                    <p style="font-size: 0.9rem; margin-bottom: 8px;">Utilize o botão <strong>"Acessar Arquivos"</strong> em cada card do Kanban ou de Obras para visualizar documentos técnicos e assinar o aceite eletronicamente.</p>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: var(--azul-sutil); font-size: 1.1rem; margin-bottom: 10px;"><i class="fa-solid fa-headset"></i> Suporte e Chamados</h4>
-                    <p style="font-size: 0.95rem;">Dúvidas técnicas ou solicitações de alteração não precisam se perder em e-mails ou aplicativos de mensagem. Na aba <strong>"Suporte"</strong> (ou botão Iniciar Atendimento), você abre um chamado (ticket) direto com nossa central técnica, garantindo agilidade na resposta e histórico de toda a comunicação.</p>
-                </div>
-
-                <div style="margin-top: 30px; border-top: 1px dashed #cbd5e1; padding-top: 20px; text-align: center;">
-                    <button type="button" class="btn-acao" onclick="document.getElementById('modalManualCliente').style.display='none'" style="background: var(--azul-marca); padding: 10px 25px;"><i class="fa-solid fa-check"></i> Entendi, fechar ajuda</button>
+                <div style="margin-top: 25px; border-top: 1px dashed #cbd5e1; padding-top: 16px; text-align: center;">
+                    <button type="button" class="btn-acao" onclick="document.getElementById('modalManualCliente').style.display='none'" style="background: var(--azul-marca); color: #fff; padding: 10px 22px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.9rem;"><i class="fa-solid fa-check"></i> Entendi, fechar ajuda</button>
                 </div>
             </div>
         </div>

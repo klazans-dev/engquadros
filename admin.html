@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaaS Callinfo Tecnologia - ERP Painel</title>
-    <link rel="icon" type="image/png" href="public/favicon.png">
+    
     
     <!-- Tipografia Corporativa -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -262,6 +262,11 @@
     </style>
 </head>
 <body>
+    <!-- Caixa Flutuante de Erros -->
+<div id="toastErroGlobal" style="position: fixed; top: 20px; right: 20px; background: #ef4444; color: #fff; padding: 12px 20px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 9999; font-size: 0.9rem; align-items: center; gap: 10px; transition: opacity 0.3s ease;">
+    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.1rem;"></i>
+    <span id="textoErroGlobal">Ocorreu um erro.</span>
+</div>
 
     <!-- ================= TELA DE LOGIN ================= -->
     <div id="telaLogin">
@@ -269,10 +274,12 @@
         <div class="circuit-overlay"></div>
         <div class="login-container">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 30px;">
-                <img src="public/logo.png" alt="Logotipo SAAS" style="max-width: 160px; filter: brightness(0) invert(1);">
-                <a href="index.html" style="background-color: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); padding: 8px 18px; text-decoration: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao);" onmouseover="this.style.borderColor='var(--branco)'; this.style.color='var(--branco)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.color='rgba(255,255,255,0.7)';">
-                    <i class="fa-solid fa-arrow-left"></i> Retornar ao Site
-                </a>
+ <!-- Logo dinâmica controlada pelo painel Master / Banco de Dados -->
+<img id="logoTelaLogin" src="" alt="Logotipo SaaS" style="max-height: 50px; display: none; margin: 0 auto 15px auto;">
+
+<a href="index.html" style="background-color: transparent; border: 1px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); padding: 8px 18px; text-decoration: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transicao);" onmouseover="this.style.borderColor='var(--branco)'; this.style.color='var(--branco)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.3)'; this.style.color='rgba(255,255,255,0.7)';">
+    <i class="fa-solid fa-arrow-left"></i> Retornar ao Site
+</a>
             </div>
             
             <div class="tipo-acesso">
@@ -303,12 +310,18 @@
                 <i class="fa-solid fa-chevron-left" id="iconeToggle"></i>
             </button>
 
-            <div class="logo-area">
-                <a href="#" style="text-decoration: none;" onclick="abrirModulo('inicio')">
-                    <img src="public/logo.png" alt="Admin SaaS" style="max-width: 140px; filter: brightness(0) invert(1);">
-                </a>
-                <p style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 10px; font-weight: 500;" id="nomeUsuarioLogado">Carregando...</p>
-            </div>
+           <div class="logo-area" style="text-align: center; padding: 15px 10px;">
+    <!-- Logo centralizada -->
+    <a href="#" style="text-decoration: none; display: inline-block;" onclick="abrirModulo('inicio')">
+        <img src="" alt="Admin SaaS" id="logoTopoSidebar" style="max-width: 140px; max-height: 50px; object-fit: contain;  display: none; margin: 0 auto;">
+    </a>
+    
+    <!-- Razão Social e CNPJ centralizados abaixo -->
+    <div style="margin-top: 10px; line-height: 1.3;">
+        <span id="razaoSocialSidebar" style="display: block; font-size: 0.85rem; font-weight: 700; color: #fff;">Carregando...</span>
+        <span id="cnpjSidebar" style="display: block; font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 3px;"></span>
+    </div>
+</div>
             
             <div class="menu-abas">
                 <a href="#" class="item-menu ativa" id="abaInicio" onclick="abrirModulo('inicio')">
@@ -379,11 +392,13 @@
                             <div class="linha-circuito"></div>
                             <div class="linha-circuito"></div>
                         </div>
-                        <div class="marca-box" id="boxTenantSaaS">
-                            <img src="public/favicon.png" alt="Empresa Cliente" id="logoEmpresaSaaS" class="logo-animada" style="max-height: 150px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));">
-                            <h3 style="margin:0; font-size:1.3rem;" id="nomeEmpresaSaaS">Sua Empresa</h3>
-                            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;" id="nichoEmpresaSaaS">Gestão Corporativa</p>
-                        </div>
+                     <div class="marca-box" id="boxTenantSaaS" style="text-align: center; padding: 15px 10px;">
+    <!-- Logo controlada com tamanho máximo estrito para não estourar o layout -->
+    <img src="" alt="Empresa Cliente" id="logoSidebarAdmin" class="logo-animada" style="max-width: 100%; max-height: 70px; width: auto; height: auto; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)); display: none; margin-left: auto; margin-right: auto;">
+    
+    <h3 style="margin:0; font-size:1.3rem;" id="nomeEmpresaSaaS">Sua Empresa</h3>
+    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;" id="nichoEmpresaSaaS">Gestão Corporativa</p>
+</div>
                     </div>
                     
                     <h1 class="saas-title">Bem-vindo ao seu Workspace Inteligente</h1>
@@ -428,10 +443,11 @@
                 </div>
             </div>
 
-            <!-- MÓDULO: OPERACIONAL -->
+          <!-- MÓDULO: OPERACIONAL -->
             <div id="moduloOperacional" class="painel-modulos">
                 <h2 class="titulo-modulo"><i class="fa-solid fa-industry"></i> Módulo Operacional</h2>
                 <div class="grid-tiles">
+                    <!-- Botões que já existiam -->
                     <div class="tile-btn" onclick="abrirTelaAcao('fabricaPcp')">
                         <div class="tile-icone"><i class="fa-solid fa-boxes-stacked"></i></div>
                         <div>
@@ -444,6 +460,24 @@
                         <div>
                             <div class="tile-titulo">Status de Projetos</div>
                             <div class="tile-desc">Visão global e andamento das obras</div>
+                        </div>
+                    </div>
+                    
+                    <!-- NOVO BOTÃO: ETAPAS DO KANBAN -->
+                    <div class="tile-btn" onclick="abrirModalConfigPCP()">
+                        <div class="tile-icone"><i class="fa-solid fa-gears" style="color: #64748b;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Etapas do Kanban</div>
+                            <div class="tile-desc">Personalizar colunas e fluxo do PCP</div>
+                        </div>
+                    </div>
+                    
+                    <!-- NOVO BOTÃO: PROCESSOS DE MONTAGEM -->
+                    <div class="tile-btn" onclick="abrirModalConfigProcessos()">
+                        <div class="tile-icone"><i class="fa-solid fa-list-check" style="color: #64748b;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Processos (Checklists)</div>
+                            <div class="tile-desc">Configurar categorias e itens padrão</div>
                         </div>
                     </div>
                 </div>
@@ -1042,7 +1076,9 @@
 
             <!-- TELA: PCP (FÁBRICA E PRODUÇÃO) -->
             <div id="painelPCP" class="painel-conteudo">
+                
                 <div class="pcp-toolbar" style="border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
+                    
                     <div>
                         <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-industry"></i> Controle de Fábrica (PCP)</h2>
                         <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 2px;" id="subPCP">Fluxo em tempo real dos projetos cadastrados nos clientes.</p>
@@ -1064,6 +1100,12 @@
                         </button>
                         <button type="button" class="btn-acao" onclick="toggleModoTV()" id="btnModoTv" style="background: #0f172a;">
                             <i class="fa-solid fa-tv"></i> Modo TV / Painel
+                        </button>
+                    <button type="button" class="btn-acao" onclick="abrirModalConfigProcessos()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Processos">
+                            <i class="fa-solid fa-list-check"></i> Processos
+                        </button>
+                        <button type="button" class="btn-acao" onclick="abrirModalConfigPCP()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Fluxo">
+                            <i class="fa-solid fa-gears"></i> Etapas
                         </button>
                     </div>
                 </div>
@@ -1139,12 +1181,21 @@
                             <div class="form-group"><label>Senha Provisória</label><input type="password" id="eqPass" required></div>
                         </div>
                         
+                      
                         <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px;">
-                            <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 10px; font-size: 0.95rem;"><i class="fa-solid fa-key"></i> Permissões de Acesso</label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermCli" checked> <span>Acesso total ao Cadastro de Clientes e Produtos</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermObr" checked> <span>Gerenciar Projetos e atualizar Progresso</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermArq" checked> <span>Fazer Upload, Edição e Exclusão de Arquivos</span></label>
-                            <label class="check-permissao"><input type="checkbox" id="novoPermTic" checked> <span>Visualizar e Responder Chamados de Suporte</span></label>
+                            <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 15px; font-size: 0.95rem;"><i class="fa-solid fa-key"></i> Permissões e Módulos de Acesso</label>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px;">
+                                <label class="check-permissao"><input type="checkbox" id="novoPermCli" checked> <span>Cadastros (Clientes e Produtos)</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermObr" checked> <span>Operacional (PCP e Obras)</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermArq" checked> <span>Arquivos e Uploads</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermTic" checked> <span>Atendimento (Chamados)</span></label>
+                                
+                                <label class="check-permissao"><input type="checkbox" id="novoPermVen"> <span>Módulo de Vendas</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermCom"> <span>Módulo de Compras</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermFin"> <span>Módulo Financeiro</span></label>
+                                <label class="check-permissao"><input type="checkbox" id="novoPermRel"> <span>Dashboard BI e Relatórios</span></label>
+                            </div>
                         </div>
                         <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Cadastrar Usuário</button>
                         <span id="msgEquipe" style="margin-left: 15px; color: var(--sucesso); font-weight: 600;"></span>
@@ -1156,34 +1207,108 @@
                 </div>
             </div>
 
-            <!-- TELA: MANUAL DE USO -->
+           <!-- TELA: MANUAL DE USO -->
             <div id="painelManual" class="painel-conteudo">
                 <div style="margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
                     <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-book-open"></i> Manual do Sistema (Equipe)</h2>
-                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Guia prático de utilização das ferramentas.</p>
+                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Guia prático e passo a passo de todas as ferramentas do ERP.</p>
                 </div>
                 
                 <div class="card-box" style="padding: 15px;">
+                    
+                    <!-- 1. GESTÃO DE CLIENTES -->
                     <div class="obra-accordion">
-                        <div class="obra-header" onclick="toggleMainSection('manClientes', 'icnManCli')">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-building-circle-check"></i> 1. Gestão de Clientes</h4>
+                        <div class="obra-header" onclick="toggleMainSection('manClientes', 'icnManCli')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-users"></i> 1. Cadastros (Clientes e Empresas)</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManCli"></i>
                         </div>
                         <div class="obra-content" id="manClientes" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
-                            <p><strong>Cadastro:</strong> Vá em Cadastros > Clientes e clique em "Novo Cliente". Defina o CNPJ e uma Chave de Acesso.<br>
-                            <strong>Acesso:</strong> O cliente fará o login no site utilizando este CNPJ e chave.<br>
-                            <strong>Bloqueio:</strong> Para suspender um acesso, abra o cliente, vá em Configurações e mude para "Inativo".</p>
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Cadastrar Novo:</strong> Acesse "Cadastros > Pessoas / Clientes" e clique em "Novo Cliente".</li>
+                                <li><strong>Automação de Dados:</strong> Digite o CNPJ e clique em "Puxar Dados". O sistema preencherá Razão Social e endereço automaticamente consultando a Receita Federal. O mesmo funciona ao digitar o CEP.</li>
+                                <li><strong>Acesso do Cliente:</strong> Defina uma "Chave de Acesso". O seu cliente usará o CNPJ e esta chave para fazer login no portal dele.</li>
+                                <li><strong>Bloqueio / Suspensão:</strong> Para bloquear um cliente, abra o perfil dele, altere o "Status da Conta" para "Inativo" e salve. O acesso dele será bloqueado imediatamente.</li>
+                            </ul>
                         </div>
                     </div>
+
+                    <!-- 2. PRODUTOS E PRECIFICAÇÃO -->
                     <div class="obra-accordion">
-                        <div class="obra-header" onclick="toggleMainSection('manObras', 'icnManObr')">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-helmet-safety"></i> 2. Projetos e Obras</h4>
-                            <i class="fa-solid fa-chevron-down" id="icnManObr"></i>
+                        <div class="obra-header" onclick="toggleMainSection('manProdutos', 'icnManProd')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-box-open"></i> 2. Produtos, Serviços e Precificação</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManProd"></i>
                         </div>
-                        <div class="obra-content" id="manObras" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
-                            <p><strong>Criando Obras:</strong> Dentro do perfil do cliente, abra a aba Gestão de Projetos e clique em "Novo Projeto". Isso o envia para o PCP.</p>
+                        <div class="obra-content" id="manProdutos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Cadastro Rápido:</strong> Clique em "Novo Produto". Preencha o Custo Base e a porcentagem de Markup (lucro desejado). O sistema calcula o Preço de Venda automaticamente.</li>
+                                <li><strong>Edição Avançada (Tela Cheia):</strong> Clique em cima do card de qualquer produto para abrir a edição completa.</li>
+                                <li><strong>Imagens:</strong> Na tela de edição avançada, você pode enviar uma foto do seu computador ou colar um link da internet. O ERP comprime a foto para não pesar o sistema.</li>
+                                <li><strong>Física e Elétrica:</strong> Preencha dados técnicos (Tensão, Corrente, NCM, CFOP) para usar futuramente em propostas e notas fiscais.</li>
+                            </ul>
                         </div>
                     </div>
+
+                    <!-- 3. PCP E OBRAS -->
+                    <div class="obra-accordion">
+                        <div class="obra-header" onclick="toggleMainSection('manPCP', 'icnManPcp')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-industry"></i> 3. Operacional (PCP, Kanban e Checklists)</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManPcp"></i>
+                        </div>
+                        <div class="obra-content" id="manPCP" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Criando uma Obra/Projeto:</strong> Vá até o perfil do cliente, abra a aba "Gestão de Projetos" e clique em "Novo Projeto".</li>
+                                <li><strong>Movendo no Kanban (PCP):</strong> Acesse "Operacional > Chão de Fábrica". Arraste os quadros (cards) de uma coluna para a outra para mudar a etapa de montagem. O salvamento é automático.</li>
+                                <li><strong>Configurar Etapas:</strong> No PCP, clique no botão "Etapas" no topo da tela para criar, editar nomes, mudar a ordem ou trocar as cores das colunas da sua fábrica.</li>
+                                <li><strong>Processos de Montagem (Checklist):</strong> Em qualquer card de obra, clique em "Processos". Marque o que já foi feito e adicione observações. A barra de progresso (0% a 100%) andará automaticamente.</li>
+                                <li><strong>Personalizar Checklists:</strong> No topo da tela do PCP, clique em "Processos" para criar suas próprias categorias (ex: Mecânica, Elétrica) e adicionar os itens padrão que a sua equipe precisa checar em cada obra.</li>
+                                <li><strong>Imprimir Processos:</strong> Dentro da tela de Checklist da obra, clique em "Imprimir Relação" para gerar um PDF ou enviar para a impressora.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 4. ARQUIVOS E UPLOADS -->
+                    <div class="obra-accordion">
+                        <div class="obra-header" onclick="toggleMainSection('manArquivos', 'icnManArq')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-cloud-arrow-up"></i> 4. Acervo e Upload de Documentos</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManArq"></i>
+                        </div>
+                        <div class="obra-content" id="manArquivos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Como enviar:</strong> Acesse o perfil do Cliente e abra a aba "Enviar Arquivo". Você também pode clicar no ícone de "Clipe de Papel" direto no card da obra lá no PCP.</li>
+                                <li><strong>Tipos de Arquivo:</strong> Você pode fazer o upload direto de um PDF do seu computador ou selecionar a opção "Colar Link Externo" para enviar pastas do Google Drive, OneDrive, etc.</li>
+                                <li><strong>Vínculo:</strong> Você pode vincular o documento a uma obra específica (ex: Projeto Elétrico) ou deixar em branco para ser um documento geral do cliente (ex: Contrato Social).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 5. SUPORTE -->
+                    <div class="obra-accordion">
+                        <div class="obra-header" onclick="toggleMainSection('manSuporte', 'icnManSup')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-headset"></i> 5. Atendimento e Chamados Técnicos</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManSup"></i>
+                        </div>
+                        <div class="obra-content" id="manSuporte" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Recebendo Tickets:</strong> Quando um cliente abre um chamado pelo portal dele, ele aparece no módulo "Atendimento ao Cliente".</li>
+                                <li><strong>Responder:</strong> Clique em "Responder Cliente", digite o parecer técnico e envie. O status do chamado mudará para "Respondido" (ficará verde) e o cliente verá a resposta na hora.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 6. EQUIPE E PERMISSÕES -->
+                    <div class="obra-accordion">
+                        <div class="obra-header" onclick="toggleMainSection('manEquipe', 'icnManEqp')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-user-shield"></i> 6. Gestão da Equipe e Permissões</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManEqp"></i>
+                        </div>
+                        <div class="obra-content" id="manEquipe" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Cadastrar Funcionário:</strong> Acesse "Cadastros > Equipe Interna". Crie o login, senha e marque quais módulos ele terá permissão de visualizar (Vendas, Compras, PCP, etc). Módulos desmarcados simplesmente somem da tela dele.</li>
+                                <li><strong>Delegação (Vínculo de Cliente):</strong> Se você quiser que um funcionário só veja as obras de 1 cliente específico, abra o perfil desse cliente (usando sua senha Master), desça até "Delegação de Equipe" e marque o nome do funcionário.</li>
+                            </ul>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             
@@ -1327,22 +1452,34 @@
         </div>
     </div>
     
-    <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+   <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Membro da Equipe</h3>
             <input type="hidden" id="editEquipeId">
+            
             <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
                 <div class="form-group" style="flex:1; margin:0;"><label>Nome Completo</label><input type="text" id="editEquipeNome" required></div>
                 <div class="form-group" style="flex:1; margin:0;"><label>Usuário de Login</label><input type="text" id="editEquipeUsuario" required></div>
             </div>
             <div class="form-group" style="margin-bottom: 20px;"><label>Senha de Acesso</label><input type="text" id="editEquipeSenha" required></div>
+            
+            <!-- NOVA ÁREA DE PERMISSÕES EM GRID -->
             <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px;">
                 <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-sliders"></i> Permissões de Acesso</label>
-                <label class="check-permissao"><input type="checkbox" id="editPermCli"> <span>Cadastro de Clientes e Produtos</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermObr"> <span>Gestão de Projetos</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermArq"> <span>Gestão de Arquivos</span></label>
-                <label class="check-permissao"><input type="checkbox" id="editPermTic"> <span>Atendimento de Suporte</span></label>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
+                    <label class="check-permissao"><input type="checkbox" id="editPermCli"> <span>Cadastros</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermObr"> <span>Operacional (PCP)</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermArq"> <span>Arquivos</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermTic"> <span>Atendimento</span></label>
+                    
+                    <label class="check-permissao"><input type="checkbox" id="editPermVen"> <span>Vendas</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermCom"> <span>Compras</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermFin"> <span>Financeiro</span></label>
+                    <label class="check-permissao"><input type="checkbox" id="editPermRel"> <span>Relatórios / BI</span></label>
+                </div>
             </div>
+            
             <div style="display: flex; gap: 10px; justify-content: space-between;">
                 <button type="button" onclick="document.getElementById('modalEditarEquipe').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
                 <button type="button" onclick="excluirMembro()" class="btn-acao" style="background: var(--erro); flex: 1;"><i class="fa-solid fa-trash"></i> Excluir</button>
@@ -1350,7 +1487,6 @@
             </div>
         </div>
     </div>
-
     <div id="modalEditarArquivo" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 480px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-sutil);">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-file-pen"></i> Editar Informações Técnicas</h3>
@@ -1380,6 +1516,91 @@
             <div style="display: flex; gap: 10px;">
                 <button type="button" onclick="document.getElementById('modalResponderTicket').style.display='none'" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
                 <button type="button" onclick="salvarRespostaTicket()" class="btn-acao" style="background: var(--sucesso); flex: 1.5;"><i class="fa-solid fa-paper-plane"></i> Enviar Resposta</button>
+            </div>
+        </div>
+    
+    </div>
+    <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
+    <div id="modalConfigPCP" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-gears"></i> Personalizar Fluxo (PCP)</h3>
+                <button type="button" onclick="document.getElementById('modalConfigPCP').style.display='none'" style="background: transparent; border: none; font-size: 1.2rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="formConfigEtapa" onsubmit="salvarEtapaPCP(event)">
+                <input type="hidden" id="configEtapaId">
+                <div class="linha-form" style="margin-bottom: 15px; align-items: flex-end;">
+                    <div class="form-group" style="flex: 3; margin: 0;">
+                        <label>Nome da Etapa</label>
+                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label>Ordem</label>
+                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label>Cor do Card</label>
+                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 38px; cursor: pointer; padding: 2px;">
+                    </div>
+                    <button type="submit" class="btn-acao" style="background: var(--sucesso); height: 38px;"><i class="fa-solid fa-check"></i> Gravar</button>
+                </div>
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <button type="button" onclick="limparFormEtapa()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário (Nova Etapa)</button>
+                </div>
+            </form>
+
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                <div id="listaConfigEtapas" style="display: flex; flex-direction: column;">
+                    <!-- Preenchido via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- MODAL DE GESTÃO DE PROCESSOS PADRÃO -->
+    <div id="modalConfigProcessos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 700px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+                <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-list-check"></i> Personalizar Checklist (Processos)</h3>
+                <button type="button" onclick="document.getElementById('modalConfigProcessos').style.display='none'" style="background: transparent; border: none; font-size: 1.2rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <form id="formConfigProcesso" onsubmit="salvarProcessoPadrao(event)">
+                <input type="hidden" id="configProcDbId">
+                <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 2; margin: 0;">
+                        <label>ID da Categoria (Ex: cat_eng)</label>
+                        <input type="text" id="configProcCatId" required>
+                    </div>
+                    <div class="form-group" style="flex: 3; margin: 0;">
+                        <label>Nome da Categoria (Ex: Engenharia e Projetos)</label>
+                        <input type="text" id="configProcNome" required>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                    <div class="form-group" style="flex: 2; margin: 0;">
+                        <label>Ícone FontAwesome (Ex: fa-bolt)</label>
+                        <input type="text" id="configProcIcone">
+                    </div>
+                    <div class="form-group" style="flex: 1; margin: 0;">
+                        <label>Ordem na Tela</label>
+                        <input type="number" id="configProcOrdem" required min="1">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Itens do Checklist (Digite 1 item por linha)</label>
+                    <textarea id="configProcItens" rows="5" placeholder="Passagem de Cabos&#10;Anilhamento&#10;Conexão de Potência" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <button type="button" onclick="limparFormProcesso()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário</button>
+                    <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Gravar Categoria</button>
+                </div>
+            </form>
+
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 250px; overflow-y: auto;">
+                <div id="listaConfigProcessos" style="display: flex; flex-direction: column;">
+                    <!-- Preenchido via JS -->
+                </div>
             </div>
         </div>
     </div>
@@ -1435,7 +1656,7 @@
     </div>
 
     <!-- ================= SCRIPTS ================= -->
-    <script>
+<script>
         if (typeof window.supabase === 'undefined') { alert("⚠️ ERRO CRÍTICO: O motor do banco de dados não carregou."); }
 
         const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
@@ -1445,6 +1666,7 @@
         let modoLoginAtual = 'mestre';
         let isMaster = false;
         let equipeIdLogada = null;
+        let empresaIdLogada = null; 
         let clienteSelecionado = null;
         let listaGlobalClientes = []; 
         let cnpjsPermitidos = []; 
@@ -1456,10 +1678,79 @@
             if(secundaria) document.documentElement.style.setProperty('--azul-sutil', secundaria);
         }
 
+        // ================= FUNÇÃO UNIFICADA DE LOGO (3 LUGARES) =================
+      function aplicarLogoEmTudo(url) {
+            const logoFinal = (!url || url.trim() === '' || url === 'null' || url === 'undefined') ? '' : url;
+            
+            // 1. Favicon (Aba do Navegador)
+            let linkFavicon = document.querySelector("link[rel*='icon']");
+            if (!linkFavicon) {
+                linkFavicon = document.createElement('link');
+                linkFavicon.rel = 'icon';
+                document.head.appendChild(linkFavicon);
+            }
+            if (logoFinal) {
+                linkFavicon.type = 'image/png';
+                linkFavicon.href = logoFinal;
+            }
+            
+            // 2. Menu Esquerdo (Sidebar - Caixa principal)
+            const imgSidebar = document.getElementById('logoSidebarAdmin');
+            if (imgSidebar) {
+                if (logoFinal) {
+                    imgSidebar.src = logoFinal;
+                    imgSidebar.style.display = 'block';
+                } else {
+                    imgSidebar.style.display = 'none';
+                }
+            }
+            
+            // 3. Topo da Sidebar (Logo-area)
+            const imgTopoSidebar = document.getElementById('logoTopoSidebar');
+            if (imgTopoSidebar) {
+                if (logoFinal) {
+                    imgTopoSidebar.src = logoFinal;
+                    imgTopoSidebar.style.display = 'block';
+                } else {
+                    imgTopoSidebar.style.display = 'none';
+                }
+            }
+            
+            // 4. Tela de Login
+            const imgLogin = document.getElementById('logoTelaLogin');
+            if (imgLogin) {
+                if (logoFinal) {
+                    imgLogin.src = logoFinal;
+                    imgLogin.style.display = 'block';
+                } else {
+                    imgLogin.style.display = 'none';
+                }
+            }
+        }
+
+        // Busca automática da logo ao digitar o CNPJ/Identificador no Login (Exclusivo admin_master)
+        document.getElementById('inputIdentificador')?.addEventListener('blur', async function() {
+            const identDigitado = this.value.trim();
+            if (!identDigitado || identDigitado.length < 3) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('admin_master')
+                    .select('logo_url')
+                    .eq('cnpj', identDigitado)
+                    .maybeSingle();
+
+                if (data && data.logo_url) {
+                    aplicarLogoEmTudo(data.logo_url);
+                }
+            } catch (err) {
+                console.error("Erro ao buscar logo no admin_master:", err);
+            }
+        });
+
         // ================= AUTOMAÇÃO ERP (MÁSCARAS E APIS) =================
         function alternarMascara() {
             const tipo = document.querySelector('input[name="editCliTipo"]:checked').value;
-            // Adapte caso precise usar essa função também no formEditarCliente
         }
 
         function mascaraCPF(i) {
@@ -1588,21 +1879,32 @@
             document.getElementById('prodPreco').value = precoFinal.toFixed(2);
         }
 
-        function getPermissoes() {
-            if (isMaster) return { clientes: true, obras: true, arquivos: true, tickets: true };
+       function getPermissoes() {
+            if (isMaster) return { clientes: true, obras: true, arquivos: true, tickets: true, vendas: true, compras: true, financeiro: true, relatorios: true };
             try { return JSON.parse(sessionStorage.getItem('permissoes') || '{}'); } catch(e) { return {}; }
         }
 
-        if (sessionStorage.getItem('acessoCRM')) {
+       if (sessionStorage.getItem('acessoCRM')) {
             isMaster = sessionStorage.getItem('tipoAcesso') === 'mestre';
             equipeIdLogada = sessionStorage.getItem('equipeId');
-            if (isMaster) { document.getElementById('nomeUsuarioLogado').innerText = 'Acesso Master'; } 
-            else { document.getElementById('nomeUsuarioLogado').innerText = 'Engenharia: ' + sessionStorage.getItem('nomeEquipe'); }
+            empresaIdLogada = sessionStorage.getItem('empresaId'); 
             
-            // Carregar tema gravado na sessão
+            // Versão 100% blindada para evitar o erro de 'null'
+            const elUsuario = document.getElementById('nomeUsuarioLogado');
+            if (elUsuario) {
+                if (isMaster) { 
+                    elUsuario.innerText = 'Acesso Master'; 
+                } else { 
+                    elUsuario.innerText = 'Engenharia: ' + (sessionStorage.getItem('nomeEquipe') || 'Equipe'); 
+                }
+            }
+            
             const tPrim = sessionStorage.getItem('masterCorPrimaria');
             const tSec = sessionStorage.getItem('masterCorSecundaria');
             if(tPrim || tSec) aplicarTemaCores(tPrim, tSec);
+
+            // Aplica a logo salva na sessão instantaneamente ao carregar o painel
+            aplicarLogoEmTudo(sessionStorage.getItem('masterLogo'));
 
             iniciarPainel();
         }
@@ -1620,57 +1922,147 @@
             }
         }
 
-        document.getElementById('formLogin').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const ident = document.getElementById('inputIdentificador').value.trim(); const senha = document.getElementById('inputSenha').value.trim();
-            const msg = document.getElementById('mensagemErroLogin'); msg.style.display = 'none'; document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
-            try {
-                if (modoLoginAtual === 'mestre') {
-                    const { data, error } = await supabaseClient.from('admin_master').select('*').eq('cnpj', ident).eq('senha', senha);
-                    if (error) { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro no servidor.'; return; }
-                    if (data && data.length > 0) { 
-                        sessionStorage.setItem('acessoCRM', 'true'); 
-                        sessionStorage.setItem('tipoAcesso', 'mestre');
-                        sessionStorage.setItem('masterCnpj', data[0].cnpj);
-                        sessionStorage.setItem('masterNome', data[0].nome_fantasia || 'Sua Empresa');
-                        sessionStorage.setItem('masterLogo', data[0].logo_url || '');
-                        sessionStorage.setItem('masterCorPrimaria', data[0].cor_primaria || '#0b1c35');
-                        sessionStorage.setItem('masterCorSecundaria', data[0].cor_secundaria || '#2b5c92');
-                        sessionStorage.setItem('masterSenha', senha);
-                        window.location.reload(); 
-                    } else { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Credenciais inválidas.'; }
-                } else {
-                    const { data, error } = await supabaseClient.from('equipe_admin').select('*').eq('usuario_login', ident).eq('senha', senha);
-                    if (data && data.length > 0) {
-                        sessionStorage.setItem('acessoCRM', 'true'); sessionStorage.setItem('tipoAcesso', 'equipe');
-                        sessionStorage.setItem('equipeId', data[0].id); sessionStorage.setItem('nomeEquipe', data[0].nome); 
-                        sessionStorage.setItem('permissoes', data[0].permissoes || '{}'); window.location.reload();
-                    } else { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Credenciais incorretas.'; }
+       document.getElementById('formLogin').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const identBruto = document.getElementById('inputIdentificador').value.trim(); 
+    const senha = document.getElementById('inputSenha').value.trim();
+    const msg = document.getElementById('mensagemErroLogin'); 
+    msg.style.display = 'none'; 
+    
+    document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
+    
+    try {
+        if (modoLoginAtual === 'mestre') {
+            // Remove pontos, barras e traços para bater com o formato limpo do banco de dados
+            const identLimpo = identBruto.replace(/\D/g, '');
+            
+            // Tenta buscar tanto pelo limpo quanto pelo bruto para garantir
+            const { data, error } = await supabaseClient
+                .from('admin_master')
+                .select('*')
+                .or(`cnpj.eq.${identLimpo},cnpj.eq.${identBruto}`)
+                .eq('senha', senha);
+
+            if (error) throw error;
+
+            if (data && data.length > 0) { 
+                const masterData = data[0];
+                
+              // Salva rigorosamente na sessão usando o ID principal do registro master
+                const idEmpresaMestre = masterData.empresa_id; // ID primário da tabela admin_master
+
+                sessionStorage.setItem('acessoCRM', 'true'); 
+                sessionStorage.setItem('tipoAcesso', 'mestre');
+                sessionStorage.setItem('empresaId', idEmpresaMestre); // <--- ID garantido
+                sessionStorage.setItem('masterCnpj', masterData.cnpj);
+                sessionStorage.setItem('masterNome', masterData.nome_fantasia || 'Sua Empresa');
+                sessionStorage.setItem('masterLogo', masterData.logo_url || '');
+                sessionStorage.setItem('masterCorPrimaria', masterData.cor_primaria || '#0b1c35');
+                sessionStorage.setItem('masterCorSecundaria', masterData.cor_secundaria || '#2b5c92');
+                sessionStorage.setItem('masterSenha', senha);
+                
+                console.log("Login Mestre realizado! ID da Empresa salvo:", idEmpresaMestre);
+                window.location.reload();
+            } else { 
+                msg.style.display = 'block'; 
+                msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CNPJ ou senha incorretos (ou registro não encontrado no admin_master).'; 
+            }
+        } else {
+            const { data, error } = await supabaseClient
+                .from('equipe_admin')
+                .select('*')
+                .eq('usuario_login', identBruto)
+                .eq('senha', senha);
+
+            if (error) throw error;
+
+            if (data && data.length > 0) {
+                const equipeUser = data[0];
+                sessionStorage.setItem('acessoCRM', 'true'); 
+                sessionStorage.setItem('tipoAcesso', 'equipe');
+                sessionStorage.setItem('equipeId', equipeUser.id); 
+                sessionStorage.setItem('nomeEquipe', equipeUser.nome); 
+                sessionStorage.setItem('empresaId', equipeUser.empresa_id); 
+                sessionStorage.setItem('permissoes', equipeUser.permissoes || '{}');
+
+                const { data: masterData } = await supabaseClient
+                    .from('admin_master')
+                    .select('*')
+                    .eq('id', equipeUser.empresa_id)
+                    .maybeSingle();
+
+                if (masterData) {
+                    sessionStorage.setItem('masterCnpj', masterData.cnpj || '');
+                    sessionStorage.setItem('masterNome', masterData.nome_fantasia || 'Sua Empresa');
+                    sessionStorage.setItem('masterLogo', masterData.logo_url || '');
+                    sessionStorage.setItem('masterCorPrimaria', masterData.cor_primaria || '#0b1c35');
+                    sessionStorage.setItem('masterCorSecundaria', masterData.cor_secundaria || '#2b5c92');
                 }
-            } catch (err) { msg.style.display = 'block'; msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de conexão.'; } 
-            finally { document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Autenticar Sessão'; }
-        });
+
+                window.location.reload();
+            } else { 
+                msg.style.display = 'block'; 
+                msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Usuário ou senha da equipe incorretos.'; 
+            }
+        }
+    } catch (err) { 
+        console.error("Erro no login:", err);
+        msg.style.display = 'block'; 
+        msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Erro de conexão: ' + err.message; 
+    } finally { 
+        document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Autenticar Sessão'; 
+    }
+});
 
         function sair() { sessionStorage.clear(); window.location.reload(); }
 
-        function iniciarPainel() {
-            document.getElementById('telaLogin').style.display = 'none'; document.getElementById('telaPainel').style.display = 'flex';
+       async function iniciarPainel() {
+            document.getElementById('telaLogin').style.display = 'none'; 
+            document.getElementById('telaPainel').style.display = 'flex';
             const p = getPermissoes();
+
+            const nomeTenant = sessionStorage.getItem('masterNome') || 'Sua Empresa';
+            const logoTenant = sessionStorage.getItem('masterLogo');
+            const corPri = sessionStorage.getItem('masterCorPrimaria') || '#0b1c35';
+            const corSec = sessionStorage.getItem('masterCorSecundaria') || '#2b5c92';
             
+            // Preenche a Razão Social e o CNPJ no topo da sidebar de forma segura
+            const razaoSocialEl = document.getElementById('razaoSocialSidebar');
+            if (razaoSocialEl) {
+                razaoSocialEl.innerText = sessionStorage.getItem('masterNome') || 'Sua Empresa';
+            }
+
+            const cnpjEl = document.getElementById('cnpjSidebar');
+            if (cnpjEl) {
+                const cnpjSalvo = sessionStorage.getItem('masterCnpj');
+                cnpjEl.innerText = cnpjSalvo ? `CNPJ: ${cnpjSalvo}` : '';
+            }
+
+            const nomeEmpresaEl = document.getElementById('nomeEmpresaSaaS');
+            if (nomeEmpresaEl) nomeEmpresaEl.innerText = nomeTenant;
+
+            aplicarTemaCores(corPri, corSec);
+
+            // Aplica a logo exclusivamente do admin_master nos 4 lugares
+            aplicarLogoEmTudo(logoTenant);
+
             if (isMaster) {
                 const abaConfig = document.getElementById('abaSistema');
                 if (abaConfig) abaConfig.style.display = 'flex';
-                const nomeTenant = sessionStorage.getItem('masterNome') || 'Sua Empresa';
-                const logoTenant = sessionStorage.getItem('masterLogo');
-                document.getElementById('nomeEmpresaSaaS').innerText = nomeTenant;
-                if (logoTenant && logoTenant.trim() !== '') { document.getElementById('logoEmpresaSaaS').src = logoTenant; }
             } else { 
-                if(!p.clientes) { document.getElementById('btnAcessoNovoCli').style.display = 'none'; document.getElementById('boxAcoesAdmin').style.display = 'none'; ['editCliNome', 'editCliSenha', 'editCliWpp', 'editCliEmail', 'editCliStatus'].forEach(id => { const el = document.getElementById(id); if(el) el.disabled = true; }); }
-                if(!p.obras) { document.getElementById('btnNovaObra').style.display = 'none'; }
-                if(!p.arquivos) { document.getElementById('boxUploadInteiro').style.display = 'none'; }
+                if(!p.clientes) { const el = document.getElementById('abaCadastros'); if(el) el.style.display = 'none'; }
+                if(!p.obras) { const el = document.getElementById('abaOperacional'); if(el) el.style.display = 'none'; }
+                if(!p.tickets) { const el = document.getElementById('abaAtendimento'); if(el) el.style.display = 'none'; }
+                if(!p.vendas) { const el = document.getElementById('abaVendas'); if(el) el.style.display = 'none'; }
+                if(!p.compras) { const el = document.getElementById('abaCompras'); if(el) el.style.display = 'none'; }
+                if(!p.financeiro) { const el = document.getElementById('abaFinanceiro'); if(el) el.style.display = 'none'; }
+                if(!p.relatorios) { const el = document.getElementById('abaRelatorios'); if(el) el.style.display = 'none'; }
             }
+
             abrirModulo('inicio');
-            carregarListaClientesGlobais(); 
+            if (typeof carregarListaClientesGlobais === 'function') {
+                carregarListaClientesGlobais(); 
+            }
         }
 
         function toggleMainSection(idContent, idIcone) {
@@ -1679,7 +2071,6 @@
             else { content.style.display = 'none'; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
         }
 
-        // ================= NAVEGAÇÃO DE MÓDULOS EXPANDIDA =================
         function abrirModulo(modulo) {
             document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativa'));
             const abaClicada = document.getElementById('aba' + modulo.charAt(0).toUpperCase() + modulo.slice(1));
@@ -1697,17 +2088,42 @@
             else if (modulo === 'relatorios') { document.getElementById('moduloRelatorios').style.display = 'block'; }
             else if (modulo === 'sistema') { document.getElementById('moduloSistema').style.display = 'block'; }
             
-            // Controle da Sidebar Mobile
             if (window.innerWidth <= 768) { const sidebar = document.getElementById('sidebarAdmin'); if (!sidebar.classList.contains('encolhida')) document.getElementById('btnToggleSidebar').click(); }
         }
 
-        async function abrirTelaAcao(tela) {
+        function toggleMainSection(idContent, idIcone) {
+            const content = document.getElementById(idContent); const icon = document.getElementById(idIcone);
+            if (content.style.display === 'none' || content.style.display === '') { content.style.display = 'block'; icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } 
+            else { content.style.display = 'none'; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
+        }
+
+        function abrirModulo(modulo) {
+            document.querySelectorAll('.item-menu').forEach(el => el.classList.remove('ativa'));
+            const abaClicada = document.getElementById('aba' + modulo.charAt(0).toUpperCase() + modulo.slice(1));
+            if(abaClicada) abaClicada.classList.add('ativa');
+
+            document.querySelectorAll('.painel-conteudo, .painel-modulos').forEach(el => el.style.display = 'none');
+
+            if (modulo === 'inicio') { document.getElementById('painelInicio').style.display = 'block'; } 
+            else if (modulo === 'cadastros') { document.getElementById('moduloCadastros').style.display = 'block'; } 
+            else if (modulo === 'operacional') { document.getElementById('moduloOperacional').style.display = 'block'; } 
+            else if (modulo === 'atendimento') { document.getElementById('painelChamados').style.display = 'block'; carregarTickets(); }
+            else if (modulo === 'vendas') { document.getElementById('moduloVendas').style.display = 'block'; }
+            else if (modulo === 'compras') { document.getElementById('moduloCompras').style.display = 'block'; }
+            else if (modulo === 'financeiro') { document.getElementById('moduloFinanceiro').style.display = 'block'; }
+            else if (modulo === 'relatorios') { document.getElementById('moduloRelatorios').style.display = 'block'; }
+            else if (modulo === 'sistema') { document.getElementById('moduloSistema').style.display = 'block'; }
+            
+            if (window.innerWidth <= 768) { const sidebar = document.getElementById('sidebarAdmin'); if (!sidebar.classList.contains('encolhida')) document.getElementById('btnToggleSidebar').click(); }
+        }
+
+      async function abrirTelaAcao(tela) {
             document.querySelectorAll('.painel-modulos, .painel-conteudo').forEach(el => el.style.display = 'none');
 
             if (tela === 'gestaoClientes') { document.getElementById('painelGestaoClientes').style.display = 'block'; carregarListaClientesCentral(); } 
             else if (tela === 'gestaoProdutos') { document.getElementById('painelProdutos').style.display = 'block'; carregarListaProdutos(); } 
             else if (tela === 'gestaoEquipe') { document.getElementById('painelEquipe').style.display = 'block'; carregarListaEquipe(); }
-            else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; carregarProjetosPCP(); }
+            else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; inicializarPCP(); }
             else if (tela === 'dashboardGeral') { document.getElementById('painelDashboard').style.display = 'flex'; carregarDashboardKanban(); }
             else if (tela === 'manualUso') { document.getElementById('painelManual').style.display = 'block'; }
             else if (tela === 'identidadeMaster') {
@@ -1725,14 +2141,13 @@
             }
         }
 
-        // ================= GESTÃO DE PRODUTOS E SERVIÇOS (TELA CHEIA) =================
         async function carregarListaProdutos() {
             const lista = document.getElementById('listaProdutosCentral');
             if(!lista) return;
             lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando produtos...</p>';
             
             try {
-                const { data, error } = await supabaseClient.from('produtos').select('*').order('nome');
+                const { data, error } = await supabaseClient.from('produtos').select('*').eq('empresa_id', empresaIdLogada).order('nome');
                 if(error) throw error;
                 lista.innerHTML = '';
                 
@@ -1741,7 +2156,6 @@
                         const precoVenda = parseFloat(p.preco_venda || 0).toFixed(2).replace('.', ',');
                         const pCodificado = encodeURIComponent(JSON.stringify(p));
                         
-                        // Busca a imagem no JSON
                         let imgThumb = '';
                         if (p.dados_tecnicos) {
                             try {
@@ -1750,7 +2164,6 @@
                             } catch(e) {}
                         }
 
-                        // Cria a miniatura HTML
                         const divImagem = imgThumb 
                             ? `<div style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid #e2e8f0;"><img src="${imgThumb}" style="width: 100%; height: 100%; object-fit: cover;"></div>` 
                             : `<div style="width: 50px; height: 50px; border-radius: 6px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0;"><i class="fa-solid fa-box-open" style="color: #cbd5e1; font-size: 1.2rem;"></i></div>`;
@@ -1781,7 +2194,6 @@
             }
         }
 
-        // --- FUNÇÕES DE TRANSIÇÃO E EDIÇÃO EM TELA CHEIA ---
         function calcularMarkupFull() {
             let custo = parseFloat(document.getElementById('fullEditProdCusto').value.replace(',','.')) || 0;
             let markup = parseFloat(document.getElementById('fullEditProdMarkup').value.replace(',','.')) || 0;
@@ -1903,7 +2315,7 @@
             };
 
             try {
-                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
                 if (error) throw error;
                 
                 carregarListaProdutos(); 
@@ -1924,7 +2336,7 @@
             const id = document.getElementById('fullEditProdId').value;
             if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
                 try {
-                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
+                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
                     if (error) throw error;
                     
                     carregarListaProdutos();
@@ -1991,7 +2403,7 @@
             };
 
             try {
-                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id);
+                const { error } = await supabaseClient.from('produtos').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
                 if (error) throw error;
                 
                 document.getElementById('modalEditarProduto').style.display = 'none';
@@ -2007,7 +2419,7 @@
             const id = document.getElementById('editProdId').value;
             if(confirm("Tem certeza que deseja APAGAR este produto permanentemente?")) {
                 try {
-                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id);
+                    const { error } = await supabaseClient.from('produtos').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
                     if (error) throw error;
                     
                     document.getElementById('modalEditarProduto').style.display = 'none';
@@ -2052,6 +2464,7 @@
             };
 
             const payload = { 
+                empresa_id: empresaIdLogada, 
                 nome: document.getElementById('prodNome').value.trim(), 
                 tipo: document.getElementById('prodCategoria').value,
                 unidade: 'UN', 
@@ -2086,10 +2499,10 @@
         // ================= CLIENTES CENTRALIZADOS =================
         async function carregarListaClientesGlobais() {
             if (!isMaster) {
-                const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('cliente_cnpj').eq('equipe_id', equipeIdLogada);
+                const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('cliente_cnpj').eq('equipe_id', equipeIdLogada).eq('empresa_id', empresaIdLogada);
                 cnpjsPermitidos = vinculos ? vinculos.map(v => v.cliente_cnpj) : [];
             }
-            let query = supabaseClient.from('clientes').select('*').order('razao_social'); 
+            let query = supabaseClient.from('clientes').select('*').eq('empresa_id', empresaIdLogada).order('razao_social'); 
             if (!isMaster && cnpjsPermitidos.length > 0) query = query.in('cnpj', cnpjsPermitidos);
             const { data } = await query;
             if (data) { listaGlobalClientes = data; }
@@ -2101,7 +2514,7 @@
             lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando clientes...</p>';
             
             if (!isMaster && cnpjsPermitidos.length === 0) { lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum cliente vinculado à sua conta.</p>'; return; }
-            let query = supabaseClient.from('clientes').select('*').order('razao_social'); 
+            let query = supabaseClient.from('clientes').select('*').eq('empresa_id', empresaIdLogada).order('razao_social'); 
             if (!isMaster && cnpjsPermitidos.length > 0) query = query.in('cnpj', cnpjsPermitidos);
             
             const { data } = await query; 
@@ -2190,6 +2603,7 @@
             const docFormatado = document.getElementById('novoCliCnpj').value.trim();
 
             const payload = { 
+                empresa_id: empresaIdLogada, 
                 razao_social: document.getElementById('novoCliNome').value.trim(), 
                 cnpj: docFormatado, 
                 cpf_cnpj: docFormatado, 
@@ -2241,70 +2655,69 @@
         }
 
       async function carregarDashboardKanban() {
-    const col0 = document.getElementById('kbColuna0'); 
-    const col50 = document.getElementById('kbColuna50'); 
-    const col100 = document.getElementById('kbColuna100'); 
-    if(!col0) return;
-    
-    col0.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
-    col50.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
-    col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
-    
-    try {
-        let query = supabaseClient.from('obras').select('*').order('id', { ascending: false }); 
-        if (!isMaster && cnpjsPermitidos.length > 0) { 
-            query = query.in('cliente_cnpj', cnpjsPermitidos); 
-        }
-        
-        const { data: obrasData, error } = await query; 
-        if (error) throw error;
-        
-        col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
-        
-        if(obrasData && obrasData.length > 0) {
-            obrasData.forEach(obra => {
-                const progresso = obra.progresso || 0; 
-                let nomeCli = 'Cliente não encontrado'; 
-                
-                const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj)); 
-                if(cliMatch) { 
-                    nomeCli = cliMatch.razao_social; 
+            const col0 = document.getElementById('kbColuna0'); 
+            const col50 = document.getElementById('kbColuna50'); 
+            const col100 = document.getElementById('kbColuna100'); 
+            if(!col0) return;
+            
+            col0.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
+            col50.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>'; 
+            col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
+            
+            try {
+                let query = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }); 
+                if (!isMaster && cnpjsPermitidos.length > 0) { 
+                    query = query.in('cliente_cnpj', cnpjsPermitidos); 
                 }
                 
-                // MUDANÇA AQUI: Agora codificamos os dados da OBRA e chamamos a função de edição global
-                const oCodificada = encodeURIComponent(JSON.stringify(obra));
-                const onClickAttr = `onclick="abrirEdicaoObraGlobal('${oCodificada}')" style="cursor: pointer;"`;
+                const { data: obrasData, error } = await query; 
+                if (error) throw error;
                 
-                const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
                 
-                const htmlCard = `
-                <div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}>
-                    <h4>${nT}</h4>
-                    <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: ${progresso}%;"></div>
-                    </div>
-                    <div style="text-align: right; font-size: 0.75rem; font-weight: 700; margin-top: 6px; color: var(--texto-secundario);">
-                        ${progresso}% concluído
-                    </div>
-                </div>`;
+                if(obrasData && obrasData.length > 0) {
+                    obrasData.forEach(obra => {
+                        const progresso = obra.progresso || 0; 
+                        let nomeCli = 'Cliente não encontrado'; 
+                        
+                        const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj)); 
+                        if(cliMatch) { 
+                            nomeCli = cliMatch.razao_social; 
+                        }
+                        
+                        const oCodificada = encodeURIComponent(JSON.stringify(obra));
+                        const onClickAttr = `onclick="abrirEdicaoObraGlobal('${oCodificada}')" style="cursor: pointer;"`;
+                        
+                        const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        
+                        const htmlCard = `
+                        <div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}>
+                            <h4>${nT}</h4>
+                            <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: ${progresso}%;"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 0.75rem; font-weight: 700; margin-top: 6px; color: var(--texto-secundario);">
+                                ${progresso}% concluído
+                            </div>
+                        </div>`;
+                        
+                        if (progresso === 0) col0.innerHTML += htmlCard; 
+                        else if (progresso === 100) col100.innerHTML += htmlCard; 
+                        else col50.innerHTML += htmlCard;
+                    });
+                }
                 
-                if (progresso === 0) col0.innerHTML += htmlCard; 
-                else if (progresso === 100) col100.innerHTML += htmlCard; 
-                else col50.innerHTML += htmlCard;
-            });
+                if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos novos.</p>';
+                if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem obras em andamento.</p>';
+                if(col100.innerHTML==='') col100.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos finalizados.</p>';
+                
+                filtrarKanban(); 
+                
+            } catch(e) { 
+                console.error("Erro Kanban:", e); 
+            }
         }
-        
-        if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos novos.</p>';
-        if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem obras em andamento.</p>';
-        if(col100.innerHTML==='') col100.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos finalizados.</p>';
-        
-        filtrarKanban(); 
-        
-    } catch(e) { 
-        console.error("Erro Kanban:", e); 
-    }
-}
 
         function abrirClienteViaKanban(cliEncoded) {
             const cli = JSON.parse(decodeURIComponent(cliEncoded)); 
@@ -2331,7 +2744,7 @@
             const p = getPermissoes(); 
             
             try {
-                const { data, error } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', cnpj).order('id', { ascending: false });
+                const { data, error } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', cnpj).eq('empresa_id', empresaIdLogada).order('id', { ascending: false });
                 if(error) throw error; 
                 obrasDoClienteAtual = data || []; 
                 atualizarDropdownObrasUpload();
@@ -2424,14 +2837,19 @@
             const textoOriginal = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando...';
 
             try {
+                if (!empresaIdLogada) {
+                    throw new Error("Sessão da empresa expirou. Faça login novamente.");
+                }
+
                 const payload = {
-                    cliente_cnpj: clienteSelecionado,
+                    empresa_id: empresaIdLogada, 
+                    cliente_cnpj: clienteSelecionado, 
                     nome_obra: nome,
                     codigo_orcamento: orc ? orc : null,
                     data_inicio: dIni || null,
                     data_fim: dFim || null,
                     progresso: 0,
-                    etapa_pcp_id: 'etp1' 
+                    etapa_pcp_id: 1 
                 };
                 
                 const { error } = await supabaseClient.from('obras').insert([payload]);
@@ -2439,10 +2857,14 @@
 
                 toggleFormNovaObra(); 
                 carregarObrasCliente(clienteSelecionado); 
-                carregarDashboardKanban(); carregarProjetosPCP();
+                carregarDashboardKanban(); 
+                carregarProjetosPCP();
             } catch(e) {
-                alert("Erro de comunicação ao criar obra.");
-            } finally { btn.innerHTML = textoOriginal; }
+                console.error("Erro ao salvar:", e);
+                alert("Erro ao criar obra: " + e.message);
+            } finally { 
+                btn.innerHTML = textoOriginal; 
+            }
         }
 
         function abrirEdicaoObraGlobal(obraEncoded) {
@@ -2460,7 +2882,7 @@
             
             document.getElementById('modalEditarObraGlobal').style.display = 'flex';
         }
-
+        
         async function salvarEdicaoObraGlobal() {
             const id = document.getElementById('editObraGlobalId').value;
             const cnpj = document.getElementById('editObraGlobalCnpj').value;
@@ -2483,7 +2905,7 @@
                     data_fim: dFim || null
                 };
                 
-                const { error } = await supabaseClient.from('obras').update(payload).eq('id', id);
+                const { error } = await supabaseClient.from('obras').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
                 if(error) throw error;
                 
                 document.getElementById('modalEditarObraGlobal').style.display = 'none';
@@ -2495,7 +2917,7 @@
             finally { btn.innerHTML = originalHTML; }
         }
 
-        async function excluirObra(id) { if(confirm("Tem certeza que deseja apagar este projeto do sistema?")) { try { const { error } = await supabaseClient.from('obras').delete().eq('id', id); if(error) throw new Error(error.message); carregarObrasCliente(clienteSelecionado); carregarDashboardKanban(); carregarProjetosPCP(); } catch(e) { alert("Erro ao excluir do banco."); } } }
+        async function excluirObra(id) { if(confirm("Tem certeza que deseja apagar este projeto do sistema?")) { try { const { error } = await supabaseClient.from('obras').delete().eq('id', id).eq('empresa_id', empresaIdLogada); if(error) throw new Error(error.message); carregarObrasCliente(clienteSelecionado); carregarDashboardKanban(); carregarProjetosPCP(); } catch(e) { alert("Erro ao excluir do banco."); } } }
 
         document.getElementById('formEditarCliente').addEventListener('submit', async function(e) {
             e.preventDefault(); const msg = document.getElementById('msgEditCliente'); msg.style.color = 'var(--texto-secundario)'; msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando...';
@@ -2525,14 +2947,14 @@
                     is_transportadora: pTrans
                 };
                 const campoEmail = document.getElementById('editCliEmail'); if (campoEmail) payload.email = campoEmail.value.trim();
-                const { error } = await supabaseClient.from('clientes').update(payload).eq('cnpj', clienteSelecionado); if (error) throw error;
+                const { error } = await supabaseClient.from('clientes').update(payload).eq('cnpj', clienteSelecionado).eq('empresa_id', empresaIdLogada); if (error) throw error;
                 msg.style.color = 'var(--sucesso)'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Dados atualizados!'; carregarListaClientesGlobais(); document.getElementById('viewCliNome').innerText = payload.razao_social;
                 const statusL = document.getElementById('viewCliStatusLabel'); if(payload.status === 'inativo'){ statusL.innerText = 'Inativo (Acesso Bloqueado)'; statusL.style.background = 'var(--erro)'; } else { statusL.innerText = 'Ativo'; statusL.style.background = 'var(--sucesso)'; }
                 const wppBtn = document.getElementById('btnWppDireto'); if (payload.whatsapp && payload.whatsapp !== '') { wppBtn.href = `https://wa.me/55${payload.whatsapp.replace(/\D/g, '')}`; wppBtn.style.display = 'inline-flex'; } else { wppBtn.style.display = 'none'; } setTimeout(() => msg.innerText = '', 3000);
             } catch (err) { msg.style.color = 'var(--erro)'; msg.innerText = 'Erro ao atualizar.'; }
         });
 
-        async function excluirClienteAtual() { if (confirm("ATENÇÃO: Deseja EXCLUIR este cliente e todas as suas obras permanentemente do sistema?")) { await supabaseClient.from('clientes').delete().eq('cnpj', clienteSelecionado); carregarListaClientesGlobais(); abrirTelaAcao('gestaoClientes'); } }
+        async function excluirClienteAtual() { if (confirm("ATENÇÃO: Deseja EXCLUIR este cliente e todas as suas obras permanentemente do sistema?")) { await supabaseClient.from('clientes').delete().eq('cnpj', clienteSelecionado).eq('empresa_id', empresaIdLogada); carregarListaClientesGlobais(); abrirTelaAcao('gestaoClientes'); } }
 
         const arquivoPdfInput = document.getElementById('arquivoPdf'); const nomeArquivoDrop = document.getElementById('nomeArquivoDrop');
         arquivoPdfInput.addEventListener('change', function() { if (this.files && this.files.length > 0) { nomeArquivoDrop.innerHTML = `<i class="fa-solid fa-file-pdf"></i> Selecionado: ${this.files[0].name}`; } else { nomeArquivoDrop.innerHTML = ''; } });
@@ -2542,7 +2964,7 @@
         async function carregarArquivosClienteAdmin(cnpjBusca) {
             const container = document.getElementById('listaArquivosAdmin'); const p = getPermissoes(); 
             try {
-                const { data, error } = await supabaseClient.from('arquivos').select('*').eq('cliente_cnpj', cnpjBusca).order('id', { ascending: false }); 
+                const { data, error } = await supabaseClient.from('arquivos').select('*').eq('cliente_cnpj', cnpjBusca).eq('empresa_id', empresaIdLogada).order('id', { ascending: false }); 
                 if (clienteSelecionado !== cnpjBusca) return; if (error) { container.innerHTML = `<div style="color:var(--erro);">Erro de conexão.</div>`; return; } if (!data || data.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario); font-style: italic;">Nenhum arquivo no acervo.</p>'; return; }
                 let htmlParaExibir = '';
                 data.forEach(arq => {
@@ -2571,11 +2993,11 @@
             if (!novoNome) return;
             try {
                 let payload = { nome_documento: novoNome, observacao: novaObs }; if(novaObraId) payload.obra_id = parseInt(novaObraId); else payload.obra_id = null;
-                const { error } = await supabaseClient.from('arquivos').update(payload).eq('id', id); if (error) throw error; document.getElementById('modalEditarArquivo').style.display = 'none'; carregarArquivosClienteAdmin(clienteSelecionado);
+                const { error } = await supabaseClient.from('arquivos').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada); if (error) throw error; document.getElementById('modalEditarArquivo').style.display = 'none'; carregarArquivosClienteAdmin(clienteSelecionado);
             } catch (err) { alert("Falha ao salvar edição."); }
         }
 
-        async function excluirArquivo(id) { if(confirm("Deseja apagar permanentemente este documento do acervo?")) { await supabaseClient.from('arquivos').delete().eq('id', id); carregarArquivosClienteAdmin(clienteSelecionado); } }
+        async function excluirArquivo(id) { if(confirm("Deseja apagar permanentemente este documento do acervo?")) { await supabaseClient.from('arquivos').delete().eq('id', id).eq('empresa_id', empresaIdLogada); carregarArquivosClienteAdmin(clienteSelecionado); } }
 
         function trocarTipoInput() {
             const checkAtivo = document.querySelector('input[name="tipoEnvio"]:checked'); if(!checkAtivo) return; const tipo = checkAtivo.value; const btnUpload = document.getElementById('btnUploadSubmit');
@@ -2591,7 +3013,7 @@
                 else {
                     const arquivoInput = document.getElementById('arquivoPdf').files[0]; if(!arquivoInput) throw new Error("Selecione um arquivo PDF."); const nomeUnico = `${clienteSelecionado}/${Date.now()}_${arquivoInput.name}`; const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivoInput); if (uploadError) throw new Error("Erro no servidor: " + uploadError.message); const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico); linkFinal = urlData.publicUrl;
                 }
-                let payloadBanco = { cliente_cnpj: clienteSelecionado, nome_documento: titulo, caminho_arquivo: linkFinal, status_aprovacao: 'pendente' }; if (obs !== '') payloadBanco.observacao = obs; if (obraSelecionada !== '') payloadBanco.obra_id = parseInt(obraSelecionada); 
+                let payloadBanco = { empresa_id: empresaIdLogada, cliente_cnpj: clienteSelecionado, nome_documento: titulo, caminho_arquivo: linkFinal, status_aprovacao: 'pendente' }; if (obs !== '') payloadBanco.observacao = obs; if (obraSelecionada !== '') payloadBanco.obra_id = parseInt(obraSelecionada); 
                 const { error: dbError } = await supabaseClient.from('arquivos').insert([payloadBanco]); if (dbError) throw dbError;
                 document.getElementById('formUpload').reset(); document.getElementById('selectObraUpload').value = ''; document.getElementById('nomeArquivoDrop').innerHTML = ''; document.querySelector('input[name="tipoEnvio"][value="pdf"]').checked = true; msgSuccess.style.display = 'inline-block'; await carregarArquivosClienteAdmin(clienteSelecionado); 
             } catch (error) { alert("Erro de Envio: " + error.message); } 
@@ -2601,7 +3023,7 @@
         async function carregarTickets() {
             const container = document.getElementById('listaTicketsAdmin'); container.innerHTML = '<p style="color:var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando solicitações...</p>'; const p = getPermissoes();
             try {
-                let query = supabaseClient.from('chamados_suporte').select('*').order('data_abertura', { ascending: false });
+                let query = supabaseClient.from('chamados_suporte').select('*').eq('empresa_id', empresaIdLogada).order('data_abertura', { ascending: false });
                 if (!isMaster) { if (cnpjsPermitidos.length === 0) { container.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum chamado atribuído aos seus clientes.</p>'; return; } query = query.in('cliente_cnpj', cnpjsPermitidos); }
                 const { data, error } = await query; if (error) throw error;
                 if (!data || data.length === 0) { container.innerHTML = `<div style="text-align: center; padding: 40px; border: var(--borda); background: #fff; border-radius: 8px;"><i class="fa-solid fa-mug-hot" style="font-size: 2.5rem; margin-bottom: 15px; color: #cbd5e1;"></i><h3 style="color:var(--azul-marca);">Fila Limpa!</h3><p style="color:var(--texto-secundario); margin-top:5px; font-size:0.85rem;">Nenhuma solicitação técnica pendente.</p></div>`; return; }
@@ -2617,13 +3039,13 @@
         }
 
         function abrirModalResposta(id, assunto, mensagem) { document.getElementById('ticketIdAtivo').value = id; document.getElementById('ticketAssunto').innerText = "Solicitação: " + assunto; document.getElementById('ticketMensagem').innerText = mensagem; document.getElementById('ticketRespostaTxt').value = ''; document.getElementById('modalResponderTicket').style.display = 'flex'; }
-        async function salvarRespostaTicket() { const id = document.getElementById('ticketIdAtivo').value; const resposta = document.getElementById('ticketRespostaTxt').value.trim(); if(!resposta) return; try { const { error } = await supabaseClient.from('chamados_suporte').update({ resposta_equipe: resposta, status: 'respondido', data_resposta: new Date().toISOString() }).eq('id', id); if (error) throw error; document.getElementById('modalResponderTicket').style.display = 'none'; carregarTickets(); } catch(e) { alert("Erro ao despachar resposta técnica."); } }
+        async function salvarRespostaTicket() { const id = document.getElementById('ticketIdAtivo').value; const resposta = document.getElementById('ticketRespostaTxt').value.trim(); if(!resposta) return; try { const { error } = await supabaseClient.from('chamados_suporte').update({ resposta_equipe: resposta, status: 'respondido', data_resposta: new Date().toISOString() }).eq('id', id).eq('empresa_id', empresaIdLogada); if (error) throw error; document.getElementById('modalResponderTicket').style.display = 'none'; carregarTickets(); } catch(e) { alert("Erro ao despachar resposta técnica."); } }
 
         async function carregarListaEquipe() {
             const lista = document.getElementById('listaEquipeCentral'); 
             if(!lista) return;
             lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando equipe...</p>';
-            const { data } = await supabaseClient.from('equipe_admin').select('*').order('nome'); 
+            const { data } = await supabaseClient.from('equipe_admin').select('*').eq('empresa_id', empresaIdLogada).order('nome'); 
             lista.innerHTML = '';
             
             if(data && data.length > 0) { 
@@ -2645,27 +3067,85 @@
             }
         }
 
-        document.getElementById('formEquipe').addEventListener('submit', async function(e) { e.preventDefault(); const objPermissoes = { clientes: document.getElementById('novoPermCli').checked, obras: document.getElementById('novoPermObr').checked, arquivos: document.getElementById('novoPermArq').checked, tickets: document.getElementById('novoPermTic').checked }; const payload = { nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim(), permissoes: JSON.stringify(objPermissoes) }; await supabaseClient.from('equipe_admin').insert([payload]); document.getElementById('formEquipe').reset(); carregarListaEquipe(); document.getElementById('msgEquipe').innerHTML = '<i class="fa-solid fa-check-circle"></i> Membro cadastrado!'; setTimeout(() => document.getElementById('msgEquipe').innerHTML = '', 3000); });
-        async function carregarEquipeParaVinculo(cnpj) { const container = document.getElementById('listaEquipeVinculo'); const { data: equipe } = await supabaseClient.from('equipe_admin').select('*'); const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('equipe_id').eq('cliente_cnpj', cnpj); const idsVinculados = vinculos ? vinculos.map(v => v.equipe_id) : []; container.innerHTML = ''; if(equipe) { equipe.forEach(m => { const isChecked = idsVinculados.includes(m.id) ? 'checked' : ''; container.innerHTML += `<label style="display:flex; align-items:center; gap:10px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;"><input type="checkbox" class="check-equipe" value="${m.id}" ${isChecked} style="width:16px; height:16px; accent-color:var(--azul-marca);"> <span style="color:var(--texto-principal); font-size:0.85rem;"><strong>${m.nome}</strong> (${m.usuario_login})</span></label>`; }); } }
-        async function salvarVinculos() { const checks = document.querySelectorAll('.check-equipe'); await supabaseClient.from('vinculo_equipe_cliente').delete().eq('cliente_cnpj', clienteSelecionado); const insercoes = []; checks.forEach(chk => { if(chk.checked) insercoes.push({ equipe_id: chk.value, cliente_cnpj: clienteSelecionado }); }); if(insercoes.length > 0) await supabaseClient.from('vinculo_equipe_cliente').insert(insercoes); document.getElementById('msgVinculo').innerHTML = '<i class="fa-solid fa-check"></i> Delegações salvas!'; setTimeout(() => document.getElementById('msgVinculo').innerHTML = '', 3000); }
+        document.getElementById('formEquipe').addEventListener('submit', async function(e) { 
+            e.preventDefault(); 
+            const objPermissoes = { 
+                clientes: document.getElementById('novoPermCli').checked, 
+                obras: document.getElementById('novoPermObr').checked, 
+                arquivos: document.getElementById('novoPermArq').checked, 
+                tickets: document.getElementById('novoPermTic').checked,
+                vendas: document.getElementById('novoPermVen').checked,
+                compras: document.getElementById('novoPermCom').checked,
+                financeiro: document.getElementById('novoPermFin').checked,
+                relatorios: document.getElementById('novoPermRel').checked
+            }; 
+            const payload = { empresa_id: empresaIdLogada, nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim(), permissoes: JSON.stringify(objPermissoes) }; 
+            await supabaseClient.from('equipe_admin').insert([payload]); 
+            document.getElementById('formEquipe').reset(); 
+            carregarListaEquipe(); 
+            document.getElementById('msgEquipe').innerHTML = '<i class="fa-solid fa-check-circle"></i> Membro cadastrado!'; 
+            setTimeout(() => document.getElementById('msgEquipe').innerHTML = '', 3000); 
+        });
+
+        async function carregarEquipeParaVinculo(cnpj) { const container = document.getElementById('listaEquipeVinculo'); const { data: equipe } = await supabaseClient.from('equipe_admin').select('*').eq('empresa_id', empresaIdLogada); const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('equipe_id').eq('cliente_cnpj', cnpj).eq('empresa_id', empresaIdLogada); const idsVinculados = vinculos ? vinculos.map(v => v.equipe_id) : []; container.innerHTML = ''; if(equipe) { equipe.forEach(m => { const isChecked = idsVinculados.includes(m.id) ? 'checked' : ''; container.innerHTML += `<label style="display:flex; align-items:center; gap:10px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #cbd5e1; cursor:pointer;"><input type="checkbox" class="check-equipe" value="${m.id}" ${isChecked} style="width:16px; height:16px; accent-color:var(--azul-marca);"> <span style="color:var(--texto-principal); font-size:0.85rem;"><strong>${m.nome}</strong> (${m.usuario_login})</span></label>`; }); } }
+        async function salvarVinculos() { const checks = document.querySelectorAll('.check-equipe'); await supabaseClient.from('vinculo_equipe_cliente').delete().eq('cliente_cnpj', clienteSelecionado).eq('empresa_id', empresaIdLogada); const insercoes = []; checks.forEach(chk => { if(chk.checked) insercoes.push({ empresa_id: empresaIdLogada, equipe_id: chk.value, cliente_cnpj: clienteSelecionado }); }); if(insercoes.length > 0) await supabaseClient.from('vinculo_equipe_cliente').insert(insercoes); document.getElementById('msgVinculo').innerHTML = '<i class="fa-solid fa-check"></i> Delegações salvas!'; setTimeout(() => document.getElementById('msgVinculo').innerHTML = '', 3000); }
 
         document.getElementById('btnToggleSidebar').addEventListener('click', function() { const sidebar = document.getElementById('sidebarAdmin'); const icone = document.getElementById('iconeToggle'); sidebar.classList.toggle('encolhida'); if(document.querySelector('main')) document.querySelector('main').classList.toggle('expandido'); sidebar.classList.contains('encolhida') ? icone.classList.replace('fa-chevron-left', 'fa-chevron-right') : icone.classList.replace('fa-chevron-right', 'fa-chevron-left'); });
 
-        function abrirModalMembro(id, nome, usuario, senha, permissoesStr) { document.getElementById('editEquipeId').value = id; document.getElementById('editEquipeNome').value = nome; document.getElementById('editEquipeUsuario').value = usuario; document.getElementById('editEquipeSenha').value = senha; let p = {}; try { p = JSON.parse(permissoesStr || '{}'); } catch(e) { p = {}; } document.getElementById('editPermCli').checked = !!p.clientes; document.getElementById('editPermObr').checked = !!p.obras; document.getElementById('editPermArq').checked = !!p.arquivos; document.getElementById('editPermTic').checked = !!p.tickets; document.getElementById('modalEditarEquipe').style.display = 'flex'; }
-        async function salvarEdicaoMembro() { const id = document.getElementById('editEquipeId').value; const nome = document.getElementById('editEquipeNome').value; const usuario = document.getElementById('editEquipeUsuario').value; const senha = document.getElementById('editEquipeSenha').value; if(!nome || !usuario || !senha) return; const objPermissoes = { clientes: document.getElementById('editPermCli').checked, obras: document.getElementById('editPermObr').checked, arquivos: document.getElementById('editPermArq').checked, tickets: document.getElementById('editPermTic').checked }; try { const { error } = await supabaseClient.from('equipe_admin').update({ nome, usuario_login: usuario, senha, permissoes: JSON.stringify(objPermissoes) }).eq('id', id); if (error) throw error; document.getElementById('modalEditarEquipe').style.display = 'none'; carregarListaEquipe(); } catch (error) { alert("Erro ao atualizar equipe."); } }
-        async function excluirMembro() { const id = document.getElementById('editEquipeId').value; if(confirm("Remover este membro da equipe? O acesso dele será bloqueado.")) { try { const { error } = await supabaseClient.from('equipe_admin').delete().eq('id', id); if (error) throw error; document.getElementById('modalEditarEquipe').style.display = 'none'; carregarListaEquipe(); } catch (error) { alert("Erro ao excluir usuário."); } } }
+        function abrirModalMembro(id, nome, usuario, senha, permissoesStr) { 
+            document.getElementById('editEquipeId').value = id; 
+            document.getElementById('editEquipeNome').value = nome; 
+            document.getElementById('editEquipeUsuario').value = usuario; 
+            document.getElementById('editEquipeSenha').value = senha; 
+            
+            let p = {}; 
+            try { p = JSON.parse(permissoesStr || '{}'); } catch(e) { p = {}; } 
+            
+            document.getElementById('editPermCli').checked = !!p.clientes; 
+            document.getElementById('editPermObr').checked = !!p.obras; 
+            document.getElementById('editPermArq').checked = !!p.arquivos; 
+            document.getElementById('editPermTic').checked = !!p.tickets; 
+            document.getElementById('editPermVen').checked = !!p.vendas; 
+            document.getElementById('editPermCom').checked = !!p.compras; 
+            document.getElementById('editPermFin').checked = !!p.financeiro; 
+            document.getElementById('editPermRel').checked = !!p.relatorios; 
+            
+            document.getElementById('modalEditarEquipe').style.display = 'flex'; 
+        }
 
-        // ================= LÓGICA DO PCP DINÂMICO CONECTADO ÀS OBRAS =================
+        async function salvarEdicaoMembro() { 
+            const id = document.getElementById('editEquipeId').value; 
+            const nome = document.getElementById('editEquipeNome').value; 
+            const usuario = document.getElementById('editEquipeUsuario').value; 
+            const senha = document.getElementById('editEquipeSenha').value; 
+            if(!nome || !usuario || !senha) return; 
+            
+            const objPermissoes = { 
+                clientes: document.getElementById('editPermCli').checked, 
+                obras: document.getElementById('editPermObr').checked, 
+                arquivos: document.getElementById('editPermArq').checked, 
+                tickets: document.getElementById('editPermTic').checked,
+                vendas: document.getElementById('editPermVen').checked,
+                compras: document.getElementById('editPermCom').checked,
+                financeiro: document.getElementById('editPermFin').checked,
+                relatorios: document.getElementById('editPermRel').checked
+            }; 
+            
+            try { 
+                const { error } = await supabaseClient.from('equipe_admin').update({ nome, usuario_login: usuario, senha, permissoes: JSON.stringify(objPermissoes) }).eq('id', id).eq('empresa_id', empresaIdLogada); 
+                if (error) throw error; 
+                
+                document.getElementById('modalEditarEquipe').style.display = 'none'; 
+                carregarListaEquipe(); 
+            } catch (error) { 
+                alert("Erro ao atualizar equipe."); 
+            } 
+        }
+
+        async function excluirMembro() { const id = document.getElementById('editEquipeId').value; if(confirm("Remover este membro da equipe? O acesso dele será bloqueado.")) { try { const { error } = await supabaseClient.from('equipe_admin').delete().eq('id', id).eq('empresa_id', empresaIdLogada); if (error) throw error; document.getElementById('modalEditarEquipe').style.display = 'none'; carregarListaEquipe(); } catch (error) { alert("Erro ao excluir usuário."); } } }
+
         let isModoTV = false;
-        
-        const etapasPCP = [
-            { id: 'etp1', nome: '1. Projeto / Engenharia', cor: '#3b82f6' },
-            { id: 'etp2', nome: '2. Suprimentos / Compras', cor: '#8b5cf6' },
-            { id: 'etp3', nome: '3. Montagem Mecânica', cor: '#f59e0b' },
-            { id: 'etp4', nome: '4. Montagem Elétrica', cor: '#f97316' },
-            { id: 'etp5', nome: '5. Testes (QA)', cor: '#ef4444' },
-            { id: 'etp6', nome: '6. Expedição', cor: '#10b981' }
-        ];
+        let etapasPCP = [];
 
         function filtrarPCP() {
             const termo = document.getElementById('filtroPcpTermo').value.toLowerCase().trim();
@@ -2681,12 +3161,17 @@
             });
         }
 
-async function carregarProjetosPCP() {
+        async function carregarProjetosPCP() {
             const board = document.getElementById('boardPCP');
             if(!board) return;
             
-            // Monta a estrutura das colunas do Kanban
             board.innerHTML = '';
+            
+            if (etapasPCP.length === 0) {
+                board.innerHTML = '<div style="width: 100%; padding: 40px; text-align: center; color: var(--texto-secundario); background: #f8fafc; border-radius: 8px; border: 2px dashed #cbd5e1;"><i class="fa-solid fa-gears" style="font-size: 2rem; margin-bottom: 10px; color: #cbd5e1;"></i><p>Nenhuma etapa configurada no fluxo.</p><p style="font-size: 0.85rem; margin-top: 5px;">Clique no botão <strong>"Etapas"</strong> acima para criar as colunas da sua fábrica.</p></div>';
+                return;
+            }
+
             etapasPCP.forEach(etapa => {
                 board.innerHTML += `
                 <div class="coluna-pcp" id="${etapa.id}" ondragover="permitirDrop(event)" ondrop="soltar(event)">
@@ -2698,7 +3183,7 @@ async function carregarProjetosPCP() {
             });
 
             try {
-                let query = supabaseClient.from('obras').select('*').order('id', { ascending: false });
+                let query = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false });
                 if (!isMaster && cnpjsPermitidos.length > 0) {
                     query = query.in('cliente_cnpj', cnpjsPermitidos);
                 }
@@ -2710,26 +3195,32 @@ async function carregarProjetosPCP() {
 
                 if (data && data.length > 0) {
                     data.forEach(obra => {
-                        let etapaAtual = obra.etapa_pcp_id || 'etp1';
-                        if (!contadores.hasOwnProperty(etapaAtual)) etapaAtual = 'etp1';
+                        let etapaAtual = String(obra.etapa_pcp_id);
                         
-                        const containerColuna = document.getElementById(`body_${etapaAtual}`);
+                        if (etapaAtual.startsWith('1')) {
+                            etapaAtual = etapaAtual.replace('1', '');
+                        }
+
+                        let etapaObj = etapasPCP.find(e => String(e.id) === etapaAtual);
+                        
+                        if (!etapaObj) {
+                            etapaObj = etapasPCP[0];
+                        }
+                        
+                        const containerColuna = document.getElementById(`body_${etapaObj.id}`);
                         if (containerColuna) {
-                            contadores[etapaAtual]++;
+                            contadores[etapaObj.id]++;
+                            
                             let nomeCli = 'Cliente não encontrado';
                             const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
                             if (cliMatch) nomeCli = cliMatch.razao_social;
                             
-                            const corBorda = etapasPCP.find(e => e.id === etapaAtual).cor;
-                            
                             const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
                             const cliT = nomeCli ? nomeCli.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
-                            
-                            // Codifica os dados da obra para o clique no card abrir o modal de edição global
                             const oCodificada = encodeURIComponent(JSON.stringify(obra));
                             
                             containerColuna.innerHTML += `
-                            <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${corBorda}; cursor: pointer;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
+                            <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapaObj.cor}; cursor: pointer;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
                                 <h5>${obra.nome_obra}</h5>
                                 <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
                                 ${obra.codigo_orcamento ? `<p><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
@@ -2738,12 +3229,10 @@ async function carregarProjetosPCP() {
                                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario);">${obra.progresso || 0}% Concluído</span>
                                     
                                     <div style="display: flex; gap: 5px;">
-                                        <!-- Botão de Upload (Clipe) -->
                                         <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; transition: 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='var(--azul-marca)';" onmouseout="this.style.background='#f1f5f9'; this.style.color='var(--texto-secundario)';" title="Anexar Arquivo">
                                             <i class="fa-solid fa-paperclip"></i>
                                         </button>
                                         
-                                        <!-- Botão de Processos -->
                                         <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; gap: 5px; transition: 0.2s;" onmouseover="this.style.background='var(--azul-marca)'" onmouseout="this.style.background='var(--azul-sutil)'" title="Abrir Processos">
                                             <i class="fa-solid fa-list-check"></i> Processos
                                         </button>
@@ -2754,7 +3243,6 @@ async function carregarProjetosPCP() {
                     });
                 }
 
-                // Atualiza contadores
                 etapasPCP.forEach(e => {
                     const countEl = document.getElementById(`count_${e.id}`);
                     if (countEl) countEl.innerText = contadores[e.id];
@@ -2764,7 +3252,7 @@ async function carregarProjetosPCP() {
                 console.error("Erro ao carregar PCP:", err);
             }
         }
-        // --- DRAG AND DROP (KANBAN PCP) ---
+
         function arrastar(ev) {
             ev.dataTransfer.setData("text", ev.target.id);
             ev.target.style.opacity = '0.5';
@@ -2779,7 +3267,7 @@ async function carregarProjetosPCP() {
             }
         }
 
-        async function soltar(ev) {
+       async function soltar(ev) {
             ev.preventDefault();
             document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
             
@@ -2797,24 +3285,26 @@ async function carregarProjetosPCP() {
                 const novaEtapaId = colunaDestino.id;
                 const obraId = card.getAttribute('data-obraid');
                 
-                // Atualizar cor da borda do card
-                const etapaObj = etapasPCP.find(e => e.id === novaEtapaId);
+                const etapaObj = etapasPCP.find(e => String(e.id) === String(novaEtapaId));
                 if (etapaObj) {
                     card.style.borderLeftColor = etapaObj.cor;
                 }
 
-                // Salvar no banco
                 try {
-                    await supabaseClient.from('obras').update({ etapa_pcp_id: novaEtapaId }).eq('id', obraId);
-                    
-                    // Disparar Notificação visual
+                    await supabaseClient.from('obras').update({ etapa_pcp_id: String(novaEtapaId) }).eq('id', parseInt(obraId)).eq('empresa_id', empresaIdLogada);
                     mostrarToastNotificacao(`Projeto movido para: ${etapaObj.nome}`);
                     
-                    // Recalcular contadores (forma simples)
-                    carregarProjetosPCP();
+                    etapasPCP.forEach(e => {
+                        const coluna = document.getElementById(`body_${e.id}`);
+                        if (coluna) {
+                            const qtdeCards = coluna.querySelectorAll('.card-op').length;
+                            document.getElementById(`count_${e.id}`).innerText = qtdeCards;
+                        }
+                    });
+
                 } catch (e) {
-                    alert("Erro ao salvar mudança de etapa.");
-                    carregarProjetosPCP(); // reverte a view
+                    alert("Erro de conexão ao salvar mudança de etapa.");
+                    carregarProjetosPCP(); 
                 }
             }
         }
@@ -2835,8 +3325,7 @@ async function carregarProjetosPCP() {
             }
         }
 
-        // ================= GESTÃO DETALHADA / CHECKLIST DE OBRA =================
-        async function abrirGestaoObra(obraId, nomeObra, nomeCliente) {
+       async function abrirGestaoObra(obraId, nomeObra, nomeCliente) {
             document.getElementById('gestaoObraId').value = obraId;
             document.getElementById('gestaoObraTitulo').innerHTML = `<i class="fa-solid fa-server"></i> ${nomeObra}`;
             document.getElementById('gestaoObraCliente').innerHTML = `<i class="fa-regular fa-building"></i> ${nomeCliente}`;
@@ -2847,69 +3336,146 @@ async function carregarProjetosPCP() {
             document.getElementById('modalGestaoObra').style.display = 'flex';
 
             try {
-                const { data, error } = await supabaseClient.from('obras').select('checklist_dados').eq('id', obraId).single();
-                if (error) throw error;
+                const { data: obraData, error: obraError } = await supabaseClient
+                    .from('obras')
+                    .select('dados_checklist, checklist_dados') 
+                    .eq('id', obraId)
+                    .eq('empresa_id', empresaIdLogada)
+                    .single();
+
+                if (obraError) throw new Error("Erro na tabela 'obras': " + obraError.message);
 
                 let chk = {};
-                if (data.checklist_dados) {
-                    try { chk = typeof data.checklist_dados === 'string' ? JSON.parse(data.checklist_dados) : data.checklist_dados; } 
+                let rawData = obraData?.dados_checklist || obraData?.checklist_dados;
+
+                if (rawData) {
+                    try { 
+                        while (typeof rawData === 'string') {
+                            rawData = JSON.parse(rawData);
+                        }
+                        chk = rawData; 
+                    } 
                     catch(e) { chk = {}; }
                 }
+                
+                const { data: categoriasData, error: catError } = await supabaseClient
+                    .from('processos_padrao')
+                    .select('*')
+                    .eq('empresa_id', empresaIdLogada)
+                    .order('ordem_exibicao', { ascending: true });
 
-                // Estrutura padrão de Checklist
-                const categorias = [
-                    { id: 'cat_eng', nome: 'Engenharia e Projetos', icon: 'fa-compass-drafting', itens: ['Diagrama Unifilar', 'Lista de Materiais', 'Projeto 3D / Layout'] },
-                    { id: 'cat_comp', nome: 'Compras e Suprimentos', icon: 'fa-cart-flatbed', itens: ['Aprovação de Orçamento', 'Pedido de Peças', 'Recebimento de Materiais'] },
-                    { id: 'cat_mec', nome: 'Montagem Mecânica', icon: 'fa-screwdriver-wrench', itens: ['Furação da Placa', 'Fixação de Canaletas', 'Fixação de Componentes'] },
-                    { id: 'cat_ele', nome: 'Montagem Elétrica', icon: 'fa-bolt', itens: ['Passagem de Cabos', 'Anilhamento', 'Conexão de Potência', 'Conexão de Comando'] },
-                    { id: 'cat_qa', nome: 'Qualidade e Testes', icon: 'fa-clipboard-check', itens: ['Teste de Continuidade', 'Teste de Isolação (Megger)', 'Teste Funcional a Quente'] }
-                ];
+                if (catError) throw new Error("Erro na tabela 'processos_padrao': " + catError.message);
+
+                let categorias = categoriasData || [];
+
+                if (categorias.length === 0) {
+                    categorias = [
+                        { categoria_id: 'cat_eng', nome: 'Engenharia e Projetos', icone: 'fa-compass-drafting', itens: ['Diagrama Unifilar', 'Lista de Materiais', 'Projeto 3D / Layout'] },
+                        { categoria_id: 'cat_comp', nome: 'Compras e Suprimentos', icone: 'fa-cart-flatbed', itens: ['Aprovação de Orçamento', 'Pedido de Peças', 'Recebimento de Materiais'] },
+                        { categoria_id: 'cat_mec', nome: 'Montagem Mecânica', icone: 'fa-screwdriver-wrench', itens: ['Furação da Placa', 'Fixação de Canaletas', 'Fixação de Componentes'] },
+                        { categoria_id: 'cat_ele', nome: 'Montagem Elétrica', icone: 'fa-bolt', itens: ['Passagem de Cabos', 'Anilhamento', 'Conexão de Potência', 'Conexão de Comando'] },
+                        { categoria_id: 'cat_qa', nome: 'Qualidade e Testes', icone: 'fa-clipboard-check', itens: ['Teste de Continuidade', 'Teste de Isolação (Megger)', 'Teste Funcional a Quente'] }
+                    ];
+                }
 
                 let html = '';
                 categorias.forEach(cat => {
+                    const catId = cat.categoria_id || cat.id;
+                    const catIcone = cat.icone || cat.icon || 'fa-list-check';
+                    const catNome = cat.nome;
+                    
+                    let listaItens = [];
+                    if (Array.isArray(cat.itens)) {
+                        listaItens = cat.itens;
+                    } else if (typeof cat.itens === 'string') {
+                        try { listaItens = JSON.parse(cat.itens); } catch(e) {}
+                    }
+
                     html += `
                     <div class="card-accordion" style="margin-bottom: 15px; border-radius: 8px; border-top: 3px solid var(--azul-sutil);">
                         <div class="section-header" style="padding: 12px 20px; background: #fff;">
-                            <h4 style="margin: 0; color: var(--azul-marca); font-size: 1rem;"><i class="fa-solid ${cat.icon}"></i> ${cat.nome}</h4>
+                            <h4 style="margin: 0; color: var(--azul-marca); font-size: 1rem;"><i class="fa-solid ${catIcone}"></i> ${catNome}</h4>
                         </div>
                         <div style="padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0;">`;
                     
-                    cat.itens.forEach((item, index) => {
-                        const itemId = `${cat.id}_item_${index}`;
-                        const valStatus = chk[itemId]?.status || 'pendente';
-                        const valData = chk[itemId]?.data || '';
-                        const valObs = chk[itemId]?.obs || '';
+                    if (listaItens.length === 0) {
+                        html += `<p style="color: var(--texto-secundario); font-size: 0.85rem; text-align: center; margin: 0;">Nenhum item cadastrado nesta categoria.</p>`;
+                    } else {
+                        listaItens.forEach((item, index) => {
+                            const itemId = `${catId}_item_${index}`;
+                            const valStatus = chk[itemId]?.status || 'pendente';
+                            
+                            const valDataPrevIni = chk[itemId]?.dataPrevIni || '';
+                            const valDataPrevConc = chk[itemId]?.dataPrevConc || ''; 
+                            const valDataIni = chk[itemId]?.dataIni || '';
+                            const valDataConc = chk[itemId]?.dataConc || ''; 
+                            const valObs = chk[itemId]?.obs || '';
 
-                        html += `
-                        <div class="checklist-item">
-                            <div class="checklist-header">
-                                <h5>${item}</h5>
-                                <select class="checklist-status ${valStatus}" id="status_${itemId}" onchange="this.className='checklist-status '+this.value">
-                                    <option value="pendente" ${valStatus === 'pendente' ? 'selected' : ''}>Pendente</option>
-                                    <option value="andamento" ${valStatus === 'andamento' ? 'selected' : ''}>Em Andamento</option>
-                                    <option value="concluido" ${valStatus === 'concluido' ? 'selected' : ''}>Concluído</option>
-                                </select>
-                            </div>
-                            <div class="checklist-datas-grid">
-                                <div class="box-data">
-                                    <label>Conclusão</label>
-                                    <div class="linha-data-input"><input type="date" id="data_${itemId}" value="${valData}"></div>
+                            let corIni = 'var(--texto-principal)';
+                            let pesoFonteIni = 'normal';
+                            if (valDataIni && valDataPrevIni) {
+                                if (new Date(valDataIni) <= new Date(valDataPrevIni)) {
+                                    corIni = '#10b981'; 
+                                } else {
+                                    corIni = '#ef4444'; 
+                                }
+                                pesoFonteIni = 'bold';
+                            }
+
+                            let corConc = 'var(--texto-principal)';
+                            let pesoFonteConc = 'normal';
+                            if (valDataConc && valDataPrevConc) {
+                                if (new Date(valDataConc) <= new Date(valDataPrevConc)) {
+                                    corConc = '#10b981'; 
+                                } else {
+                                    corConc = '#ef4444'; 
+                                }
+                                pesoFonteConc = 'bold';
+                            }
+
+                            html += `
+                            <div class="checklist-item" style="padding: 15px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 10px; background: #fff;">
+                                <div class="checklist-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 10px;">
+                                    <h5 style="margin: 0; color: var(--texto-principal); font-size: 0.95rem;">${item}</h5>
+                                    <select class="checklist-status ${valStatus}" id="status_${itemId}" onchange="this.className='checklist-status '+this.value" style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #cbd5e1;">
+                                        <option value="pendente" ${valStatus === 'pendente' ? 'selected' : ''}>Pendente</option>
+                                        <option value="andamento" ${valStatus === 'andamento' ? 'selected' : ''}>Em Andamento</option>
+                                        <option value="concluido" ${valStatus === 'concluido' ? 'selected' : ''}>Concluído</option>
+                                    </select>
                                 </div>
-                                <div class="box-data">
-                                    <label>Observação / Responsável</label>
-                                    <input type="text" id="obs_${itemId}" value="${valObs}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem;" placeholder="Ex: Faltou peça X">
+                                
+                                <div class="checklist-datas-grid" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 2fr; gap: 8px; align-items: start;">
+                                    <div class="box-data">
+                                        <label style="font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; display: block; margin-bottom: 4px;">Prev. Início</label>
+                                        <input type="date" id="data_prev_ini_${itemId}" value="${valDataPrevIni}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; color: var(--texto-principal);">
+                                    </div>
+                                    <div class="box-data">
+                                        <label style="font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; display: block; margin-bottom: 4px;">Prev. Fim</label>
+                                        <input type="date" id="data_prev_conc_${itemId}" value="${valDataPrevConc}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; color: var(--texto-principal);">
+                                    </div>
+                                    <div class="box-data">
+                                        <label style="font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; display: block; margin-bottom: 4px;">Início Real</label>
+                                        <input type="date" id="data_ini_${itemId}" value="${valDataIni}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; color: ${corIni}; font-weight: ${pesoFonteIni};">
+                                    </div>
+                                    <div class="box-data">
+                                        <label style="font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; display: block; margin-bottom: 4px;">Fim Real</label>
+                                        <input type="date" id="data_conc_${itemId}" value="${valDataConc}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem; color: ${corConc}; font-weight: ${pesoFonteConc};">
+                                    </div>
+                                    <div class="box-data">
+                                        <label style="font-size: 0.65rem; font-weight: 700; color: var(--texto-secundario); text-transform: uppercase; display: block; margin-bottom: 4px;">Observação / Resp.</label>
+                                        <input type="text" id="obs_${itemId}" value="${valObs}" style="width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.75rem;" placeholder="Ex: Faltou peça X">
+                                    </div>
                                 </div>
-                            </div>
-                        </div>`;
-                    });
-                    
+                            </div>`;
+                        });
+                    }
                     html += `</div></div>`;
                 });
 
                 container.innerHTML = html;
 
             } catch (err) {
-                container.innerHTML = `<p style="color:var(--erro);">Erro ao carregar checklist.</p>`;
+                container.innerHTML = `<div style="color:var(--erro); text-align: center; padding: 20px;">Erro ao carregar os dados: ${err.message}</div>`;
             }
         }
 
@@ -2928,25 +3494,31 @@ async function carregarProjetosPCP() {
             inputsStatus.forEach(sel => {
                 const itemId = sel.id.replace('status_', '');
                 const status = sel.value;
-                const data = document.getElementById(`data_${itemId}`).value;
+                
+                const dataPrevIni = document.getElementById(`data_prev_ini_${itemId}`).value;
+                const dataPrevConc = document.getElementById(`data_prev_conc_${itemId}`).value;
+                const dataIni = document.getElementById(`data_ini_${itemId}`).value;
+                const dataConc = document.getElementById(`data_conc_${itemId}`).value;
                 const obs = document.getElementById(`obs_${itemId}`).value;
                 
-                chkDados[itemId] = { status, data, obs };
+                chkDados[itemId] = { 
+                    status: status, 
+                    dataPrevIni: dataPrevIni,
+                    dataPrevConc: dataPrevConc,
+                    dataIni: dataIni,
+                    dataConc: dataConc, 
+                    obs: obs 
+                };
+                
                 if (status === 'concluido') itensConcluidos++;
             });
-
-            // Atualiza progresso automático baseado no checklist
             let novoProgresso = 0;
             if (totalItens > 0) {
                 novoProgresso = Math.round((itensConcluidos / totalItens) * 100);
             }
 
             try {
-                const { error } = await supabaseClient.from('obras').update({ 
-                    checklist_dados: JSON.stringify(chkDados),
-                    progresso: novoProgresso
-                }).eq('id', obraId);
-
+                const { error } = await supabaseClient.from('obras').update({ dados_checklist: chkDados, progresso: novoProgresso }).eq('id', obraId).eq('empresa_id', empresaIdLogada);
                 if (error) throw error;
 
                 document.getElementById('modalGestaoObra').style.display = 'none';
@@ -2955,7 +3527,6 @@ async function carregarProjetosPCP() {
                 carregarProjetosPCP();
                 carregarDashboardKanban();
                 if(clienteSelecionado) carregarObrasCliente(clienteSelecionado);
-
             } catch (err) {
                 alert("Erro ao salvar a gestão do quadro.");
             } finally {
@@ -2963,7 +3534,6 @@ async function carregarProjetosPCP() {
             }
         }
 
-        // ================= NOTIFICAÇÕES TOAST E MODAL =================
         function mostrarToastNotificacao(mensagem) {
             const toast = document.getElementById('toastNotificacao');
             document.getElementById('textoToast').innerText = mensagem;
@@ -2984,7 +3554,6 @@ async function carregarProjetosPCP() {
             mostrarToastNotificacao('Templates de mensagens salvos localmente.');
         }
 
-        // ================= CONFIGURAÇÕES MASTER =================
         async function carregarConfiguracoesMaster() {
             if(!isMaster) return;
             const cnpjLogado = sessionStorage.getItem('masterCnpj');
@@ -3006,26 +3575,32 @@ async function carregarProjetosPCP() {
             } catch(e) { console.error("Erro Config Master", e); }
         }
 
-        document.getElementById('formConfigMaster').addEventListener('submit', async function(e) {
+      document.getElementById('formConfigMaster').addEventListener('submit', async function(e) {
             e.preventDefault();
             const msg = document.getElementById('msgConfigMaster');
             msg.style.color = 'var(--texto-secundario)';
             msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando identidade do SaaS...';
             
-            const cnpjLogado = sessionStorage.getItem('masterCnpj');
-            const fileInput = document.getElementById('uploadLogoFile');
-            let logoUrlFinal = document.getElementById('configMasterLogo').value.trim();
-
             try {
-                // Upload de Logo se houver arquivo
-                if(fileInput.files.length > 0) {
+                const cnpjLogado = sessionStorage.getItem('masterCnpj');
+                const fileInput = document.getElementById('uploadLogoFile');
+                const inputLogoTexto = document.getElementById('configMasterLogo');
+                let logoUrlFinal = inputLogoTexto ? inputLogoTexto.value.trim() : '';
+
+                if (fileInput && fileInput.files && fileInput.files.length > 0) {
                     const arquivo = fileInput.files[0];
-                    const nomeUnico = `logos/${cnpjLogado}_${Date.now()}_${arquivo.name}`;
-                    const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivo);
-                    if(!uploadError) {
-                        const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico);
-                        logoUrlFinal = urlData.publicUrl;
-                    }
+                    const nomeLimpo = arquivo.name.replace(/\s+/g, '_');
+                    const nomeUnico = `logos/${cnpjLogado}_${Date.now()}_${nomeLimpo}`;
+                    
+                    const { data: uploadData, error: uploadError } = await supabaseClient
+                        .storage
+                        .from('pdfs_clientes')
+                        .upload(nomeUnico, arquivo);
+                        
+                    if (uploadError) throw new Error("Falha no upload da Logo: " + uploadError.message);
+                    
+                    const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico);
+                    logoUrlFinal = urlData.publicUrl;
                 }
 
                 const cPrimaria = document.getElementById('configMasterCorPrimaria').value;
@@ -3041,34 +3616,39 @@ async function carregarProjetosPCP() {
                     cor_secundaria: cSecundaria
                 };
 
+                // Atualização exclusiva na tabela admin_master
                 const { error } = await supabaseClient.from('admin_master').update(payload).eq('cnpj', cnpjLogado);
-                if(error) throw error;
+                if (error) throw new Error("Erro no banco de dados: " + error.message);
 
-                // Atualizar sessão e UI em tempo real
                 sessionStorage.setItem('masterNome', nFantasia);
                 sessionStorage.setItem('masterLogo', logoUrlFinal);
                 sessionStorage.setItem('masterCorPrimaria', cPrimaria);
                 sessionStorage.setItem('masterCorSecundaria', cSecundaria);
                 
                 aplicarTemaCores(cPrimaria, cSecundaria);
-                document.getElementById('nomeEmpresaSaaS').innerText = nFantasia;
-                if(logoUrlFinal) document.getElementById('logoEmpresaSaaS').src = logoUrlFinal;
+                aplicarLogoEmTudo(logoUrlFinal);
+
+                const elNomeMenu = document.getElementById('nomeEmpresaSaaS');
+                if (elNomeMenu) elNomeMenu.innerText = nFantasia;
+                
+                if(fileInput) fileInput.value = '';
+                if(inputLogoTexto) inputLogoTexto.value = logoUrlFinal;
 
                 msg.style.color = 'var(--sucesso)';
                 msg.innerHTML = '<i class="fa-solid fa-check"></i> Identidade atualizada com sucesso!';
                 setTimeout(() => msg.innerHTML = '', 3000);
 
-            } catch(e) {
+            } catch(err) {
+                console.error("ERRO AO SALVAR IDENTIDADE:", err);
                 msg.style.color = 'var(--erro)';
-                msg.innerHTML = 'Erro ao salvar. Verifique a conexão.';
+                msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + (err.message || 'Erro desconhecido.');
             }
         });
-// ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
-        function imprimirChecklist() {
+
+       function imprimirChecklist() {
             const titulo = document.getElementById('gestaoObraTitulo').innerText;
             const cliente = document.getElementById('gestaoObraCliente').innerText;
             
-            // Monta a estrutura HTML da folha de impressão
             let htmlPrint = `
                 <html>
                 <head>
@@ -3078,12 +3658,12 @@ async function carregarProjetosPCP() {
                         h2 { color: #0b1c35; margin-bottom: 5px; font-size: 24px; }
                         h4 { color: #64748b; margin-top: 0; margin-bottom: 25px; font-size: 14px; }
                         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-                        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; font-size: 12px; }
+                        th, td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; font-size: 11px; }
                         th { background-color: #f1f5f9; color: #0b1c35; font-weight: bold; text-transform: uppercase; }
                         .status-pendente { color: #64748b; font-weight: bold; }
                         .status-andamento { color: #d97706; font-weight: bold; }
                         .status-concluido { color: #10b981; font-weight: bold; }
-                        .categoria-titulo { background-color: #e2e8f0; font-weight: bold; text-align: center; font-size: 14px; color: #0b1c35; }
+                        .categoria-titulo { background-color: #e2e8f0; font-weight: bold; text-align: center; font-size: 13px; color: #0b1c35; }
                     </style>
                 </head>
                 <body>
@@ -3092,31 +3672,54 @@ async function carregarProjetosPCP() {
                     <table>
                         <thead>
                             <tr>
-                                <th style="width: 35%;">Processo (Etapa)</th>
-                                <th style="width: 15%;">Status</th>
-                                <th style="width: 15%;">Data Prev./Conclusão</th>
-                                <th style="width: 35%;">Observação / Responsável</th>
+                                <th style="width: 20%;">Processo</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 10%;">Prev. Início</th>
+                                <th style="width: 10%;">Prev. Fim</th>
+                                <th style="width: 10%;">Início Real</th>
+                                <th style="width: 10%;">Fim Real</th>
+                                <th style="width: 30%;">Observação</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
 
-            // Lê as informações diretamente do modal que está aberto na tela
             const categoriasDOM = document.querySelectorAll('#containerChecklistObra .card-accordion');
             
             categoriasDOM.forEach(cat => {
                 const nomeCat = cat.querySelector('h4').innerText;
-                htmlPrint += `<tr><td colspan="4" class="categoria-titulo">${nomeCat}</td></tr>`;
+                htmlPrint += `<tr><td colspan="7" class="categoria-titulo">${nomeCat}</td></tr>`;
                 
                 const itens = cat.querySelectorAll('.checklist-item');
                 itens.forEach(item => {
                     const nomeProcesso = item.querySelector('h5').innerText;
                     const selectStatus = item.querySelector('.checklist-status');
                     const statusText = selectStatus.options[selectStatus.selectedIndex].text;
-                    const statusVal = selectStatus.value; // pendente, andamento, concluido
+                    const statusVal = selectStatus.value;
                     
-                    const dataConclusao = item.querySelector('input[type="date"]').value;
-                    const formataData = dataConclusao ? dataConclusao.split('-').reverse().join('/') : '--/--/----';
+                    const inputsData = item.querySelectorAll('input[type="date"]');
+                    let dataPrevIni = '', dataPrevConc = '', dataIni = '', dataConc = '';
+                    
+                    if (inputsData.length >= 4) {
+                        dataPrevIni = inputsData[0].value; 
+                        dataPrevConc = inputsData[1].value; 
+                        dataIni = inputsData[2].value; 
+                        dataConc = inputsData[3].value; 
+                    }
+
+                    const formataData = (d) => d ? d.split('-').reverse().join('/') : '--/--/----';
+                    
+                    let corDataInicio = '#333'; 
+                    if (dataIni && dataPrevIni) {
+                        if (new Date(dataIni) <= new Date(dataPrevIni)) corDataInicio = '#10b981'; 
+                        else corDataInicio = '#ef4444'; 
+                    }
+                    
+                    let corDaData = '#333'; 
+                    if (dataConc && dataPrevConc) {
+                        if (new Date(dataConc) <= new Date(dataPrevConc)) corDaData = '#10b981'; 
+                        else corDaData = '#ef4444'; 
+                    }
                     
                     const obs = item.querySelector('input[type="text"]').value || '--';
                     
@@ -3124,7 +3727,10 @@ async function carregarProjetosPCP() {
                         <tr>
                             <td>${nomeProcesso}</td>
                             <td class="status-${statusVal}">${statusText}</td>
-                            <td>${formataData}</td>
+                            <td>${formataData(dataPrevIni)}</td>
+                            <td>${formataData(dataPrevConc)}</td>
+                            <td style="color: ${corDataInicio}; font-weight: bold;">${formataData(dataIni)}</td>
+                            <td style="color: ${corDaData}; font-weight: bold;">${formataData(dataConc)}</td>
                             <td>${obs}</td>
                         </tr>
                     `;
@@ -3134,34 +3740,28 @@ async function carregarProjetosPCP() {
             htmlPrint += `
                         </tbody>
                     </table>
-                    <p style="text-align: right; font-size: 11px; color: #94a3b8; margin-top: 30px;">Gerado pelo ERP Callinfo Tecnologia</p>
+                    <p style="text-align: right; font-size: 10px; color: #94a3b8; margin-top: 20px;">Gerado pelo ERP</p>
                 </body>
                 </html>
             `;
 
-            // Abre uma nova janela, escreve o HTML e aciona o modo de impressão do navegador
             const printWindow = window.open('', '_blank');
             printWindow.document.write(htmlPrint);
             printWindow.document.close();
             printWindow.focus();
             
-            // Pequeno delay para garantir que o CSS carregou na nova janela
             setTimeout(() => {
                 printWindow.print();
                 printWindow.close();
             }, 500);
         }
 
-        // ================= FUNÇÃO DE ATALHO DE UPLOAD VIA KANBAN =================
         async function abrirUploadViaPCP(cnpj, obraId) {
-            // Localiza o cliente na lista global
             const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(cnpj));
             if (cliMatch) {
-                // Redireciona o usuário para o painel do Cliente
                 abrirTelaAcao('gestaoClientes');
                 await abrirPainelCliente(cliMatch);
                 
-                // Aguarda 1 segundo para a tela renderizar e abre a aba de Upload focada no projeto
                 setTimeout(() => {
                     prepararUploadParaObra(obraId);
                 }, 1000);
@@ -3169,6 +3769,268 @@ async function carregarProjetosPCP() {
                 alert("Erro: Cliente não localizado no banco de dados.");
             }
         }
+
+        async function inicializarPCP() {
+            try {
+                const { data, error } = await supabaseClient.from('etapas_pcp').select('*').eq('empresa_id', empresaIdLogada).order('ordem_exibicao', { ascending: true });
+                if (error) throw error;
+                
+                if (data && data.length > 0) {
+                    etapasPCP = data; 
+                }
+                
+                carregarProjetosPCP(); 
+            } catch (err) {
+                console.error("Erro ao carregar tabela etapas_pcp:", err);
+            }
+        }
+
+        async function abrirModalConfigPCP() {
+            document.getElementById('modalConfigPCP').style.display = 'flex';
+            limparFormEtapa();
+            
+            const lista = document.getElementById('listaConfigEtapas');
+            lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
+
+            try {
+                const { data, error } = await supabaseClient.from('etapas_pcp').select('*').eq('empresa_id', empresaIdLogada).order('ordem_exibicao', { ascending: true });
+                if (error) throw error;
+                
+                etapasPCP = data || [];
+                renderizarListaEtapasConfig();
+
+            } catch (err) {
+                console.error("Erro ao buscar etapas:", err);
+                lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+            }
+        }
+
+        function renderizarListaEtapasConfig() {
+            const lista = document.getElementById('listaConfigEtapas');
+            lista.innerHTML = '';
+            
+            etapasPCP.forEach(e => {
+                lista.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="display:inline-block; width:16px; height:16px; background:${e.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
+                            <strong style="color: var(--azul-marca); font-size: 0.9rem;">Etapa ${e.ordem_exibicao}</strong> 
+                            <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao})" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            if(etapasPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma etapa cadastrada no Banco de Dados.</p>';
+        }
+
+        function editarEtapaForm(id, nome, cor, ordem) {
+            document.getElementById('configEtapaId').value = id;
+            document.getElementById('configEtapaNome').value = nome;
+            document.getElementById('configEtapaCor').value = cor;
+            document.getElementById('configEtapaOrdem').value = ordem;
+        }
+
+        function limparFormEtapa() {
+            document.getElementById('formConfigEtapa').reset();
+            document.getElementById('configEtapaId').value = '';
+            document.getElementById('configEtapaCor').value = '#3b82f6';
+        }
+
+        async function salvarEtapaPCP(e) {
+            e.preventDefault();
+            const id = document.getElementById('configEtapaId').value;
+            const nome = document.getElementById('configEtapaNome').value.trim();
+            const cor = document.getElementById('configEtapaCor').value;
+            const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
+
+            const payload = { empresa_id: empresaIdLogada, nome: nome, cor: cor, ordem_exibicao: ordem };
+
+            try {
+                if (id) {
+                    await supabaseClient.from('etapas_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
+                } else {
+                    await supabaseClient.from('etapas_pcp').insert([payload]);
+                }
+                limparFormEtapa();
+                await inicializarPCP(); 
+                renderizarListaEtapasConfig(); 
+            } catch(err) {
+                alert("Erro ao gravar etapa no banco de dados.");
+            }
+        }
+
+        async function excluirEtapaPCP(id) {
+            if(confirm("ATENÇÃO: Apagar esta etapa fará com que as obras que estão nela deixem de aparecer no painel até serem realocadas. Continuar?")) {
+                try {
+                    await supabaseClient.from('etapas_pcp').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
+                    await inicializarPCP();
+                    renderizarListaEtapasConfig();
+                } catch(err) {
+                    alert("Erro ao excluir etapa. Verifique dependências no banco.");
+                }
+            }
+        }
+
+        let listaProcessosGlobal = [];
+
+        async function abrirModalConfigProcessos() {
+            document.getElementById('modalConfigProcessos').style.display = 'flex';
+            limparFormProcesso();
+            
+            const lista = document.getElementById('listaConfigProcessos');
+            lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando processos do banco de dados...</p>';
+
+            try {
+                const { data, error } = await supabaseClient.from('processos_padrao').select('*').eq('empresa_id', empresaIdLogada).order('ordem_exibicao', { ascending: true });
+                if (error) throw error;
+                
+                listaProcessosGlobal = data || [];
+                renderizarListaProcessosConfig();
+
+            } catch (err) {
+                console.error("Erro ao buscar processos:", err);
+                lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+            }
+        }
+
+        function renderizarListaProcessosConfig() {
+            const lista = document.getElementById('listaConfigProcessos');
+            lista.innerHTML = '';
+            
+            listaProcessosGlobal.forEach(p => {
+                let itensCount = 0;
+                if (Array.isArray(p.itens)) {
+                    itensCount = p.itens.length;
+                } else if (typeof p.itens === 'string') {
+                    try { itensCount = JSON.parse(p.itens).length; } catch(e) {}
+                }
+
+                const pCodificado = encodeURIComponent(JSON.stringify(p));
+
+                lista.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <strong style="color: var(--azul-marca); font-size: 0.95rem;"><i class="fa-solid ${p.icone || 'fa-list'}"></i> ${p.nome}</strong> 
+                                <span style="font-size: 0.7rem; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; color: var(--texto-secundario);">Ordem: ${p.ordem_exibicao}</span>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--texto-secundario);">Cat: ${p.categoria_id} | ${itensCount} itens cadastrados</div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" onclick="editarProcessoForm('${pCodificado}')" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" onclick="excluirProcessoPadrao(${p.id})" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            if(listaProcessosGlobal.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma categoria de processos cadastrada.</p>';
+        }
+
+        function editarProcessoForm(pStr) {
+            const p = JSON.parse(decodeURIComponent(pStr));
+            document.getElementById('configProcDbId').value = p.id;
+            document.getElementById('configProcCatId').value = p.categoria_id;
+            document.getElementById('configProcNome').value = p.nome;
+            document.getElementById('configProcIcone').value = p.icone || '';
+            document.getElementById('configProcOrdem').value = p.ordem_exibicao;
+            
+            let listaItens = [];
+            if (Array.isArray(p.itens)) {
+                listaItens = p.itens;
+            } else if (typeof p.itens === 'string') {
+                try { listaItens = JSON.parse(p.itens); } catch(e) {}
+            }
+            document.getElementById('configProcItens').value = listaItens.join('\n');
+        }
+
+        function limparFormProcesso() {
+            document.getElementById('formConfigProcesso').reset();
+            document.getElementById('configProcDbId').value = '';
+        }
+
+        async function salvarProcessoPadrao(e) {
+            e.preventDefault();
+            const id = document.getElementById('configProcDbId').value;
+            const categoria_id = document.getElementById('configProcCatId').value.trim();
+            const nome = document.getElementById('configProcNome').value.trim();
+            const icone = document.getElementById('configProcIcone').value.trim();
+            const ordem = parseInt(document.getElementById('configProcOrdem').value);
+            
+            const textoItens = document.getElementById('configProcItens').value;
+            const arrayItens = textoItens.split('\n').map(i => i.trim()).filter(i => i !== '');
+
+            const payload = { 
+                empresa_id: empresaIdLogada,
+                categoria_id: categoria_id, 
+                nome: nome, 
+                icone: icone, 
+                ordem_exibicao: ordem,
+                itens: arrayItens 
+            };
+
+            try {
+                if (id) {
+                    await supabaseClient.from('processos_padrao').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
+                } else {
+                    await supabaseClient.from('processos_padrao').insert([payload]);
+                }
+                limparFormProcesso();
+                await abrirModalConfigProcessos(); 
+            } catch(err) {
+                alert("Erro ao gravar processos no banco de dados.");
+                console.error(err);
+            }
+        }
+
+        async function excluirProcessoPadrao(id) {
+            if(confirm("Tem certeza que deseja apagar esta categoria de processos do banco de dados?")) {
+                try {
+                    await supabaseClient.from('processos_padrao').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
+                    await abrirModalConfigProcessos();
+                } catch(err) {
+                    alert("Erro ao excluir. Verifique a comunicação com o banco.");
+                }
+            }
+        }
+
+        function aplicarCorNoPrazo(dataConclusaoString, dataPrevistaString, elementoHtml) {
+            const dataConclusao = new Date(dataConclusaoString);
+            const dataPrevista = new Date(dataPrevistaString);
+
+            if (dataConclusao <= dataPrevista) {
+                elementoHtml.style.color = '#10B981'; 
+                elementoHtml.style.fontWeight = 'bold';
+            } else {
+                elementoHtml.style.color = '#EF4444'; 
+                elementoHtml.style.fontWeight = 'bold';
+            }
+        }
+        function mostrarErroNaTela(mensagem) {
+    const toast = document.getElementById('toastErroGlobal');
+    const texto = document.getElementById('textoErroGlobal');
+    
+    if (toast && texto) {
+        texto.innerText = mensagem;
+        toast.style.display = 'flex';
+        toast.style.opacity = '1';
+        
+        // Remove o aviso automaticamente após 5 segundos
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3005);
+        }, 5000);
+    } else {
+        // Fallback caso o elemento HTML não esteja na página
+        alert("⚠️ " + mensagem);
+    }
+}
+
     </script>
 </body>
 </html>
