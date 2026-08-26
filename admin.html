@@ -1699,16 +1699,7 @@
     let cnpjsPermitidos = []; 
     let obrasDoClienteAtual = []; 
 
-    // ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
-window.imprimirChecklist = function() {
-    // Tenta encontrar o modal ou container de checklist ativo para impressão
-    const modalGestao = document.getElementById('modalGestaoObra');
-    if (modalGestao && modalGestao.style.display !== 'none') {
-        window.print();
-    } else {
-        window.print();
-    }
-};
+
 
     // ================= APLICAÇÃO DE TEMA GLOBAL =================
     function aplicarTemaCores(primaria, secundaria) {
@@ -3434,6 +3425,10 @@ window.imprimirChecklist = function() {
                                         <i class="fa-solid fa-paperclip"></i>
                                     </button>
                                     
+                                    <button onclick="event.stopPropagation(); imprimirObraDiretoPCP(${obra.id}, '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
+                                        <i class="fa-solid fa-print"></i>
+                                    </button>
+                                    
                                     <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; gap: 5px;" title="Abrir Processos">
                                         <i class="fa-solid fa-list-check"></i> Processos
                                     </button>
@@ -4097,11 +4092,289 @@ window.imprimirChecklist = function() {
             alert("⚠️ " + mensagem);
         }
     }
-    // ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
-window.imprimirChecklist = function() {
-    window.print();
-};
-    
+
+  // ================= RELATÓRIO PROFISSIONAL DE CHECKLIST (PREMIUM) =================
+    window.imprimirChecklist = function() {
+        const tituloObra = document.getElementById('gestaoObraTitulo')?.innerText || 'Relatório de Checklist';
+        const clienteObra = document.getElementById('gestaoObraCliente')?.innerText || '';
+        
+        // Localiza todos os blocos de categoria dentro do modal
+        const accordions = document.querySelectorAll('.card-accordion');
+        
+        if (accordions.length === 0) {
+            alert("Nenhum processo ou categoria encontrado para gerar o relatório.");
+            return;
+        }
+
+        let htmlCategorias = '';
+
+        // Função auxiliar para formatar AAAA-MM-DD para DD/MM/AAAA
+        const formataData = (d) => {
+            if (!d || d.length < 10) return '-';
+            const partes = d.split('-');
+            if (partes.length === 3) {
+                return `${partes[2]}/${partes[1]}/${partes[0]}`;
+            }
+            return d;
+        };
+
+        // Varre cada categoria/seção (ex: Planejamento e Engenharia, Compras, etc.)
+        accordions.forEach(acc => {
+            const tituloCategoria = acc.querySelector('.section-header h4')?.innerText || 'Categoria';
+            const itensNaCategoria = acc.querySelectorAll('.checklist-item');
+            
+            if (itensNaCategoria.length > 0) {
+                let htmlItensTabela = '';
+
+                itensNaCategoria.forEach(item => {
+                    const nomeItem = item.querySelector('h5')?.innerText || '';
+                    const selectStatus = item.querySelector('.checklist-status');
+                    const statusValor = selectStatus ? selectStatus.value : 'pendente';
+                    const statusTexto = selectStatus ? selectStatus.options[selectStatus.selectedIndex].text : 'Pendente';
+                    
+                    // Pega os inputs de data e observação do item atual
+                    const inputs = item.querySelectorAll('input');
+                    let dataPrevIni = '-', dataPrevConc = '-', dataIni = '-', dataConc = '-', obs = '-';
+
+                    inputs.forEach(inp => {
+                        if (inp.id.includes('data_prev_ini_')) dataPrevIni = formataData(inp.value);
+                        else if (inp.id.includes('data_prev_conc_')) dataPrevConc = formataData(inp.value);
+                        else if (inp.id.includes('data_ini_')) dataIni = formataData(inp.value);
+                        else if (inp.id.includes('data_conc_')) dataConc = formataData(inp.value);
+                        else if (inp.id.includes('obs_')) obs = inp.value || '-';
+                    });
+
+                    htmlItensTabela += '<tr>' +
+                        '<td><strong style="color: #0b1c35;">' + nomeItem + '</strong></td>' +
+                        '<td style="text-align: center;"><span class="badge status-' + statusValor + '">' + statusTexto + '</span></td>' +
+                        '<td style="text-align: center;">' + dataPrevIni + '</td>' +
+                        '<td style="text-align: center;">' + dataPrevConc + '</td>' +
+                        '<td style="text-align: center;">' + dataIni + '</td>' +
+                        '<td style="text-align: center;">' + dataConc + '</td>' +
+                        '<td>' + obs + '</td>' +
+                    '</tr>';
+                });
+
+                // Monta o bloco da categoria com seu respectivo título
+                htmlCategorias += '<div class="secao-container">' +
+                    '<div class="titulo-secao">' + tituloCategoria + '</div>' +
+                    '<table>' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th style="width: 24%;">Etapa / Item</th>' +
+                                '<th style="width: 12%; text-align: center;">Status</th>' +
+                                '<th style="width: 10%; text-align: center;">Prev. Início</th>' +
+                                '<th style="width: 10%; text-align: center;">Prev. Fim</th>' +
+                                '<th style="width: 10%; text-align: center;">Início Real</th>' +
+                                '<th style="width: 10%; text-align: center;">Fim Real</th>' +
+                                '<th style="width: 24%;">Observação / Resp.</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' + htmlItensTabela + '</tbody>' +
+                    '</table>' +
+                '</div>';
+            }
+        });
+
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        const horaAtual = new Date().toLocaleTimeString('pt-BR');
+        const janelaRelatorio = window.open('', '_blank');
+
+        // Layout CSS com design corporativo de alto padrão
+        let conteudoHtml = '<!DOCTYPE html>' +
+            '<html lang="pt-BR">' +
+            '<head>' +
+                '<meta charset="UTF-8">' +
+                '<title>Relatório - ' + tituloObra + '</title>' +
+                '<style>' +
+                    '@page { size: A4 landscape; margin: 15mm; }' +
+                    'body { font-family: "Segoe UI", Arial, sans-serif; color: #1e293b; margin: 0; padding: 20px; font-size: 11px; background: #fff; }' +
+                    '.cabecalho { border-bottom: 3px solid #0b1c35; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }' +
+                    'h1 { font-size: 18px; color: #0b1c35; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }' +
+                    'h2 { font-size: 13px; color: #475569; margin: 0; font-weight: 500; }' +
+                    '.info-meta { font-size: 11px; color: #64748b; text-align: right; }' +
+                    '.secao-container { margin-bottom: 25px; page-break-inside: avoid; }' +
+                    '.titulo-secao { background: #0b1c35; color: #fff; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 4px 4px 0 0; text-transform: uppercase; letter-spacing: 0.5px; }' +
+                    'table { width: 100%; border-collapse: collapse; margin-top: 0; background: #fff; }' +
+                    'th, td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; vertical-align: middle; }' +
+                    'th { background-color: #f1f5f9; color: #0b1c35; font-weight: bold; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #94a3b8; }' +
+                    'tr:nth-child(even) { background-color: #f8fafc; }' +
+                    '.badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 9.5px; text-transform: uppercase; }' +
+                    '.status-pendente { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }' +
+                    '.status-andamento { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }' +
+                    '.status-concluido { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }' +
+                    '.rodape { margin-top: 30px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }' +
+                '</style>' +
+            '</head>' +
+            '<body>' +
+                '<div class="cabecalho">' +
+                    '<div>' +
+                        '<h1>Relatório Executivo de Acompanhamento</h1>' +
+                        '<h2>' + tituloObra + ' &nbsp;|&nbsp; <b>Cliente: ' + clienteObra + '</b></h2>' +
+                    '</div>' +
+                    '<div class="info-meta">Emitido em: ' + dataAtual + ' às ' + horaAtual + '</div>' +
+                '</div>' +
+                
+                htmlCategorias +
+
+                '<div class="rodape">' +
+                    'Callinfo Tecnologia — Sistema de Gestão Empresarial Integrada' +
+                '</div>' +
+                '<script>window.onload = function() { window.print(); };<\/script>' +
+            '</body>' +
+            '</html>';
+
+        janelaRelatorio.document.write(conteudoHtml);
+        janelaRelatorio.document.close();
+    };
+    // ================= IMPRESSÃO DIRETA PELO CARD DO PCP =================
+    async function imprimirObraDiretoPCP(obraId, nomeObra, nomeCliente) {
+        // Exibe um feedback rápido
+        mostrarToastNotificacao("Preparando relatório de " + nomeObra + "...");
+        
+        try {
+            // Busca os dados do checklist da obra diretamente do banco
+            const { data: obraData, error } = await supabaseClient
+                .from('obras')
+                .select('dados_checklist, checklist_dados')
+                .eq('id', obraId)
+                .eq('empresa_id', empresaIdLogada)
+                .single();
+
+            if (error) throw error;
+
+            let chk = {};
+            let rawData = obraData?.dados_checklist || obraData?.checklist_dados;
+            if (rawData) {
+                try {
+                    while (typeof rawData === 'string') {
+                        rawData = JSON.parse(rawData);
+                    }
+                    chk = rawData;
+                } catch(e) { chk = {}; }
+            }
+
+            // Busca os processos padrão para montar a estrutura igual à tela de gestão
+            const { data: categoriasData } = await supabaseClient
+                .from('processos_padrao')
+                .select('*')
+                .eq('empresa_id', empresaIdLogada)
+                .order('ordem_exibicao', { ascending: true });
+
+            let categorias = categoriasData || [];
+            if (categorias.length === 0) {
+                categorias = [
+                    { categoria_id: 'cat_eng', nome: 'Engenharia e Projetos', icone: 'fa-compass-drafting', itens: ['Diagrama Unifilar', 'Lista de Materiais', 'Projeto 3D / Layout'] },
+                    { categoria_id: 'cat_comp', nome: 'Compras e Suprimentos', icone: 'fa-cart-flatbed', itens: ['Aprovação de Orçamento', 'Pedido de Peças', 'Recebimento de Materiais'] },
+                    { categoria_id: 'cat_mec', nome: 'Montagem Mecânica', icone: 'fa-screwdriver-wrench', itens: ['Furação da Placa', 'Fixação de Canaletas', 'Fixação de Componentes'] },
+                    { categoria_id: 'cat_ele', nome: 'Montagem Elétrica', icone: 'fa-bolt', itens: ['Passagem de Cabos', 'Anilhamento', 'Conexão de Potência', 'Conexão de Comando'] },
+                    { categoria_id: 'cat_qa', nome: 'Qualidade e Testes', icone: 'fa-clipboard-check', itens: ['Teste de Continuidade', 'Teste de Isolação (Megger)', 'Teste Funcional a Quente'] }
+                ];
+            }
+
+            let htmlCategorias = '';
+            const formataData = (d) => {
+                if (!d || d.length < 10) return '-';
+                const p = d.split('-');
+                return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+            };
+
+            categorias.forEach(cat => {
+                const catId = cat.categoria_id || cat.id;
+                const catNome = cat.nome;
+                let listaItens = Array.isArray(cat.itens) ? cat.itens : (typeof cat.itens === 'string' ? JSON.parse(cat.itens) : []);
+
+                if (listaItens.length > 0) {
+                    let htmlItensTabela = '';
+                    listaItens.forEach((item, index) => {
+                        const itemId = `${catId}_item_${index}`;
+                        const itemDados = chk[itemId] || {};
+                        const statusValor = itemDados.status || 'pendente';
+                        const statusTextos = { pendente: 'Pendente', andamento: 'Em Andamento', concluido: 'Concluído' };
+                        const statusTexto = statusTextos[statusValor] || 'Pendente';
+
+                        htmlItensTabela += '<tr>' +
+                            '<td><strong style="color: #0b1c35;">' + item + '</strong></td>' +
+                            '<td style="text-align: center;"><span class="badge status-' + statusValor + '">' + statusTexto + '</span></td>' +
+                            '<td style="text-align: center;">' + formataData(itemDados.dataPrevIni) + '</td>' +
+                            '<td style="text-align: center;">' + formataData(itemDados.dataPrevConc) + '</td>' +
+                            '<td style="text-align: center;">' + formataData(itemDados.dataIni) + '</td>' +
+                            '<td style="text-align: center;">' + formataData(itemDados.dataConc) + '</td>' +
+                            '<td>' + (itemDados.obs || '-') + '</td>' +
+                        '</tr>';
+                    });
+
+                    htmlCategorias += '<div class="secao-container">' +
+                        '<div class="titulo-secao">' + catNome + '</div>' +
+                        '<table>' +
+                            '<thead>' +
+                                '<tr>' +
+                                    '<th style="width: 24%;">Etapa / Item</th>' +
+                                    '<th style="width: 12%; text-align: center;">Status</th>' +
+                                    '<th style="width: 10%; text-align: center;">Prev. Início</th>' +
+                                    '<th style="width: 10%; text-align: center;">Prev. Fim</th>' +
+                                    '<th style="width: 10%; text-align: center;">Início Real</th>' +
+                                    '<th style="width: 10%; text-align: center;">Fim Real</th>' +
+                                    '<th style="width: 24%;">Observação / Resp.</th>' +
+                                '</tr>' +
+                            '</thead>' +
+                            '<tbody>' + htmlItensTabela + '</tbody>' +
+                        '</table>' +
+                    '</div>';
+                }
+            });
+
+            // Abre a janela de relatório premium iguaozinha à de dentro do modal
+            const dataAtual = new Date().toLocaleDateString('pt-BR');
+            const horaAtual = new Date().toLocaleTimeString('pt-BR');
+            const janelaRelatorio = window.open('', '_blank');
+
+            let conteudoHtml = '<!DOCTYPE html>' +
+                '<html lang="pt-BR">' +
+                '<head>' +
+                    '<meta charset="UTF-8">' +
+                    '<title>Relatório - ' + nomeObra + '</title>' +
+                    '<style>' +
+                        '@page { size: A4 landscape; margin: 15mm; }' +
+                        'body { font-family: "Segoe UI", Arial, sans-serif; color: #1e293b; margin: 0; padding: 20px; font-size: 11px; background: #fff; }' +
+                        '.cabecalho { border-bottom: 3px solid #0b1c35; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }' +
+                        'h1 { font-size: 18px; color: #0b1c35; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }' +
+                        'h2 { font-size: 13px; color: #475569; margin: 0; font-weight: 500; }' +
+                        '.info-meta { font-size: 11px; color: #64748b; text-align: right; }' +
+                        '.secao-container { margin-bottom: 25px; page-break-inside: avoid; }' +
+                        '.titulo-secao { background: #0b1c35; color: #fff; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 4px 4px 0 0; text-transform: uppercase; letter-spacing: 0.5px; }' +
+                        'table { width: 100%; border-collapse: collapse; margin-top: 0; background: #fff; }' +
+                        'th, td { border: 1px solid #cbd5e1; padding: 7px 10px; text-align: left; vertical-align: middle; }' +
+                        'th { background-color: #f1f5f9; color: #0b1c35; font-weight: bold; font-size: 10px; text-transform: uppercase; border-bottom: 2px solid #94a3b8; }' +
+                        'tr:nth-child(even) { background-color: #f8fafc; }' +
+                        '.badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-weight: bold; font-size: 9.5px; text-transform: uppercase; }' +
+                        '.status-pendente { background: #fef3c7; color: #d97706; border: 1px solid #fde68a; }' +
+                        '.status-andamento { background: #dbeafe; color: #2563eb; border: 1px solid #bfdbfe; }' +
+                        '.status-concluido { background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; }' +
+                        '.rodape { margin-top: 30px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }' +
+                    '</style>' +
+                '</head>' +
+                '<body>' +
+                    '<div class="cabecalho">' +
+                        '<div>' +
+                            '<h1>Relatório Executivo de Acompanhamento</h1>' +
+                            '<h2>' + nomeObra + ' &nbsp;|&nbsp; <b>Cliente: ' + nomeCliente + '</b></h2>' +
+                        '</div>' +
+                        '<div class="info-meta">Emitido em: ' + dataAtual + ' às ' + horaAtual + '</div>' +
+                    '</div>' +
+                    htmlCategorias +
+                    '<div class="rodape">Callinfo Tecnologia — Sistema de Gestão Empresarial Integrada</div>' +
+                    '<script>window.onload = function() { window.print(); };<\/script>' +
+                '</body>' +
+                '</html>';
+
+            janelaRelatorio.document.write(conteudoHtml);
+            janelaRelatorio.document.close();
+
+        } catch (err) {
+            alert("Erro ao gerar relatório direto do PCP: " + err.message);
+        }
+    }
 </script>
 </body>
 </html>
