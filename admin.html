@@ -34,7 +34,24 @@
             --erro: #ef4444;
             --transicao: all 0.3s ease;
         }
-        
+        @media print {
+    body * {
+        visibility: hidden;
+    }
+    #modalGestaoObra, #modalGestaoObra * {
+        visibility: visible;
+    }
+    #modalGestaoObra {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    /* Oculta botões de ação na hora de imprimir */
+    .btn-acao, .btn-entrar {
+        display: none !important;
+    }
+}
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: var(--fundo-site); color: var(--texto-principal); height: 100vh; overflow: hidden; }
         h1, h2, h3, h4, .menu-abas button { font-family: 'Montserrat', sans-serif; }
@@ -1681,6 +1698,17 @@
     let listaGlobalClientes = []; 
     let cnpjsPermitidos = []; 
     let obrasDoClienteAtual = []; 
+
+    // ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
+window.imprimirChecklist = function() {
+    // Tenta encontrar o modal ou container de checklist ativo para impressão
+    const modalGestao = document.getElementById('modalGestaoObra');
+    if (modalGestao && modalGestao.style.display !== 'none') {
+        window.print();
+    } else {
+        window.print();
+    }
+};
 
     // ================= APLICAÇÃO DE TEMA GLOBAL =================
     function aplicarTemaCores(primaria, secundaria) {
@@ -4069,6 +4097,11 @@
             alert("⚠️ " + mensagem);
         }
     }
+    // ================= FUNÇÃO DE IMPRESSÃO DO CHECKLIST =================
+window.imprimirChecklist = function() {
+    window.print();
+};
+    
 </script>
 </body>
 </html>
