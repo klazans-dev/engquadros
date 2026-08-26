@@ -4126,7 +4126,7 @@
             if (itensNaCategoria.length > 0) {
                 let htmlItensTabela = '';
 
-                itensNaCategoria.forEach(item => {
+               itensNaCategoria.forEach(item => {
                     const nomeItem = item.querySelector('h5')?.innerText || '';
                     const selectStatus = item.querySelector('.checklist-status');
                     const statusValor = selectStatus ? selectStatus.value : 'pendente';
@@ -4134,23 +4134,44 @@
                     
                     // Pega os inputs de data e observação do item atual
                     const inputs = item.querySelectorAll('input');
-                    let dataPrevIni = '-', dataPrevConc = '-', dataIni = '-', dataConc = '-', obs = '-';
+                    let dataPrevIni = '', dataPrevConc = '', dataIni = '', dataConc = '', obs = '-';
 
                     inputs.forEach(inp => {
-                        if (inp.id.includes('data_prev_ini_')) dataPrevIni = formataData(inp.value);
-                        else if (inp.id.includes('data_prev_conc_')) dataPrevConc = formataData(inp.value);
-                        else if (inp.id.includes('data_ini_')) dataIni = formataData(inp.value);
-                        else if (inp.id.includes('data_conc_')) dataConc = formataData(inp.value);
+                        if (inp.id.includes('data_prev_ini_')) dataPrevIni = inp.value;
+                        else if (inp.id.includes('data_prev_conc_')) dataPrevConc = inp.value;
+                        else if (inp.id.includes('data_ini_')) dataIni = inp.value;
+                        else if (inp.id.includes('data_conc_')) dataConc = inp.value;
                         else if (inp.id.includes('obs_')) obs = inp.value || '-';
                     });
+
+                    const formataData = (d) => {
+                        if (!d || d.length < 10) return '-';
+                        const p = d.split('-');
+                        return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+                    };
+
+                    // Lógica de cores baseada em string (AAAA-MM-DD) para garantir precisão
+                    let estiloIni = 'color: #1e293b;'; // Cor padrão
+                    if (dataIni && dataPrevIni) {
+                        estiloIni = dataIni <= dataPrevIni 
+                            ? 'color: #16a34a; font-weight: bold;' // Verde (No prazo)
+                            : 'color: #dc2626; font-weight: bold;'; // Vermelho (Atrasado)
+                    }
+
+                    let estiloConc = 'color: #1e293b;'; // Cor padrão
+                    if (dataConc && dataPrevConc) {
+                        estiloConc = dataConc <= dataPrevConc 
+                            ? 'color: #16a34a; font-weight: bold;' // Verde (No prazo)
+                            : 'color: #dc2626; font-weight: bold;'; // Vermelho (Atrasado)
+                    }
 
                     htmlItensTabela += '<tr>' +
                         '<td><strong style="color: #0b1c35;">' + nomeItem + '</strong></td>' +
                         '<td style="text-align: center;"><span class="badge status-' + statusValor + '">' + statusTexto + '</span></td>' +
-                        '<td style="text-align: center;">' + dataPrevIni + '</td>' +
-                        '<td style="text-align: center;">' + dataPrevConc + '</td>' +
-                        '<td style="text-align: center;">' + dataIni + '</td>' +
-                        '<td style="text-align: center;">' + dataConc + '</td>' +
+                        '<td style="text-align: center;">' + formataData(dataPrevIni) + '</td>' +
+                        '<td style="text-align: center;">' + formataData(dataPrevConc) + '</td>' +
+                        '<td style="text-align: center; ' + estiloIni + '">' + formataData(dataIni) + '</td>' +
+                        '<td style="text-align: center; ' + estiloConc + '">' + formataData(dataConc) + '</td>' +
                         '<td>' + obs + '</td>' +
                     '</tr>';
                 });
@@ -4293,13 +4314,33 @@
                         const statusTextos = { pendente: 'Pendente', andamento: 'Em Andamento', concluido: 'Concluído' };
                         const statusTexto = statusTextos[statusValor] || 'Pendente';
 
+                        const dataPrevIni = itemDados.dataPrevIni || '';
+                        const dataPrevConc = itemDados.dataPrevConc || '';
+                        const dataIni = itemDados.dataIni || '';
+                        const dataConc = itemDados.dataConc || '';
+
+                        // Lógica de cores baseada em string (AAAA-MM-DD): Verde se no prazo, Vermelho se atrasado
+                        let estiloIni = 'color: #1e293b;';
+                        if (dataIni && dataPrevIni) {
+                            estiloIni = dataIni <= dataPrevIni 
+                                ? 'color: #16a34a; font-weight: bold;' // Verde (No prazo)
+                                : 'color: #dc2626; font-weight: bold;'; // Vermelho (Atrasado)
+                        }
+
+                        let estiloConc = 'color: #1e293b;';
+                        if (dataConc && dataPrevConc) {
+                            estiloConc = dataConc <= dataPrevConc 
+                                ? 'color: #16a34a; font-weight: bold;' // Verde (No prazo)
+                                : 'color: #dc2626; font-weight: bold;'; // Vermelho (Atrasado)
+                        }
+
                         htmlItensTabela += '<tr>' +
                             '<td><strong style="color: #0b1c35;">' + item + '</strong></td>' +
                             '<td style="text-align: center;"><span class="badge status-' + statusValor + '">' + statusTexto + '</span></td>' +
-                            '<td style="text-align: center;">' + formataData(itemDados.dataPrevIni) + '</td>' +
-                            '<td style="text-align: center;">' + formataData(itemDados.dataPrevConc) + '</td>' +
-                            '<td style="text-align: center;">' + formataData(itemDados.dataIni) + '</td>' +
-                            '<td style="text-align: center;">' + formataData(itemDados.dataConc) + '</td>' +
+                            '<td style="text-align: center;">' + formataData(dataPrevIni) + '</td>' +
+                            '<td style="text-align: center;">' + formataData(dataPrevConc) + '</td>' +
+                            '<td style="text-align: center; ' + estiloIni + '">' + formataData(dataIni) + '</td>' +
+                            '<td style="text-align: center; ' + estiloConc + '">' + formataData(dataConc) + '</td>' +
                             '<td>' + (itemDados.obs || '-') + '</td>' +
                         '</tr>';
                     });
@@ -4324,7 +4365,6 @@
                 }
             });
 
-            // Abre a janela de relatório premium iguaozinha à de dentro do modal
             const dataAtual = new Date().toLocaleDateString('pt-BR');
             const horaAtual = new Date().toLocaleTimeString('pt-BR');
             const janelaRelatorio = window.open('', '_blank');
