@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaaS Callinfo Tecnologia - ERP Painel</title>
@@ -407,7 +408,7 @@
                     <div class="circuit-container">
                         <div class="marca-box marca-callinfo">
                             <img src="public/SAAS.png" alt="Callinfo" class="logo-animada" style="max-height: 170px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));">
-                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado</h3>
+                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado Versão 1.0.0.0</h3>
                             <p style="font-size: 1.1rem; color: #06b6d4; margin-top: 16px; font-weight: 600;"></p>
                         </div>
                         <div class="conexoes">
@@ -605,27 +606,41 @@
                 </div>
             </div>
 
-            <!-- TELA: GESTÃO CENTRAL DE CLIENTES -->
-            <div id="painelGestaoClientes" class="painel-conteudo">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
-                    <div>
-                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-users"></i> Gestão de Clientes</h2>
-                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Pesquise, edite ou adicione novos clientes ao sistema.</p>
-                    </div>
-                    <button type="button" class="btn-novo-cliente" id="btnAcessoNovoCli" onclick="abrirPainelNovoCliente()">
-                        <i class="fa-solid fa-plus"></i> Novo Cliente
-                    </button>
-                </div>
+      <div id="painelGestaoClientes" class="painel-conteudo">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-users"></i> Gestão de Clientes</h2>
+            <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Pesquise, edite ou adicione novos clientes ao sistema.</p>
+        </div>
+       
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" id="btnImportar" class="btn btn-success" onclick="abrirModalImportacao()" style="background-color: #10b981; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Importar Planilha
+            </button>
+
+            <button type="button" class="btn-novo-cliente" id="btnAcessoNovoCli" onclick="abrirPainelNovoCliente()" style="background-color: #10b981; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-plus"></i> Novo Cliente
+            </button>
+        </div>
+    </div>
+
+ <!-- BARRA DE PESQUISA (Agora preenche 100% da largura) -->
+<div style="margin-bottom: 20px; width: 100%;">
+    <div style="position: relative; width: 100%;">
+        <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+<input type="text" id="inputBuscaCliente" placeholder="Digite o nome ou CNPJ para pesquisar..." class="form-control" oninput="paginaAtual = 0; carregarListaClientesCentral();" style="width: 100%; padding-left: 40px; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none;">    </div>
+</div>
+
+    <div id="listaCentralClientes" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
+</div>
                 
-                <div class="toolbar-pesquisa">
-                    <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
-                    <input type="text" id="inputBuscaClienteCentral" placeholder="Procurar cliente por nome ou CNPJ..." onkeyup="filtrarClientesCentral()">
-                </div>
                 
-                <div id="listaCentralClientes" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
-                    <!-- Preenchido pelo JS -->
-                </div>
-            </div>
 
         
            <!-- NOVA TELA: PRODUTOS E SERVIÇOS (MARKUP / ELÉTRICA) -->
@@ -1689,6 +1704,7 @@
     const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
     const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
     const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
 
     let modoLoginAtual = 'mestre';
     let isMaster = false;
@@ -2286,7 +2302,7 @@
         const file = event.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
+       reader.readAsText(arquivo, 'ISO-8859-1');
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
@@ -2572,46 +2588,153 @@
         const { data } = await query;
         if (data) { listaGlobalClientes = data; }
     }
+// 2. Função de busca e paginação (20 por página, limpa se vazio)
+let paginaAtual = 0;
+const itensPorPagina = 50;
 
-    async function carregarListaClientesCentral() {
-        const lista = document.getElementById('listaCentralClientes'); 
-        if(!lista) return;
-        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando clientes...</p>';
+async function carregarListaClientesCentral() {
+    const lista = document.getElementById('listaCentralClientes'); 
+    if(!lista) return;
+
+    const empresaIdLogada = sessionStorage.getItem('empresaId') || window.empresaId;
+    const termoBusca = document.getElementById('inputBuscaCliente') ? document.getElementById('inputBuscaCliente').value.trim() : '';
+
+    if (!termoBusca) {
+        lista.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: #64748b;">
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;"></i>
+                <h4 style="font-size: 1rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Nenhum cliente exibido</h4>
+                <p style="font-size: 0.85rem;">Digite o nome ou CNPJ no campo acima para localizar os clientes.</p>
+            </div>
+        `;
         
-        if (!isMaster && cnpjsPermitidos.length === 0) { lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum cliente vinculado à sua conta.</p>'; return; }
-        
-        let query = supabaseClient.from('clientes').select('*').eq('empresa_id', empresaIdLogada).order('razao_social'); 
-        if (!isMaster && cnpjsPermitidos.length > 0) query = query.in('cnpj', cnpjsPermitidos);
-        
-        const { data } = await query; 
-        lista.innerHTML = '';
-        
-        if(data && data.length > 0) {
-            listaGlobalClientes = data; 
-            data.forEach(cli => {
-                const statusBadge = cli.status === 'inativo' ? '<span class="badge-inativo">BLOQUEADO</span>' : '<span style="background:var(--sucesso); color:#fff; font-size:0.65rem; padding:2px 6px; border-radius:10px; font-weight:700;">ATIVO</span>';
-                const div = document.createElement('div'); 
-                div.className = 'card-box item-cliente-central'; 
-                div.style.cssText = 'padding: 15px; margin-bottom: 0; cursor: pointer; border-left: 4px solid var(--azul-sutil); display: flex; flex-direction: column; justify-content: space-between; transition: var(--transicao);';
-                div.onmouseover = () => div.style.transform = 'translateY(-3px)';
-                div.onmouseout = () => div.style.transform = 'translateY(0)';
-                
-                div.innerHTML = `
-                    <div>
-                        <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 8px;">${cli.razao_social}</h4>
-                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-bottom: 5px;"><i class="fa-regular fa-id-card"></i> CNPJ: ${cli.cnpj}</p>
-                        <p style="color: var(--texto-secundario); font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> ${cli.whatsapp || 'Não informado'}</p>
-                    </div>
-                    <div style="margin-top: 15px; text-align: right;">${statusBadge}</div>
-                `;
-                div.onclick = () => abrirPainelCliente(cli);
-                lista.appendChild(div);
-            });
-        } else {
-            lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum cliente cadastrado ou vinculado.</p>';
-        }
+        let containerPaginacao = document.getElementById('paginacaoContainer');
+        if (containerPaginacao) containerPaginacao.innerHTML = '';
+        return;
     }
 
+    lista.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;"><i class="fa-solid fa-circle-notch fa-spin"></i> Pesquisando clientes...</div>';
+
+    try {
+        let query = supabaseClient
+            .from('clientes')
+            .select('*', { count: 'exact' })
+            .eq('empresa_id', empresaIdLogada);
+
+        query = query.or(`razao_social.ilike.%${termoBusca}%,cnpj.ilike.%${termoBusca}%`);
+
+        const inicio = paginaAtual * itensPorPagina;
+        const fim = inicio + itensPorPagina - 1;
+        
+        const { data, count, error } = await query
+            .order('razao_social', { ascending: true })
+            .range(inicio, fim);
+
+        if (error) throw error;
+
+        lista.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            lista.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #64748b;">
+                    <i class="fa-solid fa-triangle-exclamation" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                    <p>Nenhum cliente encontrado com <b>"${termoBusca}"</b>.</p>
+                </div>
+            `;
+            let containerPaginacao = document.getElementById('paginacaoContainer');
+            if (containerPaginacao) containerPaginacao.innerHTML = '';
+            return;
+        }
+
+        lista.innerHTML = data.map(cliente => renderizarCardClient(cliente)).join('');
+        renderizarControlesPaginacao(count || 0);
+
+    } catch (err) {
+        console.error("Erro detalhado na pesquisa:", err);
+        lista.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #ef4444; background: rgba(239, 68, 68, 0.05); border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 1.5rem; margin-bottom: 8px;"></i>
+                <p style="font-weight: 600;">Erro ao realizar a pesquisa no banco:</p>
+                <p style="font-size: 0.85rem; font-family: monospace; margin-top: 5px;">${err.message || JSON.stringify(err)}</p>
+            </div>
+        `;
+    }
+}
+
+// 1. Função que desenha o card compacto com o WhatsApp no rodapé
+function renderizarCardClient(cliente) {
+    const numeroLimpo = cliente.whatsapp ? cliente.whatsapp.replace(/\D/g, '') : '';
+    const linkWhatsapp = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : '#';
+
+    // Garante que se o nome do cliente tiver aspas (ex: D'Avila), não quebre o clique
+    const nomeSeguro = cliente.razao_social ? cliente.razao_social.replace(/'/g, "\\'") : 'Cliente';
+
+    return `
+        <div class="card-box item-cliente" onclick="abrirPainelCliente('${cliente.id}', '${nomeSeguro}')" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.04)';">
+            
+            <div>
+                <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${cliente.razao_social || 'Cliente'}">
+                    ${cliente.razao_social || 'Cliente sem Nome'}
+                </h4>
+                <span style="font-size: 0.72rem; color: #64748b; display: block; margin-top: 2px;">
+                    <i class="fa-solid fa-id-card" style="font-size: 0.65rem; margin-right: 3px;"></i> CNPJ: ${cliente.cnpj || 'Não informado'}
+                </span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f8fafc; padding-top: 6px; margin-top: 2px;">
+                
+                ${numeroLimpo ? `
+                    <a href="${linkWhatsapp}" target="_blank" onclick="event.stopPropagation();" style="font-size: 0.75rem; color: #16a34a; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px;" title="Abrir conversa no WhatsApp">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 0.95rem; color: #25d366;"></i> ${cliente.whatsapp}
+                    </a>
+                ` : `
+                    <span style="font-size: 0.72rem; color: #94a3b8; display: inline-flex; align-items: center; gap: 5px;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 0.8rem; opacity: 0.5;"></i> Não informado
+                    </span>
+                `}
+
+                <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${cliente.status === 'ATIVO' ? '#d1fae5' : '#fee2e2'}; color: ${cliente.status === 'ATIVO' ? '#065f46' : '#991b1b'}; font-weight: 600;">
+                    ${cliente.status || 'ATIVO'}
+                </span>
+            </div>
+        </div>
+    `;
+}
+
+// Função auxiliar para criar os botões de Próxima / Anterior
+function renderizarControlesPaginacao(totalRegistros) {
+    let containerPaginacao = document.getElementById('paginacaoContainer');
+    
+    // Se não existir o container de paginação no HTML, cria automaticamente abaixo da lista
+    if (!containerPaginacao) {
+        containerPaginacao = document.createElement('div');
+        containerPaginacao.id = 'paginacaoContainer';
+        containerPaginacao.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 10px 0; grid-column: 1 / -1;';
+        document.getElementById('listaCentralClientes').after(containerPaginacao);
+    }
+
+    const totalPaginas = Math.ceil(totalRegistros / itensPorPagina) || 1;
+    const paginaExibicao = paginaAtual + 1;
+
+    containerPaginacao.innerHTML = `
+        <span style="font-size: 0.8rem; color: #64748b;">Mostrando página <b>${paginaExibicao}</b> de <b>${totalPaginas}</b> (Total: ${totalRegistros} clientes)</span>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="mudarPagina(-1)" ${paginaAtual === 0 ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''} class="btn btn-sm btn-outline-secondary" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">
+                <i class="fa-solid fa-chevron-left"></i> Anterior
+            </button>
+            <button onclick="mudarPagina(1)" ${paginaExibicao >= totalPaginas ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''} class="btn btn-sm btn-outline-secondary" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer;">
+                Próxima <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    `;
+}
+
+function mudarPagina(direcao) {
+    paginaAtual += direcao;
+    if (paginaAtual < 0) paginaAtual = 0;
+    carregarListaClientesCentral();
+}
+       
     function filtrarClientesCentral() {
         const termo = document.getElementById('inputBuscaClienteCentral').value.toLowerCase();
         document.querySelectorAll('.item-cliente-central').forEach(item => { 
@@ -4415,6 +4538,288 @@
             alert("Erro ao gerar relatório direto do PCP: " + err.message);
         }
     }
+
+    let colunasPlanilha = [];
+let dadosPlanilha = [];
+
+function abrirModalImportacao() {
+    document.getElementById('modalImportacao').style.display = 'flex';
+}
+
+function fecharModalImportacao() {
+    document.getElementById('modalImportacao').style.display = 'none';
+    document.getElementById('etapaUpload').style.display = 'block';
+    document.getElementById('etapaMapeamento').style.display = 'none';
+    document.getElementById('arquivoCsv').value = '';
+}
+
+// Lê o arquivo CSV e extrai o cabeçalho
+function lerCabecalhoCsv(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+   reader.readAsText(arquivo, 'ISO-8859-1');
+    reader.onload = function(e) {
+        const texto = e.target.result;
+        const linhas = texto.split('\n').map(l => l.trim()).filter(l => l);
+        
+        if (linhas.length === 0) {
+            alert('Arquivo vazio ou inválido.');
+            return;
+        }
+
+        // Assume delimitador vírgula ou ponto e vírgula
+        const separador = linhas[0].includes(';') ? ';' : ',';
+        colunasPlanilha = linhas[0].split(separador).map(c => c.replace(/["']/g, '').trim());
+        
+        // Guarda os dados brutos para importar depois
+        dadosPlanilha = linhas.slice(1).map(linha => {
+            const valores = linha.split(separador).map(v => v.replace(/["']/g, '').trim());
+            let obj = {};
+            colunasPlanilha.forEach((col, index) => {
+                obj[col] = valores[index] || null;
+            });
+            return obj;
+        });
+
+        gerarTelasDeMapeamento();
+    };
+    reader.readAsText(arquivo, 'UTF-8');
+}
+
+// Gera os selects de "De -> Para" dinamicamente
+function gerarTelasDeMapeamento() {
+    const container = document.getElementById('mapeamentoContainer');
+    container.innerHTML = '';
+
+    // Colunas exatas baseadas no seu banco Supabase
+const colunasSupabase = [
+    { label: 'CNPJ / CPF', valor: 'cnpj' },
+    { label: 'Razão Social / Nome', valor: 'razao_social' },
+    { label: 'Nome de Contato', valor: 'nome_contato' },
+    { label: 'E-mail', valor: 'email' },
+    { label: 'WhatsApp', valor: 'whatsapp' },
+    { label: 'CEP', valor: 'cep' },
+    { label: 'Endereço (Logradouro)', valor: 'endereco' },
+    { label: 'Número', valor: 'numero' },
+    { label: 'Bairro', valor: 'bairro' },
+    { label: 'Cidade', valor: 'cidade' },
+    { label: 'UF', valor: 'uf' },
+    { label: 'Tipo de Pessoa (F/J)', valor: 'tipo_pessoa' },
+    { label: 'Status', valor: 'status' }
+];
+    
+
+    colunasSupabase.forEach(campoDb => {
+        let div = document.createElement('div');
+        div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
+        
+        let label = document.createElement('span');
+        label.innerText = campoDb.label + ':';
+        label.style.fontWeight = '500';
+
+        let select = document.createElement('select');
+        select.className = 'form-select form-select-sm';
+        select.style.width = '55%';
+        select.dataset.dbField = campoDb.valor;
+
+        let optionPula = document.createElement('option');
+        optionPula.value = '';
+        optionPula.innerText = '-- Ignorar / Não mapear --';
+        select.appendChild(optionPula);
+
+        colunasPlanilha.forEach(colCsv => {
+            let opt = document.createElement('option');
+            opt.value = colCsv;
+            opt.innerText = colCsv;
+            // Tenta autocomparar se os nomes forem parecidos
+            if (colCsv.toLowerCase().includes(campoDb.valor)) {
+                opt.selected = true;
+            }
+            select.appendChild(opt);
+        });
+
+        div.appendChild(label);
+        div.appendChild(select);
+        container.appendChild(div);
+    });
+
+    document.getElementById('etapaUpload').style.display = 'none';
+    document.getElementById('etapaMapeamento').style.display = 'block';
+}
+
+// Executa o envio para o Supabase
+async function executarImportacaoSupabase() {
+    const selects = document.querySelectorAll('#mapeamentoContainer select');
+    let mapeamento = {};
+
+    selects.forEach(sel => {
+        if (sel.value) {
+            mapeamento[sel.dataset.dbField] = sel.value;
+        }
+    });
+
+    const empresaIdLogada = sessionStorage.getItem('empresaId') || window.empresaId;
+
+    if (!empresaIdLogada) {
+        alert('Erro: ID da empresa logada não identificado. Verifique a sessão.');
+        return;
+    }
+
+    if (!dadosPlanilha || dadosPlanilha.length === 0) {
+        alert('Nenhum dado encontrado na planilha.');
+        return;
+    }
+
+    // Exibe a barra de progresso e oculta o mapeamento
+    document.getElementById('etapaMapeamento').style.display = 'none';
+    let containerProgresso = document.getElementById('progressoImportacaoContainer');
+    if (containerProgresso) containerProgresso.style.display = 'block';
+
+    const barra = document.getElementById('barraProgresso');
+    const textoProgresso = document.getElementById('textoProgresso');
+    const totalLinhas = dadosPlanilha.length;
+
+    let sucessosCadastros = 0;
+    let sucessosAtualizacoes = 0;
+    let errosLog = []; // Array que armazena o relatório de falhas
+
+    try {
+        for (let i = 0; i < totalLinhas; i++) {
+            let linha = dadosPlanilha[i];
+            let porcentagem = Math.round(((i + 1) / totalLinhas) * 100);
+            
+            if (barra) barra.style.width = porcentagem + '%';
+            if (textoProgresso) textoProgresso.innerText = `Processando linha ${i + 1} de ${totalLinhas} (${porcentagem}%)`;
+
+            // Pula linhas totalmente em branco no arquivo
+            let linhaEstaVazia = Object.values(linha).every(val => !val || val.toString().trim() === '');
+            if (linhaEstaVazia) continue;
+
+            let registroMapeado = {
+                chave_mestre: 'Eng@2026',
+                empresa_id: empresaIdLogada
+            };
+
+            for (let dbField in mapeamento) {
+                let csvField = mapeamento[dbField];
+                registroMapeado[dbField] = linha[csvField];
+            }
+
+            const cnpjAtual = registroMapeado.cnpj || registroMapeado.cpf_cnpj;
+            if (!cnpjAtual) {
+                errosLog.push(`Linha ${i + 1}: CNPJ/CPF está vazio ou não foi mapeado.`);
+                continue; // Pula este e vai para o próximo
+            }
+
+            // Tenta processar o registro individualmente para isolar eventuais erros
+            try {
+                // 1. Verifica se o cliente já existe no banco
+                const { data: clienteExistente, error: erroBusca } = await supabaseClient
+                    .from('clientes')
+                    .select('id, empresa_id')
+                    .eq('cnpj', cnpjAtual)
+                    .maybeSingle();
+
+                if (erroBusca) {
+                    errosLog.push(`Linha ${i + 1} (CNPJ: ${cnpjAtual}): Erro na busca - ${erroBusca.message}`);
+                    continue;
+                }
+
+                if (clienteExistente) {
+                    let dadosUpdate = { ...registroMapeado };
+                    delete dadosUpdate.empresa_id; // Preserva o dono original intacto
+
+                    const { error: erroUpdate } = await supabaseClient
+                        .from('clientes')
+                        .update(dadosUpdate)
+                        .eq('cnpj', cnpjAtual);
+
+                    if (erroUpdate) {
+                        errosLog.push(`Linha ${i + 1} (CNPJ: ${cnpjAtual}): Erro ao atualizar - ${erroUpdate.message}`);
+                    } else {
+                        sucessosAtualizacoes++;
+                    }
+                } else {
+                    const { error: erroInsert } = await supabaseClient
+                        .from('clientes')
+                        .insert([registroMapeado]);
+
+                    if (erroInsert) {
+                        errosLog.push(`Linha ${i + 1} (CNPJ: ${cnpjAtual}): Erro ao inserir - ${erroInsert.message}`);
+                    } else {
+                        sucessosCadastros++;
+                    }
+                }
+            } catch (errItem) {
+                errosLog.push(`Linha ${i + 1} (CNPJ: ${cnpjAtual || 'N/A'}): ${errItem.message}`);
+            }
+        }
+
+        // Monta o resumo final
+        let relatorioFinal = `Importação finalizada!\n\n` +
+                             `- Novos cadastrados: ${sucessosCadastros}\n` +
+                             `- Atualizados: ${sucessosAtualizacoes}\n` +
+                             `- Ignorados / Com falha: ${errosLog.length}`;
+
+        if (errosLog.length > 0) {
+            console.warn("--- RELATÓRIO DE ERROS NA IMPORTAÇÃO ---", errosLog);
+            let primeirosErros = errosLog.slice(0, 5).join('\n');
+            if (errosLog.length > 5) primeirosErros += `\n... e mais ${errosLog.length - 5} erro(s).`;
+            
+            alert(relatorioFinal + `\n\n⚠️ Alguns registros falharam:\n${primeirosErros}\n\n(Veja o log completo no Console F12)`);
+        } else {
+            alert(relatorioFinal);
+        }
+
+        fecharModalImportacao();
+        
+        // Atualiza a tela de listagem
+        if (typeof carregarListaClientesCentral === 'function') {
+            carregarListaClientesCentral();
+        } else if (typeof carregarClientes === 'function') {
+            carregarClientes();
+        }
+
+    } catch (err) {
+        console.error("Erro crítico na importação:", err);
+        alert(`❌ Erro geral: ${err.message}`);
+        document.getElementById('etapaMapeamento').style.display = 'block';
+        if (containerProgresso) containerProgresso.style.display = 'none';
+    }
+}
 </script>
+<!-- Modal de Importação -->
+<div id="modalImportacao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 25px; border-radius: 8px; width: 600px; max-width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+        <h3>Importar Clientes via CSV</h3>
+        <p style="color: #666; font-size: 14px;">Envie sua planilha CSV e relacione as colunas com o banco de dados.</p>
+        
+        <!-- Etapa 1: Upload -->
+        <div id="etapaUpload">
+            <input type="file" id="arquivoCsv" accept=".csv" class="form-control mb-3" onchange="lerCabecalhoCsv(event)">
+        </div>
+
+        <!-- Etapa 2: Mapeamento de Colunas (Oculto inicialmente) -->
+        <div id="etapaMapeamento" style="display: none;">
+            <p style="font-weight: 500;">Relacione as colunas da planilha com o Supabase:</p>
+            <div id="mapeamentoContainer" style="max-height: 250px; overflow-y: auto; margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+                <!-- Preenchido dinamicamente via JS -->
+            </div>
+            <button type="button" class="btn btn-success" onclick="executarImportacaoSupabase()">Confirmar Importação</button>
+        </div>
+        <!-- Barra de Progresso (Fica oculta até começar a importar) -->
+<div id="progressoImportacaoContainer" style="display: none; margin-top: 15px;">
+    <p id="textoProgresso" style="font-size: 14px; font-weight: 500; color: #333; margin-bottom: 5px;">Importando... (0%)</p>
+    <div style="width: 100%; background-color: #e2e8f0; border-radius: 6px; overflow: hidden; height: 18px;">
+        <div id="barraProgresso" style="width: 0%; height: 100%; background-color: #10b981; transition: width 0.1s ease;"></div>
+    </div>
+</div>
+
+        <div style="text-align: right; margin-top: 15px;">
+            <button type="button" class="btn btn-secondary" onclick="fecharModalImportacao()">Cancelar</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
