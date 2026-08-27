@@ -457,7 +457,7 @@
                             <div class="tile-desc">Gestão de empresas, contatos e endereços</div>
                         </div>
                     </div>
-                    <!-- NOVO: PRODUTOS -->
+                    <!-- PRODUTOS -->
                     <div class="tile-btn" onclick="abrirTelaAcao('gestaoProdutos')">
                         <div class="tile-icone"><i class="fa-solid fa-box-open"></i></div>
                         <div>
@@ -470,6 +470,28 @@
                         <div>
                             <div class="tile-titulo">Equipe Interna</div>
                             <div class="tile-desc">Usuários, engenheiros e permissões</div>
+                        </div>
+                    </div>
+                    <!-- 3 NOVOS BOTÕES FISCAIS E REFORMA -->
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoTribEstadual')">
+                        <div class="tile-icone"><i class="fa-solid fa-landmark" style="color: #0284c7;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Tributação Estadual</div>
+                            <div class="tile-desc">Regras de ICMS, ST, FCP e Redução de Base</div>
+                        </div>
+                    </div>
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoTribFederal')">
+                        <div class="tile-icone"><i class="fa-solid fa-building-columns" style="color: #2563eb;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Tributação Federal</div>
+                            <div class="tile-desc">PIS, COFINS, IPI e Enquadramento</div>
+                        </div>
+                    </div>
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoTribReforma')">
+                        <div class="tile-icone"><i class="fa-solid fa-scale-balanced" style="color: #0891b2;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Tributação Reforma (IBS/CBS)</div>
+                            <div class="tile-desc">Nova Reforma Tributária (IBS + CBS)</div>
                         </div>
                     </div>
                 </div>
@@ -669,42 +691,123 @@
                         <input type="text" id="inputBuscaProduto" placeholder="Procurar produto por nome ou categoria..." onkeyup="filtrarProdutosCentral()">
                     </div>
 
-                    <!-- Formulário Oculto (Cadastro Rápido) -->
-                    <div id="boxFormProduto" class="card-box" style="display: none; border-top: 4px solid var(--sucesso); animation: fadeIn 0.3s ease;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
-                            <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;"><i class="fa-solid fa-plus"></i> Cadastrar Novo Item</h3>
-                            <button type="button" onclick="toggleFormProduto()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                    <!-- Formulário Oculto (Cadastro com Abas e Regras Fiscais / Reforma) -->
+                    <div id="boxFormProduto" class="card-box" style="display: none; border-top: 4px solid var(--sucesso); animation: fadeIn 0.3s ease; padding: 0; overflow: hidden;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: #fafbfd; border-bottom: 1px solid #e2e8f0;">
+                            <div>
+                                <h3 style="color: var(--azul-marca); font-size: 1.15rem; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-cube" style="color: var(--azul-sutil);"></i> Cadastrar Novo Produto / Painel
+                                </h3>
+                                <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 3px;">Configuração técnica, precificação e regras fiscais (ICMS / PIS / COFINS / IBS / CBS).</p>
+                            </div>
+                            <button type="button" onclick="toggleFormProduto()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.3rem;"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+
+                        <!-- Abas de Navegação do Cadastro -->
+                        <div style="display: flex; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; padding: 0 20px;">
+                            <button type="button" id="tabBtnProdBasico" class="tab-btn-produto-novo ativa" onclick="trocarAbaNovoProduto('basico', this)" style="padding: 12px 18px; border: none; background: transparent; font-weight: 600; font-size: 0.88rem; color: var(--azul-marca); border-bottom: 3px solid var(--azul-sutil); cursor: pointer;">
+                                <i class="fa-solid fa-circle-info"></i> 1. Dados Básicos & Preços
+                            </button>
+                            <button type="button" id="tabBtnProdFiscal" class="tab-btn-produto-novo" onclick="trocarAbaNovoProduto('fiscal', this)" style="padding: 12px 18px; border: none; background: transparent; font-weight: 600; font-size: 0.88rem; color: var(--texto-secundario); border-bottom: 3px solid transparent; cursor: pointer;">
+                                <i class="fa-solid fa-file-invoice-dollar" style="color: #d97706;"></i> 2. Regras Fiscais & Reforma (IBS/CBS)
+                            </button>
                         </div>
                         
-                        <form id="formNovoProduto">
-                            <div class="linha-form">
-                                <div class="form-group" style="flex: 2;"><label>Nome do Produto / Serviço *</label><input type="text" id="prodNome" required></div>
-                                <div class="form-group" style="flex: 1;">
-                                    <label>Categoria</label>
-                                    <select id="prodCategoria">
-                                        <option value="Painel">Painel / Quadro</option>
-                                        <option value="Componente">Componente Avulso</option>
-                                        <option value="Servico">Serviço de Mão de Obra</option>
+                        <form id="formNovoProduto" style="padding: 24px;">
+                            <!-- ABA 1: DADOS BÁSICOS -->
+                            <div id="abaNovoProdBasico">
+                                <div class="linha-form">
+                                    <div class="form-group" style="flex: 2;">
+                                        <label>Nome do Produto / Equipamento *</label>
+                                        <input type="text" id="prodNome" placeholder="Ex: Painel QGBT 2500A Forma 4b" required>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label>Categoria</label>
+                                        <select id="prodCategoria">
+                                            <option value="Painel">Painel / Quadro</option>
+                                            <option value="Componente">Componente Avulso</option>
+                                            <option value="Servico">Serviço de Mão de Obra</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="linha-form">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label>Código SKU / Referência *</label>
+                                        <input type="text" id="prodSku" placeholder="Ex: QGBT-2500-F4" required>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label>Código de Barras (EAN / GTIN)</label>
+                                        <input type="text" id="prodEan" placeholder="Ex: 7891234567890">
+                                    </div>
+                                </div>
+                                <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--sucesso);">
+                                    <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-calculator"></i> Precificação e Margem</h4>
+                                    <div class="linha-form">
+                                        <div class="form-group"><label>Custo Base (R$)</label><input type="number" step="0.01" id="prodCusto" oninput="calcularMarkup()" required></div>
+                                        <div class="form-group"><label>Markup (%)</label><input type="number" step="0.1" id="prodMarkup" oninput="calcularMarkup()" required></div>
+                                        <div class="form-group"><label>Preço Venda (R$)</label><input type="number" step="0.01" id="prodPreco" readonly style="background: #e2e8f0; font-weight: bold; color: var(--azul-marca);"></div>
+                                    </div>
+                                </div>
+                                <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--azul-sutil);">
+                                    <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-bolt"></i> Especificações Elétricas (Opcional)</h4>
+                                    <div class="linha-form">
+                                        <div class="form-group"><label>Tensão (Volts)</label><input type="text" id="prodTensao" placeholder="Ex: 220V, 380V Trifásico"></div>
+                                        <div class="form-group"><label>Corrente Máx (A)</label><input type="text" id="prodCorrente" placeholder="Ex: 100A, 2500A"></div>
+                                        <div class="form-group"><label>Potência (W / kW)</label><input type="text" id="prodPotencia" placeholder="Ex: 15kW"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ABA 2: DADOS FISCAIS -->
+                            <div id="abaNovoProdFiscal" style="display: none;">
+                                <div style="background: rgba(43,92,146,0.06); border: 1px solid rgba(43,92,146,0.2); padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 0.84rem; color: var(--texto-secundario); display: flex; gap: 12px; align-items: flex-start;">
+                                    <i class="fa-solid fa-shield-halved" style="color: var(--azul-sutil); font-size: 1.3rem; margin-top: 2px;"></i>
+                                    <div>
+                                        <strong style="color: var(--azul-marca);">Desacoplamento Tributário Dinâmico:</strong>
+                                        <span>Ao vincular este produto às Regras Tributárias, as alíquotas de ICMS, PIS/COFINS e a nova reforma (IBS/CBS) são herdadas automaticamente.</span>
+                                    </div>
+                                </div>
+
+                                <div class="linha-form">
+                                    <div class="form-group" style="flex: 1;">
+                                        <label>NCM (8 dígitos) *</label>
+                                        <input type="text" id="prodNcm" placeholder="Ex: 8537.10.20" maxlength="10" required>
+                                        <small style="color: var(--texto-secundario); font-size: 0.72rem;">Ex: 8537.10.20 (Painéis de Baixa Tensão)</small>
+                                    </div>
+                                    <div class="form-group" style="flex: 1;">
+                                        <label>CFOP Padrão de Saída *</label>
+                                        <input type="text" id="prodCfop" placeholder="5101" maxlength="4" value="5101" required>
+                                        <small style="color: var(--texto-secundario); font-size: 0.72rem;">5101 (Industrialização) / 5102 (Revenda)</small>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label><i class="fa-solid fa-landmark" style="color: var(--azul-sutil);"></i> Regra Tributária Estadual (ICMS / ST / FCP) *</label>
+                                    <select id="prodTribEstadual" required style="font-weight: 500;">
+                                        <option value="">Carregando regras de ICMS...</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label><i class="fa-solid fa-building-columns" style="color: var(--azul-sutil);"></i> Regra Tributária Federal (PIS / COFINS / IPI) *</label>
+                                    <select id="prodTribFederal" required style="font-weight: 500;">
+                                        <option value="">Carregando regras Federais...</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1; border-left: 4px solid #06b6d4; margin-bottom: 20px;">
+                                    <label style="color: var(--azul-marca); font-weight: 700;">
+                                        <i class="fa-solid fa-scale-balanced" style="color: #06b6d4;"></i> Nova Reforma Tributária (IBS Estadual/Municipal + CBS Federal) *
+                                    </label>
+                                    <select id="prodTribIbsCbs" required style="font-weight: 600; color: var(--azul-marca); margin-top: 6px;">
+                                        <option value="">Carregando regras da Reforma Tributária...</option>
                                     </select>
                                 </div>
                             </div>
-                            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--sucesso);">
-                                <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-calculator"></i> Precificação e Margem</h4>
-                                <div class="linha-form">
-                                    <div class="form-group"><label>Custo Base (R$)</label><input type="number" step="0.01" id="prodCusto" oninput="calcularMarkup()" required></div>
-                                    <div class="form-group"><label>Markup (%)</label><input type="number" step="0.1" id="prodMarkup" oninput="calcularMarkup()" required></div>
-                                    <div class="form-group"><label>Preço Venda (R$)</label><input type="number" step="0.01" id="prodPreco" readonly style="background: #e2e8f0; font-weight: bold; color: var(--azul-marca);"></div>
-                                </div>
-                            </div>
-                            <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--azul-sutil);">
-                                <h4 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 12px;"><i class="fa-solid fa-bolt"></i> Especificações Elétricas (Opcional)</h4>
-                                <div class="linha-form">
-                                    <div class="form-group"><label>Tensão (Volts)</label><input type="text" id="prodTensao"></div>
-                                    <div class="form-group"><label>Corrente Máx (A)</label><input type="text" id="prodCorrente"></div>
-                                    <div class="form-group"><label>Potência (W / kW)</label><input type="text" id="prodPotencia"></div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn-acao" style="background: var(--sucesso); width: 100%; font-size: 1rem; padding: 12px;"><i class="fa-solid fa-floppy-disk"></i> Gravar no Banco de Dados</button>
+
+                            <button type="submit" class="btn-acao" style="background: var(--sucesso); width: 100%; font-size: 1rem; padding: 14px; margin-top: 10px;">
+                                <i class="fa-solid fa-floppy-disk"></i> Gravar Produto e Regras Fiscais
+                            </button>
                             <div style="text-align: center; margin-top: 10px;"><span id="msgNovoProduto" style="font-weight: 600;"></span></div>
                         </form>
                     </div>
@@ -773,10 +876,39 @@
                         </div>
                         <div class="section-content" id="fullSubProdFisc" style="display: none; background: #fff; padding: 25px; border-radius: 0 0 8px 8px;">
                             <div class="linha-form">
-                                <div class="form-group"><label>NCM</label><input type="text" id="fullEditProdNcm"></div>
-                                <div class="form-group"><label>CEST</label><input type="text" id="fullEditProdCest"></div>
-                                <div class="form-group"><label>CFOP Padrão (Saída)</label><input type="text" id="fullEditProdCfop"></div>
+                                <div class="form-group"><label>NCM (8 dígitos) *</label><input type="text" id="fullEditProdNcm" placeholder="Ex: 8537.10.20" maxlength="10"></div>
+                                <div class="form-group"><label>CFOP Padrão (Saída) *</label><input type="text" id="fullEditProdCfop" placeholder="5101" maxlength="4"></div>
+                                <div class="form-group"><label>CEST (Opcional)</label><input type="text" id="fullEditProdCest"></div>
                                 <div class="form-group"><label>Origem ICMS (0, 1, 2...)</label><input type="text" id="fullEditProdIcms"></div>
+                            </div>
+                            
+                            <div style="background: #f8fafc; padding: 18px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 15px;">
+                                <h5 style="color: var(--azul-marca); font-size: 0.95rem; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-scale-balanced" style="color: var(--azul-sutil);"></i> Grupos de Tributação Vinculados
+                                </h5>
+
+                                <div class="form-group" style="margin-bottom: 14px;">
+                                    <label><i class="fa-solid fa-landmark" style="color: var(--azul-sutil);"></i> Regra Estadual (ICMS / ST / FCP)</label>
+                                    <select id="fullEditProdTribEstadual" style="font-weight: 500;">
+                                        <option value="">Selecione a Regra de ICMS...</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 14px;">
+                                    <label><i class="fa-solid fa-building-columns" style="color: var(--azul-sutil);"></i> Regra Federal (PIS / COFINS / IPI)</label>
+                                    <select id="fullEditProdTribFederal" style="font-weight: 500;">
+                                        <option value="">Selecione a Regra Federal...</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="color: var(--azul-marca); font-weight: 700;">
+                                        <i class="fa-solid fa-shield-halved" style="color: #06b6d4;"></i> Nova Reforma Tributária (IBS + CBS)
+                                    </label>
+                                    <select id="fullEditProdTribIbsCbs" style="font-weight: 600; color: var(--azul-marca); margin-top: 4px;">
+                                        <option value="">Selecione o Enquadramento na Reforma (IBS/CBS)...</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -836,6 +968,244 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- ================= NOVA TELA: TRIBUTAÇÃO ESTADUAL (ICMS / ST / FCP) ================= -->
+            <div id="painelTribEstadual" class="painel-conteudo">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-landmark" style="color: #0284c7;"></i> Gestão de Tributação Estadual (ICMS / ST)</h2>
+                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Configure alíquotas de ICMS, Substituição Tributária (MVA), FCP e Reduções de Base.</p>
+                    </div>
+                    <button type="button" class="btn-novo-cliente" onclick="toggleFormTribEstadual()" style="background: #0284c7;">
+                        <i class="fa-solid fa-plus"></i> Nova Regra Estadual
+                    </button>
+                </div>
+
+                <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
+                    <input type="text" id="buscaTribEstadual" placeholder="Buscar regra por nome, UF ou CST..." onkeyup="filtrarTribEstadual()">
+                </div>
+
+                <!-- FORMULÁRIO ESTADUAL -->
+                <div id="boxFormTribEstadual" class="card-box" style="display: none; border-top: 4px solid #0284c7; animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
+                        <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;" id="tituloFormTribEstadual"><i class="fa-solid fa-plus"></i> Cadastrar Regra de ICMS</h3>
+                        <button type="button" onclick="toggleFormTribEstadual()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    
+                    <form id="formTribEstadual" onsubmit="salvarRegraTribEstadual(event)">
+                        <input type="hidden" id="editTribEstadualId">
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 2;">
+                                <label>Nome Identificador da Regra *</label>
+                                <input type="text" id="regraEstNome" placeholder="Ex: ICMS 18% Interno RJ/SP Padrão" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>CST / CSOSN *</label>
+                                <input type="text" id="regraEstCst" placeholder="Ex: 00, 10, 20, 101, 102" required>
+                            </div>
+                        </div>
+
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>UF Origem</label>
+                                <input type="text" id="regraEstUfOrigem" maxlength="2" placeholder="RJ" value="RJ" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label>UF Destino</label>
+                                <input type="text" id="regraEstUfDestino" maxlength="2" placeholder="RJ" value="RJ" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota ICMS (%) *</label>
+                                <input type="number" step="0.01" id="regraEstAliqIcms" placeholder="18.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Redução Base (%)</label>
+                                <input type="number" step="0.01" id="regraEstReducao" placeholder="0.00" value="0.00">
+                            </div>
+                        </div>
+
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>Alíquota FCP (%) (Fundo Pobreza)</label>
+                                <input type="number" step="0.01" id="regraEstAliqFcp" placeholder="0.00" value="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label>MVA-ST (%) (Margem Subst. Tributária)</label>
+                                <input type="number" step="0.01" id="regraEstMvaSt" placeholder="0.00" value="0.00">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label>Observações / Enquadramento Legal</label>
+                            <input type="text" id="regraEstObs" placeholder="Ex: Convênio ICMS 52/91 ou Artigo do RICMS">
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" onclick="toggleFormTribEstadual()" class="btn-acao" style="background: #f1f5f9; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
+                            <button type="submit" id="btnSalvarTribEstadual" class="btn-acao" style="background: #0284c7; flex: 1;"><i class="fa-solid fa-floppy-disk"></i> Gravar Regra Estadual</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="listaTribEstadualCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;">
+                    <!-- Carregado via JS -->
+                </div>
+            </div>
+
+            <!-- ================= NOVA TELA: TRIBUTAÇÃO FEDERAL (PIS / COFINS / IPI) ================= -->
+            <div id="painelTribFederal" class="painel-conteudo">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-building-columns" style="color: #2563eb;"></i> Gestão de Tributação Federal (PIS / COFINS / IPI)</h2>
+                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Configure enquadramentos de Lucro Real, Presumido, Monofásico e IPI industrial.</p>
+                    </div>
+                    <button type="button" class="btn-novo-cliente" onclick="toggleFormTribFederal()" style="background: #2563eb;">
+                        <i class="fa-solid fa-plus"></i> Nova Regra Federal
+                    </button>
+                </div>
+
+                <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
+                    <input type="text" id="buscaTribFederal" placeholder="Buscar regra por nome ou CST..." onkeyup="filtrarTribFederal()">
+                </div>
+
+                <!-- FORMULÁRIO FEDERAL -->
+                <div id="boxFormTribFederal" class="card-box" style="display: none; border-top: 4px solid #2563eb; animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
+                        <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;" id="tituloFormTribFederal"><i class="fa-solid fa-plus"></i> Cadastrar Regra Federal</h3>
+                        <button type="button" onclick="toggleFormTribFederal()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    
+                    <form id="formTribFederal" onsubmit="salvarRegraTribFederal(event)">
+                        <input type="hidden" id="editTribFederalId">
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 2;">
+                                <label>Nome Identificador da Regra *</label>
+                                <input type="text" id="regraFedNome" placeholder="Ex: Lucro Real (PIS 1.65% / COFINS 7.6% / IPI 5%)" required>
+                            </div>
+                        </div>
+
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>CST PIS *</label>
+                                <input type="text" id="regraFedCstPis" placeholder="01" value="01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota PIS (%) *</label>
+                                <input type="number" step="0.01" id="regraFedAliqPis" placeholder="1.65" value="1.65" required>
+                            </div>
+                            <div class="form-group">
+                                <label>CST COFINS *</label>
+                                <input type="text" id="regraFedCstCofins" placeholder="01" value="01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota COFINS (%) *</label>
+                                <input type="number" step="0.01" id="regraFedAliqCofins" placeholder="7.60" value="7.60" required>
+                            </div>
+                        </div>
+
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>CST IPI</label>
+                                <input type="text" id="regraFedCstIpi" placeholder="50" value="50">
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota IPI (%)</label>
+                                <input type="number" step="0.01" id="regraFedAliqIpi" placeholder="0.00" value="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label>Código Enquadramento IPI</label>
+                                <input type="text" id="regraFedEnqIpi" placeholder="999" value="999">
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="button" onclick="toggleFormTribFederal()" class="btn-acao" style="background: #f1f5f9; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
+                            <button type="submit" id="btnSalvarTribFederal" class="btn-acao" style="background: #2563eb; flex: 1;"><i class="fa-solid fa-floppy-disk"></i> Gravar Regra Federal</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="listaTribFederalCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;">
+                    <!-- Carregado via JS -->
+                </div>
+            </div>
+
+            <!-- ================= NOVA TELA: TRIBUTAÇÃO REFORMA (IBS / CBS) ================= -->
+            <div id="painelTribReforma" class="painel-conteudo">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-scale-balanced" style="color: #0891b2;"></i> Nova Reforma Tributária (IBS / CBS - EC 132/2023)</h2>
+                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Gerencie as regras do Imposto sobre Bens e Serviços (IBS) e Contribuição sobre Bens e Serviços (CBS).</p>
+                    </div>
+                    <button type="button" class="btn-novo-cliente" onclick="toggleFormTribReforma()" style="background: #0891b2;">
+                        <i class="fa-solid fa-plus"></i> Nova Regra IBS/CBS
+                    </button>
+                </div>
+
+                <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
+                    <input type="text" id="buscaTribReforma" placeholder="Buscar regra da reforma..." onkeyup="filtrarTribReforma()">
+                </div>
+
+                <!-- FORMULÁRIO REFORMA -->
+                <div id="boxFormTribReforma" class="card-box" style="display: none; border-top: 4px solid #0891b2; animation: fadeIn 0.3s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
+                        <h3 style="color: var(--azul-marca); font-size: 1.1rem; margin: 0;" id="tituloFormTribReforma"><i class="fa-solid fa-plus"></i> Cadastrar Regra da Reforma (IBS/CBS)</h3>
+                        <button type="button" onclick="toggleFormTribReforma()" style="background: transparent; border: none; color: var(--erro); cursor: pointer; font-size: 1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    
+                    <form id="formTribReforma" onsubmit="salvarRegraTribReforma(event)">
+                        <input type="hidden" id="editTribReformaId">
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 2;">
+                                <label>Nome Identificador da Regra *</label>
+                                <input type="text" id="regraRefNome" placeholder="Ex: Alíquota Padrão Reforma 2026-2033 (CBS 8.8% / IBS 17.7%)" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>Regime Diferenciado</label>
+                                <select id="regraRefRegime">
+                                    <option value="Padrao">Padrão Geral (Indústria)</option>
+                                    <option value="Reducao60">Redução de 60%</option>
+                                    <option value="IsencaoTotal">Isenção / Imunidade</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="linha-form">
+                            <div class="form-group">
+                                <label>Alíquota CBS (%) (Federal) *</label>
+                                <input type="number" step="0.01" id="regraRefAliqCbs" placeholder="8.80" value="8.80" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Alíquota IBS (%) (Estadual/Municipal) *</label>
+                                <input type="number" step="0.01" id="regraRefAliqIbs" placeholder="17.70" value="17.70" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Redução de Base (%)</label>
+                                <input type="number" step="0.01" id="regraRefReducao" placeholder="0.00" value="0.00">
+                            </div>
+                        </div>
+
+                        <div style="background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid #cbd5e1; margin-bottom: 15px;">
+                            <label style="display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--azul-marca); cursor: pointer;">
+                                <input type="checkbox" id="regraRefIsento" style="width: 18px; height: 18px;">
+                                <span>Operação Totalmente Isenta / Imune à Reforma Tributária</span>
+                            </label>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 15px;">
+                            <button type="button" onclick="toggleFormTribReforma()" class="btn-acao" style="background: #f1f5f9; color: var(--texto-secundario); border: 1px solid #cbd5e1;">Cancelar</button>
+                            <button type="submit" id="btnSalvarTribReforma" class="btn-acao" style="background: #0891b2; flex: 1;"><i class="fa-solid fa-floppy-disk"></i> Gravar Regra da Reforma</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="listaTribReformaCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;">
+                    <!-- Carregado via JS -->
+                </div>
             </div>
 
             <!-- PAINEL CADASTRAR NOVO CLIENTE -->
@@ -1248,109 +1618,166 @@
                         <span id="msgEquipe" style="margin-left: 15px; color: var(--sucesso); font-weight: 600;"></span>
                     </form>
                 </div>
-                
+
                 <div id="listaEquipeCentral" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 25px;">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
 
-           <!-- TELA: MANUAL DE USO -->
+            <!-- TELA: MANUAL DE USO DO GESTOR ERP -->
             <div id="painelManual" class="painel-conteudo">
-                <div style="margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">
-                    <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-book-open"></i> Manual do Sistema (Equipe)</h2>
-                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Guia prático e passo a passo de todas as ferramentas do ERP.</p>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-book-open" style="color: var(--azul-sutil);"></i> Manual de Operações do Gestor ERP</h2>
+                        <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Guia técnico, fiscal e operacional completo para administradores e equipe interna.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" class="btn-acao" onclick="expandirTodosManuais()" style="background: #f1f5f9; color: var(--texto-secundario); border: 1px solid #cbd5e1; font-size: 0.85rem;">
+                            <i class="fa-solid fa-arrows-up-down"></i> Expandir / Recolher Todos
+                        </button>
+                    </div>
+                </div>
+
+                <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
+                    <input type="text" id="filtroManualAdmin" placeholder="Pesquisar instruções no manual (ex: tributação, markup, cnpj, kanban, permissões)..." onkeyup="filtrarTopicosManual()">
                 </div>
                 
-                <div class="card-box" style="padding: 15px;">
+                <div class="card-box" style="padding: 15px;" id="containerTopicosManual">
                     
                     <!-- 1. GESTÃO DE CLIENTES -->
-                    <div class="obra-accordion">
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manClientes', 'icnManCli')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-users"></i> 1. Cadastros (Clientes e Empresas)</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-users" style="color: #0284c7;"></i> 1. Gestão de Clientes & Integração com a Receita Federal</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManCli"></i>
                         </div>
                         <div class="obra-content" id="manClientes" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Cadastrar Novo:</strong> Acesse "Cadastros > Pessoas / Clientes" e clique em "Novo Cliente".</li>
-                                <li><strong>Automação de Dados:</strong> Digite o CNPJ e clique em "Puxar Dados". O sistema preencherá Razão Social e endereço automaticamente consultando a Receita Federal. O mesmo funciona ao digitar o CEP.</li>
-                                <li><strong>Acesso do Cliente:</strong> Defina uma "Chave de Acesso". O seu cliente usará o CNPJ e esta chave para fazer login no portal dele.</li>
-                                <li><strong>Bloqueio / Suspensão:</strong> Para bloquear um cliente, abra o perfil dele, altere o "Status da Conta" para "Inativo" e salve. O acesso dele será bloqueado imediatamente.</li>
+                                <li><strong>Cadastrar Novo Cliente:</strong> Acesse "Cadastros > Pessoas / Clientes" e clique em "Novo Cliente".</li>
+                                <li><strong>Automação Inteligente por CNPJ:</strong> Ao digitar o CNPJ e clicar em "Puxar Dados", o sistema consulta a base da Receita Federal e preenche Razão Social, Logradouro, Bairro, CEP e Cidade automaticamente.</li>
+                                <li><strong>Chave de Acesso do Cliente:</strong> Defina uma senha privativa para o cliente. Ele utilizará o CNPJ + esta Chave para logar no portal externo.</li>
+                                <li><strong>Bloqueio de Inadimplência / Inativação:</strong> Altere o status para "Inativo" ou "Bloqueado" no perfil do cliente para suspender o acesso ao portal imediatamente.</li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- 2. PRODUTOS E PRECIFICAÇÃO -->
-                    <div class="obra-accordion">
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manProdutos', 'icnManProd')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-box-open"></i> 2. Produtos, Serviços e Precificação</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-box-open" style="color: #f59e0b;"></i> 2. Catálogo de Produtos, Engenharia & Motor de Markup</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManProd"></i>
                         </div>
                         <div class="obra-content" id="manProdutos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Cadastro Rápido:</strong> Clique em "Novo Produto". Preencha o Custo Base e a porcentagem de Markup (lucro desejado). O sistema calcula o Preço de Venda automaticamente.</li>
-                                <li><strong>Edição Avançada (Tela Cheia):</strong> Clique em cima do card de qualquer produto para abrir a edição completa.</li>
-                                <li><strong>Imagens:</strong> Na tela de edição avançada, você pode enviar uma foto do seu computador ou colar um link da internet. O ERP comprime a foto para não pesar o sistema.</li>
-                                <li><strong>Física e Elétrica:</strong> Preencha dados técnicos (Tensão, Corrente, NCM, CFOP) para usar futuramente em propostas e notas fiscais.</li>
+                                <li><strong>Cadastro Rápido com Abas:</strong> O formulário conta com a "Aba 1 (Dados Básicos & Preços)" e a "Aba 2 (Regras Fiscais & Reforma IBS/CBS)".</li>
+                                <li><strong>Motor de Markup Automático:</strong> Digite o Custo Base (R$) e o Markup Desejado (%). O Preço Final de Venda é calculado em tempo real.</li>
+                                <li><strong>Compressor de Imagens:</strong> Ao selecionar uma foto do seu computador, o sistema redimensiona e comprime a imagem automaticamente para não pesar o banco.</li>
+                                <li><strong>Especificações de Engenharia:</strong> Preencha Tensão Nominal, Corrente Máxima e Potência para memoriais e propostas.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 3. PCP E OBRAS -->
-                    <div class="obra-accordion">
+                    <!-- 3. TRIBUTAÇÃO E REFORMA TRIBUTÁRIA -->
+                    <div class="obra-accordion item-manual-topico">
+                        <div class="obra-header" onclick="toggleMainSection('manFiscal', 'icnManFisc')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-scale-balanced" style="color: #0891b2;"></i> 3. Gestão Fiscal & Nova Reforma Tributária (IBS / CBS)</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManFisc"></i>
+                        </div>
+                        <div class="obra-content" id="manFiscal" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Arquitetura Desacoplada:</strong> As alíquotas fiscais não ficam fixadas no produto, mas sim vinculadas a Grupos Tributários reutilizáveis.</li>
+                                <li><strong>Tributação Estadual (ICMS):</strong> Acesse "Cadastros > Tributação Estadual" para parametrizar ICMS por UF Origem/Destino, CST/CSOSN, Redução de Base, FCP e MVA-ST.</li>
+                                <li><strong>Tributação Federal (PIS/COFINS/IPI):</strong> Acesse "Cadastros > Tributação Federal" para configurar Lucro Real, Presumido, Alíquota Zero e Enquadramento de IPI.</li>
+                                <li><strong>Reforma Tributária (IBS/CBS):</strong> Acesse "Cadastros > Tributação Reforma" para parametrizar a CBS Federal (8.8%), IBS Estadual/Municipal (17.7%), regimes reduzidos (60%) e isenções.</li>
+                                <li><strong>Sincronização Instantânea:</strong> Ao salvar ou alterar qualquer regra tributária, todos os dropdowns de seleção no cadastro de produtos são atualizados em tempo real.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 4. PCP E OBRAS -->
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manPCP', 'icnManPcp')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-industry"></i> 3. Operacional (PCP, Kanban e Checklists)</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-industry" style="color: #6366f1;"></i> 4. Operacional PCP (Chão de Fábrica, Checklists & Modo TV)</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManPcp"></i>
                         </div>
                         <div class="obra-content" id="manPCP" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Criando uma Obra/Projeto:</strong> Vá até o perfil do cliente, abra a aba "Gestão de Projetos" e clique em "Novo Projeto".</li>
-                                <li><strong>Movendo no Kanban (PCP):</strong> Acesse "Operacional > Chão de Fábrica". Arraste os quadros (cards) de uma coluna para a outra para mudar a etapa de montagem. O salvamento é automático.</li>
-                                <li><strong>Configurar Etapas:</strong> No PCP, clique no botão "Etapas" no topo da tela para criar, editar nomes, mudar a ordem ou trocar as cores das colunas da sua fábrica.</li>
-                                <li><strong>Processos de Montagem (Checklist):</strong> Em qualquer card de obra, clique em "Processos". Marque o que já foi feito e adicione observações. A barra de progresso (0% a 100%) andará automaticamente.</li>
-                                <li><strong>Personalizar Checklists:</strong> No topo da tela do PCP, clique em "Processos" para criar suas próprias categorias (ex: Mecânica, Elétrica) e adicionar os itens padrão que a sua equipe precisa checar em cada obra.</li>
-                                <li><strong>Imprimir Processos:</strong> Dentro da tela de Checklist da obra, clique em "Imprimir Relação" para gerar um PDF ou enviar para a impressora.</li>
+                                <li><strong>Kanban de Produção:</strong> Mova os quadros entre as colunas da fábrica (Mecânica, Barramento, Fiação, Testes QA, Concluído). O salvamento é automático.</li>
+                                <li><strong>Checklists Técnicos (Avanço Físico):</strong> Clique em "Processos" no card da obra para checar as tarefas executadas. A barra de porcentagem (0% a 100%) é recalculada automaticamente e sincronizada com o cliente.</li>
+                                <li><strong>Configurar Etapas & Processos:</strong> Use os botões do topo do PCP para criar novas colunas, trocar cores ou definir novos checklists de inspeção.</li>
+                                <li><strong>Modo TV Fábrica:</strong> Clique em "Modo TV" para projetar o Kanban nas linhas de montagem com contraste industrial e atualização automática.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 4. ARQUIVOS E UPLOADS -->
-                    <div class="obra-accordion">
+                    <!-- 5. DASHBOARD BI E RELATÓRIOS -->
+                    <div class="obra-accordion item-manual-topico">
+                        <div class="obra-header" onclick="toggleMainSection('manBI', 'icnManBi')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-chart-line" style="color: #10b981;"></i> 5. Dashboard BI Executivo & Relatórios Gerenciais</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManBi"></i>
+                        </div>
+                        <div class="obra-content" id="manBI" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Acesso ao BI:</strong> Na aba "Relatórios", clique no card "Dashboard BI Executivo" para abrir o painel analítico com gráficos Chart.js.</li>
+                                <li><strong>KPIs Industriais:</strong> Acompanhe Obras Ativas, Entregas no Mês, Taxa de Eficiência On-time Delivery (%) e Avanço Físico Médio Ponderado.</li>
+                                <li><strong>Cronograma Semanal & Exportação:</strong> Filtre a tabela de projetos por status ou cliente e exporte os dados consolidados para CSV.</li>
+                                <li><strong>Relatórios em PDF para Diretoria:</strong> Pressione Ctrl+P na tela do Dashboard para gerar o relatório impresso com cabeçalho executivo e layout otimizado.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 6. ARQUIVOS E UPLOADS -->
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manArquivos', 'icnManArq')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-cloud-arrow-up"></i> 4. Acervo e Upload de Documentos</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-cloud-arrow-up" style="color: #3b82f6;"></i> 6. Acervo de Documentos Técnicos & Storage</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManArq"></i>
                         </div>
                         <div class="obra-content" id="manArquivos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Como enviar:</strong> Acesse o perfil do Cliente e abra a aba "Enviar Arquivo". Você também pode clicar no ícone de "Clipe de Papel" direto no card da obra lá no PCP.</li>
-                                <li><strong>Tipos de Arquivo:</strong> Você pode fazer o upload direto de um PDF do seu computador ou selecionar a opção "Colar Link Externo" para enviar pastas do Google Drive, OneDrive, etc.</li>
-                                <li><strong>Vínculo:</strong> Você pode vincular o documento a uma obra específica (ex: Projeto Elétrico) ou deixar em branco para ser um documento geral do cliente (ex: Contrato Social).</li>
+                                <li><strong>Upload de Arquivos:</strong> Envie PDFs de diagramas elétricos, memoriais descritivos, laudos TTA/PTTA e fotos de fábrica.</li>
+                                <li><strong>Vínculo com a Obra:</strong> Associe o arquivo a uma obra específica para que ele apareça na gaveta inline de arquivos do Kanban e no portal do cliente.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 5. SUPORTE -->
-                    <div class="obra-accordion">
+                    <!-- 7. SUPORTE E CHAMADOS -->
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manSuporte', 'icnManSup')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-headset"></i> 5. Atendimento e Chamados Técnicos</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-headset" style="color: #ec4899;"></i> 7. Atendimento ao Cliente & Suporte Técnico</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManSup"></i>
                         </div>
                         <div class="obra-content" id="manSuporte" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Recebendo Tickets:</strong> Quando um cliente abre um chamado pelo portal dele, ele aparece no módulo "Atendimento ao Cliente".</li>
-                                <li><strong>Responder:</strong> Clique em "Responder Cliente", digite o parecer técnico e envie. O status do chamado mudará para "Respondido" (ficará verde) e o cliente verá a resposta na hora.</li>
+                                <li><strong>Gestão de Tickets:</strong> Visualize chamados abertos pelos clientes em tempo real divididos por prioridade (Baixa, Média, Alta, Crítica).</li>
+                                <li><strong>Chat de Resposta:</strong> Envie respostas técnicas diretamente pelo chamado. O cliente recebe o parecer instantaneamente no portal dele.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 6. EQUIPE E PERMISSÕES -->
-                    <div class="obra-accordion">
+                    <!-- 8. EQUIPE E PERMISSÕES -->
+                    <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manEquipe', 'icnManEqp')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-user-shield"></i> 6. Gestão da Equipe e Permissões</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-user-shield" style="color: #8b5cf6;"></i> 8. Gestão da Equipe & Matriz de Permissões</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManEqp"></i>
                         </div>
                         <div class="obra-content" id="manEquipe" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Cadastrar Funcionário:</strong> Acesse "Cadastros > Equipe Interna". Crie o login, senha e marque quais módulos ele terá permissão de visualizar (Vendas, Compras, PCP, etc). Módulos desmarcados simplesmente somem da tela dele.</li>
+                                <li><strong>Cadastro de Membros:</strong> Cadastre usuários para seus operadores, engenheiros e vendedores em "Cadastros > Equipe Interna".</li>
+                                <li><strong>Controle de Acesso Modular:</strong> Marque ou desmarque individualmente as permissões de acesso (Cadastros, Operacional PCP, Arquivos, Suporte, Vendas, Compras, Financeiro, Relatórios BI). Módulos sem permissão não aparecem na tela do colaborador.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 9. IDENTIDADE VISUAL E WHITELABEL -->
+                    <div class="obra-accordion item-manual-topico">
+                        <div class="obra-header" onclick="toggleMainSection('manTema', 'icnManTema')" style="cursor: pointer;">
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-palette" style="color: #e11d48;"></i> 9. Identidade Visual Whitelabel & Cores</h4>
+                            <i class="fa-solid fa-chevron-down" id="icnManTema"></i>
+                        </div>
+                        <div class="obra-content" id="manTema" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
+                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
+                                <li><strong>Personalização da Marca:</strong> Acesse "Sistema > Identidade e Tema" para escolher sua Cor Primária, Cor Secundária e Logomarca.</li>
+                                <li><strong>Aplicação Geral:</strong> As cores e a logomarca são refletidas automaticamente em toda a navegação, login e cabeçalhos de impressão.</li>
                                 <li><strong>Delegação (Vínculo de Cliente):</strong> Se você quiser que um funcionário só veja as obras de 1 cliente específico, abra o perfil desse cliente (usando sua senha Master), desça até "Delegação de Equipe" e marque o nome do funcionário.</li>
                             </ul>
                         </div>
@@ -2210,6 +2637,9 @@
         if (tela === 'gestaoClientes') { document.getElementById('painelGestaoClientes').style.display = 'block'; carregarListaClientesCentral(); } 
         else if (tela === 'gestaoProdutos') { document.getElementById('painelProdutos').style.display = 'block'; carregarListaProdutos(); } 
         else if (tela === 'gestaoEquipe') { document.getElementById('painelEquipe').style.display = 'block'; carregarListaEquipe(); }
+        else if (tela === 'gestaoTribEstadual') { document.getElementById('painelTribEstadual').style.display = 'block'; carregarListaTribEstadual(); }
+        else if (tela === 'gestaoTribFederal') { document.getElementById('painelTribFederal').style.display = 'block'; carregarListaTribFederal(); }
+        else if (tela === 'gestaoTribReforma') { document.getElementById('painelTribReforma').style.display = 'block'; carregarListaTribReforma(); }
         else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; inicializarPCP(); }
         else if (tela === 'dashboardGeral') { document.getElementById('painelDashboard').style.display = 'flex'; carregarDashboardKanban(); }
         else if (tela === 'manualUso') { document.getElementById('painelManual').style.display = 'block'; }
@@ -2219,13 +2649,603 @@
         }
     }
 
-    // ================= PRODUTOS (BLINDADOS COM EMPRESA_ID) =================
+    // ================= FUNÇÕES DO MANUAL DO GESTOR ERP =================
+    let manuaisExpandidos = false;
+    function expandirTodosManuais() {
+        manuaisExpandidos = !manuaisExpandidos;
+        document.querySelectorAll('#containerTopicosManual .obra-content').forEach(el => {
+            el.style.display = manuaisExpandidos ? 'block' : 'none';
+        });
+        document.querySelectorAll('#containerTopicosManual .obra-header i').forEach(icon => {
+            if (manuaisExpandidos) {
+                icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+            } else {
+                icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+            }
+        });
+    }
+
+    function filtrarTopicosManual() {
+        const termo = (document.getElementById('filtroManualAdmin').value || '').toLowerCase().trim();
+        document.querySelectorAll('#containerTopicosManual .item-manual-topico').forEach(item => {
+            const texto = item.innerText.toLowerCase();
+            if (texto.includes(termo)) {
+                item.style.display = 'block';
+                if (termo.length > 2) {
+                    const content = item.querySelector('.obra-content');
+                    const icon = item.querySelector('.obra-header i');
+                    if (content) content.style.display = 'block';
+                    if (icon) icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                }
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // ================= TRIBUTAÇÃO ESTADUAL (ICMS / ST / FCP) =================
+    async function carregarListaTribEstadual() {
+        const lista = document.getElementById('listaTribEstadualCentral');
+        if (!lista) return;
+        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando regras de ICMS...</p>';
+
+        try {
+            let query = supabaseClient.from('tributacao_estadual').select('*').order('nome_regra');
+            if (empresaIdLogada) query = query.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+            const { data, error } = await query;
+            if (error) throw error;
+            lista.innerHTML = '';
+
+            if (data && data.length > 0) {
+                cacheRegrasEstaduais = data;
+                data.forEach(r => {
+                    const rCodificada = encodeURIComponent(JSON.stringify(r));
+                    lista.innerHTML += `
+                        <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #0284c7; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <div>
+                                    <span style="background: rgba(2, 132, 199, 0.1); color: #0284c7; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 700; text-transform: uppercase;">CST: ${r.cst_csosn || '00'}</span>
+                                    <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-top: 6px; font-weight: 700;">${r.nome_regra}</h4>
+                                    <p style="color: var(--texto-secundario); font-size: 0.8rem;">UF: ${r.uf_origem || 'RJ'} &rarr; ${r.uf_destino || 'RJ'}</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="font-size: 1.3rem; font-weight: 800; color: #0284c7;">${r.aliquota_icms}%</span>
+                                    <small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">ICMS</small>
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.75rem; color: var(--texto-secundario); background: #f8fafc; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px;">
+                                <span><strong>FCP:</strong> ${r.aliquota_fcp || 0}%</span>
+                                <span><strong>MVA-ST:</strong> ${r.mva_st || 0}%</span>
+                                <span><strong>Red. Base:</strong> ${r.reducao_base_calculo || 0}%</span>
+                            </div>
+
+                            ${r.observacoes_fiscais ? `<p style="font-size: 0.75rem; color: var(--texto-suave); font-style: italic; margin-bottom: 12px;">${r.observacoes_fiscais}</p>` : ''}
+
+                            <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                                <button type="button" onclick="excluirRegraTribEstadual('${r.id}')" class="btn-acao" style="background: transparent; border: 1px solid var(--erro); color: var(--erro); padding: 5px 10px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-trash"></i> Apagar
+                                </button>
+                                <button type="button" onclick="editarRegraTribEstadual('${rCodificada}')" class="btn-acao" style="background: #0284c7; color: #fff; padding: 5px 12px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra estadual de ICMS cadastrada.</p>';
+            }
+        } catch (err) {
+            console.error("Erro ao carregar tributação estadual:", err);
+            lista.innerHTML = '<p style="color:var(--erro);">Erro ao carregar regras estaduais.</p>';
+        }
+    }
+
+    function toggleFormTribEstadual() {
+        const box = document.getElementById('boxFormTribEstadual');
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+            document.getElementById('formTribEstadual').reset();
+            document.getElementById('editTribEstadualId').value = '';
+            document.getElementById('tituloFormTribEstadual').innerHTML = '<i class="fa-solid fa-plus"></i> Cadastrar Regra de ICMS';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function editarRegraTribEstadual(regraEncoded) {
+        const r = JSON.parse(decodeURIComponent(regraEncoded));
+        const box = document.getElementById('boxFormTribEstadual');
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('tituloFormTribEstadual').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Regra de ICMS';
+        document.getElementById('editTribEstadualId').value = r.id;
+        document.getElementById('regraEstNome').value = r.nome_regra || '';
+        document.getElementById('regraEstCst').value = r.cst_csosn || '';
+        document.getElementById('regraEstUfOrigem').value = r.uf_origem || 'RJ';
+        document.getElementById('regraEstUfDestino').value = r.uf_destino || 'RJ';
+        document.getElementById('regraEstAliqIcms').value = r.aliquota_icms || 0;
+        document.getElementById('regraEstReducao').value = r.reducao_base_calculo || 0;
+        document.getElementById('regraEstAliqFcp').value = r.aliquota_fcp || 0;
+        document.getElementById('regraEstMvaSt').value = r.mva_st || 0;
+        document.getElementById('regraEstObs').value = r.observacoes_fiscais || '';
+    }
+
+    async function salvarRegraTribEstadual(event) {
+        event.preventDefault();
+        const btn = document.getElementById('btnSalvarTribEstadual');
+        const txtOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+        btn.disabled = true;
+
+        const id = document.getElementById('editTribEstadualId').value;
+        const payload = {
+            empresa_id: empresaIdLogada,
+            nome_regra: document.getElementById('regraEstNome').value.trim(),
+            cst_csosn: document.getElementById('regraEstCst').value.trim(),
+            uf_origem: document.getElementById('regraEstUfOrigem').value.trim().toUpperCase(),
+            uf_destino: document.getElementById('regraEstUfDestino').value.trim().toUpperCase(),
+            aliquota_icms: parseFloat(document.getElementById('regraEstAliqIcms').value) || 0,
+            reducao_base_calculo: parseFloat(document.getElementById('regraEstReducao').value) || 0,
+            aliquota_fcp: parseFloat(document.getElementById('regraEstAliqFcp').value) || 0,
+            mva_st: parseFloat(document.getElementById('regraEstMvaSt').value) || 0,
+            observacoes_fiscais: document.getElementById('regraEstObs').value.trim() || null
+        };
+
+        try {
+            if (id) {
+                const { error } = await supabaseClient.from('tributacao_estadual').update(payload).eq('id', id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabaseClient.from('tributacao_estadual').insert([payload]);
+                if (error) throw error;
+            }
+
+            toggleFormTribEstadual();
+            carregarListaTribEstadual();
+            carregarRegrasTributariasDropdowns();
+            alert("Regra de ICMS salva com sucesso!");
+        } catch(e) {
+            console.error("Erro ao salvar regra estadual:", e);
+            alert("Erro ao gravar regra: " + e.message);
+        } finally {
+            btn.innerHTML = txtOriginal;
+            btn.disabled = false;
+        }
+    }
+
+    async function excluirRegraTribEstadual(id) {
+        if (!confirm("Deseja realmente excluir esta regra estadual?")) return;
+        try {
+            const { error } = await supabaseClient.from('tributacao_estadual').delete().eq('id', id);
+            if (error) throw error;
+            carregarListaTribEstadual();
+            carregarRegrasTributariasDropdowns();
+        } catch (e) {
+            alert("Erro ao excluir regra: " + e.message);
+        }
+    }
+
+    function filtrarTribEstadual() {
+        const termo = (document.getElementById('buscaTribEstadual').value || '').toLowerCase().trim();
+        document.querySelectorAll('#listaTribEstadualCentral .item-trib-card').forEach(c => {
+            c.style.display = c.innerText.toLowerCase().includes(termo) ? '' : 'none';
+        });
+    }
+
+    // ================= TRIBUTAÇÃO FEDERAL (PIS / COFINS / IPI) =================
+    async function carregarListaTribFederal() {
+        const lista = document.getElementById('listaTribFederalCentral');
+        if (!lista) return;
+        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando regras federais...</p>';
+
+        try {
+            let query = supabaseClient.from('tributacao_federal').select('*').order('nome_regra');
+            if (empresaIdLogada) query = query.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+            const { data, error } = await query;
+            if (error) throw error;
+            lista.innerHTML = '';
+
+            if (data && data.length > 0) {
+                cacheRegrasFederais = data;
+                data.forEach(r => {
+                    const rCodificada = encodeURIComponent(JSON.stringify(r));
+                    lista.innerHTML += `
+                        <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #2563eb; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <div>
+                                    <h4 style="color: var(--azul-marca); font-size: 1.05rem; font-weight: 700;">${r.nome_regra}</h4>
+                                    <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 4px;">CST PIS: ${r.cst_pis || '01'} | CST COFINS: ${r.cst_cofins || '01'}</p>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 0.8rem; background: #f8fafc; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+                                <div><strong style="color: #2563eb;">${r.aliquota_pis}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">PIS</small></div>
+                                <div><strong style="color: #2563eb;">${r.aliquota_cofins}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">COFINS</small></div>
+                                <div><strong style="color: #2563eb;">${r.aliquota_ipi || 0}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">IPI (CST ${r.cst_ipi || '50'})</small></div>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                                <button type="button" onclick="excluirRegraTribFederal('${r.id}')" class="btn-acao" style="background: transparent; border: 1px solid var(--erro); color: var(--erro); padding: 5px 10px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-trash"></i> Apagar
+                                </button>
+                                <button type="button" onclick="editarRegraTribFederal('${rCodificada}')" class="btn-acao" style="background: #2563eb; color: #fff; padding: 5px 12px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra federal cadastrada.</p>';
+            }
+        } catch (err) {
+            console.error("Erro ao carregar tributação federal:", err);
+            lista.innerHTML = '<p style="color:var(--erro);">Erro ao carregar regras federais.</p>';
+        }
+    }
+
+    function toggleFormTribFederal() {
+        const box = document.getElementById('boxFormTribFederal');
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+            document.getElementById('formTribFederal').reset();
+            document.getElementById('editTribFederalId').value = '';
+            document.getElementById('tituloFormTribFederal').innerHTML = '<i class="fa-solid fa-plus"></i> Cadastrar Regra Federal';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function editarRegraTribFederal(regraEncoded) {
+        const r = JSON.parse(decodeURIComponent(regraEncoded));
+        const box = document.getElementById('boxFormTribFederal');
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('tituloFormTribFederal').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Regra Federal';
+        document.getElementById('editTribFederalId').value = r.id;
+        document.getElementById('regraFedNome').value = r.nome_regra || '';
+        document.getElementById('regraFedCstPis').value = r.cst_pis || '01';
+        document.getElementById('regraFedAliqPis').value = r.aliquota_pis || 0;
+        document.getElementById('regraFedCstCofins').value = r.cst_cofins || '01';
+        document.getElementById('regraFedAliqCofins').value = r.aliquota_cofins || 0;
+        document.getElementById('regraFedCstIpi').value = r.cst_ipi || '50';
+        document.getElementById('regraFedAliqIpi').value = r.aliquota_ipi || 0;
+        document.getElementById('regraFedEnqIpi').value = r.enquadramento_ipi || '999';
+    }
+
+    async function salvarRegraTribFederal(event) {
+        event.preventDefault();
+        const btn = document.getElementById('btnSalvarTribFederal');
+        const txtOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+        btn.disabled = true;
+
+        const id = document.getElementById('editTribFederalId').value;
+        const payload = {
+            empresa_id: empresaIdLogada,
+            nome_regra: document.getElementById('regraFedNome').value.trim(),
+            cst_pis: document.getElementById('regraFedCstPis').value.trim(),
+            aliquota_pis: parseFloat(document.getElementById('regraFedAliqPis').value) || 0,
+            cst_cofins: document.getElementById('regraFedCstCofins').value.trim(),
+            aliquota_cofins: parseFloat(document.getElementById('regraFedAliqCofins').value) || 0,
+            cst_ipi: document.getElementById('regraFedCstIpi').value.trim() || '50',
+            aliquota_ipi: parseFloat(document.getElementById('regraFedAliqIpi').value) || 0,
+            enquadramento_ipi: document.getElementById('regraFedEnqIpi').value.trim() || '999'
+        };
+
+        try {
+            if (id) {
+                const { error } = await supabaseClient.from('tributacao_federal').update(payload).eq('id', id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabaseClient.from('tributacao_federal').insert([payload]);
+                if (error) throw error;
+            }
+
+            toggleFormTribFederal();
+            carregarListaTribFederal();
+            carregarRegrasTributariasDropdowns();
+            alert("Regra Federal salva com sucesso!");
+        } catch(e) {
+            console.error("Erro ao salvar regra federal:", e);
+            alert("Erro ao gravar regra federal: " + e.message);
+        } finally {
+            btn.innerHTML = txtOriginal;
+            btn.disabled = false;
+        }
+    }
+
+    async function excluirRegraTribFederal(id) {
+        if (!confirm("Deseja realmente excluir esta regra federal?")) return;
+        try {
+            const { error } = await supabaseClient.from('tributacao_federal').delete().eq('id', id);
+            if (error) throw error;
+            carregarListaTribFederal();
+            carregarRegrasTributariasDropdowns();
+        } catch (e) {
+            alert("Erro ao excluir regra: " + e.message);
+        }
+    }
+
+    function filtrarTribFederal() {
+        const termo = (document.getElementById('buscaTribFederal').value || '').toLowerCase().trim();
+        document.querySelectorAll('#listaTribFederalCentral .item-trib-card').forEach(c => {
+            c.style.display = c.innerText.toLowerCase().includes(termo) ? '' : 'none';
+        });
+    }
+
+    // ================= TRIBUTAÇÃO REFORMA (IBS / CBS) =================
+    async function carregarListaTribReforma() {
+        const lista = document.getElementById('listaTribReformaCentral');
+        if (!lista) return;
+        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando regras da Reforma Tributária...</p>';
+
+        try {
+            let query = supabaseClient.from('tributacao_ibs_cbs').select('*').order('nome_regra');
+            if (empresaIdLogada) query = query.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+            const { data, error } = await query;
+            if (error) throw error;
+            lista.innerHTML = '';
+
+            if (data && data.length > 0) {
+                cacheRegrasReforma = data;
+                data.forEach(r => {
+                    const rCodificada = encodeURIComponent(JSON.stringify(r));
+                    const isentoBadge = r.isento_reforma ? '<span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">ISENÇÃO TOTAL</span>' : '';
+                    
+                    lista.innerHTML += `
+                        <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #0891b2; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                                <div>
+                                    <div style="display: flex; gap: 6px; align-items: center;">
+                                        <span style="background: rgba(8, 145, 178, 0.1); color: #0891b2; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">${r.regime_diferenciado || 'Padrão'}</span>
+                                        ${isentoBadge}
+                                    </div>
+                                    <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-top: 6px; font-weight: 700;">${r.nome_regra}</h4>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 0.8rem; background: #f8fafc; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; text-align: center;">
+                                <div><strong style="color: #0891b2;">${r.aliquota_cbs}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">CBS (Federal)</small></div>
+                                <div><strong style="color: #0891b2;">${r.aliquota_ibs}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">IBS (Estadual/Mun.)</small></div>
+                                <div><strong style="color: #0891b2;">${r.reducao_base_ibs_cbs || 0}%</strong><small style="display: block; font-size: 0.68rem; color: var(--texto-suave);">Redução Base</small></div>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #e2e8f0; padding-top: 10px;">
+                                <button type="button" onclick="excluirRegraTribReforma('${r.id}')" class="btn-acao" style="background: transparent; border: 1px solid var(--erro); color: var(--erro); padding: 5px 10px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-trash"></i> Apagar
+                                </button>
+                                <button type="button" onclick="editarRegraTribReforma('${rCodificada}')" class="btn-acao" style="background: #0891b2; color: #fff; padding: 5px 12px; font-size: 0.78rem;">
+                                    <i class="fa-solid fa-pen-to-square"></i> Editar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra de IBS/CBS cadastrada.</p>';
+            }
+        } catch (err) {
+            console.error("Erro ao carregar regras da reforma:", err);
+            lista.innerHTML = '<p style="color:var(--erro);">Erro ao carregar regras da reforma.</p>';
+        }
+    }
+
+    function toggleFormTribReforma() {
+        const box = document.getElementById('boxFormTribReforma');
+        if (box.style.display === 'none' || box.style.display === '') {
+            box.style.display = 'block';
+            document.getElementById('formTribReforma').reset();
+            document.getElementById('editTribReformaId').value = '';
+            document.getElementById('tituloFormTribReforma').innerHTML = '<i class="fa-solid fa-plus"></i> Cadastrar Regra da Reforma (IBS/CBS)';
+        } else {
+            box.style.display = 'none';
+        }
+    }
+
+    function editarRegraTribReforma(regraEncoded) {
+        const r = JSON.parse(decodeURIComponent(regraEncoded));
+        const box = document.getElementById('boxFormTribReforma');
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('tituloFormTribReforma').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Regra da Reforma (IBS/CBS)';
+        document.getElementById('editTribReformaId').value = r.id;
+        document.getElementById('regraRefNome').value = r.nome_regra || '';
+        document.getElementById('regraRefRegime').value = r.regime_diferenciado || 'Padrao';
+        document.getElementById('regraRefAliqCbs').value = r.aliquota_cbs || 0;
+        document.getElementById('regraRefAliqIbs').value = r.aliquota_ibs || 0;
+        document.getElementById('regraRefReducao').value = r.reducao_base_ibs_cbs || 0;
+        document.getElementById('regraRefIsento').checked = !!r.isento_reforma;
+    }
+
+    async function salvarRegraTribReforma(event) {
+        event.preventDefault();
+        const btn = document.getElementById('btnSalvarTribReforma');
+        const txtOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+        btn.disabled = true;
+
+        const id = document.getElementById('editTribReformaId').value;
+        const payload = {
+            empresa_id: empresaIdLogada,
+            nome_regra: document.getElementById('regraRefNome').value.trim(),
+            regime_diferenciado: document.getElementById('regraRefRegime').value,
+            aliquota_cbs: parseFloat(document.getElementById('regraRefAliqCbs').value) || 0,
+            aliquota_ibs: parseFloat(document.getElementById('regraRefAliqIbs').value) || 0,
+            reducao_base_ibs_cbs: parseFloat(document.getElementById('regraRefReducao').value) || 0,
+            isento_reforma: document.getElementById('regraRefIsento').checked
+        };
+
+        try {
+            if (id) {
+                const { error } = await supabaseClient.from('tributacao_ibs_cbs').update(payload).eq('id', id);
+                if (error) throw error;
+            } else {
+                const { error } = await supabaseClient.from('tributacao_ibs_cbs').insert([payload]);
+                if (error) throw error;
+            }
+
+            toggleFormTribReforma();
+            carregarListaTribReforma();
+            carregarRegrasTributariasDropdowns();
+            alert("Regra da Reforma Tributária salva com sucesso!");
+        } catch(e) {
+            console.error("Erro ao salvar regra reforma:", e);
+            alert("Erro ao gravar regra da reforma: " + e.message);
+        } finally {
+            btn.innerHTML = txtOriginal;
+            btn.disabled = false;
+        }
+    }
+
+    async function excluirRegraTribReforma(id) {
+        if (!confirm("Deseja realmente excluir esta regra da Reforma Tributária?")) return;
+        try {
+            const { error } = await supabaseClient.from('tributacao_ibs_cbs').delete().eq('id', id);
+            if (error) throw error;
+            carregarListaTribReforma();
+            carregarRegrasTributariasDropdowns();
+        } catch (e) {
+            alert("Erro ao excluir regra: " + e.message);
+        }
+    }
+
+    function filtrarTribReforma() {
+        const termo = (document.getElementById('buscaTribReforma').value || '').toLowerCase().trim();
+        document.querySelectorAll('#listaTribReformaCentral .item-trib-card').forEach(c => {
+            c.style.display = c.innerText.toLowerCase().includes(termo) ? '' : 'none';
+        });
+    }
+
+    // ================= PRODUTOS (BLINDADOS COM EMPRESA_ID E REGRAS FISCAIS) =================
+    
+    // Troca de Abas no Formulário de Novo Produto
+    function trocarAbaNovoProduto(aba, btnClicado) {
+        document.querySelectorAll('.tab-btn-produto-novo').forEach(b => {
+            b.classList.remove('ativa');
+            b.style.color = 'var(--texto-secundario)';
+            b.style.borderBottomColor = 'transparent';
+        });
+        
+        btnClicado.classList.add('ativa');
+        btnClicado.style.color = 'var(--azul-marca)';
+        btnClicado.style.borderBottomColor = 'var(--azul-sutil)';
+
+        if (aba === 'basico') {
+            document.getElementById('abaNovoProdBasico').style.display = 'block';
+            document.getElementById('abaNovoProdFiscal').style.display = 'none';
+        } else if (aba === 'fiscal') {
+            document.getElementById('abaNovoProdBasico').style.display = 'none';
+            document.getElementById('abaNovoProdFiscal').style.display = 'block';
+        }
+    }
+
+    // Carregar Regras Tributárias (Estadual, Federal e Reforma IBS/CBS) do Supabase
+    let cacheRegrasEstaduais = [];
+    let cacheRegrasFederais = [];
+    let cacheRegrasReforma = [];
+
+    async function carregarRegrasTributariasDropdowns() {
+        try {
+            // 1. Regras Estaduais (ICMS / ST / FCP)
+            try {
+                let queryEst = supabaseClient.from('tributacao_estadual').select('*').order('nome_regra');
+                if (empresaIdLogada) queryEst = queryEst.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+                const { data: est, error: errEst } = await queryEst;
+                if (!errEst && est) cacheRegrasEstaduais = est;
+            } catch(e) { console.warn("Tabela tributacao_estadual ainda não populada"); }
+
+            // 2. Regras Federais (PIS / COFINS / IPI)
+            try {
+                let queryFed = supabaseClient.from('tributacao_federal').select('*').order('nome_regra');
+                if (empresaIdLogada) queryFed = queryFed.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+                const { data: fed, error: errFed } = await queryFed;
+                if (!errFed && fed) cacheRegrasFederais = fed;
+            } catch(e) { console.warn("Tabela tributacao_federal ainda não populada"); }
+
+            // 3. Regras Reforma Tributária (IBS / CBS)
+            try {
+                let queryRef = supabaseClient.from('tributacao_ibs_cbs').select('*').order('nome_regra');
+                if (empresaIdLogada) queryRef = queryRef.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
+                const { data: ref, error: errRef } = await queryRef;
+                if (!errRef && ref) cacheRegrasReforma = ref;
+            } catch(e) { console.warn("Tabela tributacao_ibs_cbs ainda não populada"); }
+
+            // Preencher Selects do Formulário de Cadastro
+            preencherSelectOpcoes('prodTribEstadual', cacheRegrasEstaduais, 'ICMS');
+            preencherSelectOpcoes('prodTribFederal', cacheRegrasFederais, 'Federal');
+            preencherSelectOpcoes('prodTribIbsCbs', cacheRegrasReforma, 'Reforma');
+
+            // Preencher Selects da Edição Completa
+            preencherSelectOpcoes('fullEditProdTribEstadual', cacheRegrasEstaduais, 'ICMS');
+            preencherSelectOpcoes('fullEditProdTribFederal', cacheRegrasFederais, 'Federal');
+            preencherSelectOpcoes('fullEditProdTribIbsCbs', cacheRegrasReforma, 'Reforma');
+
+        } catch (err) {
+            console.error("Erro ao carregar regras tributárias:", err);
+        }
+    }
+
+    function preencherSelectOpcoes(selectId, lista, tipo) {
+        const el = document.getElementById(selectId);
+        if (!el) return;
+
+        if (!lista || lista.length === 0) {
+            if (tipo === 'ICMS') {
+                el.innerHTML = `
+                    <option value="">Selecione a Regra de ICMS...</option>
+                    <option value="padrao_18">ICMS 18% Padrão Interno (CST 00)</option>
+                    <option value="padrao_12">ICMS 12% Interestadual</option>
+                    <option value="isencao_maq">ICMS Isenção / Redução Maquinários (Convênio 52/91)</option>
+                `;
+            } else if (tipo === 'Federal') {
+                el.innerHTML = `
+                    <option value="">Selecione a Regra Federal...</option>
+                    <option value="geral_real">Lucro Real (PIS 1.65% / COFINS 7.6% / IPI 5%)</option>
+                    <option value="presumido">Lucro Presumido (PIS 0.65% / COFINS 3.00%)</option>
+                    <option value="aliq_zero">Alíquota Zero / Monofásico</option>
+                `;
+            } else if (tipo === 'Reforma') {
+                el.innerHTML = `
+                    <option value="">Selecione a Regra da Reforma Tributária...</option>
+                    <option value="reforma_padrao">Alíquota Padrão (CBS 8.8% Federal + IBS 17.7% Estadual)</option>
+                    <option value="reforma_reduzida">Regime Reduzido 60% (Reforma Tributária)</option>
+                    <option value="reforma_isenta">Isenção Total IBS / CBS</option>
+                `;
+            }
+            return;
+        }
+
+        let defaultLabel = tipo === 'ICMS' ? 'Selecione a Regra de ICMS...' : (tipo === 'Federal' ? 'Selecione a Regra Federal...' : 'Selecione a Regra da Reforma (IBS/CBS)...');
+        el.innerHTML = `<option value="">${defaultLabel}</option>`;
+
+        lista.forEach(regra => {
+            let labelTexto = regra.nome_regra;
+            if (tipo === 'ICMS') {
+                labelTexto += ` | CST: ${regra.cst_csosn || '00'} - ICMS: ${regra.aliquota_icms || 0}%`;
+            } else if (tipo === 'Federal') {
+                labelTexto += ` | PIS: ${regra.aliquota_pis || 0}% / COFINS: ${regra.aliquota_cofins || 0}%`;
+            } else if (tipo === 'Reforma') {
+                labelTexto += regra.isento_reforma ? ' [ISENTO]' : ` [CBS: ${regra.aliquota_cbs || 0}% + IBS: ${regra.aliquota_ibs || 0}%]`;
+            }
+            el.innerHTML += `<option value="${regra.id}">${labelTexto}</option>`;
+        });
+    }
+
     async function carregarListaProdutos() {
         const lista = document.getElementById('listaProdutosCentral');
         if(!lista) return;
-        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando produtos...</p>';
+        lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando catálogo e regras fiscais...</p>';
         
         try {
+            // Garantir que os selects fiscais estejam carregados
+            carregarRegrasTributariasDropdowns();
+
             const { data, error } = await supabaseClient
                 .from('produtos')
                 .select('*')
@@ -2251,14 +3271,21 @@
                         ? `<div style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid #e2e8f0;"><img src="${imgThumb}" style="width: 100%; height: 100%; object-fit: cover;"></div>` 
                         : `<div style="width: 50px; height: 50px; border-radius: 6px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0;"><i class="fa-solid fa-box-open" style="color: #cbd5e1; font-size: 1.2rem;"></i></div>`;
 
+                    const tagNcm = p.ncm ? `<span style="background: rgba(43,92,146,0.1); color: var(--azul-sutil); font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px;">NCM: ${p.ncm}</span>` : '';
+
                     lista.innerHTML += `
                     <div class="card-box item-produto-card" onclick="abrirEdicaoProduto('${pCodificado}')" style="cursor: pointer; padding: 15px; margin-bottom: 0; border-left: 4px solid var(--azul-sutil); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                         <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
                             ${divImagem}
                             <div>
-                                <span style="background: #e2e8f0; color: var(--texto-secundario); font-size: 0.65rem; padding: 3px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; display: inline-block;">${p.tipo || 'Painel'}</span>
+                                <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+                                    <span style="background: #e2e8f0; color: var(--texto-secundario); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 700;">${p.tipo || 'Painel'}</span>
+                                    ${tagNcm}
+                                </div>
                                 <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 0;">${p.nome}</h4>
-                                <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 5px;">Cód: ${p.sku || 'N/A'}</p>
+                                <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 4px;">
+                                    SKU: ${p.sku || 'N/A'} ${p.cfop_padrao || p.cfop ? ` | CFOP: ${p.cfop_padrao || p.cfop}` : ''}
+                                </p>
                             </div>
                         </div>
                         <div style="text-align: right; display: flex; align-items: center; gap: 15px;">
@@ -2273,6 +3300,7 @@
                 lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum produto cadastrado no banco de dados.</p>';
             }
         } catch (err) {
+            console.error("Erro ao carregar lista de produtos:", err);
             lista.innerHTML = '<p style="color:var(--erro);">Erro ao puxar dados dos produtos.</p>';
         }
     }
@@ -2298,7 +3326,7 @@
         const file = event.target.files[0];
         if (!file) return;
 
-       reader.readAsText(arquivo, 'ISO-8859-1');
+        const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
@@ -2347,8 +3375,13 @@
 
         document.getElementById('fullEditProdNcm').value = p.ncm || '';
         document.getElementById('fullEditProdCest').value = p.cest || '';
-        document.getElementById('fullEditProdCfop').value = p.cfop || '';
+        document.getElementById('fullEditProdCfop').value = p.cfop_padrao || p.cfop || '';
         document.getElementById('fullEditProdIcms').value = p.origem_icms || '';
+
+        // Regras Fiscais vinculadas
+        if (p.id_tributacao_estadual) document.getElementById('fullEditProdTribEstadual').value = p.id_tributacao_estadual;
+        if (p.id_tributacao_federal) document.getElementById('fullEditProdTribFederal').value = p.id_tributacao_federal;
+        if (p.id_tributacao_ibs_cbs) document.getElementById('fullEditProdTribIbsCbs').value = p.id_tributacao_ibs_cbs;
 
         let tensao = ''; let corrente = ''; let potencia = ''; let imagem = '';
         if (p.dados_tecnicos) {
@@ -2373,7 +3406,7 @@
         const id = document.getElementById('fullEditProdId').value;
         const btn = document.getElementById('btnSalvarProdFull');
         const htmlOriginal = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando Banco...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Atualizando Banco e Regras Fiscais...';
 
         const objTecnico = {
             tensao: document.getElementById('fullEditProdTensao').value.trim(),
@@ -2390,10 +3423,17 @@
             ncm: document.getElementById('fullEditProdNcm').value.trim(),
             cest: document.getElementById('fullEditProdCest').value.trim(),
             cfop: document.getElementById('fullEditProdCfop').value.trim(),
+            cfop_padrao: document.getElementById('fullEditProdCfop').value.trim(),
             origem_icms: document.getElementById('fullEditProdIcms').value.trim(),
             preco_custo: parseFloat(document.getElementById('fullEditProdCusto').value.replace(',','.')),
             margem_lucro: parseFloat(document.getElementById('fullEditProdMarkup').value.replace(',','.')),
             preco_venda: parseFloat(document.getElementById('fullEditProdPreco').value.replace(',','.')),
+            
+            // Relacionamentos Tributários
+            id_tributacao_estadual: document.getElementById('fullEditProdTribEstadual').value || null,
+            id_tributacao_federal: document.getElementById('fullEditProdTribFederal').value || null,
+            id_tributacao_ibs_cbs: document.getElementById('fullEditProdTribIbsCbs').value || null,
+
             dados_tecnicos: objTecnico 
         };
 
@@ -2408,7 +3448,8 @@
             carregarListaProdutos(); 
             fecharEdicaoProduto(); 
         } catch(e) {
-            alert("Erro ao editar o produto.");
+            console.error("Erro ao salvar produto:", e);
+            alert("Erro ao editar o produto: " + e.message);
         } finally {
             btn.innerHTML = htmlOriginal;
         }
@@ -2507,6 +3548,8 @@
         const form = document.getElementById('boxFormProduto');
         if (form.style.display === 'none' || form.style.display === '') {
             form.style.display = 'block';
+            carregarRegrasTributariasDropdowns();
+            trocarAbaNovoProduto('basico', document.getElementById('tabBtnProdBasico'));
         } else {
             form.style.display = 'none';
             document.getElementById('formNovoProduto').reset();
@@ -2528,7 +3571,7 @@
         e.preventDefault();
         const msg = document.getElementById('msgNovoProduto'); 
         msg.style.color = 'var(--texto-secundario)'; 
-        msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cadastrando item...';
+        msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cadastrando item com regras fiscais...';
         
         const objTecnico = {
             tensao: document.getElementById('prodTensao').value.trim(),
@@ -2539,11 +3582,21 @@
         const payload = { 
             empresa_id: empresaIdLogada, 
             nome: document.getElementById('prodNome').value.trim(), 
+            sku: document.getElementById('prodSku').value.trim(),
+            ean_gtin: document.getElementById('prodEan').value.trim() || null,
             tipo: document.getElementById('prodCategoria').value,
             unidade: 'UN', 
-            preco_custo: parseFloat(document.getElementById('prodCusto').value.replace(',','.')),
-            margem_lucro: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')),
-            preco_venda: parseFloat(document.getElementById('prodPreco').value.replace(',','.')),
+            ncm: document.getElementById('prodNcm').value.trim(),
+            cfop_padrao: document.getElementById('prodCfop').value.trim(),
+            preco_custo: parseFloat(document.getElementById('prodCusto').value.replace(',','.')) || 0,
+            margem_lucro: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')) || 0,
+            preco_venda: parseFloat(document.getElementById('prodPreco').value.replace(',','.')) || 0,
+            
+            // Chaves Estrangeiras Fiscais
+            id_tributacao_estadual: document.getElementById('prodTribEstadual').value || null,
+            id_tributacao_federal: document.getElementById('prodTribFederal').value || null,
+            id_tributacao_ibs_cbs: document.getElementById('prodTribIbsCbs').value || null,
+
             dados_tecnicos: objTecnico 
         };
         
@@ -2554,7 +3607,7 @@
             document.getElementById('formNovoProduto').reset();
             carregarListaProdutos(); 
             msg.style.color = 'var(--sucesso)'; 
-            msg.innerHTML = '<i class="fa-solid fa-check"></i> Produto inserido com sucesso!'; 
+            msg.innerHTML = '<i class="fa-solid fa-check"></i> Produto e regras fiscais inseridos com sucesso!'; 
             
             const formBox = document.getElementById('boxFormProduto');
             if(formBox) {

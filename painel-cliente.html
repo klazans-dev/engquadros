@@ -196,6 +196,7 @@
                 <button class="menu-btn" id="abaObras" onclick="abrirAba('obras')"><i class="fa-solid fa-chart-pie"></i> Progresso de Obras</button>
                 <button class="menu-btn" id="abaArquivos" onclick="abrirAba('arquivos')"><i class="fa-regular fa-folder-open"></i> Acervo Histórico / Geral</button>
                 <button class="menu-btn" id="abaSuporte" onclick="abrirAba('suporte')"><i class="fa-solid fa-headset"></i> Suporte Técnico</button>
+                <button class="menu-btn" id="abaManual" onclick="abrirAba('manual')"><i class="fa-solid fa-book-open"></i> Manual do Usuário</button>
                 
                 <div style="padding: 12px 20px; margin-top: auto;">
                     <button type="button" class="btn-ajuda-sidebar" onclick="document.getElementById('modalManualCliente').style.display='flex'">
@@ -270,6 +271,54 @@
                     <div class="lista-chamados" id="listaChamadosCliente">
                         <!-- Injetado via JS -->
                     </div>
+                </div>
+            </div>
+
+            <!-- GUIA & MANUAL DO CLIENTE (DEDICADO) -->
+            <div id="painelManual" class="painel-conteudo">
+                <div class="header-section">
+                    <h2>Manual do Usuário (Portal do Cliente)</h2>
+                    <p>Instruções passo a passo para você acompanhar suas obras, laudos e suporte técnico.</p>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                    
+                    <div style="background: #fff; border-radius: 8px; border: var(--borda); padding: 22px; border-left: 4px solid var(--azul-sutil); box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <h3 style="color: var(--azul-marca); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-columns" style="color: var(--azul-sutil);"></i> 1. Acompanhamento pelo Kanban de Projetos
+                        </h3>
+                        <p style="color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.6;">
+                            No menu <strong>Kanban de Projetos</strong>, você visualiza em qual fase de fabricação cada painel elétrico se encontra (Engenharia, Mecânica, Barramento, Fiação, Testes QA e Embalagem). Cada movimentação feita pelos inspetores da fábrica atualiza o seu portal em tempo real.
+                        </p>
+                    </div>
+
+                    <div style="background: #fff; border-radius: 8px; border: var(--borda); padding: 22px; border-left: 4px solid var(--sucesso); box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <h3 style="color: var(--azul-marca); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-chart-pie" style="color: var(--sucesso);"></i> 2. Progresso de Obras & Porcentagem Concluída
+                        </h3>
+                        <p style="color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.6;">
+                            Na aba <strong>Progresso de Obras</strong>, cada equipamento possui uma barra de avanço físico calculada com base nos checklists industriais cumpridos pela fábrica. Você também pode conferir a <strong>Previsão de Entrega</strong> e o valor contratado.
+                        </p>
+                    </div>
+
+                    <div style="background: #fff; border-radius: 8px; border: var(--borda); padding: 22px; border-left: 4px solid #f59e0b; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <h3 style="color: var(--azul-marca); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-regular fa-folder-open" style="color: #f59e0b;"></i> 3. Acervo de Arquivos, Plantas e Laudos Técnicos
+                        </h3>
+                        <p style="color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.6;">
+                            Clique em <strong>"Acessar Arquivos"</strong> direto no card da sua obra ou abra o menu <strong>Acervo Histórico / Geral</strong> para baixar diagramas unifilares (PDF/DWG), memoriais de cálculo, laudos de ensaios TTA/PTTA e termos de garantia.
+                        </p>
+                    </div>
+
+                    <div style="background: #fff; border-radius: 8px; border: var(--borda); padding: 22px; border-left: 4px solid #ec4899; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+                        <h3 style="color: var(--azul-marca); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-headset" style="color: #ec4899;"></i> 4. Suporte Técnico & Solicitações de Engenharia
+                        </h3>
+                        <p style="color: var(--texto-secundario); font-size: 0.9rem; line-height: 1.6;">
+                            Precisa tirar dúvidas sobre ligação ou solicitar ajustes? Abra a aba <strong>Suporte Técnico</strong>, preencha o formulário e nossa equipe de engenharia responderá diretamente pelo chamado no seu portal.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </main>
