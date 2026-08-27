@@ -4829,7 +4829,7 @@ function mudarPagina(direcao) {
     }
 
     // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
-   async function carregarProjetosPCP() {
+  async function carregarProjetosPCP() {
     // Garante que a lista de clientes está carregada antes de exibir nomes
     if (listaGlobalClientes.length === 0) {
         await carregarListaClientesGlobais();
@@ -4844,6 +4844,7 @@ function mudarPagina(direcao) {
         return;
     }
 
+    // 1. Renderiza a estrutura vazia das colunas
     etapasPCP.forEach(etapa => {
         board.innerHTML += `
         <div class="coluna-pcp" id="${etapa.id}" ondragover="permitirDrop(event)" ondrop="soltar(event)">
@@ -4855,7 +4856,6 @@ function mudarPagina(direcao) {
     });
 
     try {
-        // AQUI ESTÁ A MÁGICA: Adicionado o .limit(100) no final da query
         let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }).limit(100);
         
         if (!isMaster && cnpjsPermitidos.length > 0) {
@@ -4868,82 +4868,126 @@ function mudarPagina(direcao) {
         ]);
         if (error) throw error;
 
-        // Atualiza o cache global com os dados frescos
         if (clientesDB && clientesDB.length > 0) {
             listaGlobalClientes = clientesDB.map(c => ({ ...c }));
         }
 
-        // Mapa rápido CNPJ (apenas dígitos) → Razão Social
         const mapaClientes = {};
         (clientesDB || []).forEach(c => {
             const key = String(c.cnpj).replace(/\D/g, '');
             if (key) mapaClientes[key] = c.razao_social;
         });
 
+        // 2. Novo objeto para Agrupar os dados na memória antes de criar o HTML
         const contadores = {};
-        etapasPCP.forEach(e => contadores[e.id] = 0);
+        const obrasAgrupadas = {}; 
+
+        etapasPCP.forEach(e => {
+            contadores[e.id] = 0;
+            obrasAgrupadas[e.id] = {}; // Cria o espaço de grupos de cada coluna
+        });
 
         if (data && data.length > 0) {
             data.forEach(obra => {
                 let etapaAtual = String(obra.etapa_pcp_id);
-                
                 if (etapaAtual.startsWith('1')) {
                     etapaAtual = etapaAtual.replace('1', '');
                 }
-
                 let etapaObj = etapasPCP.find(e => String(e.id) === etapaAtual);
-                
                 if (!etapaObj) {
                     etapaObj = etapasPCP[0];
                 }
                 
-                const containerColuna = document.getElementById(`body_${etapaObj.id}`);
-                if (containerColuna) {
-                    contadores[etapaObj.id]++;
-                    
-                    let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
-                    if (obra.cliente_cnpj) {
-                        const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
-                        if (mapaClientes[cnpjKey]) {
-                            nomeCli = mapaClientes[cnpjKey];
-                        }
+                contadores[etapaObj.id]++;
+                
+                let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
+                if (obra.cliente_cnpj) {
+                    const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
+                    if (mapaClientes[cnpjKey]) {
+                        nomeCli = mapaClientes[cnpjKey];
                     }
-                    
-                    const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
-                    const cliT = nomeCli ? nomeCli.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
-                    const oCodificada = encodeURIComponent(JSON.stringify(obra));
-                    
-                    containerColuna.innerHTML += `
-                    <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapaObj.cor}; cursor: pointer;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
-                        <h5>${obra.nome_obra}</h5>
-                        <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
-                        ${obra.codigo_orcamento ? `<p><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
-                        
-                        <div class="card-op-footer">
-                            <span class="card-op-progress">${obra.progresso || 0}% Concluído</span>
-                            <div class="card-op-actions">
-                                <button onclick="event.stopPropagation(); duplicarObraKanban('${oCodificada}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--alerta); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Duplicar Projeto">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                                <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
-                                    <i class="fa-solid fa-paperclip"></i>
-                                </button>
-                                <button onclick="event.stopPropagation(); imprimirObraDiretoPCP(${obra.id}, '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
-                                    <i class="fa-solid fa-print"></i>
-                                </button>
-                                <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Processos (Checklist)">
-                                    <i class="fa-solid fa-list-check"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>`;
                 }
+                
+                // Se o cliente ainda não tem grupo nesta coluna, criamos um array vazio para ele
+                if (!obrasAgrupadas[etapaObj.id][nomeCli]) {
+                    obrasAgrupadas[etapaObj.id][nomeCli] = [];
+                }
+                
+                // Guarda o nome resolvido e adiciona a obra na pasta do cliente
+                obra.nomeCliResolved = nomeCli;
+                obrasAgrupadas[etapaObj.id][nomeCli].push(obra);
             });
         }
 
-        etapasPCP.forEach(e => {
-            const countEl = document.getElementById(`count_${e.id}`);
-            if (countEl) countEl.innerText = contadores[e.id];
+        // 3. Renderiza o HTML já em blocos agrupados
+        etapasPCP.forEach(etapa => {
+            const containerColuna = document.getElementById(`body_${etapa.id}`);
+            const countEl = document.getElementById(`count_${etapa.id}`);
+            if (countEl) countEl.innerText = contadores[etapa.id];
+
+            if (containerColuna) {
+                let htmlColuna = '';
+                const gruposDestaColuna = obrasAgrupadas[etapa.id];
+                
+                // Ordena os clientes em ordem alfabética
+                const clientesNomes = Object.keys(gruposDestaColuna).sort();
+
+                clientesNomes.forEach(nomeCliente => {
+                    const obrasDoCliente = gruposDestaColuna[nomeCliente];
+                    
+                    // Cria o cabeçalho expansível do Cliente
+                    htmlColuna += `
+                    <div class="kanban-grupo-cliente" style="margin-bottom: 12px;">
+                        <div class="kanban-grupo-header" onclick="const div = this.nextElementSibling; div.style.display = div.style.display === 'none' ? 'block' : 'none';" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid ${etapa.cor}; padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; color: var(--azul-marca); margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;"><i class="fa-regular fa-building"></i> ${nomeCliente}</span>
+                            <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem;">${obrasDoCliente.length}</span>
+                        </div>
+                        
+                        <!-- Os cartões ficam aqui dentro (display block exibe aberto por padrão, se quiser fechado mude para 'none') -->
+                        <div class="kanban-grupo-cards" style="display: block; padding-left: 2px;">
+                    `;
+
+                    // Loop para desenhar os cartões desse cliente
+                    obrasDoCliente.forEach(obra => {
+                        const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
+                        const cliT = obra.nomeCliResolved ? obra.nomeCliResolved.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                        const oCodificada = encodeURIComponent(JSON.stringify(obra));
+                        
+                        // O cartão em si (Removida a tag do nome do cliente, pois já está no cabeçalho)
+                        htmlColuna += `
+                        <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapa.cor}; cursor: pointer; margin-bottom: 8px;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
+                            <h5 style="margin-bottom: 5px;">${obra.nome_obra}</h5>
+                            ${obra.codigo_orcamento ? `<p style="margin-bottom: 8px;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
+                            
+                            <div class="card-op-footer">
+                                <span class="card-op-progress">${obra.progresso || 0}% Concluído</span>
+                                <div class="card-op-actions">
+                                    <button onclick="event.stopPropagation(); duplicarObraKanban('${oCodificada}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--alerta); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Duplicar Projeto">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
+                                        <i class="fa-solid fa-paperclip"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); imprimirObraDiretoPCP(${obra.id}, '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
+                                        <i class="fa-solid fa-print"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Processos (Checklist)">
+                                        <i class="fa-solid fa-list-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+
+                    // Fecha as divs do grupo e do conteúdo
+                    htmlColuna += `
+                        </div> <!-- /kanban-grupo-cards -->
+                    </div> <!-- /kanban-grupo-cliente -->
+                    `;
+                });
+
+                containerColuna.innerHTML = htmlColuna;
+            }
         });
 
     } catch (err) {
