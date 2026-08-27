@@ -4959,19 +4959,23 @@ function mudarPagina(direcao) {
                 // Ordena os Projetos em ordem alfabética
                 const nomesDosProjetos = Object.keys(gruposDestaColuna).sort();
 
-                nomesDosProjetos.forEach(nomeDoProjeto => {
+               nomesDosProjetos.forEach(nomeDoProjeto => {
                     const obrasNoGrupo = gruposDestaColuna[nomeDoProjeto];
                     
-                    // Cria o cabeçalho expansível (Sanfona) agora com o Nome da Obra
+                    // Cria o cabeçalho expansível (Sanfona) com texto completo e quebra de linha
                     htmlColuna += `
                     <div class="kanban-grupo-cliente" style="margin-bottom: 12px;">
                         <div class="kanban-grupo-header" onclick="const div = this.nextElementSibling; div.style.display = div.style.display === 'none' ? 'block' : 'none';" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid ${etapa.cor}; padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; color: var(--azul-marca); margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;" title="${nomeDoProjeto}"><i class="fa-solid fa-folder-open"></i> ${nomeDoProjeto}</span>
-                            <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem;">${obrasNoGrupo.length}</span>
+                            
+                            <!-- AQUI ESTÁ A CORREÇÃO DO TEXTO: flex: 1 e line-height para permitir quebrar a linha graciosamente sem cortar -->
+                            <span style="flex: 1; padding-right: 8px; line-height: 1.3; word-break: break-word;"><i class="fa-solid fa-folder-open"></i> ${nomeDoProjeto}</span>
+                            
+                            <!-- A tag de contagem com white-space: nowrap para não espremer o número -->
+                            <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem; white-space: nowrap; height: fit-content;">${obrasNoGrupo.length}</span>
                         </div>
                         
-                        <!-- Os cartões ficam aqui dentro -->
-                        <div class="kanban-grupo-cards" style="display: block; padding-left: 2px;">
+                        <!-- AQUI ESTÁ A CORREÇÃO PARA INICIAR MINIMIZADO: display mudou de 'block' para 'none' -->
+                        <div class="kanban-grupo-cards" style="display: none; padding-left: 2px;">
                     `;
 
                     // Loop para desenhar os cartões desse projeto
@@ -4980,7 +4984,7 @@ function mudarPagina(direcao) {
                         const cliT = obra.nomeCliResolved ? obra.nomeCliResolved.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
                         const oCodificada = encodeURIComponent(JSON.stringify(obra));
                         
-                        // O cartão em si (Agora mostrando o nome do CLIENTE no lugar onde ficava o título da obra)
+                        // O cartão em si
                         htmlColuna += `
                         <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapa.cor}; cursor: pointer; margin-bottom: 8px;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
                             <h5 style="margin-bottom: 5px; color: #475569; font-size: 0.75rem;"><i class="fa-regular fa-building"></i> ${cliT || 'Sem Cliente'}</h5>
