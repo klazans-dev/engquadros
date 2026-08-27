@@ -2214,15 +2214,6 @@
         else if (tela === 'dashboardGeral') { document.getElementById('painelDashboard').style.display = 'flex'; carregarDashboardKanban(); }
         else if (tela === 'manualUso') { document.getElementById('painelManual').style.display = 'block'; }
         else if (tela === 'identidadeMaster') {
-            const senhaDigitada = prompt("🔒 Área Restrita: Digite a senha Master para acessar as configurações:");
-            if (!senhaDigitada) { abrirModulo('sistema'); return; }
-            try {
-                const { data } = await supabaseClient.from('DEV').select('senhamaster').limit(1).single();
-                const senhaOficial = (data && data.senhamaster) ? data.senhamaster : '251144@Callinfo';
-                if (senhaDigitada !== senhaOficial && senhaDigitada !== sessionStorage.getItem('masterSenha')) { alert("Senha incorreta."); abrirModulo('sistema'); return; }
-            } catch (err) {
-                if (senhaDigitada !== '251144@Callinfo' && senhaDigitada !== sessionStorage.getItem('masterSenha')) { alert("Senha incorreta."); abrirModulo('sistema'); return; }
-            }
             document.getElementById('painelConfiguracoes').style.display = 'block';
             carregarConfiguracoesMaster();
         }
