@@ -4324,108 +4324,78 @@ function mudarPagina(direcao) {
         }
     }
 
-    async function duplicarObraKanban(obraEncoded) {
-        if(confirm("Deseja criar uma cópia deste projeto?")) {
-            const obra = JSON.parse(decodeURIComponent(obraEncoded));
-            
-            let clId = obra.cliente_id || null;
-            if (!clId && obra.cliente_cnpj) {
-                const cObj = encontrarClienteGlobal(obra.cliente_cnpj);
-                if (cObj && cObj.id) clId = cObj.id;
-            }
-
-            const payload = {
-                empresa_id: empresaIdLogada,
-                cliente_id: clId,
-                cliente_cnpj: obra.cliente_cnpj,
-                nome_obra: obra.nome_obra ? obra.nome_obra + ' (Cópia)' : 'Projeto (Cópia)',
-                numero_orcamento: obra.codigo_orcamento || obra.numero_orcamento,
-                codigo_orcamento: obra.codigo_orcamento || obra.numero_orcamento,
-                data_inicio: obra.data_inicio,
-                data_fim: obra.data_fim,
-                status_kanban: obra.status_kanban || 'aguardando_engenharia',
-                progresso: obra.progresso || 0,
-                checklist_etapas: obra.checklist_etapas || [],
-                historico_timeline: obra.historico_timeline || [],
-                especificacoes_tecnicas: obra.especificacoes_tecnicas || {}
-            };
-            
-            if (!payload.cliente_id) delete payload.cliente_id;
-            if (!payload.cliente_cnpj) delete payload.cliente_cnpj;
-            if (!payload.numero_orcamento) delete payload.numero_orcamento;
-            if (!payload.codigo_orcamento) delete payload.codigo_orcamento;
-            
-            try {
-                const { error } = await supabaseClient.from('obras').insert([payload]);
-                if (error) throw error;
-                
-                if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
-                if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
-                if (typeof clienteSelecionado !== 'undefined' && clienteSelecionado === obra.cliente_cnpj && typeof carregarObrasCliente === 'function') { 
-                    carregarObrasCliente(obra.cliente_cnpj); 
-                }
-                
-                alert("Projeto duplicado com sucesso!");
-            } catch (e) {
-                console.error("Erro ao duplicar:", e);
-                alert("Erro ao duplicar projeto: " + e.message);
-            }
-        }
-    }
-
-    // Duplica o projeto e já abre o modal de edição para renomear
-    async function duplicarObraCliente(obraEncoded) {
+   async function duplicarObraKanban(obraEncoded) {
+    if(confirm("Deseja criar uma cópia deste projeto?")) {
         const obra = JSON.parse(decodeURIComponent(obraEncoded));
-
-        let clId = obra.cliente_id || null;
-        if (!clId && obra.cliente_cnpj) {
-            const cObj = encontrarClienteGlobal(obra.cliente_cnpj);
-            if (cObj && cObj.id) clId = cObj.id;
-        }
 
         const payload = {
             empresa_id: empresaIdLogada,
-            cliente_id: clId || undefined,
             cliente_cnpj: obra.cliente_cnpj,
-            nome_obra: (obra.nome_obra || 'Projeto') + ' (Cópia)',
-            numero_orcamento: obra.codigo_orcamento || obra.numero_orcamento || null,
-            codigo_orcamento: obra.codigo_orcamento || obra.numero_orcamento || null,
+            nome_obra: obra.nome_obra ? obra.nome_obra + ' (Cópia)' : 'Projeto (Cópia)',
+            codigo_orcamento: obra.codigo_orcamento || null, // Apenas a coluna correta aqui
             data_inicio: obra.data_inicio || null,
             data_fim: obra.data_fim || null,
             etapa_pcp_id: obra.etapa_pcp_id || 1,
-            status_kanban: obra.status_kanban || 'aguardando_engenharia',
-            progresso: 0,
-            checklist_etapas: obra.checklist_etapas || [],
-            historico_timeline: [],
-            especificacoes_tecnicas: obra.especificacoes_tecnicas || {}
+            progresso: obra.progresso || 0,
+            dados_checklist: obra.dados_checklist || {}
         };
-
-        if (!payload.cliente_id) delete payload.cliente_id;
-        if (!payload.numero_orcamento) delete payload.numero_orcamento;
-        if (!payload.codigo_orcamento) delete payload.codigo_orcamento;
-
+        
         try {
-            const { data: novaObra, error } = await supabaseClient
-                .from('obras')
-                .insert([payload])
-                .select()
-                .single();
+            const { error } = await supabaseClient.from('obras').insert([payload]);
             if (error) throw error;
-
-            // Recarrega a lista e abre o modal já com o projeto novo
-            await carregarObrasCliente(clienteSelecionado);
+            
             if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
             if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
-
-            // Abre o modal de edição já com os dados do projeto duplicado
-            const novaCodificada = encodeURIComponent(JSON.stringify(novaObra));
-            abrirEdicaoObraGlobal(novaCodificada);
-
+            if (typeof clienteSelecionado !== 'undefined' && clienteSelecionado === obra.cliente_cnpj && typeof carregarObrasCliente === 'function') { 
+                carregarObrasCliente(obra.cliente_cnpj); 
+            }
+            
+            alert("Projeto duplicado com sucesso!");
         } catch (e) {
             console.error("Erro ao duplicar:", e);
             alert("Erro ao duplicar projeto: " + e.message);
         }
     }
+}
+
+    // Duplica o projeto e já abre o modal de edição para renomear
+ async function duplicarObraCliente(obraEncoded) {
+    const obra = JSON.parse(decodeURIComponent(obraEncoded));
+
+    const payload = {
+        empresa_id: empresaIdLogada,
+        cliente_cnpj: obra.cliente_cnpj,
+        nome_obra: (obra.nome_obra || 'Projeto') + ' (Cópia)',
+        codigo_orcamento: obra.codigo_orcamento || null, // Apenas a coluna correta aqui
+        data_inicio: obra.data_inicio || null,
+        data_fim: obra.data_fim || null,
+        etapa_pcp_id: obra.etapa_pcp_id || 1,
+        progresso: 0,
+        dados_checklist: obra.dados_checklist || {}
+    };
+
+    try {
+        const { data: novaObra, error } = await supabaseClient
+            .from('obras')
+            .insert([payload])
+            .select()
+            .single();
+        if (error) throw error;
+
+        // Recarrega as listas visuais
+        await carregarObrasCliente(clienteSelecionado);
+        if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
+        if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+
+        // Abre o modal de edição já com os dados do projeto duplicado para você renomear
+        const novaCodificada = encodeURIComponent(JSON.stringify(novaObra));
+        abrirEdicaoObraGlobal(novaCodificada);
+
+    } catch (e) {
+        console.error("Erro ao duplicar:", e);
+        alert("Erro ao duplicar projeto: " + e.message);
+    }
+}
 
     async function excluirObra(id) { 
         if(confirm("Tem certeza que deseja apagar este projeto do sistema?")) { 
