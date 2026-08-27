@@ -1036,6 +1036,20 @@
             });
         }
 
+        function encontrarClienteGlobalDashboard(termoBusca) {
+            if (!termoBusca || !dadosGlobaisClientes) return null;
+            const str = String(termoBusca).trim();
+            const strNum = str.replace(/\D/g, '');
+            const strLow = str.toLowerCase();
+            
+            return dadosGlobaisClientes.find(c => {
+                const cCnpj = String(c.cnpj).replace(/\D/g, '');
+                if (cCnpj && strNum && cCnpj === strNum) return true;
+                if (c.razao_social && String(c.razao_social).toLowerCase() === strLow) return true;
+                return false;
+            });
+        }
+
         // Renderizar Tabela da Matriz PCP
         function renderizarTabelaPcp(obras) {
             const corpo = document.getElementById('tabelaPcpCorpo');
@@ -1056,8 +1070,8 @@
                 const dFim = obra.data_fim ? obra.data_fim.split('-').reverse().join('/') : 'A definir';
                 
                 // Encontrar nome do cliente
-                const cliMatch = dadosGlobaisClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
-                const nomeCli = cliMatch ? cliMatch.razao_social : (obra.cliente_cnpj || 'Cliente Direto');
+                const cliMatch = encontrarClienteGlobalDashboard(obra.cliente_cnpj);
+                const nomeCli = cliMatch ? cliMatch.razao_social : (obra.cliente_cnpj || 'Sem Cliente');
 
                 // Badges industriais calculados
                 const stSep = prog >= 20 ? '<span class="badge-status status-ok"><i class="fa-solid fa-check"></i> OK</span>' : '<span class="badge-status status-pendente">Pendente</span>';

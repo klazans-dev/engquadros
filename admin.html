@@ -1856,7 +1856,15 @@
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); margin: 20px auto; animation: fadeIn 0.3s ease;">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Dados do Projeto</h3>
             <input type="hidden" id="editObraGlobalId">
-            <input type="hidden" id="editObraGlobalCnpj">
+            
+            <div class="linha-form">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cliente (Busque por Nome/CNPJ)</label>
+                    <input type="text" id="editObraGlobalCnpjBusca" list="listaClientesEditGlobal" placeholder="Selecione o Cliente..." autocomplete="off">
+                    <datalist id="listaClientesEditGlobal"></datalist>
+                    <input type="hidden" id="editObraGlobalCnpj">
+                </div>
+            </div>
             
             <div class="linha-form">
                 <div class="form-group" style="flex: 2;"><label>Nome do Quadro / Projeto</label><input type="text" id="editObraGlobalNome" required></div>
@@ -1864,8 +1872,18 @@
             </div>
             
             <div class="linha-form">
-                <div class="form-group"><label>Data Início</label><input type="date" id="editObraGlobalIni"></div>
-                <div class="form-group"><label>Previsão de Fim</label><input type="date" id="editObraGlobalFim"></div>
+                <div class="form-group">
+                    <label>Data Início</label>
+                    <input type="text" id="editObraGlobalIni" placeholder="dd/mm/aaaa" maxlength="10"
+                        oninput="mascaraData(this)"
+                        style="letter-spacing: 1px;">
+                </div>
+                <div class="form-group">
+                    <label>Previsão de Fim</label>
+                    <input type="text" id="editObraGlobalFim" placeholder="dd/mm/aaaa" maxlength="10"
+                        oninput="mascaraData(this)"
+                        style="letter-spacing: 1px;">
+                </div>
             </div>
 
             <div class="form-group" style="background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top: 10px;">
@@ -3637,6 +3655,21 @@
         const { data } = await query;
         if (data) { listaGlobalClientes = data; }
     }
+
+    function encontrarClienteGlobal(termoBusca) {
+        if (!termoBusca || !listaGlobalClientes) return null;
+        const str = String(termoBusca).trim();
+        const strNum = str.replace(/\D/g, '');
+        const strLow = str.toLowerCase();
+        
+        return listaGlobalClientes.find(c => {
+            const cCnpj = String(c.cnpj).replace(/\D/g, '');
+            if (cCnpj && strNum && cCnpj === strNum) return true;
+            if (c.razao_social && String(c.razao_social).toLowerCase() === strLow) return true;
+            return false;
+        });
+    }
+
 // 2. Função de busca e paginação (20 por página, limpa se vazio)
 let paginaAtual = 0;
 const itensPorPagina = 50;
@@ -3906,6 +3939,10 @@ function mudarPagina(direcao) {
 
     // ================= DASHBOARD / OBRAS (BLINDADOS COM EMPRESA_ID) =================
     async function carregarDashboardKanban() {
+        // Garante que a lista de clientes está carregada antes de exibir nomes
+        if (listaGlobalClientes.length === 0) {
+            await carregarListaClientesGlobais();
+        }
         const col0 = document.getElementById('kbColuna0'); 
         const col50 = document.getElementById('kbColuna50'); 
         const col100 = document.getElementById('kbColuna100'); 
@@ -3916,24 +3953,35 @@ function mudarPagina(direcao) {
         col100.innerHTML = '<p style="color:var(--texto-secundario); text-align:center;"><i class="fa-solid fa-spinner fa-spin"></i></p>';
         
         try {
-            let query = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }); 
+            let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }); 
             if (!isMaster && cnpjsPermitidos.length > 0) { 
-                query = query.in('cliente_cnpj', cnpjsPermitidos); 
+                queryObras = queryObras.in('cliente_cnpj', cnpjsPermitidos); 
             }
             
-            const { data: obrasData, error } = await query; 
+            const [{ data: obrasData, error }, { data: clientesDB }] = await Promise.all([
+                queryObras,
+                supabaseClient.from('clientes').select('cnpj, razao_social').eq('empresa_id', empresaIdLogada)
+            ]);
             if (error) throw error;
+
+            // Atualiza cache global e monta mapa rápido CNPJ → Razão Social
+            if (clientesDB && clientesDB.length > 0) listaGlobalClientes = clientesDB.map(c => ({ ...c }));
+            const mapaCliDash = {};
+            (clientesDB || []).forEach(c => {
+                const key = String(c.cnpj).replace(/\D/g, '');
+                if (key) mapaCliDash[key] = c.razao_social;
+            });
             
             col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
             
             if(obrasData && obrasData.length > 0) {
                 obrasData.forEach(obra => {
                     const progresso = obra.progresso || 0; 
-                    let nomeCli = 'Cliente não encontrado'; 
+                    let nomeCli = obra.cliente_cnpj || 'Sem Cliente'; 
                     
-                    const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj)); 
-                    if(cliMatch) { 
-                        nomeCli = cliMatch.razao_social; 
+                    if (obra.cliente_cnpj) {
+                        const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
+                        if (mapaCliDash[cnpjKey]) nomeCli = mapaCliDash[cnpjKey];
                     }
                     
                     const oCodificada = encodeURIComponent(JSON.stringify(obra));
@@ -4003,7 +4051,7 @@ function mudarPagina(direcao) {
     }
 
     async function abrirUploadViaPCP(cnpj, obraId) {
-        let cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(cnpj));
+        let cliMatch = encontrarClienteGlobal(cnpj);
 
         if (!cliMatch) {
             try {
@@ -4054,8 +4102,8 @@ function mudarPagina(direcao) {
             }
             
             let html = '';
-            let nomeCli = 'Cliente não encontrado';
-            const c = listaGlobalClientes.find(x => String(x.cnpj) === String(cnpj));
+            let nomeCli = cnpj || 'Sem Cliente';
+            const c = encontrarClienteGlobal(cnpj);
             if(c) nomeCli = c.razao_social.replace(/'/g, "\\'");
 
             data.forEach(obra => {
@@ -4094,6 +4142,7 @@ function mudarPagina(direcao) {
                         <button type="button" onclick="abrirEdicaoObraGlobal('${oCodificada}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-marca); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Editar Projeto"><i class="fa-solid fa-pen"></i></button>
                         <button type="button" onclick="abrirGestaoObra(${id}, '${nomeT}', '${nomeCli}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-sutil); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Processos (Checklist)"><i class="fa-solid fa-list-check"></i> Processos</button>
                         ${p.arquivos ? `<button type="button" onclick="prepararUploadParaObra(${id})" class="btn-acao" style="background:#f1f5f9; color:var(--texto-secundario); border:1px solid #cbd5e1; padding: 8px; font-size: 0.8rem;" title="Anexar Arquivo"><i class="fa-solid fa-paperclip"></i></button>` : ''}
+                        <button type="button" onclick="duplicarObraCliente('${oCodificada}')" class="btn-acao" style="background:#fffbeb; color:#b45309; border:1px solid #fcd34d; padding: 8px 12px; font-size: 0.8rem;" title="Duplicar Projeto"><i class="fa-regular fa-copy"></i> Duplicar</button>
                         ${p.obras ? `<button type="button" onclick="excluirObra(${id})" class="btn-acao" style="background:transparent; color:var(--erro); border:1px solid var(--erro); padding: 8px; font-size: 0.8rem;" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>` : ''}
                     </div>
                 </div>`;
@@ -4169,11 +4218,32 @@ function mudarPagina(direcao) {
     function abrirEdicaoObraGlobal(obraEncoded) {
         const obra = JSON.parse(decodeURIComponent(obraEncoded));
         document.getElementById('editObraGlobalId').value = obra.id;
-        document.getElementById('editObraGlobalCnpj').value = obra.cliente_cnpj;
+        
+        const datalist = document.getElementById('listaClientesEditGlobal');
+        if (datalist && datalist.options.length === 0 && listaGlobalClientes) {
+            listaGlobalClientes.forEach(cli => {
+                const opt = document.createElement('option');
+                opt.value = `${cli.cnpj} - ${cli.razao_social}`;
+                datalist.appendChild(opt);
+            });
+        }
+        
+        let clientStr = obra.cliente_cnpj || '';
+        if (listaGlobalClientes && obra.cliente_cnpj) {
+            const cliObj = encontrarClienteGlobal(obra.cliente_cnpj);
+            if (cliObj) {
+                clientStr = `${cliObj.cnpj} - ${cliObj.razao_social}`;
+            }
+        }
+        document.getElementById('editObraGlobalCnpjBusca').value = clientStr;
+        document.getElementById('editObraGlobalCnpj').value = obra.cliente_cnpj || '';
+
         document.getElementById('editObraGlobalNome').value = obra.nome_obra || '';
         document.getElementById('editObraGlobalOrcamento').value = obra.codigo_orcamento || obra.numero_orcamento || '';
-        document.getElementById('editObraGlobalIni').value = obra.data_inicio || '';
-        document.getElementById('editObraGlobalFim').value = obra.data_fim || '';
+        // Converte yyyy-mm-dd → dd/mm/aaaa para o campo de texto
+        const brData = (iso) => { if(!iso) return ''; const [a,m,d] = iso.split('-'); return `${d}/${m}/${a}`; };
+        document.getElementById('editObraGlobalIni').value = brData(obra.data_inicio);
+        document.getElementById('editObraGlobalFim').value = brData(obra.data_fim);
         
         const prog = obra.progresso || 0;
         document.getElementById('editObraGlobalProg').value = prog;
@@ -4184,19 +4254,29 @@ function mudarPagina(direcao) {
     
     async function salvarEdicaoObraGlobal() {
         const id = document.getElementById('editObraGlobalId').value;
-        const cnpj = document.getElementById('editObraGlobalCnpj').value;
+        let buscaVal = document.getElementById('editObraGlobalCnpjBusca').value.trim();
+        let cnpj = document.getElementById('editObraGlobalCnpj').value;
+        if (buscaVal.includes(' - ')) {
+            cnpj = buscaVal.split(' - ')[0].trim();
+        } else if (buscaVal) {
+            cnpj = buscaVal;
+        }
+
         const nome = document.getElementById('editObraGlobalNome').value.trim();
         const orc = document.getElementById('editObraGlobalOrcamento').value.trim();
-        const dIni = document.getElementById('editObraGlobalIni').value;
-        const dFim = document.getElementById('editObraGlobalFim').value;
+        // Converte dd/mm/aaaa → yyyy-mm-dd para salvar no banco
+        const isoData = (br) => { if(!br || br.length < 10) return null; const [d,m,a] = br.split('/'); if(!d||!m||!a) return null; return `${a}-${m}-${d}`; };
+        const dIni = isoData(document.getElementById('editObraGlobalIni').value);
+        const dFim = isoData(document.getElementById('editObraGlobalFim').value);
         const prog = document.getElementById('editObraGlobalProg').value;
         const btn = document.getElementById('btnSalvarObraGlobal');
         
-        if(!nome) return;
+        if(!nome || !cnpj) { alert("Nome e Cliente são obrigatórios."); return; }
         const originalHTML = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
 
         try {
             let payload = { 
+                cliente_cnpj: cnpj,
                 nome_obra: nome, 
                 codigo_orcamento: orc || null,
                 progresso: parseInt(prog) || 0,
@@ -4215,9 +4295,136 @@ function mudarPagina(direcao) {
             
             carregarProjetosPCP();
             carregarDashboardKanban();
-            if(clienteSelecionado === cnpj) { carregarObrasCliente(cnpj); }
+            if(typeof clienteSelecionado !== 'undefined' && clienteSelecionado === cnpj) { carregarObrasCliente(cnpj); }
         } catch(e) { alert("Erro ao salvar edição."); } 
         finally { btn.innerHTML = originalHTML; }
+    }
+
+    function copiarData(idStr) {
+        const val = document.getElementById(idStr).value;
+        if (val) {
+            navigator.clipboard.writeText(val).then(() => {
+                alert("Data copiada: " + val);
+            });
+        } else {
+            alert("Nenhuma data para copiar.");
+        }
+    }
+    
+    async function colarData(idStr) {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text && text.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                document.getElementById(idStr).value = text;
+            } else {
+                alert("O texto na área de transferência não é uma data válida (AAAA-MM-DD). Use o formato correto.");
+            }
+        } catch (err) {
+            alert("Não foi possível colar da área de transferência.");
+        }
+    }
+
+    async function duplicarObraKanban(obraEncoded) {
+        if(confirm("Deseja criar uma cópia deste projeto?")) {
+            const obra = JSON.parse(decodeURIComponent(obraEncoded));
+            
+            let clId = obra.cliente_id || null;
+            if (!clId && obra.cliente_cnpj) {
+                const cObj = encontrarClienteGlobal(obra.cliente_cnpj);
+                if (cObj && cObj.id) clId = cObj.id;
+            }
+
+            const payload = {
+                empresa_id: empresaIdLogada,
+                cliente_id: clId,
+                cliente_cnpj: obra.cliente_cnpj,
+                nome_obra: obra.nome_obra ? obra.nome_obra + ' (Cópia)' : 'Projeto (Cópia)',
+                numero_orcamento: obra.codigo_orcamento || obra.numero_orcamento,
+                codigo_orcamento: obra.codigo_orcamento || obra.numero_orcamento,
+                data_inicio: obra.data_inicio,
+                data_fim: obra.data_fim,
+                status_kanban: obra.status_kanban || 'aguardando_engenharia',
+                progresso: obra.progresso || 0,
+                checklist_etapas: obra.checklist_etapas || [],
+                historico_timeline: obra.historico_timeline || [],
+                especificacoes_tecnicas: obra.especificacoes_tecnicas || {}
+            };
+            
+            if (!payload.cliente_id) delete payload.cliente_id;
+            if (!payload.cliente_cnpj) delete payload.cliente_cnpj;
+            if (!payload.numero_orcamento) delete payload.numero_orcamento;
+            if (!payload.codigo_orcamento) delete payload.codigo_orcamento;
+            
+            try {
+                const { error } = await supabaseClient.from('obras').insert([payload]);
+                if (error) throw error;
+                
+                if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
+                if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+                if (typeof clienteSelecionado !== 'undefined' && clienteSelecionado === obra.cliente_cnpj && typeof carregarObrasCliente === 'function') { 
+                    carregarObrasCliente(obra.cliente_cnpj); 
+                }
+                
+                alert("Projeto duplicado com sucesso!");
+            } catch (e) {
+                console.error("Erro ao duplicar:", e);
+                alert("Erro ao duplicar projeto: " + e.message);
+            }
+        }
+    }
+
+    // Duplica o projeto e já abre o modal de edição para renomear
+    async function duplicarObraCliente(obraEncoded) {
+        const obra = JSON.parse(decodeURIComponent(obraEncoded));
+
+        let clId = obra.cliente_id || null;
+        if (!clId && obra.cliente_cnpj) {
+            const cObj = encontrarClienteGlobal(obra.cliente_cnpj);
+            if (cObj && cObj.id) clId = cObj.id;
+        }
+
+        const payload = {
+            empresa_id: empresaIdLogada,
+            cliente_id: clId || undefined,
+            cliente_cnpj: obra.cliente_cnpj,
+            nome_obra: (obra.nome_obra || 'Projeto') + ' (Cópia)',
+            numero_orcamento: obra.codigo_orcamento || obra.numero_orcamento || null,
+            codigo_orcamento: obra.codigo_orcamento || obra.numero_orcamento || null,
+            data_inicio: obra.data_inicio || null,
+            data_fim: obra.data_fim || null,
+            etapa_pcp_id: obra.etapa_pcp_id || 1,
+            status_kanban: obra.status_kanban || 'aguardando_engenharia',
+            progresso: 0,
+            checklist_etapas: obra.checklist_etapas || [],
+            historico_timeline: [],
+            especificacoes_tecnicas: obra.especificacoes_tecnicas || {}
+        };
+
+        if (!payload.cliente_id) delete payload.cliente_id;
+        if (!payload.numero_orcamento) delete payload.numero_orcamento;
+        if (!payload.codigo_orcamento) delete payload.codigo_orcamento;
+
+        try {
+            const { data: novaObra, error } = await supabaseClient
+                .from('obras')
+                .insert([payload])
+                .select()
+                .single();
+            if (error) throw error;
+
+            // Recarrega a lista e abre o modal já com o projeto novo
+            await carregarObrasCliente(clienteSelecionado);
+            if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
+            if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+
+            // Abre o modal de edição já com os dados do projeto duplicado
+            const novaCodificada = encodeURIComponent(JSON.stringify(novaObra));
+            abrirEdicaoObraGlobal(novaCodificada);
+
+        } catch (e) {
+            console.error("Erro ao duplicar:", e);
+            alert("Erro ao duplicar projeto: " + e.message);
+        }
     }
 
     async function excluirObra(id) { 
@@ -4386,7 +4593,11 @@ function mudarPagina(direcao) {
             data.forEach(t => {
                 const statusClass = t.status === 'aberto' ? 'ticket-aberto' : 'ticket-respondido'; const badge = t.status === 'aberto' ? `<span class="badge-ticket" style="background: var(--azul-sutil);">Aguardando Análise</span>` : `<span class="badge-ticket" style="background: var(--sucesso);">Respondido</span>`; const dataFormatada = new Date(t.data_abertura).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit'});
                 let btnAcao = ''; if (p.tickets) { btnAcao = t.status === 'aberto' ? `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\Prime")}')" style="background:var(--azul-sutil);"><i class="fa-solid fa-reply"></i> Responder Cliente</button>` : `<button class="btn-acao" onclick="abrirModalResposta('${t.id}', '${t.assunto}', '${t.mensagem.replace(/'/g, "\\Prime")}')" style="background:transparent; border:1px solid var(--sucesso); color:var(--sucesso);"><i class="fa-solid fa-eye"></i> Visualizar Resposta</button>`; }
-                let nomeCli = 'Cliente não encontrado'; const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(t.cliente_cnpj)); if(cliMatch) nomeCli = cliMatch.razao_social;
+                let nomeCli = t.cliente_cnpj || 'Sem Cliente'; 
+                if (t.cliente_cnpj) {
+                    const cliMatch = encontrarClienteGlobal(t.cliente_cnpj); 
+                    if(cliMatch) nomeCli = cliMatch.razao_social;
+                }
                 html += `<div class="ticket-card ${statusClass}"><div style="flex: 1; padding-right: 15px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom: 8px;">${badge} <span style="font-size: 0.78rem; color: var(--texto-secundario);"><i class="fa-regular fa-clock"></i> ${dataFormatada}</span></div><h4 style="color: var(--azul-marca); font-size: 1rem; margin-bottom: 6px;">${t.assunto}</h4><p style="font-size: 0.85rem; color: var(--texto-principal); margin-bottom: 8px; font-weight: 600;"><i class="fa-regular fa-building"></i> Requerente: ${nomeCli}</p><p style="color: var(--texto-secundario); font-size: 0.88rem; line-height: 1.4; background: #f8fafc; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">"${t.mensagem}"</p></div><div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width: 160px;">${btnAcao}</div></div>`;
             });
             container.innerHTML = html;
@@ -4581,6 +4792,10 @@ function mudarPagina(direcao) {
 
     // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
     async function carregarProjetosPCP() {
+        // Garante que a lista de clientes está carregada antes de exibir nomes
+        if (listaGlobalClientes.length === 0) {
+            await carregarListaClientesGlobais();
+        }
         const board = document.getElementById('boardPCP');
         if(!board) return;
         
@@ -4602,12 +4817,28 @@ function mudarPagina(direcao) {
         });
 
         try {
-            let query = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false });
+            // Busca obras e clientes em paralelo para garantir que os nomes apareçam
+            let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false });
             if (!isMaster && cnpjsPermitidos.length > 0) {
-                query = query.in('cliente_cnpj', cnpjsPermitidos);
+                queryObras = queryObras.in('cliente_cnpj', cnpjsPermitidos);
             }
-            const { data, error } = await query;
+            const [{ data, error }, { data: clientesDB }] = await Promise.all([
+                queryObras,
+                supabaseClient.from('clientes').select('cnpj, razao_social').eq('empresa_id', empresaIdLogada)
+            ]);
             if (error) throw error;
+
+            // Atualiza o cache global com os dados frescos
+            if (clientesDB && clientesDB.length > 0) {
+                listaGlobalClientes = clientesDB.map(c => ({ ...c }));
+            }
+
+            // Mapa rápido CNPJ (apenas dígitos) → Razão Social
+            const mapaClientes = {};
+            (clientesDB || []).forEach(c => {
+                const key = String(c.cnpj).replace(/\D/g, '');
+                if (key) mapaClientes[key] = c.razao_social;
+            });
 
             const contadores = {};
             etapasPCP.forEach(e => contadores[e.id] = 0);
@@ -4630,9 +4861,13 @@ function mudarPagina(direcao) {
                     if (containerColuna) {
                         contadores[etapaObj.id]++;
                         
-                        let nomeCli = 'Cliente não encontrado';
-                        const cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(obra.cliente_cnpj));
-                        if (cliMatch) nomeCli = cliMatch.razao_social;
+                        let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
+                        if (obra.cliente_cnpj) {
+                            const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
+                            if (mapaClientes[cnpjKey]) {
+                                nomeCli = mapaClientes[cnpjKey];
+                            }
+                        }
                         
                         const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
                         const cliT = nomeCli ? nomeCli.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
@@ -4647,6 +4882,9 @@ function mudarPagina(direcao) {
                             <div class="card-op-footer">
                                 <span class="card-op-progress">${obra.progresso || 0}% Concluído</span>
                                 <div class="card-op-actions">
+                                    <button onclick="event.stopPropagation(); duplicarObraKanban('${oCodificada}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--alerta); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Duplicar Projeto">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
                                     <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
                                         <i class="fa-solid fa-paperclip"></i>
                                     </button>
