@@ -20,7 +20,8 @@
     </script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+            <!-- Biblioteca para Leitura de Excel (SheetJS) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         :root { 
             /* Cores Padrão - Podem ser sobrescritas pelo Tema Master */
@@ -1523,6 +1524,9 @@
                         <button type="button" class="btn-acao" onclick="abrirModalConfigPCP()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Fluxo">
                             <i class="fa-solid fa-gears"></i> Etapas
                         </button>
+                        <button type="button" class="btn-acao" onclick="document.getElementById('modalImportarExcel').style.display='flex'" style="background: #10b981; color: white; border: none;" title="Importar Projetos">
+                            <i class="fa-solid fa-file-excel"></i> Importar Excel
+                        </button>
                     </div>
                 </div>
 
@@ -2146,7 +2150,34 @@
             </div>
         </div>
     </div>
+<!-- MODAL DE IMPORTAÇÃO DE EXCEL (OBRAS) -->
+<div id="modalImportarExcel" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid #10b981;">
+        <h3 style="color: var(--azul-marca); margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
+            <i class="fa-solid fa-file-excel" style="color: #10b981;"></i> Importar Projetos em Lote
+        </h3>
+        
+        <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px;">
+            <label style="cursor: pointer; display: block; color: var(--azul-marca); font-weight: 600;">
+                <i class="fa-solid fa-upload" style="font-size: 2rem; color: var(--azul-sutil); margin-bottom: 10px; display: block;"></i>
+                Clique para selecionar a Planilha (.xlsx, .xls)
+                <input type="file" id="arquivoExcelObras" accept=".xlsx, .xls" style="display: none;" onchange="document.getElementById('nomeArquivoExcel').innerText = this.files[0]?.name || ''">
+            </label>
+            <div id="nomeArquivoExcel" style="margin-top: 10px; font-size: 0.85rem; color: var(--sucesso); font-weight: bold;"></div>
+        </div>
 
+        <p style="font-size: 0.8rem; color: var(--texto-secundario); margin-bottom: 20px; line-height: 1.4;">
+            <strong>Atenção:</strong> A planilha deve conter os cabeçalhos exatos: <em>NÚMERO DO PROCESSO, NOME DA OBRA, DATA INICIO, DATA FIM, CNPJ, TOTAL DE QUADROS</em>. O CNPJ é obrigatório para vincular ao cliente.
+        </p>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="document.getElementById('modalImportarExcel').style.display='none'; document.getElementById('arquivoExcelObras').value='';" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1; flex: 1;">Cancelar</button>
+            <button type="button" id="btnProcessarExcel" onclick="processarPlanilhaProjetos()" class="btn-acao" style="background: #10b981; flex: 2;">
+                <i class="fa-solid fa-bolt"></i> Processar Importação
+            </button>
+        </div>
+    </div>
+</div>
 <!-- ================= SCRIPTS ================= -->
 <script>
     if (typeof window.supabase === 'undefined') { alert("⚠️ ERRO CRÍTICO: O motor do banco de dados não carregou."); }
@@ -4325,36 +4356,53 @@ function mudarPagina(direcao) {
     }
 
    async function duplicarObraKanban(obraEncoded) {
-    if(confirm("Deseja criar uma cópia deste projeto?")) {
-        const obra = JSON.parse(decodeURIComponent(obraEncoded));
+    const obra = JSON.parse(decodeURIComponent(obraEncoded));
 
-        const payload = {
+    // 1. Pergunta a quantidade de quadros a serem gerados
+    const qtdStr = prompt(`Quantas cópias do quadro "${obra.nome_obra}" você deseja gerar?`, "1");
+    if (!qtdStr) return; // Se o usuário cancelar
+
+    const qtd = parseInt(qtdStr, 10);
+    if (isNaN(qtd) || qtd <= 0) {
+        alert("Quantidade inválida.");
+        return;
+    }
+
+    // 2. Prepara a lista de quadros (Bulk Insert)
+    const payloads = [];
+    for (let i = 1; i <= qtd; i++) {
+        // Se for mais de 1, enumera as cópias para facilitar a identificação no Kanban
+        const sufixo = qtd > 1 ? ` (Cópia ${i})` : ' (Cópia)';
+        
+        payloads.push({
             empresa_id: empresaIdLogada,
-            cliente_cnpj: obra.cliente_cnpj,
-            nome_obra: obra.nome_obra ? obra.nome_obra + ' (Cópia)' : 'Projeto (Cópia)',
-            codigo_orcamento: obra.codigo_orcamento || null, // Apenas a coluna correta aqui
+            cliente_cnpj: obra.cliente_cnpj, // Vínculo OBRIGATÓRIO
+            nome_obra: obra.nome_obra ? obra.nome_obra + sufixo : 'Projeto' + sufixo,
+            codigo_orcamento: obra.codigo_orcamento || null,
             data_inicio: obra.data_inicio || null,
             data_fim: obra.data_fim || null,
-            etapa_pcp_id: obra.etapa_pcp_id || 1,
-            progresso: obra.progresso || 0,
+            etapa_pcp_id: obra.etapa_pcp_id || 1, // Mantém na etapa atual ou joga pro Início
+            progresso: 0, // Força 0% pois são quadros novos
             dados_checklist: obra.dados_checklist || {}
-        };
+        });
+    }
+    
+    try {
+        // 3. Insere todos os quadros de uma vez no banco de dados
+        const { error } = await supabaseClient.from('obras').insert(payloads);
+        if (error) throw error;
         
-        try {
-            const { error } = await supabaseClient.from('obras').insert([payload]);
-            if (error) throw error;
-            
-            if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
-            if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
-            if (typeof clienteSelecionado !== 'undefined' && clienteSelecionado === obra.cliente_cnpj && typeof carregarObrasCliente === 'function') { 
-                carregarObrasCliente(obra.cliente_cnpj); 
-            }
-            
-            alert("Projeto duplicado com sucesso!");
-        } catch (e) {
-            console.error("Erro ao duplicar:", e);
-            alert("Erro ao duplicar projeto: " + e.message);
+        // 4. Atualiza a tela
+        if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
+        if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+        if (typeof clienteSelecionado !== 'undefined' && clienteSelecionado === obra.cliente_cnpj && typeof carregarObrasCliente === 'function') { 
+            carregarObrasCliente(obra.cliente_cnpj); 
         }
+        
+        alert(`${qtd} quadro(s) gerado(s) com sucesso no PCP!`);
+    } catch (e) {
+        console.error("Erro ao duplicar:", e);
+        alert("Erro ao duplicar projeto: " + e.message);
     }
 }
 
@@ -4362,24 +4410,39 @@ function mudarPagina(direcao) {
  async function duplicarObraCliente(obraEncoded) {
     const obra = JSON.parse(decodeURIComponent(obraEncoded));
 
-    const payload = {
-        empresa_id: empresaIdLogada,
-        cliente_cnpj: obra.cliente_cnpj,
-        nome_obra: (obra.nome_obra || 'Projeto') + ' (Cópia)',
-        codigo_orcamento: obra.codigo_orcamento || null, // Apenas a coluna correta aqui
-        data_inicio: obra.data_inicio || null,
-        data_fim: obra.data_fim || null,
-        etapa_pcp_id: obra.etapa_pcp_id || 1,
-        progresso: 0,
-        dados_checklist: obra.dados_checklist || {}
-    };
+    const qtdStr = prompt(`Quantas cópias de "${obra.nome_obra}" você deseja gerar?`, "1");
+    if (!qtdStr) return; 
+
+    const qtd = parseInt(qtdStr, 10);
+    if (isNaN(qtd) || qtd <= 0) {
+        alert("Quantidade inválida.");
+        return;
+    }
+
+    const payloads = [];
+    for (let i = 1; i <= qtd; i++) {
+        const sufixo = qtd > 1 ? ` (Cópia ${i})` : ' (Cópia)';
+        
+        payloads.push({
+            empresa_id: empresaIdLogada,
+            cliente_cnpj: obra.cliente_cnpj, // Vínculo OBRIGATÓRIO
+            nome_obra: (obra.nome_obra || 'Projeto') + sufixo,
+            codigo_orcamento: obra.codigo_orcamento || null,
+            data_inicio: obra.data_inicio || null,
+            data_fim: obra.data_fim || null,
+            etapa_pcp_id: obra.etapa_pcp_id || 1, 
+            progresso: 0, 
+            dados_checklist: obra.dados_checklist || {}
+        });
+    }
 
     try {
-        const { data: novaObra, error } = await supabaseClient
+        // Dispara o Bulk Insert e pede o retorno dos dados (.select())
+        const { data: novasObras, error } = await supabaseClient
             .from('obras')
-            .insert([payload])
-            .select()
-            .single();
+            .insert(payloads)
+            .select();
+            
         if (error) throw error;
 
         // Recarrega as listas visuais
@@ -4387,9 +4450,14 @@ function mudarPagina(direcao) {
         if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
         if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
 
-        // Abre o modal de edição já com os dados do projeto duplicado para você renomear
-        const novaCodificada = encodeURIComponent(JSON.stringify(novaObra));
-        abrirEdicaoObraGlobal(novaCodificada);
+        // Só abre o modal de edição automaticamente se for apenas 1 cópia. 
+        // Se o cliente gerou 20 cópias, o sistema apenas avisa que deu certo.
+        if (qtd === 1 && novasObras && novasObras.length > 0) {
+            const novaCodificada = encodeURIComponent(JSON.stringify(novasObras[0]));
+            abrirEdicaoObraGlobal(novaCodificada);
+        } else {
+            alert(`${qtd} quadro(s) gerado(s) com sucesso!`);
+        }
 
     } catch (e) {
         console.error("Erro ao duplicar:", e);
@@ -6096,6 +6164,127 @@ async function executarImportacaoSupabase() {
         document.getElementById('etapaMapeamento').style.display = 'block';
         if (containerProgresso) containerProgresso.style.display = 'none';
     }
+}
+async function processarPlanilhaProjetos() {
+    const fileInput = document.getElementById('arquivoExcelObras');
+    if (!fileInput.files.length) {
+        alert("Por favor, selecione um arquivo Excel primeiro.");
+        return;
+    }
+
+    const btn = document.getElementById('btnProcessarExcel');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Desdobrando dados...';
+    btn.disabled = true;
+
+    const file = fileInput.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            
+            // raw: false força o Excel a entregar a data como texto (ex: 28/07/2025) e não como número serial
+            const linhasJson = XLSX.utils.sheet_to_json(worksheet, { raw: false }); 
+
+            if (linhasJson.length === 0) throw new Error("A planilha selecionada está vazia.");
+
+            const payloads = [];
+
+            // Função interna para corrigir data DD/MM/AAAA para AAAA-MM-DD do banco
+           const converterData = (dStr) => {
+    if (!dStr) return null;
+    
+    // Remove qualquer espaço extra por segurança
+    dStr = String(dStr).trim();
+    
+    const p = dStr.split('/');
+    if (p.length === 3) {
+        let dia = p[0];
+        let mes = p[1];
+        let ano = p[2];
+        
+        // Se o ano vier apenas com 2 dígitos (ex: "26"), transforma em "2026"
+        if (ano.length === 2) {
+            ano = '20' + ano;
+        }
+        
+        // Garante que o dia e o mês tenham sempre 2 dígitos (ex: "5" vira "05")
+        dia = dia.padStart(2, '0');
+        mes = mes.padStart(2, '0');
+        
+        return `${ano}-${mes}-${dia}`;
+    }
+    
+    return null;
+};
+            // Varre linha por linha da planilha Excel
+            linhasJson.forEach(row => {
+                const orcamento = row['NÚMERO DO PROCESSO'] || row['NUMERO DO PROCESSO'] || '';
+                const nomeObra = row['NOME DA OBRA'] || 'Projeto Sem Nome';
+                const dataIni = converterData(row['DATA INICIO'] || row['DATA INÍCIO']);
+                const dataFim = converterData(row['DATA FIM']);
+                const totalQuadros = parseInt(row['TOTAL DE QUADROS']) || 1;
+                
+                // Limpa o CNPJ (deixa só números)
+                const cnpjBruto = row['CNPJ'] || '';
+                const cnpjLimpo = String(cnpjBruto).replace(/\D/g, '');
+
+                // Se não tem CNPJ, ignoramos a linha para não dar erro no banco
+                if (!cnpjLimpo) return; 
+
+                // Mágica da Multiplicação e Numeração:
+                for (let i = 1; i <= totalQuadros; i++) {
+                    
+                    // Se tiver mais de 1, enumera na frente: "SED ALCÂNTARA - 1", "SED ALCÂNTARA - 2"
+                    const nomeFinal = totalQuadros > 1 ? `${nomeObra} - ${i}` : nomeObra;
+                    
+                    payloads.push({
+                        empresa_id: empresaIdLogada,
+                        cliente_cnpj: cnpjLimpo,
+                        nome_obra: nomeFinal,
+                        codigo_orcamento: String(orcamento),
+                        data_inicio: dataIni,
+                        data_fim: dataFim,
+                        etapa_pcp_id: 1, // Joga todo mundo no início do funil (Projeto / Engenharia)
+                        progresso: 0,
+                        dados_checklist: {}
+                    });
+                }
+            });
+
+            if (payloads.length === 0) {
+                throw new Error("Não foi possível montar os cartões. Verifique se a coluna CNPJ está preenchida corretamente na planilha.");
+            }
+
+            // Manda todos os cartões (pode ser 10, pode ser 200) de uma vez só para o Supabase
+            const { error } = await supabaseClient.from('obras').insert(payloads);
+            if (error) throw error;
+
+            alert(`${payloads.length} quadro(s) importado(s) com sucesso para o PCP!`);
+            
+            // Fecha modal e limpa input
+            document.getElementById('modalImportarExcel').style.display = 'none';
+            document.getElementById('arquivoExcelObras').value = '';
+            document.getElementById('nomeArquivoExcel').innerText = '';
+            
+            // Recarrega as telas
+            if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
+            if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+
+        } catch (err) {
+            console.error("Erro na importação:", err);
+            alert("Erro na importação: " + err.message);
+        } finally {
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Processar Importação';
+            btn.disabled = false;
+        }
+    };
+    
+    reader.readAsArrayBuffer(file);
 }
 </script>
 <!-- Modal de Importação -->
