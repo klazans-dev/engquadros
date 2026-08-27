@@ -168,6 +168,11 @@
         .card-op:active { cursor: grabbing; transform: scale(1.02); }
         .card-op h5 { color: var(--azul-marca); font-size: 0.88rem; margin-bottom: 4px; line-height: 1.2; }
         .card-op p { font-size: 0.75rem; color: var(--texto-secundario); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+        .card-op-footer { margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 8px; display: flex; flex-direction: column; gap: 8px; }
+        .card-op-progress { font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario); }
+        .card-op-actions { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; max-width: 100%; }
+        .card-op-actions button { flex-shrink: 0; }
+        .pcp-toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
         
         /* MODO TV */
         body.modo-tv-ativo aside { display: none !important; }
@@ -1132,7 +1137,7 @@
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 8px;">
+                    <div class="pcp-toolbar-actions">
                         <button type="button" class="btn-acao" onclick="abrirModalConfigNotificacoes()" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;">
                             <i class="fa-solid fa-gear"></i> Mensagens Wpp
                         </button>
@@ -1142,7 +1147,7 @@
                         <button type="button" class="btn-acao" onclick="toggleModoTV()" id="btnModoTv" style="background: #0f172a;">
                             <i class="fa-solid fa-tv"></i> Modo TV / Painel
                         </button>
-                    <button type="button" class="btn-acao" onclick="abrirModalConfigProcessos()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Processos">
+                        <button type="button" class="btn-acao" onclick="abrirModalConfigProcessos()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Processos">
                             <i class="fa-solid fa-list-check"></i> Processos
                         </button>
                         <button type="button" class="btn-acao" onclick="abrirModalConfigPCP()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Fluxo">
@@ -2666,11 +2671,8 @@ function renderizarCardClient(cliente) {
     const numeroLimpo = cliente.whatsapp ? cliente.whatsapp.replace(/\D/g, '') : '';
     const linkWhatsapp = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : '#';
 
-    // Garante que se o nome do cliente tiver aspas (ex: D'Avila), não quebre o clique
-    const nomeSeguro = cliente.razao_social ? cliente.razao_social.replace(/'/g, "\\'") : 'Cliente';
-
     return `
-        <div class="card-box item-cliente" onclick="abrirPainelCliente('${cliente.id}', '${nomeSeguro}')" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.04)';">
+        <div class="card-box item-cliente" onclick="prepararPainelCliente('${cliente.id}')" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.04)';">
             
             <div>
                 <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${cliente.razao_social || 'Cliente'}">
@@ -2699,8 +2701,23 @@ function renderizarCardClient(cliente) {
             </div>
         </div>
     `;
-}
+}window.prepararPainelCliente = async function(clienteId) {
+    try {
+        const { data: clienteCompleto, error } = await supabaseClient
+            .from('clientes')
+            .select('*')
+            .eq('id', clienteId)
+            .single();
 
+        if (error) throw error;
+        
+        abrirPainelCliente(clienteCompleto);
+
+    } catch (err) {
+        console.error("Erro ao preparar dados do cliente:", err);
+        alert("Erro ao carregar os dados completos do cliente.");
+    }
+};
 // Função auxiliar para criar os botões de Próxima / Anterior
 function renderizarControlesPaginacao(totalRegistros) {
     let containerPaginacao = document.getElementById('paginacaoContainer');
@@ -2922,10 +2939,53 @@ function mudarPagina(direcao) {
     }
 
     function prepararUploadParaObra(obraId) {
-        const secUpload = document.getElementById('secUpload'); if(secUpload.style.display === 'none' || secUpload.style.display === '') { toggleMainSection('secUpload', 'iconeSecUp'); }
-        const select = document.getElementById('selectObraUpload'); if(select) select.value = obraId;
-        const boxUpload = document.getElementById('boxUploadInteiro'); if(boxUpload) boxUpload.scrollIntoView({ behavior: 'smooth' });
-        const campoBox = select.parentElement; campoBox.style.backgroundColor = '#dbeafe'; setTimeout(() => { campoBox.style.backgroundColor = '#f1f5f9'; }, 1500);
+        const secUpload = document.getElementById('secUpload');
+        if (secUpload && (secUpload.style.display === 'none' || secUpload.style.display === '')) {
+            toggleMainSection('secUpload', 'iconeSecUp');
+        }
+        const secAcervo = document.getElementById('secAcervo');
+        if (secAcervo && (secAcervo.style.display === 'none' || secAcervo.style.display === '')) {
+            toggleMainSection('secAcervo', 'iconeSecAcervo');
+        }
+        const select = document.getElementById('selectObraUpload');
+        if (select) select.value = obraId;
+        const boxUpload = document.getElementById('boxUploadInteiro');
+        if (boxUpload) boxUpload.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (select && select.parentElement) {
+            const campoBox = select.parentElement;
+            campoBox.style.backgroundColor = '#dbeafe';
+            setTimeout(() => { campoBox.style.backgroundColor = '#f1f5f9'; }, 1500);
+        }
+    }
+
+    async function abrirUploadViaPCP(cnpj, obraId) {
+        let cliMatch = listaGlobalClientes.find(c => String(c.cnpj) === String(cnpj));
+
+        if (!cliMatch) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('clientes')
+                    .select('*')
+                    .eq('cnpj', cnpj)
+                    .eq('empresa_id', empresaIdLogada)
+                    .maybeSingle();
+                if (error) throw error;
+                cliMatch = data;
+            } catch (e) {
+                alert("Erro: Cliente não localizado no banco de dados.");
+                return;
+            }
+        }
+
+        if (!cliMatch) {
+            alert("Erro: Cliente não localizado no banco de dados.");
+            return;
+        }
+
+        abrirTelaAcao('gestaoClientes');
+        await abrirPainelCliente(cliMatch);
+        await carregarObrasCliente(String(cnpj).trim());
+        prepararUploadParaObra(obraId);
     }
 
     async function carregarObrasCliente(cnpj) {
@@ -3540,20 +3600,17 @@ function mudarPagina(direcao) {
                             <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
                             ${obra.codigo_orcamento ? `<p><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
                             
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
-                                <span style="font-size: 0.75rem; font-weight: 700; color: var(--texto-secundario);">${obra.progresso || 0}% Concluído</span>
-                                
-                                <div style="display: flex; gap: 5px;">
+                            <div class="card-op-footer">
+                                <span class="card-op-progress">${obra.progresso || 0}% Concluído</span>
+                                <div class="card-op-actions">
                                     <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
                                         <i class="fa-solid fa-paperclip"></i>
                                     </button>
-                                    
                                     <button onclick="event.stopPropagation(); imprimirObraDiretoPCP(${obra.id}, '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
                                         <i class="fa-solid fa-print"></i>
                                     </button>
-                                    
-                                    <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; display: flex; align-items: center; gap: 5px;" title="Abrir Processos">
-                                        <i class="fa-solid fa-list-check"></i> Processos
+                                    <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Processos (Checklist)">
+                                        <i class="fa-solid fa-list-check"></i>
                                     </button>
                                 </div>
                             </div>
