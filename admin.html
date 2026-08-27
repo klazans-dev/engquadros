@@ -6188,28 +6188,6 @@ async function processarPlanilhaProjetos() {
 
             if (linhasJson.length === 0) throw new Error("A planilha selecionada está vazia.");
 
-            // 1. Extrair todos os CNPJs únicos da planilha para buscar no banco
-            const cnpjsNaPlanilha = [...new Set(linhasJson.map(row => String(row['CNPJ'] || '').replace(/\D/g, '')).filter(cnpj => cnpj !== ''))];
-
-            // 2. Buscar no Supabase os IDs oficiais desses clientes
-            let mapaClientes = {};
-            if (cnpjsNaPlanilha.length > 0) {
-                // ATENÇÃO: Se a coluna de CNPJ na sua tabela de clientes tiver outro nome (ex: cnpj_cpf ou documento), altere a palavra 'cnpj' abaixo:
-                const { data: clientesBuscados, error: errCli } = await supabaseClient
-                    .from('clientes')
-                    .select('id, cnpj') 
-                    .in('cnpj', cnpjsNaPlanilha)
-                    .eq('empresa_id', empresaIdLogada);
-
-                if (errCli) throw errCli;
-
-                // Monta um "dicionário" para achar o ID rápido: mapaClientes['02783087000146'] = 'uuid-do-cliente'
-                clientesBuscados.forEach(cli => {
-                    const cnpjLimpoDb = String(cli.cnpj).replace(/\D/g, '');
-                    mapaClientes[cnpjLimpoDb] = cli.id;
-                });
-            }
-
             const payloads = [];
 
             // Função para corrigir data (com a regra do ano "2026")
@@ -6227,14 +6205,13 @@ async function processarPlanilhaProjetos() {
                 return null;
             };
 
-            // 3. Montar os cartões para o banco de dados
+            // Montar os cartões para o banco de dados
             linhasJson.forEach(row => {
                 const cnpjBruto = row['CNPJ'] || '';
                 const cnpjLimpo = String(cnpjBruto).replace(/\D/g, '');
-                if (!cnpjLimpo) return; // Pula linha sem CNPJ
-
-                // Busca o ID interno do cliente que mapeamos no passo 2
-                const idOficialCliente = mapaClientes[cnpjLimpo] || null; 
+                
+                // Se não tiver CNPJ na linha da planilha, pula para não dar erro
+                if (!cnpjLimpo) return; 
 
                 const orcamento = row['NÚMERO DO PROCESSO'] || row['NUMERO DO PROCESSO'] || '';
                 const nomeObra = row['NOME DA OBRA'] || 'Projeto Sem Nome';
@@ -6247,8 +6224,7 @@ async function processarPlanilhaProjetos() {
                     
                     payloads.push({
                         empresa_id: empresaIdLogada,
-                        cliente_cnpj: cnpjLimpo,
-                        cliente_id: idOficialCliente, // <-- AQUI ESTÁ O SEGREDO DO VÍNCULO!
+                        cliente_cnpj: cnpjLimpo, // O vínculo com o cliente é feito exclusivamente por aqui!
                         nome_obra: nomeFinal,
                         codigo_orcamento: String(orcamento),
                         data_inicio: dataIni,
@@ -6261,21 +6237,20 @@ async function processarPlanilhaProjetos() {
             });
 
             if (payloads.length === 0) {
-                throw new Error("Não foi possível gerar os cartões. Verifique os CNPJs na planilha.");
+                throw new Error("Não foi possível gerar os cartões. Verifique se a coluna CNPJ está preenchida.");
             }
 
-            // 4. Inserir todos de uma vez
+            // Inserir todos de uma vez no Supabase
             const { error } = await supabaseClient.from('obras').insert(payloads);
             if (error) throw error;
 
-            alert(`${payloads.length} quadro(s) importado(s) e vinculados aos clientes com sucesso!`);
+            alert(`${payloads.length} quadro(s) importado(s) com sucesso!`);
             
-            // Limpa a tela
+            // Limpa a tela e fecha o modal
             document.getElementById('modalImportarExcel').style.display = 'none';
             document.getElementById('arquivoExcelObras').value = '';
-            document.getElementById('nomeArquivoExcel').innerText = '';
             
-            // Atualiza os painéis
+            // Atualiza os painéis visuais
             if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
             if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
 
