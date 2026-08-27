@@ -6173,8 +6173,7 @@ async function processarPlanilhaProjetos() {
     }
 
     const btn = document.getElementById('btnProcessarExcel');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Desdobrando dados...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analisando dados...';
     btn.disabled = true;
 
     const file = fileInput.files[0];
@@ -6184,72 +6183,77 @@ async function processarPlanilhaProjetos() {
         try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[firstSheetName];
-            
-            // raw: false força o Excel a entregar a data como texto (ex: 28/07/2025) e não como número serial
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
             const linhasJson = XLSX.utils.sheet_to_json(worksheet, { raw: false }); 
 
             if (linhasJson.length === 0) throw new Error("A planilha selecionada está vazia.");
 
+            // 1. Extrair todos os CNPJs únicos da planilha para buscar no banco
+            const cnpjsNaPlanilha = [...new Set(linhasJson.map(row => String(row['CNPJ'] || '').replace(/\D/g, '')).filter(cnpj => cnpj !== ''))];
+
+            // 2. Buscar no Supabase os IDs oficiais desses clientes
+            let mapaClientes = {};
+            if (cnpjsNaPlanilha.length > 0) {
+                // ATENÇÃO: Se a coluna de CNPJ na sua tabela de clientes tiver outro nome (ex: cnpj_cpf ou documento), altere a palavra 'cnpj' abaixo:
+                const { data: clientesBuscados, error: errCli } = await supabaseClient
+                    .from('clientes')
+                    .select('id, cnpj') 
+                    .in('cnpj', cnpjsNaPlanilha)
+                    .eq('empresa_id', empresaIdLogada);
+
+                if (errCli) throw errCli;
+
+                // Monta um "dicionário" para achar o ID rápido: mapaClientes['02783087000146'] = 'uuid-do-cliente'
+                clientesBuscados.forEach(cli => {
+                    const cnpjLimpoDb = String(cli.cnpj).replace(/\D/g, '');
+                    mapaClientes[cnpjLimpoDb] = cli.id;
+                });
+            }
+
             const payloads = [];
 
-            // Função interna para corrigir data DD/MM/AAAA para AAAA-MM-DD do banco
-           const converterData = (dStr) => {
-    if (!dStr) return null;
-    
-    // Remove qualquer espaço extra por segurança
-    dStr = String(dStr).trim();
-    
-    const p = dStr.split('/');
-    if (p.length === 3) {
-        let dia = p[0];
-        let mes = p[1];
-        let ano = p[2];
-        
-        // Se o ano vier apenas com 2 dígitos (ex: "26"), transforma em "2026"
-        if (ano.length === 2) {
-            ano = '20' + ano;
-        }
-        
-        // Garante que o dia e o mês tenham sempre 2 dígitos (ex: "5" vira "05")
-        dia = dia.padStart(2, '0');
-        mes = mes.padStart(2, '0');
-        
-        return `${ano}-${mes}-${dia}`;
-    }
-    
-    return null;
-};
-            // Varre linha por linha da planilha Excel
+            // Função para corrigir data (com a regra do ano "2026")
+            const converterData = (dStr) => {
+                if (!dStr) return null;
+                dStr = String(dStr).trim();
+                const p = dStr.split('/');
+                if (p.length === 3) {
+                    let dia = p[0].padStart(2, '0');
+                    let mes = p[1].padStart(2, '0');
+                    let ano = p[2];
+                    if (ano.length === 2) ano = '20' + ano;
+                    return `${ano}-${mes}-${dia}`;
+                }
+                return null;
+            };
+
+            // 3. Montar os cartões para o banco de dados
             linhasJson.forEach(row => {
+                const cnpjBruto = row['CNPJ'] || '';
+                const cnpjLimpo = String(cnpjBruto).replace(/\D/g, '');
+                if (!cnpjLimpo) return; // Pula linha sem CNPJ
+
+                // Busca o ID interno do cliente que mapeamos no passo 2
+                const idOficialCliente = mapaClientes[cnpjLimpo] || null; 
+
                 const orcamento = row['NÚMERO DO PROCESSO'] || row['NUMERO DO PROCESSO'] || '';
                 const nomeObra = row['NOME DA OBRA'] || 'Projeto Sem Nome';
                 const dataIni = converterData(row['DATA INICIO'] || row['DATA INÍCIO']);
                 const dataFim = converterData(row['DATA FIM']);
                 const totalQuadros = parseInt(row['TOTAL DE QUADROS']) || 1;
                 
-                // Limpa o CNPJ (deixa só números)
-                const cnpjBruto = row['CNPJ'] || '';
-                const cnpjLimpo = String(cnpjBruto).replace(/\D/g, '');
-
-                // Se não tem CNPJ, ignoramos a linha para não dar erro no banco
-                if (!cnpjLimpo) return; 
-
-                // Mágica da Multiplicação e Numeração:
                 for (let i = 1; i <= totalQuadros; i++) {
-                    
-                    // Se tiver mais de 1, enumera na frente: "SED ALCÂNTARA - 1", "SED ALCÂNTARA - 2"
                     const nomeFinal = totalQuadros > 1 ? `${nomeObra} - ${i}` : nomeObra;
                     
                     payloads.push({
                         empresa_id: empresaIdLogada,
                         cliente_cnpj: cnpjLimpo,
+                        cliente_id: idOficialCliente, // <-- AQUI ESTÁ O SEGREDO DO VÍNCULO!
                         nome_obra: nomeFinal,
                         codigo_orcamento: String(orcamento),
                         data_inicio: dataIni,
                         data_fim: dataFim,
-                        etapa_pcp_id: 1, // Joga todo mundo no início do funil (Projeto / Engenharia)
+                        etapa_pcp_id: 1, 
                         progresso: 0,
                         dados_checklist: {}
                     });
@@ -6257,21 +6261,21 @@ async function processarPlanilhaProjetos() {
             });
 
             if (payloads.length === 0) {
-                throw new Error("Não foi possível montar os cartões. Verifique se a coluna CNPJ está preenchida corretamente na planilha.");
+                throw new Error("Não foi possível gerar os cartões. Verifique os CNPJs na planilha.");
             }
 
-            // Manda todos os cartões (pode ser 10, pode ser 200) de uma vez só para o Supabase
+            // 4. Inserir todos de uma vez
             const { error } = await supabaseClient.from('obras').insert(payloads);
             if (error) throw error;
 
-            alert(`${payloads.length} quadro(s) importado(s) com sucesso para o PCP!`);
+            alert(`${payloads.length} quadro(s) importado(s) e vinculados aos clientes com sucesso!`);
             
-            // Fecha modal e limpa input
+            // Limpa a tela
             document.getElementById('modalImportarExcel').style.display = 'none';
             document.getElementById('arquivoExcelObras').value = '';
             document.getElementById('nomeArquivoExcel').innerText = '';
             
-            // Recarrega as telas
+            // Atualiza os painéis
             if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
             if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
 
