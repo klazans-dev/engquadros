@@ -4815,21 +4815,42 @@ function mudarPagina(direcao) {
     let etapasPCP = [];
 
     function filtrarPCP() {
-        const termo = document.getElementById('filtroPcpTermo').value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.card-op');
+    const termo = document.getElementById('filtroPcpTermo').value.toLowerCase().trim();
+    const grupos = document.querySelectorAll('.kanban-grupo-cliente');
+
+    grupos.forEach(grupo => {
+        // Pega o nome do cliente no cabeçalho do grupo
+        const nomeCliente = grupo.querySelector('.kanban-grupo-header').innerText.toLowerCase();
+        const cards = grupo.querySelectorAll('.card-op');
+        let grupoTemCardVisivel = false;
 
         cards.forEach(card => {
             const textoCard = card.innerText.toLowerCase();
-            if (textoCard.includes(termo)) {
+            
+            // Verifica se o termo digitado está no nome do projeto OU no nome do cliente
+            if (textoCard.includes(termo) || nomeCliente.includes(termo)) {
                 card.style.display = 'block';
+                grupoTemCardVisivel = true;
             } else {
                 card.style.display = 'none';
             }
         });
-    }
+
+        // Oculta o grupo inteiro se nenhum cartão dentro dele corresponder à busca
+        if (grupoTemCardVisivel) {
+            grupo.style.display = 'block';
+            // Bônus: Se estiver pesquisando, já expande a sanfona automaticamente para facilitar a visão!
+            if (termo !== '') {
+                grupo.querySelector('.kanban-grupo-cards').style.display = 'block';
+            }
+        } else {
+            grupo.style.display = 'none';
+        }
+    });
+}
 
     // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
-  async function carregarProjetosPCP() {
+ async function carregarProjetosPCP() {
     // Garante que a lista de clientes está carregada antes de exibir nomes
     if (listaGlobalClientes.length === 0) {
         await carregarListaClientesGlobais();
@@ -4900,6 +4921,7 @@ function mudarPagina(direcao) {
                 
                 contadores[etapaObj.id]++;
                 
+                // Mantemos a busca do cliente para exibir no subtítulo do cartão
                 let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
                 if (obra.cliente_cnpj) {
                     const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
@@ -4907,15 +4929,20 @@ function mudarPagina(direcao) {
                         nomeCli = mapaClientes[cnpjKey];
                     }
                 }
+                obra.nomeCliResolved = nomeCli;
                 
-                // Se o cliente ainda não tem grupo nesta coluna, criamos um array vazio para ele
-                if (!obrasAgrupadas[etapaObj.id][nomeCli]) {
-                    obrasAgrupadas[etapaObj.id][nomeCli] = [];
+                // -------------------------------------------------------------
+                // MUDANÇA AQUI: Agrupando pelo NOME DA OBRA em vez do Cliente
+                // -------------------------------------------------------------
+                let chaveAgrupamento = obra.nome_obra || 'Projeto Sem Nome';
+                
+                // Se o projeto ainda não tem grupo nesta coluna, criamos um array vazio para ele
+                if (!obrasAgrupadas[etapaObj.id][chaveAgrupamento]) {
+                    obrasAgrupadas[etapaObj.id][chaveAgrupamento] = [];
                 }
                 
-                // Guarda o nome resolvido e adiciona a obra na pasta do cliente
-                obra.nomeCliResolved = nomeCli;
-                obrasAgrupadas[etapaObj.id][nomeCli].push(obra);
+                // Adiciona a obra na pasta correta do Projeto
+                obrasAgrupadas[etapaObj.id][chaveAgrupamento].push(obra);
             });
         }
 
@@ -4929,34 +4956,34 @@ function mudarPagina(direcao) {
                 let htmlColuna = '';
                 const gruposDestaColuna = obrasAgrupadas[etapa.id];
                 
-                // Ordena os clientes em ordem alfabética
-                const clientesNomes = Object.keys(gruposDestaColuna).sort();
+                // Ordena os Projetos em ordem alfabética
+                const nomesDosProjetos = Object.keys(gruposDestaColuna).sort();
 
-                clientesNomes.forEach(nomeCliente => {
-                    const obrasDoCliente = gruposDestaColuna[nomeCliente];
+                nomesDosProjetos.forEach(nomeDoProjeto => {
+                    const obrasNoGrupo = gruposDestaColuna[nomeDoProjeto];
                     
-                    // Cria o cabeçalho expansível do Cliente
+                    // Cria o cabeçalho expansível (Sanfona) agora com o Nome da Obra
                     htmlColuna += `
                     <div class="kanban-grupo-cliente" style="margin-bottom: 12px;">
                         <div class="kanban-grupo-header" onclick="const div = this.nextElementSibling; div.style.display = div.style.display === 'none' ? 'block' : 'none';" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid ${etapa.cor}; padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; color: var(--azul-marca); margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;"><i class="fa-regular fa-building"></i> ${nomeCliente}</span>
-                            <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem;">${obrasDoCliente.length}</span>
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;" title="${nomeDoProjeto}"><i class="fa-solid fa-folder-open"></i> ${nomeDoProjeto}</span>
+                            <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem;">${obrasNoGrupo.length}</span>
                         </div>
                         
-                        <!-- Os cartões ficam aqui dentro (display block exibe aberto por padrão, se quiser fechado mude para 'none') -->
+                        <!-- Os cartões ficam aqui dentro -->
                         <div class="kanban-grupo-cards" style="display: block; padding-left: 2px;">
                     `;
 
-                    // Loop para desenhar os cartões desse cliente
-                    obrasDoCliente.forEach(obra => {
+                    // Loop para desenhar os cartões desse projeto
+                    obrasNoGrupo.forEach(obra => {
                         const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
                         const cliT = obra.nomeCliResolved ? obra.nomeCliResolved.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
                         const oCodificada = encodeURIComponent(JSON.stringify(obra));
                         
-                        // O cartão em si (Removida a tag do nome do cliente, pois já está no cabeçalho)
+                        // O cartão em si (Agora mostrando o nome do CLIENTE no lugar onde ficava o título da obra)
                         htmlColuna += `
                         <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapa.cor}; cursor: pointer; margin-bottom: 8px;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
-                            <h5 style="margin-bottom: 5px;">${obra.nome_obra}</h5>
+                            <h5 style="margin-bottom: 5px; color: #475569; font-size: 0.75rem;"><i class="fa-regular fa-building"></i> ${cliT || 'Sem Cliente'}</h5>
                             ${obra.codigo_orcamento ? `<p style="margin-bottom: 8px;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
                             
                             <div class="card-op-footer">
