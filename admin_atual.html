@@ -6341,6 +6341,69 @@ async function processarPlanilhaProjetos() {
     
     reader.readAsArrayBuffer(file);
 }
+async function carregarObrasCliente(cnpjCliente) {
+    const container = document.getElementById('listaObrasContainer');
+    if (!container) return;
+
+    // Limpa a pontuação do CNPJ alvo para comparar com precisão absoluta
+    const cnpjAlvoLimpo = String(cnpjCliente || '').replace(/\D/g, '').trim();
+
+    container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</div>';
+
+    try {
+        // Busca todas as obras da empresa logada
+        const { data: obras, error } = await supabaseClient
+            .from('obras')
+            .select('*')
+            .eq('empresa_id', empresaIdLogada);
+
+        if (error) throw error;
+
+        // Filtra em JavaScript comparando apenas os números dos CNPJs
+        const obrasDoCliente = (obras || []).filter(o => {
+            const obraCnpjLimpo = String(o.cliente_cnpj || '').replace(/\D/g, '').trim();
+            return obraCnpjLimpo === cnpjAlvoLimpo;
+        });
+
+        if (obrasDoCliente.length === 0) {
+            container.innerHTML = '<div style="padding: 20px; text-align: center; color: #64748b;">Nenhum projeto encontrado para este cliente.</div>';
+            return;
+        }
+
+        // Renderiza TODOS os projetos encontrados perfeitamente
+        container.innerHTML = obrasDoCliente.map(obra => {
+            const obraJson = encodeURIComponent(JSON.stringify(obra));
+            return `
+                <div class="ticket-card" style="align-items: center; border-left: 4px solid var(--azul-sutil); padding: 15px; display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 12px; background: #fff;">
+                    <div onclick="abrirEdicaoObraGlobal('${obraJson}')" style="flex: 1 1 0%; min-width: 200px; cursor: pointer; transition: 0.2s;" title="Clique para editar">
+                        <h4 style="color: var(--azul-marca); font-size: 1rem; margin: 0; display: flex; align-items: center;">
+                            <i class="fa-solid fa-helmet-safety" style="color:var(--azul-sutil); margin-right:8px;"></i> ${obra.nome_obra || 'Sem Nome'}
+                            ${obra.codigo_orcamento ? `<span style="font-size: 0.7rem; background: #e2e8f0; color: var(--texto-secundario); padding: 2px 6px; border-radius: 4px; margin-left: 10px; font-weight: 600;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</span>` : ''}
+                        </h4>
+                        <div style="font-size: 0.75rem; color: var(--texto-secundario); margin-top: 5px; font-weight: 500;">
+                            <i class="fa-regular fa-calendar-check"></i> Início: ${obra.data_inicio || '--'} &nbsp;|&nbsp; 
+                            <i class="fa-regular fa-calendar-xmark"></i> Entrega: ${obra.data_fim || '--'}
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <div style="text-align: right; margin-right: 10px; min-width: 45px;">
+                            <span style="font-size: 1.1rem; font-weight: 700; color: var(--azul-sutil);">${obra.progresso || 0}%</span>
+                        </div>
+                        <button type="button" onclick="abrirEdicaoObraGlobal('${obraJson}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-marca); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Editar Projeto"><i class="fa-solid fa-pen"></i></button>
+                        <button type="button" onclick="abrirGestaoObra(${obra.id}, '${obra.nome_obra}', '${obra.cliente_cnpj}')" class="btn-acao" style="background:#f1f5f9; color:var(--azul-sutil); border:1px solid #cbd5e1; padding: 8px 12px; font-size: 0.8rem;" title="Processos"><i class="fa-solid fa-list-check"></i> Processos</button>
+                        <button type="button" onclick="prepararUploadParaObra(${obra.id})" class="btn-acao" style="background:#f1f5f9; color:var(--texto-secundario); border:1px solid #cbd5e1; padding: 8px; font-size: 0.8rem;" title="Anexar"><i class="fa-solid fa-paperclip"></i></button>
+                        <button type="button" onclick="duplicarObraCliente('${obraJson}')" class="btn-acao" style="background:#fffbeb; color:#b45309; border:1px solid #fcd34d; padding: 8px 12px; font-size: 0.8rem;" title="Duplicar"><i class="fa-regular fa-copy"></i> Duplicar</button>
+                        <button type="button" onclick="excluirObra(${obra.id})" class="btn-acao" style="background:transparent; color:var(--erro); border:1px solid var(--erro); padding: 8px; font-size: 0.8rem;" title="Excluir"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (err) {
+        console.error("Erro ao carregar projetos do cliente:", err);
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--erro);">Erro ao carregar projetos.</div>';
+    }
+}
 </script>
 <!-- Modal de Importação -->
 <div id="modalImportacao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">

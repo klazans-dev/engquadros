@@ -2106,16 +2106,12 @@
                     </div>
                     <button type="submit" class="btn-acao" style="background: var(--sucesso); color: white; height: 35px; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-check"></i> Gravar</button>
                 </div>
-                
-                <!-- SEGUNDA LINHA: Dropdown de Status (Fora do Flexbox anterior) -->
-                <div style="margin-bottom: 15px; width: 100%;">
-                    <label for="configEtapaStatus" style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">
-                        Vincular ao Status Macro (Opcional - Exibe no Painel Geral)
-                    </label>
-                    <select id="configEtapaStatus" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #fff;">
-                        <option value="">Carregando...</option>
-                    </select>
-                </div>
+               <div style="margin-bottom: 15px;">
+    <label style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); display: block; margin-bottom: 5px;">Vincular aos Status Macros (Painel Geral):</label>
+    <div id="containerCheckboxesStatusMacro" style="max-height: 120px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 12px; color: #94a3b8;">Carregando status...</span>
+    </div>
+</div>
                 
                 <div style="text-align: right; margin-bottom: 15px;">
                     <button type="button" onclick="limparFormEtapa()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário (Nova Etapa)</button>
@@ -3952,7 +3948,7 @@ function mudarPagina(direcao) {
     async function abrirPainelCliente(cli) {
         document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none'); 
         document.getElementById('painelCliente').style.display = 'block'; 
-        clienteSelecionado = String(cli.cnpj).trim();
+        clienteSelecionado = String(cli.cnpj || cli.cpf_cnpj || '').trim();
         ['secEditarCliente', 'secProjetos', 'secPermissoes', 'secUpload', 'secAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
         ['iconeSecCli', 'iconeSecProj', 'iconeSecPerm', 'iconeSecUp', 'iconeSecAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.replace('fa-chevron-up', 'fa-chevron-down'); });
         const containerLista = document.getElementById('listaArquivosAdmin'); 
@@ -4188,23 +4184,34 @@ function mudarPagina(direcao) {
         prepararUploadParaObra(obraId);
     }
 
-    async function carregarObrasCliente(cnpj) {
+   async function carregarObrasCliente(cnpj) {
         const container = document.getElementById('listaObrasContainer'); 
         container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
         const p = getPermissoes(); 
         
+        // Limpa o CNPJ alvo para remover pontos, traços e barras
+        const cnpjAlvoLimpo = String(cnpj || '').replace(/\D/g, '').trim();
+        
         try {
+            // Busca todas as obras da empresa logada
             const { data, error } = await supabaseClient
                 .from('obras')
                 .select('*')
-                .eq('cliente_cnpj', cnpj)
                 .eq('empresa_id', empresaIdLogada)
                 .order('id', { ascending: false });
+                
             if(error) throw error; 
-            obrasDoClienteAtual = data || []; 
+
+            // Filtra via JavaScript comparando apenas os números dos CNPJs
+            const obrasDoCliente = (data || []).filter(o => {
+                const obraCnpjLimpo = String(o.cliente_cnpj || '').replace(/\D/g, '').trim();
+                return obraCnpjLimpo === cnpjAlvoLimpo;
+            });
+
+            obrasDoClienteAtual = obrasDoCliente; 
             atualizarDropdownObrasUpload();
             
-            if(!data || data.length === 0) { 
+            if(!obrasDoCliente || obrasDoCliente.length === 0) { 
                 container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; font-style:italic;">Nenhum projeto cadastrado para este cliente.</p>'; 
                 return; 
             }
@@ -4214,7 +4221,7 @@ function mudarPagina(direcao) {
             const c = encontrarClienteGlobal(cnpj);
             if(c) nomeCli = c.razao_social.replace(/'/g, "\\'");
 
-            data.forEach(obra => {
+            obrasDoCliente.forEach(obra => {
                 const id = obra.id; 
                 const prog = obra.progresso || 0; 
                 const nomeT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -4260,7 +4267,6 @@ function mudarPagina(direcao) {
             container.innerHTML = `<p style="color:var(--erro);">Erro ao buscar obras.</p>`; 
         }
     }
-
     function toggleFormNovaObra() {
         const form = document.getElementById('formNovaObraContainer');
         const sec = document.getElementById('secProjetos');
@@ -4305,7 +4311,7 @@ function mudarPagina(direcao) {
                 data_inicio: dIni || null,
                 data_fim: dFim || null,
                 progresso: 0,
-                etapa_pcp_id: 1 
+                etapa_pcp_id: null
             };
             
             const { error } = await supabaseClient.from('obras').insert([payload]);
@@ -4927,6 +4933,7 @@ function mudarPagina(direcao) {
 }
 
    // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
+// ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
 async function carregarProjetosPCP() {
     // Garante que a lista de clientes está carregada antes de exibir nomes
     if (listaGlobalClientes.length === 0) {
@@ -4987,18 +4994,25 @@ async function carregarProjetosPCP() {
 
         if (data && data.length > 0) {
             data.forEach(obra => {
+                // REGRA: Se a obra não tem etapa_pcp_id preenchida, ela é ignorada no Kanban do PCP
+                if (!obra.etapa_pcp_id) return;
+
                 let etapaAtual = String(obra.etapa_pcp_id);
                 if (etapaAtual.startsWith('1')) {
                     etapaAtual = etapaAtual.replace('1', '');
                 }
+                
+                // Busca estritamente a etapa correspondente
                 let etapaObj = etapasPCP.find(e => String(e.id) === etapaAtual);
+                
+                // Se a etapa da obra não existe mais nas configurações ativas, ignora
                 if (!etapaObj) {
-                    etapaObj = etapasPCP[0];
+                    return; 
                 }
                 
                 contadores[etapaObj.id]++;
                 
-                // Mantemos a busca do cliente para exibir no subtítulo do cartão
+                // Mantém a busca do cliente para exibir no subtítulo do cartão
                 let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
                 if (obra.cliente_cnpj) {
                     const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
@@ -5552,14 +5566,10 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
     document.getElementById('configEtapaCor').value = cor;
     document.getElementById('configEtapaOrdem').value = ordem;
 
-    // A MÁGICA ACONTECE AQUI:
-    // Pega o elemento <select> e força ele a marcar a opção com o ID correto.
-    // Se o status_id for nulo ou vazio (sem vínculo), ele marca o "" (Não vincular).
-    const selectStatus = document.getElementById('configEtapaStatus');
-    if (selectStatus) {
-        selectStatus.value = status_id || "";
-    }
+    // Chama a função que busca e marca o rádio correspondente ao que foi salvo no banco
+    carregarDropdownStatusConfigPCP(status_id);
 }
+
     function limparFormEtapa() {
     document.getElementById('formConfigEtapa').reset();
     document.getElementById('configEtapaId').value = '';
@@ -5572,7 +5582,7 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
     }
 }
 
-    async function salvarEtapaPCP(e) {
+  async function salvarEtapaPCP(e) {
     if (e) e.preventDefault();
 
     const id = document.getElementById('configEtapaId').value;
@@ -5580,22 +5590,23 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
     const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
     const cor = document.getElementById('configEtapaCor').value;
     
-    // 1. CAPTURAMOS O VALOR DO DROPDOWN NOVO:
-    const statusVinculado = document.getElementById('configEtapaStatus').value;
+    // CORRIGIDO: Captura o valor do rádio/checkbox marcado na div de status macro
+    const rdbSelecionado = document.querySelector('.chk-status-macro-vinculo:checked');
+    const statusVinculado = rdbSelecionado ? rdbSelecionado.value : "";
 
     if (!nome) {
         alert("Preencha o nome da etapa.");
         return;
     }
 
-    // 2. A MÁGICA DO NULO: Se estiver vazio, mandamos "null" para o banco
+    // Se estiver vazio, manda "null" para o banco
     const payload = {
-    empresa_id: empresaIdLogada,
-    nome: nome,
-    ordem_exibicao: ordem, // <--- Troque de 'ordem' para 'ordem_exibicao' aqui!
-    cor: cor,
-    status_macro_id: statusVinculado === "" ? null : statusVinculado 
-};
+        empresa_id: empresaIdLogada,
+        nome: nome,
+        ordem_exibicao: ordem, 
+        cor: cor,
+        status_macro_id: statusVinculado === "" ? null : statusVinculado 
+    };
 
     try {
         let resultado;
@@ -5608,14 +5619,20 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
         if (resultado.error) throw resultado.error;
 
         limparFormEtapa();
+
+        // Atualiza a listagem de etapas instantaneamente na tela
+        if (typeof carregarListaEtapasPCP === 'function') {
+            await carregarListaEtapasPCP();
+        } else if (typeof carregarEtapasConfig === 'function') {
+            await carregarEtapasConfig();
+        }
+
         alert("Etapa salva com sucesso!");
-        // Chame aqui a sua função que recarrega a lista de etapas...
 
     } catch (err) {
         alert("Erro ao salvar etapa: " + err.message);
     }
 }
-
     async function excluirEtapaPCP(id) {
         if(confirm("ATENÇÃO: Apagar esta etapa fará com que as obras que estão nela deixem de aparecer no painel até serem realocadas. Continuar?")) {
             try {
@@ -6589,30 +6606,41 @@ async function excluirStatusProjeto(id) {
 async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
     const select = document.getElementById('configEtapaStatus');
     if (!select) return;
-    
+
     select.innerHTML = '<option value="">Carregando...</option>';
-    
+
     try {
-        const { data, error } = await supabaseClient
+        // Busca os Status Macros no banco
+        const { data: statusLista, error } = await supabaseClient
             .from('status_pcp')
-            .select('*')
+            .select('id, nome')
             .eq('empresa_id', empresaIdLogada)
             .order('ordem_exibicao', { ascending: true });
-        
+
         if (error) throw error;
-        
-        select.innerHTML = '<option value="">-- Selecione o Status Macro --</option>';
-        if (data && data.length > 0) {
-            data.forEach(s => {
-                const isSelected = (statusSelecionado && statusSelecionado == s.id) ? 'selected' : '';
-                select.innerHTML += `<option value="${s.id}" ${isSelected}>${s.nome}</option>`;
+
+        // Opção padrão
+        select.innerHTML = '<option value="">-- Não vincular (Ocultar do Painel) --</option>';
+
+        // Preenche as opções
+        if (statusLista && statusLista.length > 0) {
+            statusLista.forEach(status => {
+                select.innerHTML += `<option value="${status.id}">${status.nome}</option>`;
             });
         }
-    } catch(e) {
-        select.innerHTML = '<option value="">Erro ao carregar</option>';
+
+        // Seleciona o valor correspondente se houver
+        if (statusSelecionado !== null && statusSelecionado !== undefined && statusSelecionado !== "") {
+            select.value = String(statusSelecionado).trim();
+        } else {
+            select.value = "";
+        }
+
+    } catch (err) {
+        console.error("Erro ao carregar dropdown de status:", err);
+        select.innerHTML = '<option value="">Erro ao carregar opções</option>';
     }
 }
-
 async function carregarObrasNoDashboardMacro() {
     try {
         // 1. Busca os Status Macros
@@ -6642,10 +6670,11 @@ async function carregarObrasNoDashboardMacro() {
             });
         }
 
-        // 2. Busca obras e etapas em paralelo
-        const [resObras, resEtapas] = await Promise.all([
+        // 2. Busca obras, etapas e clientes em paralelo para garantir os nomes reais
+        const [resObras, resEtapas, resClientes] = await Promise.all([
             supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }),
-            supabaseClient.from('etapas_pcp').select('id, nome, status_macro_id').eq('empresa_id', empresaIdLogada)
+            supabaseClient.from('etapas_pcp').select('id, nome, status_macro_id').eq('empresa_id', empresaIdLogada),
+            supabaseClient.from('clientes').select('cnpj, razao_social').eq('empresa_id', empresaIdLogada)
         ]);
 
         if (resObras.error) throw resObras.error;
@@ -6653,6 +6682,14 @@ async function carregarObrasNoDashboardMacro() {
 
         const obras = resObras.data || [];
         const etapasDB = resEtapas.data || [];
+        const clientesDB = resClientes.data || [];
+
+        // Cria o mapa de clientes baseado no CNPJ (igual ao PCP)
+        const mapaClientes = {};
+        clientesDB.forEach(c => {
+            const key = String(c.cnpj).replace(/\D/g, '');
+            if (key) mapaClientes[key] = c.razao_social;
+        });
 
         const mapaEtapas = {};
         etapasDB.forEach(e => { mapaEtapas[String(e.id)] = e; });
@@ -6666,11 +6703,17 @@ async function carregarObrasNoDashboardMacro() {
 
         if (obras.length > 0) {
             obras.forEach(obra => {
-                const etapaObj = mapaEtapas[String(obra.etapa_pcp_id)];
+                // Se a obra estiver com etapa nula/vazia, ela vai direto para o primeiro status macro (Novos)
                 let idStatusDestino = primeiroStatusMacroId;
-                
-                if (etapaObj && etapaObj.status_macro_id) {
-                    idStatusDestino = etapaObj.status_macro_id;
+                let nomeEtapaExibicao = 'Recém-criado (Novo)';
+
+                // Se tiver etapa vinculada, busca a qual status macro ela pertence
+                if (obra.etapa_pcp_id) {
+                    const etapaObj = mapaEtapas[String(obra.etapa_pcp_id)];
+                    if (etapaObj && etapaObj.status_macro_id) {
+                        idStatusDestino = etapaObj.status_macro_id;
+                        nomeEtapaExibicao = etapaObj.nome;
+                    }
                 }
 
                 const codOrc = obra.codigo_orcamento ? String(obra.codigo_orcamento) : 'S-ORC';
@@ -6679,12 +6722,23 @@ async function carregarObrasNoDashboardMacro() {
                     colunasAgrupadas[idStatusDestino][codOrc] = [];
                 }
                 
-                const nomeCliente = obra.cliente_nome || obra.razao_social || obra.cliente || obra.nome_cliente || 'Cliente não informado';
+                // Resolução correta do nome do cliente usando o mapa de clientes cadastrados
+                let nomeCliente = 'Cliente não informado';
+                if (obra.cliente_cnpj) {
+                    const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
+                    if (mapaClientes[cnpjKey]) {
+                        nomeCliente = mapaClientes[cnpjKey];
+                    } else {
+                        nomeCliente = obra.cliente_cnpj;
+                    }
+                } else if (obra.cliente || obra.razao_social || obra.nome_cliente) {
+                    nomeCliente = obra.cliente || obra.razao_social || obra.nome_cliente;
+                }
 
                 colunasAgrupadas[idStatusDestino][codOrc].push({ 
                     ...obra, 
                     clienteNome: nomeCliente,
-                    etapaNome: etapaObj ? etapaObj.nome : 'Recém-criado' 
+                    etapaNome: nomeEtapaExibicao 
                 });
             });
         }
@@ -6746,7 +6800,6 @@ async function carregarObrasNoDashboardMacro() {
         console.error("Erro ao carregar o Dashboard Macro de Obras:", err);
     }
 }
-
 // Funções de Apoio ao Drag and Drop e Gaveta
 function permitirDrop(ev) {
     ev.preventDefault();
@@ -6770,47 +6823,6 @@ function toggleGavetaOrcamento(idGaveta) {
     }
 }
 
-async function soltarCardMacro(ev, novoStatusMacroId) {
-    ev.preventDefault();
-    const obraId = ev.dataTransfer.getData("text/plain");
-    if (!obraId) return;
-
-    try {
-        // Busca a primeira etapa vinculada ao Status Macro de destino
-        const { data: etapasDoStatus, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('status_macro_id', novoStatusMacroId)
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true })
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        if (!etapasDoStatus || etapasDoStatus.length === 0) {
-            alert("Atenção: Este Status Macro ainda não tem nenhuma etapa do PCP vinculada. Vá em 'Etapas' e vincule pelo menos uma etapa a este status para poder mover projetos para ele.");
-            return;
-        }
-
-        const primeiraEtapaVinculadaId = etapasDoStatus[0].id;
-
-        // Atualiza apenas o projeto específico arrastado no banco de dados
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaVinculadaId })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // Recarrega o painel instantaneamente
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao mover projeto no painel macro:", err);
-        alert("Erro ao alterar o status do projeto.");
-    }
-}
 
 function arrastarCardMacro(ev, obraId) {
     ev.dataTransfer.setData("text/plain", obraId);
@@ -6860,14 +6872,13 @@ async function soltarCardMacro(ev, novoStatusMacroId) {
         alert("Erro ao alterar o status do projeto.");
     }
 }
-async function carregarDropdownStatusConfigPCP() {
-    const select = document.getElementById('configEtapaStatus');
-    if (!select) return;
+async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
+    const container = document.getElementById('containerCheckboxesStatusMacro');
+    if (!container) return;
 
-    select.innerHTML = '<option value="">Carregando...</option>';
+    container.innerHTML = '<span style="font-size: 12px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando status...</span>';
 
     try {
-        // Busca os Status Macros no banco
         const { data: statusLista, error } = await supabaseClient
             .from('status_pcp')
             .select('id, nome')
@@ -6876,17 +6887,39 @@ async function carregarDropdownStatusConfigPCP() {
 
         if (error) throw error;
 
-        // A OPÇÃO MÁGICA: Deixa o usuário escolher "Sem Vínculo"
-        select.innerHTML = '<option value="">-- Não vincular (Ocultar do Painel) --</option>';
+        container.innerHTML = '';
 
-        // Desenha as opções cadastradas (Novo, Em Execução, Concluído, etc)
+        if (!statusLista || statusLista.length === 0) {
+            container.innerHTML = '<span style="font-size: 12px; color: #ef4444;">Nenhum status macro cadastrado.</span>';
+            return;
+        }
+
+        const targetIdStr = statusSelecionado !== null && statusSelecionado !== undefined ? String(statusSelecionado).trim() : null;
+
+        // Desenha uma opção para cada status macro
         statusLista.forEach(status => {
-            select.innerHTML += `<option value="${status.id}">${status.nome}</option>`;
+            const statusIdStr = String(status.id).trim();
+            const isChecked = (targetIdStr && statusIdStr === targetIdStr) ? 'checked' : '';
+
+            container.innerHTML += `
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #334155;">
+                    <input type="radio" name="chkStatusMacroUnico" class="chk-status-macro-vinculo" value="${status.id}" ${isChecked}>
+                    ${status.nome}
+                </label>
+            `;
         });
 
+        // Opção para desmarcar (sem vínculo)
+        container.innerHTML += `
+            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;">
+                <input type="radio" name="chkStatusMacroUnico" class="chk-status-macro-vinculo" value="" ${!targetIdStr ? 'checked' : ''}>
+                -- Nenhum (Ocultar do Painel) --
+            </label>
+        `;
+
     } catch (err) {
-        console.error("Erro ao carregar dropdown de status:", err);
-        select.innerHTML = '<option value="">Erro ao carregar opções</option>';
+        console.error("Erro ao carregar opções de status:", err);
+        container.innerHTML = '<span style="font-size: 12px; color: #ef4444;">Erro ao carregar opções.</span>';
     }
 }
 async function carregarCheckboxesEtapas(statusId = null) {
@@ -6902,20 +6935,24 @@ async function carregarCheckboxesEtapas(statusId = null) {
             .from('etapas_pcp')
             .select('id, nome, status_macro_id')
             .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true }); // Usando 'id' para evitar aquele erro de coluna 'ordem' não encontrada
+            .order('id', { ascending: true });
 
         if (error) throw error;
 
         container.innerHTML = ''; // Limpa o loading
         
-        if(etapas.length === 0) {
+        if(!etapas || etapas.length === 0) {
             container.innerHTML = '<span style="font-size: 13px; color: #ef4444;">Nenhuma etapa cadastrada no Kanban ainda.</span>';
             return;
         }
 
+        // Normaliza o ID atual para string para evitar conflito entre string e número
+        const targetIdStr = statusId ? String(statusId).trim() : null;
+
         // Desenha uma caixinha para cada etapa
         etapas.forEach(etapa => {
-            const isChecked = (etapa.status_macro_id === statusId) ? 'checked' : '';
+            const etapaStatusStr = etapa.status_macro_id ? String(etapa.status_macro_id).trim() : null;
+            const isChecked = (targetIdStr && etapaStatusStr === targetIdStr) ? 'checked' : '';
             
             container.innerHTML += `
                 <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #334155;">
