@@ -510,14 +510,13 @@
                             <div class="tile-desc">Gestão Kanban e etapas de montagem</div>
                         </div>
                     </div>
-                   <!-- Troque a primeira linha do seu HTML por esta: -->
-               <div class="tile-btn" onclick="abrirTelaAcao('dashboardGeral'); carregarObrasNoDashboardMacro();">
-    <div class="tile-icone"><i class="fa-solid fa-chart-gantt"></i></div>
-    <div>
-        <div class="tile-titulo">Status de Projetos</div>
-        <div class="tile-desc">Visão global e andamento das obras</div>
-    </div>
-</div>
+                    <div class="tile-btn" onclick="abrirTelaAcao('dashboardGeral')">
+                        <div class="tile-icone"><i class="fa-solid fa-chart-gantt"></i></div>
+                        <div>
+                            <div class="tile-titulo">Status de Projetos</div>
+                            <div class="tile-desc">Visão global e andamento das obras</div>
+                        </div>
+                    </div>
                     
                     <!-- NOVO BOTÃO: ETAPAS DO KANBAN -->
                     <div class="tile-btn" onclick="abrirModalConfigPCP()">
@@ -527,14 +526,6 @@
                             <div class="tile-desc">Personalizar colunas e fluxo do PCP</div>
                         </div>
                     </div>
-                    <!-- NOVO BOTÃO: STATUS MACROS -->
-<div class="tile-btn" onclick="abrirModalConfigStatus()">
-    <div class="tile-icone"><i class="fa-solid fa-tags" style="color: #10b981;"></i></div>
-    <div>
-        <div class="tile-titulo">Status Macros</div>
-        <div class="tile-desc">Cadastrar e gerenciar status globais</div>
-    </div>
-</div>
                     
                     <!-- NOVO BOTÃO: PROCESSOS DE MONTAGEM -->
                     <div class="tile-btn" onclick="abrirModalConfigProcessos()">
@@ -1567,10 +1558,20 @@
                     </div>
                 </div>
 
-               <!-- CONTAINER DINÂMICO PARA OS STATUS MACROS -->
-<div class="kanban-board" id="boardStatusMacro" style="display: flex; gap: 20px; overflow-x: auto; padding-top: 20px; align-items: flex-start; min-height: 400px;">
-    <!-- O JavaScript vai injetar as colunas (Novo, Em Execução, Concluído) automaticamente aqui dentro -->
-</div>
+                <div class="kanban-board">
+                    <div class="kanban-col col-orcamento">
+                        <div class="kanban-header"><i class="fa-regular fa-file-lines"></i> Novos (0%)</div>
+                        <div class="kanban-body" id="kbColuna0"></div>
+                    </div>
+                    <div class="kanban-col col-andamento">
+                        <div class="kanban-header"><i class="fa-solid fa-gears"></i> Em Execução (1% - 99%)</div>
+                        <div class="kanban-body" id="kbColuna50"></div>
+                    </div>
+                    <div class="kanban-col col-concluido">
+                        <div class="kanban-header"><i class="fa-solid fa-check-double"></i> Concluídos (100%)</div>
+                        <div class="kanban-body" id="kbColuna100"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- TELA: CHAMADOS / SUPORTE -->
@@ -1860,20 +1861,14 @@
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Dados do Projeto</h3>
             <input type="hidden" id="editObraGlobalId">
             
-           <div class="linha-form">
-    <div class="form-group" style="flex: 1; position: relative;">
-        <label>Cliente (Busque por Nome/CNPJ)</label>
-        
-        <!-- O oninput fica aqui, chamando a função que busca direto no Supabase -->
-        <input type="text" id="editObraGlobalCnpjBusca" placeholder="Digite o nome ou CNPJ..." autocomplete="off" oninput="buscarClientesParaEdicao(this.value)" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
-        
-        <!-- Caixa flutuante onde os resultados da busca aparecem -->
-        <div id="dropdownResultadosClientes" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; z-index: 9999; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
-        
-        <!-- Input oculto para salvar o CNPJ real -->
-        <input type="hidden" id="editObraGlobalCnpj">
-    </div>
-</div>
+            <div class="linha-form">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cliente (Busque por Nome/CNPJ)</label>
+                    <input type="text" id="editObraGlobalCnpjBusca" list="listaClientesEditGlobal" placeholder="Selecione o Cliente..." autocomplete="off">
+                    <datalist id="listaClientesEditGlobal"></datalist>
+                    <input type="hidden" id="editObraGlobalCnpj">
+                </div>
+            </div>
             
             <div class="linha-form">
                 <div class="form-group" style="flex: 2;"><label>Nome do Quadro / Projeto</label><input type="text" id="editObraGlobalNome" required></div>
@@ -2021,65 +2016,7 @@
         </div>
     
     </div>
-    <!-- ================= MODAL CONFIGURAÇÃO DE STATUS MACRO ================= -->
-<div id="modalConfigStatus" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div class="modal-content" style="background: #f8fafc; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        
-        <!-- Cabeçalho do Modal -->
-        <div style="background: #fff; padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0;">
-            <h2 style="margin: 0; color: #1e293b; font-size: 1.2rem;">
-                <i class="fa-solid fa-tags" style="color: #10b981; margin-right: 10px;"></i>Gerenciar Status Macros
-            </h2>
-            <button type="button" onclick="document.getElementById('modalConfigStatus').style.display='none'" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
-        </div>
-        
-        <!-- Corpo do Modal -->
-        <div style="padding: 20px;">
-            <!-- Formulário de Cadastro -->
-            <form id="formConfigStatus" onsubmit="salvarStatusProjeto(event)" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
-                <input type="hidden" id="configStatusId">
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Nome do Status</label>
-                        <input type="text" id="configStatusNome" required placeholder="Ex: Em Andamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Cor</label>
-                        <input type="color" id="configStatusCor" value="#10b981" style="width: 100%; height: 38px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; box-sizing: border-box;">
-                    </div>
-                    <div style="grid-column: span 2;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Ordem de Exibição</label>
-                        <input type="number" id="configStatusOrdem" required value="1" min="1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
-                    </div>
-                </div>
-                
-                <!-- CAMPO NOVO: Checkboxes de Etapas (Movido para dentro do formulário) -->
-                <div style="margin-bottom: 20px; width: 100%;">
-                    <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">
-                        Quais etapas do PCP pertencem a este Status?
-                    </label>
-                    <!-- É aqui dentro que o JavaScript vai injetar os checkboxes -->
-                    <div id="containerCheckboxesEtapas" style="max-height: 150px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 4px; padding: 10px; background-color: #f8fafc; display: flex; flex-direction: column; gap: 8px;">
-                        <span style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas...</span>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" onclick="limparFormStatus()" style="padding: 8px 15px; border-radius: 4px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; cursor: pointer;">Limpar</button>
-                    <button type="submit" style="padding: 8px 15px; border-radius: 4px; border: none; background: #2563eb; color: #fff; cursor: pointer; font-weight: 500;">Salvar Status</button>
-                </div>
-            </form>
-
-            <!-- Lista de Status Existentes -->
-            <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;">Status Cadastrados</h3>
-            <div id="listaConfigStatus" style="border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;">
-                <!-- A lista vai entrar aqui via JavaScript -->
-            </div>
-        </div>
-    </div>
-</div>
-   <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
+    <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
     <div id="modalConfigPCP" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
@@ -2089,42 +2026,28 @@
             
             <form id="formConfigEtapa" onsubmit="salvarEtapaPCP(event)">
                 <input type="hidden" id="configEtapaId">
-                
-                <!-- PRIMEIRA LINHA: Nome, Ordem, Cor e Botão Gravar -->
-                <div class="linha-form" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                <div class="linha-form" style="margin-bottom: 15px; align-items: flex-end;">
                     <div class="form-group" style="flex: 3; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Nome da Etapa</label>
-                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Nome da Etapa</label>
+                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Ordem</label>
-                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Ordem</label>
+                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Cor do Card</label>
-                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 35px; cursor: pointer; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Cor do Card</label>
+                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 38px; cursor: pointer; padding: 2px;">
                     </div>
-                    <button type="submit" class="btn-acao" style="background: var(--sucesso); color: white; height: 35px; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-check"></i> Gravar</button>
+                    <button type="submit" class="btn-acao" style="background: var(--sucesso); height: 38px;"><i class="fa-solid fa-check"></i> Gravar</button>
                 </div>
-                
-                <!-- SEGUNDA LINHA: Dropdown de Status (Fora do Flexbox anterior) -->
-                <div style="margin-bottom: 15px; width: 100%;">
-                    <label for="configEtapaStatus" style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">
-                        Vincular ao Status Macro (Opcional - Exibe no Painel Geral)
-                    </label>
-                    <select id="configEtapaStatus" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #fff;">
-                        <option value="">Carregando...</option>
-                    </select>
-                </div>
-                
                 <div style="text-align: right; margin-bottom: 15px;">
                     <button type="button" onclick="limparFormEtapa()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário (Nova Etapa)</button>
                 </div>
-                
             </form>
 
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto; padding: 10px;">
-                <div id="listaConfigEtapas" style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                <div id="listaConfigEtapas" style="display: flex; flex-direction: column;">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
@@ -4926,8 +4849,8 @@ function mudarPagina(direcao) {
     });
 }
 
-   // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
-async function carregarProjetosPCP() {
+    // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
+ async function carregarProjetosPCP() {
     // Garante que a lista de clientes está carregada antes de exibir nomes
     if (listaGlobalClientes.length === 0) {
         await carregarListaClientesGlobais();
@@ -4976,7 +4899,7 @@ async function carregarProjetosPCP() {
             if (key) mapaClientes[key] = c.razao_social;
         });
 
-        // 2. Agrupa os dados na memória antes de criar o HTML
+        // 2. Novo objeto para Agrupar os dados na memória antes de criar o HTML
         const contadores = {};
         const obrasAgrupadas = {}; 
 
@@ -5008,9 +4931,12 @@ async function carregarProjetosPCP() {
                 }
                 obra.nomeCliResolved = nomeCli;
                 
-                // Agrupando pelo NOME DA OBRA
+                // -------------------------------------------------------------
+                // MUDANÇA AQUI: Agrupando pelo NOME DA OBRA em vez do Cliente
+                // -------------------------------------------------------------
                 let chaveAgrupamento = obra.nome_obra || 'Projeto Sem Nome';
                 
+                // Se o projeto ainda não tem grupo nesta coluna, criamos um array vazio para ele
                 if (!obrasAgrupadas[etapaObj.id][chaveAgrupamento]) {
                     obrasAgrupadas[etapaObj.id][chaveAgrupamento] = [];
                 }
@@ -5024,25 +4950,31 @@ async function carregarProjetosPCP() {
         etapasPCP.forEach(etapa => {
             const containerColuna = document.getElementById(`body_${etapa.id}`);
             const countEl = document.getElementById(`count_${etapa.id}`);
-            if (countEl) countEl.innerText = contadores[etapa.id] || 0;
+            if (countEl) countEl.innerText = contadores[etapa.id];
 
             if (containerColuna) {
                 let htmlColuna = '';
-                const gruposDestaColuna = obrasAgrupadas[etapa.id] || {};
+                const gruposDestaColuna = obrasAgrupadas[etapa.id];
                 
                 // Ordena os Projetos em ordem alfabética
                 const nomesDosProjetos = Object.keys(gruposDestaColuna).sort();
 
-                nomesDosProjetos.forEach(nomeDoProjeto => {
+               nomesDosProjetos.forEach(nomeDoProjeto => {
                     const obrasNoGrupo = gruposDestaColuna[nomeDoProjeto];
                     
-                    // Cria o cabeçalho expansível (Sanfona) com texto completo
+                    // Cria o cabeçalho expansível (Sanfona) com texto completo e quebra de linha
                     htmlColuna += `
                     <div class="kanban-grupo-cliente" style="margin-bottom: 12px;">
                         <div class="kanban-grupo-header" onclick="const div = this.nextElementSibling; div.style.display = div.style.display === 'none' ? 'block' : 'none';" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid ${etapa.cor}; padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; color: var(--azul-marca); margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                            
+                            <!-- AQUI ESTÁ A CORREÇÃO DO TEXTO: flex: 1 e line-height para permitir quebrar a linha graciosamente sem cortar -->
                             <span style="flex: 1; padding-right: 8px; line-height: 1.3; word-break: break-word;"><i class="fa-solid fa-folder-open"></i> ${nomeDoProjeto}</span>
+                            
+                            <!-- A tag de contagem com white-space: nowrap para não espremer o número -->
                             <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem; white-space: nowrap; height: fit-content;">${obrasNoGrupo.length}</span>
                         </div>
+                        
+                        <!-- AQUI ESTÁ A CORREÇÃO PARA INICIAR MINIMIZADO: display mudou de 'block' para 'none' -->
                         <div class="kanban-grupo-cards" style="display: none; padding-left: 2px;">
                     `;
 
@@ -5051,7 +4983,8 @@ async function carregarProjetosPCP() {
                         const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
                         const cliT = obra.nomeCliResolved ? obra.nomeCliResolved.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
                         const oCodificada = encodeURIComponent(JSON.stringify(obra));
-
+                        
+                        // O cartão em si
                         htmlColuna += `
                         <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapa.cor}; cursor: pointer; margin-bottom: 8px;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
                             <h5 style="margin-bottom: 5px; color: #475569; font-size: 0.75rem;"><i class="fa-regular fa-building"></i> ${cliT || 'Sem Cliente'}</h5>
@@ -5077,79 +5010,83 @@ async function carregarProjetosPCP() {
                         </div>`;
                     });
 
+                    // Fecha as divs do grupo e do conteúdo
                     htmlColuna += `
                         </div> <!-- /kanban-grupo-cards -->
                     </div> <!-- /kanban-grupo-cliente -->
                     `;
                 });
+
                 containerColuna.innerHTML = htmlColuna;
             }
         });
+
     } catch (err) {
         console.error("Erro ao carregar PCP:", err);
     }
 }
-  // ================= DRAG AND DROP ORIGINAL DO PCP =================
-function arrastar(ev) {        
-    ev.dataTransfer.setData("text", ev.target.id);        
-    ev.target.style.opacity = '0.5';    
-}
+    function arrastar(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.style.opacity = '0.5';
+    }
 
-function permitirDrop(ev) {        
-    ev.preventDefault();        
-    const coluna = ev.target.closest('.coluna-pcp');        
-    if (coluna) {            
-        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));            
-        coluna.classList.add('drag-over');        
-    }    
-}
-
-async function soltar(ev) {        
-    ev.preventDefault();        
-    document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));                
-    const dataId = ev.dataTransfer.getData("text");        
-    const card = document.getElementById(dataId);        
-    if (!card) return;                
-    card.style.opacity = '1';                
-    
-    const colunaDestino = ev.target.closest('.coluna-pcp');        
-    if (colunaDestino) {            
-        const bodyDestino = colunaDestino.querySelector('.coluna-body');            
-        bodyDestino.appendChild(card);                        
-        
-        const novaEtapaId = colunaDestino.id;            
-        const obraId = card.getAttribute('data-obraid');                        
-        
-        const etapaObj = etapasPCP.find(e => String(e.id) === String(novaEtapaId));            
-        if (etapaObj) {                
-            card.style.borderLeftColor = etapaObj.cor;            
+    function permitirDrop(ev) {
+        ev.preventDefault();
+        const coluna = ev.target.closest('.coluna-pcp');
+        if (coluna) {
+            document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+            coluna.classList.add('drag-over');
         }
+    }
 
-        try {                
-            await supabaseClient                    
-                .from('obras')                    
-                .update({ etapa_pcp_id: String(novaEtapaId) })                    
-                .eq('id', parseInt(obraId))                    
-                .eq('empresa_id', empresaIdLogada);                                
+    async function soltar(ev) {
+        ev.preventDefault();
+        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+        
+        const dataId = ev.dataTransfer.getData("text");
+        const card = document.getElementById(dataId);
+        if (!card) return;
+        
+        card.style.opacity = '1';
+        
+        const colunaDestino = ev.target.closest('.coluna-pcp');
+        if (colunaDestino) {
+            const bodyDestino = colunaDestino.querySelector('.coluna-body');
+            bodyDestino.appendChild(card);
             
-            etapasPCP.forEach(e => {                    
-                const coluna = document.getElementById(`body_${e.id}`);                    
-                if (coluna) {                        
-                    const qtdeCards = coluna.querySelectorAll('.card-op').length;                        
-                    document.getElementById(`count_${e.id}`).innerText = qtdeCards;                    
-                }                
-            });            
-        } catch (e) {                
-            alert("Erro de conexão ao salvar mudança de etapa.");                
-            carregarProjetosPCP();             
-        }        
-    }    
-}
+            const novaEtapaId = colunaDestino.id;
+            const obraId = card.getAttribute('data-obraid');
+            
+            const etapaObj = etapasPCP.find(e => String(e.id) === String(novaEtapaId));
+            if (etapaObj) {
+                card.style.borderLeftColor = etapaObj.cor;
+            }
 
-document.addEventListener('dragend', function(ev) {        
-    if (ev.target && ev.target.style) ev.target.style.opacity = '1';        
-    document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));    
-});
+            try {
+                await supabaseClient
+                    .from('obras')
+                    .update({ etapa_pcp_id: String(novaEtapaId) })
+                    .eq('id', parseInt(obraId))
+                    .eq('empresa_id', empresaIdLogada);
+                
+                etapasPCP.forEach(e => {
+                    const coluna = document.getElementById(`body_${e.id}`);
+                    if (coluna) {
+                        const qtdeCards = coluna.querySelectorAll('.card-op').length;
+                        document.getElementById(`count_${e.id}`).innerText = qtdeCards;
+                    }
+                });
+            } catch (e) {
+                alert("Erro de conexão ao salvar mudança de etapa.");
+                carregarProjetosPCP(); 
+            }
+        }
+    }
+
+    document.addEventListener('dragend', function(ev) {
+        if (ev.target && ev.target.style) ev.target.style.opacity = '1';
+        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+    });
 
     function toggleModoTV() {
         isModoTV = !isModoTV;
@@ -5493,128 +5430,86 @@ document.addEventListener('dragend', function(ev) {
     }
 
     async function abrirModalConfigPCP() {
-        carregarDropdownStatusConfigPCP();
-    document.getElementById('modalConfigPCP').style.display = 'flex';
-    limparFormEtapa();
-    
-    // NOVO: Ao abrir a tela, já carrega a lista de Status no dropdown
-    if (typeof carregarDropdownStatusConfigPCP === 'function') {
-        carregarDropdownStatusConfigPCP();
-    }
-    
-    const lista = document.getElementById('listaConfigEtapas');
-    lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('etapas_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-        if (error) throw error;
+        document.getElementById('modalConfigPCP').style.display = 'flex';
+        limparFormEtapa();
         
-        etapasPCP = data || [];
-        renderizarListaEtapasConfig();
+        const lista = document.getElementById('listaConfigEtapas');
+        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
 
-    } catch (err) {
-        console.error("Erro ao buscar etapas:", err);
-        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+        try {
+            const { data, error } = await supabaseClient
+                .from('etapas_pcp')
+                .select('*')
+                .eq('empresa_id', empresaIdLogada)
+                .order('ordem_exibicao', { ascending: true });
+            if (error) throw error;
+            
+            etapasPCP = data || [];
+            renderizarListaEtapasConfig();
+
+        } catch (err) {
+            console.error("Erro ao buscar etapas:", err);
+            lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+        }
     }
-}
 
-   function renderizarListaEtapasConfig() {
-    const lista = document.getElementById('listaConfigEtapas');
-    lista.innerHTML = '';
-    
-    etapasPCP.forEach(e => {
-        lista.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="display:inline-block; width:16px; height:16px; background:${e.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
-                    <strong style="color: var(--azul-marca); font-size: 0.9rem;">Etapa ${e.ordem_exibicao}</strong> 
-                    <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
+    function renderizarListaEtapasConfig() {
+        const lista = document.getElementById('listaConfigEtapas');
+        lista.innerHTML = '';
+        
+        etapasPCP.forEach(e => {
+            lista.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="display:inline-block; width:16px; height:16px; background:${e.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
+                        <strong style="color: var(--azul-marca); font-size: 0.9rem;">Etapa ${e.ordem_exibicao}</strong> 
+                        <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao})" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <!-- NOVO: O botão agora envia o '${e.status_id || ''}' -->
-                    <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao}, '${e.status_id || ''}')" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-        `;
-    });
-    if(etapasPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma etapa cadastrada no Banco de Dados.</p>';
-}
-
-    // NOVO: Adicionado o 5º parâmetro 'status_id'
-function editarEtapaForm(id, nome, cor, ordem, status_id) {
-    document.getElementById('configEtapaId').value = id;
-    document.getElementById('configEtapaNome').value = nome;
-    document.getElementById('configEtapaCor').value = cor;
-    document.getElementById('configEtapaOrdem').value = ordem;
-
-    // A MÁGICA ACONTECE AQUI:
-    // Pega o elemento <select> e força ele a marcar a opção com o ID correto.
-    // Se o status_id for nulo ou vazio (sem vínculo), ele marca o "" (Não vincular).
-    const selectStatus = document.getElementById('configEtapaStatus');
-    if (selectStatus) {
-        selectStatus.value = status_id || "";
+            `;
+        });
+        if(etapasPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma etapa cadastrada no Banco de Dados.</p>';
     }
-}
+
+    function editarEtapaForm(id, nome, cor, ordem) {
+        document.getElementById('configEtapaId').value = id;
+        document.getElementById('configEtapaNome').value = nome;
+        document.getElementById('configEtapaCor').value = cor;
+        document.getElementById('configEtapaOrdem').value = ordem;
+    }
+
     function limparFormEtapa() {
-    document.getElementById('formConfigEtapa').reset();
-    document.getElementById('configEtapaId').value = '';
-    document.getElementById('configEtapaCor').value = '#3b82f6';
-    
-    // Zera o dropdown para a opção "Não vincular"
-    const selectStatus = document.getElementById('configEtapaStatus');
-    if (selectStatus) {
-        selectStatus.value = "";
+        document.getElementById('formConfigEtapa').reset();
+        document.getElementById('configEtapaId').value = '';
+        document.getElementById('configEtapaCor').value = '#3b82f6';
     }
-}
 
     async function salvarEtapaPCP(e) {
-    if (e) e.preventDefault();
+        e.preventDefault();
+        const id = document.getElementById('configEtapaId').value;
+        const nome = document.getElementById('configEtapaNome').value.trim();
+        const cor = document.getElementById('configEtapaCor').value;
+        const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
 
-    const id = document.getElementById('configEtapaId').value;
-    const nome = document.getElementById('configEtapaNome').value.trim();
-    const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
-    const cor = document.getElementById('configEtapaCor').value;
-    
-    // 1. CAPTURAMOS O VALOR DO DROPDOWN NOVO:
-    const statusVinculado = document.getElementById('configEtapaStatus').value;
+        const payload = { empresa_id: empresaIdLogada, nome: nome, cor: cor, ordem_exibicao: ordem };
 
-    if (!nome) {
-        alert("Preencha o nome da etapa.");
-        return;
-    }
-
-    // 2. A MÁGICA DO NULO: Se estiver vazio, mandamos "null" para o banco
-    const payload = {
-    empresa_id: empresaIdLogada,
-    nome: nome,
-    ordem_exibicao: ordem, // <--- Troque de 'ordem' para 'ordem_exibicao' aqui!
-    cor: cor,
-    status_macro_id: statusVinculado === "" ? null : statusVinculado 
-};
-
-    try {
-        let resultado;
-        if (id) {
-            resultado = await supabaseClient.from('etapas_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
-        } else {
-            resultado = await supabaseClient.from('etapas_pcp').insert([payload]);
+        try {
+            if (id) {
+                await supabaseClient.from('etapas_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
+            } else {
+                await supabaseClient.from('etapas_pcp').insert([payload]);
+            }
+            limparFormEtapa();
+            await inicializarPCP(); 
+            renderizarListaEtapasConfig(); 
+        } catch(err) {
+            alert("Erro ao gravar etapa no banco de dados.");
         }
-
-        if (resultado.error) throw resultado.error;
-
-        limparFormEtapa();
-        alert("Etapa salva com sucesso!");
-        // Chame aqui a sua função que recarrega a lista de etapas...
-
-    } catch (err) {
-        alert("Erro ao salvar etapa: " + err.message);
     }
-}
 
     async function excluirEtapaPCP(id) {
         if(confirm("ATENÇÃO: Apagar esta etapa fará com que as obras que estão nela deixem de aparecer no painel até serem realocadas. Continuar?")) {
@@ -6446,574 +6341,6 @@ async function processarPlanilhaProjetos() {
     
     reader.readAsArrayBuffer(file);
 }
-// ================= GESTÃO DE STATUS (MACRO) =================
-let statusPCP = [];
-
-async function abrirModalConfigStatus() {
-    carregarCheckboxesEtapas(null);
-    const modal = document.getElementById('modalConfigStatus');
-    if (!modal) {
-        alert("Erro: O HTML do modal modalConfigStatus não foi encontrado na página.");
-        return;
-    }
-    
-    modal.style.display = 'flex';
-    limparFormStatus();
-    
-    const lista = document.getElementById('listaConfigStatus');
-    lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando status...</p>';
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('status_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-        if (error) throw error;
-        
-        statusPCP = data || [];
-        renderizarListaStatusConfig();
-    } catch (err) {
-        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
-    }
-}
-
-function renderizarListaStatusConfig() {
-    const lista = document.getElementById('listaConfigStatus');
-    lista.innerHTML = '';
-    
-    statusPCP.forEach(s => {
-        lista.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="display:inline-block; width:16px; height:16px; background:${s.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
-                    <strong style="color: var(--azul-marca); font-size: 0.9rem;">Ordem ${s.ordem_exibicao}</strong> 
-                    <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${s.nome}</span>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" onclick="editarStatusForm('${s.id}', '${s.nome.replace(/'/g, "\\'")}', '${s.cor}', ${s.ordem_exibicao})" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" onclick="excluirStatusProjeto('${s.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-        `;
-    });
-    if(statusPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhum Status cadastrado no Banco de Dados.</p>';
-}
-
-function editarStatusForm(id, nome, cor, ordem) {
-    document.getElementById('configStatusId').value = id;
-    document.getElementById('configStatusNome').value = nome;
-    document.getElementById('configStatusCor').value = cor;
-    document.getElementById('configStatusOrdem').value = ordem;
-
-    // ADICIONE ESTA LINHA PARA CARREGAR AS ETAPAS VINCULADAS:
-    carregarCheckboxesEtapas(id);
-}
-function limparFormStatus() {
-    document.getElementById('formConfigStatus').reset();
-    document.getElementById('configStatusId').value = '';
-    document.getElementById('configStatusCor').value = '#10b981';
-}
-
-async function salvarStatusProjeto(e) {
-    if (e) e.preventDefault(); 
-
-    const id = document.getElementById('configStatusId').value;
-    const nome = document.getElementById('configStatusNome').value.trim();
-    const cor = document.getElementById('configStatusCor').value;
-    const ordem = parseInt(document.getElementById('configStatusOrdem').value);
-
-    if (!nome) { alert("Por favor, preencha o nome do status."); return; }
-
-    const payload = { 
-        empresa_id: empresaIdLogada, 
-        nome: nome, 
-        cor: cor, 
-        ordem_exibicao: ordem 
-    };
-
-    try {
-        let statusIdParaVincular = id;
-
-        // 1. SALVA OU CRIA O STATUS MACRO
-        if (id) {
-            const { error } = await supabaseClient.from('status_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
-            if (error) throw error;
-        } else {
-            // O ".select()" é obrigatório aqui para o banco nos devolver qual foi o ID do status novo criado!
-            const { data, error } = await supabaseClient.from('status_pcp').insert([payload]).select();
-            if (error) throw error;
-            statusIdParaVincular = data[0].id; 
-        }
-
-        // 2. LIDA COM OS CHECKBOXES DAS ETAPAS
-        // Pega todos os IDs das caixinhas que o usuário deixou marcadas
-        const checkboxes = document.querySelectorAll('.chk-etapa-vinculo:checked');
-        const etapasSelecionadas = Array.from(checkboxes).map(chk => chk.value);
-
-        // A) Primeiro, limpamos qualquer vínculo antigo desse Status
-        await supabaseClient.from('etapas_pcp')
-            .update({ status_macro_id: null })
-            .eq('status_macro_id', statusIdParaVincular)
-            .eq('empresa_id', empresaIdLogada);
-
-        // B) Depois, se ele marcou alguma coisa, vinculamos as etapas novas
-        if (etapasSelecionadas.length > 0) {
-            await supabaseClient.from('etapas_pcp')
-                .update({ status_macro_id: statusIdParaVincular })
-                .in('id', etapasSelecionadas) // Atualiza todas as etapas marcadas de uma vez só!
-                .eq('empresa_id', empresaIdLogada);
-        }
-
-        limparFormStatus();
-        await abrirModalConfigStatus(); // Sua função que recarrega a tabela de status
-        
-    } catch(err) {
-        console.error("Erro interno:", err);
-        alert("Erro ao gravar. Verifique o console.");
-    }
-}
-
-async function excluirStatusProjeto(id) {
-    if(confirm("ATENÇÃO: Apagar este status pode impactar as etapas que estão vinculadas a ele. Continuar?")) {
-        try {
-            await supabaseClient.from('status_pcp').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
-            await abrirModalConfigStatus();
-        } catch(err) {
-            alert("Erro ao excluir status. Verifique dependências no banco.");
-        }
-    }
-}
-
-// ================= FUNÇÃO PONTE (ALIMENTA O DROPDOWN DA TELA DE ETAPAS) =================
-async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
-    const select = document.getElementById('configEtapaStatus');
-    if (!select) return;
-    
-    select.innerHTML = '<option value="">Carregando...</option>';
-    
-    try {
-        const { data, error } = await supabaseClient
-            .from('status_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-        
-        if (error) throw error;
-        
-        select.innerHTML = '<option value="">-- Selecione o Status Macro --</option>';
-        if (data && data.length > 0) {
-            data.forEach(s => {
-                const isSelected = (statusSelecionado && statusSelecionado == s.id) ? 'selected' : '';
-                select.innerHTML += `<option value="${s.id}" ${isSelected}>${s.nome}</option>`;
-            });
-        }
-    } catch(e) {
-        select.innerHTML = '<option value="">Erro ao carregar</option>';
-    }
-}
-
-async function carregarObrasNoDashboardMacro() {
-    try {
-        // 1. Busca os Status Macros
-        const { data: statusMacros, error: errStatus } = await supabaseClient
-            .from('status_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-
-        if (errStatus) throw errStatus;
-        if (!statusMacros || statusMacros.length === 0) return;
-
-        const containerBoard = document.getElementById('boardStatusMacro');
-        if (containerBoard) {
-            containerBoard.innerHTML = '';
-            
-            statusMacros.forEach(status => {
-                containerBoard.innerHTML += `
-                    <div class="coluna-pcp" id="coluna-macro-${status.id}" ondragover="permitirDrop(event)" ondrop="soltarCardMacro(event, ${status.id})" style="flex: 1; min-width: 280px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
-                        <div class="coluna-header" style="background: #f8fafc; padding: 12px 15px; border-bottom: 3px solid ${status.cor || '#10b981'}; color: var(--azul-marca); font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-                            <span>${status.nome}</span> 
-                            <span id="count-macro-${status.id}" style="background: #e2e8f0; color: var(--texto-secundario); padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">0</span>
-                        </div>
-                        <div class="coluna-body" id="body-macro-${status.id}" style="padding: 15px; flex: 1; overflow-y: auto; min-height: 350px; display: flex; flex-direction: column; gap: 10px;"></div>
-                    </div>
-                `;
-            });
-        }
-
-        // 2. Busca obras e etapas em paralelo
-        const [resObras, resEtapas] = await Promise.all([
-            supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }),
-            supabaseClient.from('etapas_pcp').select('id, nome, status_macro_id').eq('empresa_id', empresaIdLogada)
-        ]);
-
-        if (resObras.error) throw resObras.error;
-        if (resEtapas.error) throw resEtapas.error;
-
-        const obras = resObras.data || [];
-        const etapasDB = resEtapas.data || [];
-
-        const mapaEtapas = {};
-        etapasDB.forEach(e => { mapaEtapas[String(e.id)] = e; });
-
-        const primeiroStatusMacroId = statusMacros[0].id;
-        const contadoresMacro = {};
-        statusMacros.forEach(s => contadoresMacro[s.id] = 0);
-
-        const colunasAgrupadas = {};
-        statusMacros.forEach(s => colunasAgrupadas[s.id] = {});
-
-        if (obras.length > 0) {
-            obras.forEach(obra => {
-                const etapaObj = mapaEtapas[String(obra.etapa_pcp_id)];
-                let idStatusDestino = primeiroStatusMacroId;
-                
-                if (etapaObj && etapaObj.status_macro_id) {
-                    idStatusDestino = etapaObj.status_macro_id;
-                }
-
-                const codOrc = obra.codigo_orcamento ? String(obra.codigo_orcamento) : 'S-ORC';
-                
-                if (!colunasAgrupadas[idStatusDestino][codOrc]) {
-                    colunasAgrupadas[idStatusDestino][codOrc] = [];
-                }
-                
-                const nomeCliente = obra.cliente_nome || obra.razao_social || obra.cliente || obra.nome_cliente || 'Cliente não informado';
-
-                colunasAgrupadas[idStatusDestino][codOrc].push({ 
-                    ...obra, 
-                    clienteNome: nomeCliente,
-                    etapaNome: etapaObj ? etapaObj.nome : 'Recém-criado' 
-                });
-            });
-        }
-
-        // 3. Renderiza os cards pai com clique no cabeçalho e itens internos arrastáveis
-        statusMacros.forEach(status => {
-            const corpoColuna = document.getElementById(`body-macro-${status.id}`);
-            const orcamentosNaColuna = colunasAgrupadas[status.id];
-            let qtdCardsNaColuna = 0;
-
-            if (corpoColuna && orcamentosNaColuna) {
-                Object.keys(orcamentosNaColuna).forEach(codOrc => {
-                    const listaItens = orcamentosNaColuna[codOrc];
-                    const primeiraObra = listaItens[0];
-                    qtdCardsNaColuna += listaItens.length; 
-
-                    const idGaveta = `gaveta-orc-${status.id}-${codOrc}`;
-
-                    // Itens internos (cada um com seu draggable próprio)
-                    let htmlItensInternos = '';
-                    listaItens.forEach(item => {
-                        htmlItensInternos += `
-                            <div draggable="true" ondragstart="arrastarCardMacro(event, ${item.id})" id="obra-macro-${item.id}" style="background: #fff; border: 1px solid #cbd5e1; border-left: 3px solid var(--azul-marca); border-radius: 4px; padding: 8px; margin-top: 6px; font-size: 11px; cursor: grab;" title="Arraste este projeto para outro status">
-                                <strong style="color: #1e293b; display: block; margin-bottom: 2px;">${item.nome_obra || item.nome || 'Item sem nome'}</strong>
-                                <span style="color: #0284c7; font-weight: 500;"><i class="fa-solid fa-list-check"></i> Etapa: ${item.etapaNome}</span>
-                            </div>
-                        `;
-                    });
-
-                    // Card Pai com onclick direto no bloco superior para expandir/recolher ao clicar
-                    corpoColuna.innerHTML += `
-                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid ${status.cor || 'var(--azul-marca)'}; border-radius: 6px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 8px;">
-                            <div onclick="toggleGavetaOrcamento('${idGaveta}')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" title="Clique para expandir/recolher">
-                                <div>
-                                    <div style="font-size: 0.75rem; font-weight: bold; color: var(--azul-marca);">Orçamento: #${codOrc}</div>
-                                    <strong style="font-size: 12px; color: #1e293b; display: block; margin-top: 2px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${primeiraObra.clienteNome}">${primeiraObra.clienteNome}</strong>
-                                    <span style="font-size: 10px; color: #64748b; background: #e2e8f0; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-top: 4px;">${listaItens.length} ite${listaItens.length > 1 ? 'ns' : 'm'}</span>
-                                </div>
-                                <div style="color: var(--azul-marca); font-size: 14px; padding: 5px;">
-                                    <i class="fa-solid fa-chevron-down" id="icon-${idGaveta}"></i>
-                                </div>
-                            </div>
-
-                            <!-- Gaveta com os itens internos -->
-                            <div id="${idGaveta}" style="display: none; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-                                ${htmlItensInternos}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            contadoresMacro[status.id] = qtdCardsNaColuna;
-            const spanCount = document.getElementById(`count-macro-${status.id}`);
-            if (spanCount) spanCount.innerText = qtdCardsNaColuna;
-        });
-
-    } catch (err) {
-        console.error("Erro ao carregar o Dashboard Macro de Obras:", err);
-    }
-}
-
-// Funções de Apoio ao Drag and Drop e Gaveta
-function permitirDrop(ev) {
-    ev.preventDefault();
-}
-
-function arrastarCardMacro(ev, obraId) {
-    ev.dataTransfer.setData("text/plain", obraId);
-}
-
-function toggleGavetaOrcamento(idGaveta) {
-    const gaveta = document.getElementById(idGaveta);
-    const icone = document.getElementById(`icon-${idGaveta}`);
-    if (gaveta) {
-        if (gaveta.style.display === 'none') {
-            gaveta.style.display = 'block';
-            if (icone) icone.className = 'fa-solid fa-chevron-up';
-        } else {
-            gaveta.style.display = 'none';
-            if (icone) icone.className = 'fa-solid fa-chevron-down';
-        }
-    }
-}
-
-async function soltarCardMacro(ev, novoStatusMacroId) {
-    ev.preventDefault();
-    const obraId = ev.dataTransfer.getData("text/plain");
-    if (!obraId) return;
-
-    try {
-        // Busca a primeira etapa vinculada ao Status Macro de destino
-        const { data: etapasDoStatus, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('status_macro_id', novoStatusMacroId)
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true })
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        if (!etapasDoStatus || etapasDoStatus.length === 0) {
-            alert("Atenção: Este Status Macro ainda não tem nenhuma etapa do PCP vinculada. Vá em 'Etapas' e vincule pelo menos uma etapa a este status para poder mover projetos para ele.");
-            return;
-        }
-
-        const primeiraEtapaVinculadaId = etapasDoStatus[0].id;
-
-        // Atualiza apenas o projeto específico arrastado no banco de dados
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaVinculadaId })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // Recarrega o painel instantaneamente
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao mover projeto no painel macro:", err);
-        alert("Erro ao alterar o status do projeto.");
-    }
-}
-
-function arrastarCardMacro(ev, obraId) {
-    ev.dataTransfer.setData("text/plain", obraId);
-}
-
-async function soltarCardMacro(ev, novoStatusMacroId) {
-    ev.preventDefault();
-    const obraId = ev.dataTransfer.getData("text/plain");
-    if (!obraId) return;
-
-    try {
-        // 1. REGRA DO VÍNCULO: 
-        // Busca na tabela de etapas qual é a primeira etapa do PCP que está 
-        // vinculada estritamente a este Status Macro de destino.
-        const { data: etapasDoStatus, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('status_macro_id', novoStatusMacroId)
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true }) // Ajustado para 'id' para evitar erro caso a coluna de ordenação mude
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        // Se o gestor tentar jogar para um Status Macro que não tem nenhuma etapa vinculada lá nas configurações:
-        if (!etapasDoStatus || etapasDoStatus.length === 0) {
-            alert("Atenção: Este Status Macro ainda não tem nenhuma etapa do PCP vinculada. Vá em 'Etapas' e vincule pelo menos uma etapa a este status para poder mover projetos para ele.");
-            return;
-        }
-
-        const primeiraEtapaVinculadaId = etapasDoStatus[0].id;
-
-        // 2. Atualiza a obra no banco de dados amarrando-a à etapa vinculada ao novo status macro
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaVinculadaId })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // 3. Recarrega o dashboard para atualizar a tela e os contadores instantaneamente
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao mover obra no painel macro:", err);
-        alert("Erro ao alterar o status do projeto.");
-    }
-}
-async function carregarDropdownStatusConfigPCP() {
-    const select = document.getElementById('configEtapaStatus');
-    if (!select) return;
-
-    select.innerHTML = '<option value="">Carregando...</option>';
-
-    try {
-        // Busca os Status Macros no banco
-        const { data: statusLista, error } = await supabaseClient
-            .from('status_pcp')
-            .select('id, nome')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-
-        if (error) throw error;
-
-        // A OPÇÃO MÁGICA: Deixa o usuário escolher "Sem Vínculo"
-        select.innerHTML = '<option value="">-- Não vincular (Ocultar do Painel) --</option>';
-
-        // Desenha as opções cadastradas (Novo, Em Execução, Concluído, etc)
-        statusLista.forEach(status => {
-            select.innerHTML += `<option value="${status.id}">${status.nome}</option>`;
-        });
-
-    } catch (err) {
-        console.error("Erro ao carregar dropdown de status:", err);
-        select.innerHTML = '<option value="">Erro ao carregar opções</option>';
-    }
-}
-async function carregarCheckboxesEtapas(statusId = null) {
-    const container = document.getElementById('containerCheckboxesEtapas');
-    if (!container) return;
-
-    // Mostra o loading animado
-    container.innerHTML = '<span style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando etapas...</span>';
-
-    try {
-        // Busca as etapas no banco
-        const { data: etapas, error } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id, nome, status_macro_id')
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true }); // Usando 'id' para evitar aquele erro de coluna 'ordem' não encontrada
-
-        if (error) throw error;
-
-        container.innerHTML = ''; // Limpa o loading
-        
-        if(etapas.length === 0) {
-            container.innerHTML = '<span style="font-size: 13px; color: #ef4444;">Nenhuma etapa cadastrada no Kanban ainda.</span>';
-            return;
-        }
-
-        // Desenha uma caixinha para cada etapa
-        etapas.forEach(etapa => {
-            const isChecked = (etapa.status_macro_id === statusId) ? 'checked' : '';
-            
-            container.innerHTML += `
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #334155;">
-                    <input type="checkbox" class="chk-etapa-vinculo" value="${etapa.id}" ${isChecked}>
-                    ${etapa.nome}
-                </label>
-            `;
-        });
-    } catch (err) {
-        console.error("Erro ao carregar checkboxes:", err);
-        container.innerHTML = '<span style="font-size: 13px; color: #ef4444;">Erro ao carregar as opções. Pressione F12 e veja o Console.</span>';
-    }
-}
-// Função chamada a cada tecla digitada no campo de busca do cliente
-// Função de busca assíncrona direta no Supabase (igual à Central de Clientes)
-async function buscarClientesParaEdicao(termo) {
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    const inputHidden = document.getElementById('editObraGlobalCnpj');
-    
-    // Limpa o hidden se o usuário apagar o texto
-    if (!termo || termo.trim() === "") {
-        if (inputHidden) inputHidden.value = "";
-        if (dropdown) dropdown.style.display = "none";
-        return;
-    }
-
-    if (!dropdown) return;
-
-    try {
-        let query = supabaseClient
-            .from('clientes')
-            .select('cnpj, razao_social')
-            .eq('empresa_id', empresaIdLogada);
-
-        // O mesmo filtro inteligente com ILIKE por partes que você usa na central
-        query = query.or(`razao_social.ilike.%${termo}%,cnpj.ilike.%${termo}%`);
-
-        const { data, error } = await query.limit(10);
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            dropdown.innerHTML = '<div style="padding: 10px; color: #64748b; font-size: 12px;">Nenhum cliente encontrado</div>';
-            dropdown.style.display = "block";
-            return;
-        }
-
-        let html = '';
-        data.forEach(c => {
-            const razaoSegura = (c.razao_social || '').replace(/'/g, "\\'");
-            const cnpjSeguro = c.cnpj || '';
-            
-            html += `
-                <div onclick="selecionarClienteModal('${razaoSegura}', '${cnpjSeguro}')" style="padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 12px;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                    <div style="font-weight: bold; color: var(--azul-marca);">${c.razao_social}</div>
-                    <div style="color: #64748b; font-size: 11px;">CNPJ: ${c.cnpj}</div>
-                </div>
-            `;
-        });
-
-        dropdown.innerHTML = html;
-        dropdown.style.display = "block";
-
-    } catch (err) {
-        console.error("Erro na busca de clientes:", err);
-    }
-}
-
-// Função disparada quando você clica em cima do cliente na lista
-function selecionarClienteModal(razaoSocial, cnpj) {
-    document.getElementById('editObraGlobalCnpjBusca').value = `${razaoSocial} — ${cnpj}`;
-    document.getElementById('editObraGlobalCnpj').value = cnpj; // Salva o CNPJ real no input oculto
-    document.getElementById('dropdownResultadosClientes').style.display = 'none'; // Fecha a caixa
-}
-
-// Fecha a caixinha se clicar fora dela na tela
-document.addEventListener('click', function(e) {
-    const buscaInput = document.getElementById('editObraGlobalCnpjBusca');
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    if (buscaInput && dropdown && !buscaInput.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
-
-// Função disparada quando você clica em cima do cliente na lista
-function selecionarClienteModal(razaoSocial, cnpj) {
-    document.getElementById('editObraGlobalCnpjBusca').value = `${razaoSocial} — ${cnpj}`;
-    document.getElementById('editObraGlobalCnpj').value = cnpj; // Salva o CNPJ real no input oculto
-    document.getElementById('dropdownResultadosClientes').style.display = 'none'; // Fecha a caixa
-}
-
-// Opcional: Fecha a caixinha se clicar fora dela na tela
-document.addEventListener('click', function(e) {
-    const buscaInput = document.getElementById('editObraGlobalCnpjBusca');
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    if (buscaInput && dropdown && !buscaInput.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
 </script>
 <!-- Modal de Importação -->
 <div id="modalImportacao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
