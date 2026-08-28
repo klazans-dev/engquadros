@@ -5536,11 +5536,14 @@ document.addEventListener('dragend', function(ev) {
     }
 }
 
-   function renderizarListaEtapasConfig() {
+ function renderizarListaEtapasConfig() {
     const lista = document.getElementById('listaConfigEtapas');
     lista.innerHTML = '';
     
     etapasPCP.forEach(e => {
+        // Garante que pegamos o ID correto da coluna do banco
+        const statusMacroId = e.status_macro_id || '';
+
         lista.innerHTML += `
             <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -5549,8 +5552,8 @@ document.addEventListener('dragend', function(ev) {
                     <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                    <!-- NOVO: O botão agora envia o '${e.status_id || ''}' -->
-                    <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao}, '${e.status_id || ''}')" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                    <!-- CORRIGIDO: Agora envia o status_macro_id correto para o formulário -->
+                    <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao}, '${statusMacroId}')" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
                     <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                 </div>
             </div>
