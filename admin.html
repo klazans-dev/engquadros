@@ -6476,7 +6476,7 @@ async function processarPlanilhaProjetos() {
                         codigo_orcamento: String(orcamento),
                         data_inicio: dataIni,
                         data_fim: dataFim,
-                        etapa_pcp_id: 1, 
+                        etapa_pcp_id: null, // ALTERADO: Agora entra como null para cair direto na coluna de "Novos" no painel macro!
                         progresso: 0,
                         dados_checklist: {}
                     });
@@ -6500,6 +6500,7 @@ async function processarPlanilhaProjetos() {
             // Atualiza os painéis visuais
             if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
             if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
+            if (typeof carregarObrasNoDashboardMacro === 'function') carregarObrasNoDashboardMacro(); // Garante a atualização do macro
 
         } catch (err) {
             console.error("Erro na importação:", err);
