@@ -1547,8 +1547,8 @@
             <!-- TELA: DASHBOARD KANBAN GERAL -->
             <div id="painelDashboard" class="painel-conteudo" style="flex-direction: column;">
                 <div>
-                    <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-chart-gantt"></i> Status Geral de Obras (Antigo)</h2>
-                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 2px;">Acompanhamento global de porcentagem de progresso.</p>
+                    <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-chart-gantt"></i> Status Geral de Obras </h2>
+                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 2px;">Acompanhamento  de todos os projetos por orçamento e cliente.</p>
                 </div>
                 
                 <div class="filtro-kanban-box">
@@ -6690,6 +6690,43 @@ async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
         select.innerHTML = '<option value="">Erro ao carregar opções</option>';
     }
 }
+async function iniciarProducaoObra(obraId) {
+    try {
+        // 1. Busca a primeira etapa válida do PCP configurada na empresa
+        const { data: etapasPCP, error: errEtapas } = await supabaseClient
+            .from('etapas_pcp')
+            .select('id')
+            .eq('empresa_id', empresaIdLogada)
+            .order('ordem_exibicao', { ascending: true })
+            .limit(1);
+
+        if (errEtapas) throw errEtapas;
+
+        if (!etapasPCP || etapasPCP.length === 0) {
+            alert("Atenção: Nenhuma etapa do PCP está configurada. Vá em 'Etapas' e crie pelo menos uma etapa para iniciar a produção.");
+            return;
+        }
+
+        const primeiraEtapaId = etapasPCP[0].id;
+
+        // 2. Atualiza a obra no banco de dados jogando-a para a primeira etapa
+        const { error: errUpdate } = await supabaseClient
+            .from('obras')
+            .update({ etapa_pcp_id: primeiraEtapaId })
+            .eq('id', obraId)
+            .eq('empresa_id', empresaIdLogada);
+
+        if (errUpdate) throw errUpdate;
+
+        // 3. Recarrega o painel macro para atualizar as colunas
+        carregarObrasNoDashboardMacro();
+
+    } catch (err) {
+        console.error("Erro ao iniciar produção da obra:", err);
+        alert("Erro ao iniciar a produção do projeto.");
+    }
+}
+
 async function carregarObrasNoDashboardMacro() {
     try {
         // 1. Busca os Status Macros
@@ -6809,10 +6846,18 @@ async function carregarObrasNoDashboardMacro() {
                     // Itens internos (cada um com seu draggable próprio)
                     let htmlItensInternos = '';
                     listaItens.forEach(item => {
+                        // Exibe o botão "Iniciar Produção" apenas se o item estiver sem etapa (na coluna de Novos)
+                        const botaoIniciar = (!item.etapa_pcp_id) ? `
+                            <button onclick="event.stopPropagation(); iniciarProducaoObra(${item.id})" style="margin-top: 6px; width: 100%; background: #10b981; border: none; color: #fff; padding: 5px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px;" title="Enviar para a primeira etapa da fábrica">
+                                <i class="fa-solid fa-play"></i> Iniciar Produção
+                            </button>
+                        ` : '';
+
                         htmlItensInternos += `
                             <div draggable="true" ondragstart="arrastarCardMacro(event, ${item.id})" id="obra-macro-${item.id}" style="background: #fff; border: 1px solid #cbd5e1; border-left: 3px solid var(--azul-marca); border-radius: 4px; padding: 8px; margin-top: 6px; font-size: 11px; cursor: grab;" title="Arraste este projeto para outro status">
                                 <strong style="color: #1e293b; display: block; margin-bottom: 2px;">${item.nome_obra || item.nome || 'Item sem nome'}</strong>
                                 <span style="color: #0284c7; font-weight: 500;"><i class="fa-solid fa-list-check"></i> Etapa: ${item.etapaNome}</span>
+                                ${botaoIniciar}
                             </div>
                         `;
                     });
@@ -6896,24 +6941,24 @@ async function soltarCardMacro(ev, novoStatusMacroId) {
 
         if (errEtapas) throw errEtapas;
 
-        // Se o gestor tentar jogar para um Status Macro que não tem nenhuma etapa vinculada lá nas configurações:
-        if (!etapasDoStatus || etapasDoStatus.length === 0) {
-            alert("Atenção: Este Status Macro ainda não tem nenhuma etapa do PCP vinculada. Vá em 'Etapas' e vincule pelo menos uma etapa a este status para poder mover projetos para ele.");
-            return;
+        // 2. REGRA FLEXÍVEL (PERMITIR VOLTAR PARA NULL):
+        // Se o Status Macro não tiver nenhuma etapa vinculada (ex: coluna "Novos"),
+        // em vez de dar o alert e barrar, definimos como null para limpar o ID no banco!
+        let etapaParaSalvar = null;
+        if (etapasDoStatus && etapasDoStatus.length > 0) {
+            etapaParaSalvar = etapasDoStatus[0].id;
         }
 
-        const primeiraEtapaVinculadaId = etapasDoStatus[0].id;
-
-        // 2. Atualiza a obra no banco de dados amarrando-a à etapa vinculada ao novo status macro
+        // 3. Atualiza a obra no banco de dados com o ID da etapa ou com NULL
         const { error: errUpdate } = await supabaseClient
             .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaVinculadaId })
+            .update({ etapa_pcp_id: etapaParaSalvar })
             .eq('id', obraId)
             .eq('empresa_id', empresaIdLogada);
 
         if (errUpdate) throw errUpdate;
 
-        // 3. Recarrega o dashboard para atualizar a tela e os contadores instantaneamente
+        // 4. Recarrega o dashboard para atualizar a tela e os contadores instantaneamente
         carregarObrasNoDashboardMacro();
 
     } catch (err) {
@@ -7100,6 +7145,42 @@ document.addEventListener('click', function(e) {
         dropdown.style.display = 'none';
     }
 });
+async function iniciarProducaoObra(obraId) {
+    try {
+        // 1. Busca a primeira etapa válida do PCP configurada na empresa (ordenada pela ordem de exibição ou ID)
+        const { data: etapasPCP, error: errEtapas } = await supabaseClient
+            .from('etapas_pcp')
+            .select('id')
+            .eq('empresa_id', empresaIdLogada)
+            .order('ordem_exibicao', { ascending: true })
+            .limit(1);
+
+        if (errEtapas) throw errEtapas;
+
+        if (!etapasPCP || etapasPCP.length === 0) {
+            alert("Atenção: Nenhuma etapa do PCP está configurada. Vá em 'Etapas' e crie pelo menos uma etapa para iniciar a produção.");
+            return;
+        }
+
+        const primeiraEtapaId = etapasPCP[0].id;
+
+        // 2. Atualiza a obra no banco de dados jogando-a para a primeira etapa da fábrica
+        const { error: errUpdate } = await supabaseClient
+            .from('obras')
+            .update({ etapa_pcp_id: primeiraEtapaId })
+            .eq('id', obraId)
+            .eq('empresa_id', empresaIdLogada);
+
+        if (errUpdate) throw errUpdate;
+
+        // 3. Recarrega o painel macro para mover o card instantaneamente de coluna
+        carregarObrasNoDashboardMacro();
+
+    } catch (err) {
+        console.error("Erro ao iniciar produção da obra:", err);
+        alert("Erro ao iniciar a produção do projeto.");
+    }
+}
 </script>
 <!-- Modal de Importação -->
 <div id="modalImportacao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
