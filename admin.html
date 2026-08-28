@@ -4030,17 +4030,63 @@ function mudarPagina(direcao) {
         }
     });
 
-    function filtrarKanban() {
-        const textoBusca = document.getElementById('filtroKanbanCliente').value.toLowerCase().trim(); const statusFiltro = document.getElementById('filtroKanbanStatus').value;
-        document.querySelectorAll('.kanban-card').forEach(card => {
-            const cProg = parseInt(card.getAttribute('data-progresso')); const nomeClienteCard = card.querySelector('p').innerText.toLowerCase(); 
-            let mostrar = true;
-            if (textoBusca !== '' && !nomeClienteCard.includes(textoBusca)) mostrar = false;
-            if (statusFiltro !== 'todos') { if (statusFiltro === '0' && cProg !== 0) mostrar = false; else if (statusFiltro === '100' && cProg !== 100) mostrar = false; else if (statusFiltro === '50' && (cProg === 0 || cProg === 100)) mostrar = false; }
-            card.style.display = mostrar ? 'block' : 'none';
-        });
-    }
+  function filtrarKanban() {
+    const textoBusca = document.getElementById('filtroKanbanCliente').value.toLowerCase().trim();
+    const selectStatus = document.getElementById('filtroKanbanStatus');
+    const statusFiltro = selectStatus ? selectStatus.value : 'todos';
 
+    // Pega todos os cards de orçamento exibidos no board macro
+    const cardsOrcamento = document.querySelectorAll('#boardStatusMacro > div');
+
+    cardsOrcamento.forEach(coluna => {
+        // Identifica o ID da coluna atual (ex: coluna-macro-1, etc.)
+        const colunaId = coluna.id;
+        
+        // Pega os cards de orçamento individuais dentro desta coluna
+        const itensNaColuna = coluna.querySelectorAll('.coluna-body > div');
+
+        itensNaColuna.forEach(card => {
+            const textoCard = card.innerText.toLowerCase();
+            let mostrarTexto = true;
+            let mostrarStatus = true;
+
+            // 1. Filtro de Texto (Busca por nome de cliente ou número do orçamento)
+            if (textoBusca !== '' && !textoCard.includes(textoBusca)) {
+                mostrarTexto = false;
+            }
+
+            // 2. Filtro de Status (Baseado nas opções do seu select)
+            if (statusFiltro !== 'todos') {
+                // Verificamos com base na posição da coluna ou no conteúdo/progresso do item
+                const headerColuna = coluna.querySelector('.coluna-header span').innerText.toLowerCase();
+                
+                if (statusFiltro === '0') {
+                    // Somente Projetos Novos (geralmente a primeira coluna ou que contenha "novo")
+                    if (!headerColuna.includes('novo') && !headerColuna.includes('projeto')) {
+                        mostrarStatus = false;
+                    }
+                } else if (statusFiltro === '100') {
+                    // Somente Concluídos
+                    if (!headerColuna.includes('concluído') && !headerColuna.includes('entrega')) {
+                        mostrarStatus = false;
+                    }
+                } else if (statusFiltro === '50') {
+                    // Somente Em Execução (colunas intermediárias)
+                    if (headerColuna.includes('novo') || headerColuna.includes('concluído')) {
+                        mostrarStatus = false;
+                    }
+                }
+            }
+
+            // Aplica a visibilidade final do card combinando texto e status
+            if (mostrarTexto && mostrarStatus) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+}
     // ================= DASHBOARD / OBRAS (BLINDADOS COM EMPRESA_ID) =================
     async function carregarDashboardKanban() {
         // Garante que a lista de clientes está carregada antes de exibir nomes
