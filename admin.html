@@ -419,7 +419,7 @@
                     <div class="circuit-container">
                         <div class="marca-box marca-callinfo">
                             <img src="public/SAAS.png" alt="Callinfo" class="logo-animada" style="max-height: 170px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));">
-                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado Versão 1.0.0.0</h3>
+                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado Versão 3.1.0.8</h3>
                             <p style="font-size: 1.1rem; color: #06b6d4; margin-top: 16px; font-weight: 600;"></p>
                         </div>
                         <div class="conexoes">
@@ -1343,8 +1343,8 @@
                                 <div class="form-group" style="flex: 1;">
                                     <label>Status da Conta</label>
                                     <select id="editCliStatus">
-                                        <option value="ativo">Ativo (Liberado)</option>
-                                        <option value="inativo">Inativo (Bloqueado)</option>
+                                        <option value="ativo">ATIVO (Liberado)</option>
+                                        <option value="inativo">INATIVO (Bloqueado)</option>
                                     </select>
                                 </div>
                             </div>
@@ -3853,9 +3853,18 @@ async function carregarListaClientesCentral() {
 }
 
 // 1. Função que desenha o card compacto com o WhatsApp no rodapé
+// 1. Função que desenha o card compacto com o WhatsApp no rodapé
 function renderizarCardClient(cliente) {
     const numeroLimpo = cliente.whatsapp ? cliente.whatsapp.replace(/\D/g, '') : '';
     const linkWhatsapp = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : '#';
+
+    // Padroniza o status para maiúsculo (evita problemas com 'ativo', 'Ativo' ou 'ATIVO')
+    const statusTexto = cliente.status ? cliente.status.toUpperCase() : 'ATIVO';
+    
+    // Define as cores com base no status padronizado
+    const isAtivo = statusTexto === 'ATIVO';
+    const bgStatus = isAtivo ? '#d1fae5' : '#fee2e2';
+    const colorStatus = isAtivo ? '#065f46' : '#991b1b';
 
     return `
         <div class="card-box item-cliente" onclick="prepararPainelCliente('${cliente.id}')" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.04)';">
@@ -3881,13 +3890,14 @@ function renderizarCardClient(cliente) {
                     </span>
                 `}
 
-                <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${cliente.status === 'ATIVO' ? '#d1fae5' : '#fee2e2'}; color: ${cliente.status === 'ATIVO' ? '#065f46' : '#991b1b'}; font-weight: 600;">
-                    ${cliente.status || 'ATIVO'}
+                <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${bgStatus}; color: ${colorStatus}; font-weight: 600;">
+                    ${statusTexto}
                 </span>
             </div>
         </div>
     `;
-}window.prepararPainelCliente = async function(clienteId) {
+}
+window.prepararPainelCliente = async function(clienteId) {
     try {
         const { data: clienteCompleto, error } = await supabaseClient
             .from('clientes')
