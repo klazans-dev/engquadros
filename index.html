@@ -43,8 +43,8 @@ header{position:fixed;top:0;width:100%;padding:15px 50px;display:flex;justify-co
 .slide-biblico.active{display:block}
 .header-biblico span{font-weight:700;color:var(--branco);font-size:0.75rem;font-style:normal;display:block;margin-top:2px}
 @keyframes fadeVersiculo{from{opacity:0}to{opacity:1}}
-nav ul{display:flex;list-style:none;gap:30px;align-items:center}
-nav a{color:#e2e8f0;font-weight:500;text-decoration:none;font-size:14px;transition:var(--transicao-padrao);text-transform:uppercase;letter-spacing:0.5px}
+nav ul{display:flex;list-style:none;gap:25px;align-items:center}
+nav a{color:#e2e8f0;font-weight:500;text-decoration:none;font-size:13px;transition:var(--transicao-padrao);text-transform:uppercase;letter-spacing:0.5px}
 nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,255,0.3)}
 .btn{padding:12px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:0.95rem;transition:var(--transicao-padrao);border:none;display:inline-flex;align-items:center;gap:8px;justify-content:center}
 .btn-primario{background-color:var(--azul-marca);color:var(--branco);box-shadow:0 4px 15px rgba(11,28,53,0.15)}
@@ -55,7 +55,7 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .btn-outline-dark:hover{background-color:var(--azul-marca);color:var(--branco)}
 .hero-wrapper{position:relative;width:100%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:transparent;overflow:hidden}
 .hero-video-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;object-fit:cover;z-index:0}
-.hero-video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(6,11,0.85)0%,rgba(6,11,0.3)100%);z-index:1}
+.hero-video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(6,11,20,0.85)0%,rgba(6,11,20,0.3)100%);z-index:1}
 .hero-texto-central{position:relative;z-index:3;text-align:center;max-width:900px;padding:0 20px;margin-top:80px}
 .hero-texto-central h1{color:var(--branco);font-size:clamp(2.2rem,5vw,4.5rem);font-weight:700;margin-bottom:20px;line-height:1.1;letter-spacing:-1px;text-shadow:0 4px 15px rgba(0,0,0,0.5)}
 .hero-texto-central p{color:rgba(255,255,255,0.85);font-size:1.15rem;margin-bottom:0;text-shadow:0 2px 10px rgba(0,0,0,0.5);font-weight:500}
@@ -115,6 +115,25 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .card-tecnico p{color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:25px}
 .card-tecnico ul{color:rgba(255,255,255,0.9);font-size:0.9rem;line-height:1.8;list-style:none}
 .card-tecnico li i{color:var(--azul-sutil);margin-right:8px}
+
+/* ESTILOS DA SEÇÃO EXPO FOOD 2026 - CORRIGIDO PARA NÃO CORTAR NENHUMA CABEÇA */
+.grid-expo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:40px}
+.card-expo{background:var(--branco);border-radius:8px;overflow:hidden;box-shadow:var(--sombra-industrial);border:var(--borda-industrial);transition:var(--transicao-padrao)}
+.card-expo:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(11,28,53,0.1)}
+.card-expo img{width:100%;height:250px;object-fit:contain;background-color:#0b1c35;padding:5px;transition:transform 0.5s ease}
+.card-expo:hover img{transform:scale(1.03)}
+.card-expo-conteudo{padding:20px}
+.card-expo-conteudo h4{color:var(--azul-marca);font-size:1.1rem;margin-bottom:8px;font-weight:700}
+.card-expo-conteudo p{color:var(--texto-secundario);font-size:0.9rem;line-height:1.5}
+
+/* ESTILOS PARA OS CARDS DE ISOs */
+.grid-isos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-top:40px}
+.card-iso{background:var(--branco);border:var(--borda-industrial);border-top:4px solid var(--azul-sutil);padding:35px 30px;border-radius:8px;box-shadow:var(--sombra-industrial);text-align:center;transition:var(--transicao-padrao);display:flex;flex-direction:column;justify-content:space-between}
+.card-iso:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(11,28,53,0.08)}
+.card-iso i{font-size:2.8rem;color:var(--azul-marca);margin-bottom:20px}
+.card-iso h3{color:var(--azul-marca);font-size:1.3rem;margin-bottom:12px;font-weight:700}
+.card-iso p{color:var(--texto-secundario);font-size:0.95rem;margin-bottom:25px;line-height:1.6}
+
 .filtros-galeria{display:flex;justify-content:center;gap:15px;margin-bottom:40px;flex-wrap:wrap}
 .btn-filtro{padding:8px 22px;border:1px solid rgba(11,28,53,0.2);background:transparent;color:var(--texto-secundario);border-radius:20px;font-weight:500;font-size:0.9rem;transition:var(--transicao-padrao)}
 .btn-filtro:hover,.btn-filtro.ativo{background:var(--azul-marca);color:var(--branco);border-color:var(--azul-marca)}
@@ -177,11 +196,13 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#missao">A Empresa</a></li>
                 <li><a href="#servicos">Soluções</a></li>
+                <li><a href="#expo">EXPO Food 2026</a></li>
+                <li><a href="#certificacoes">Certificações</a></li>
                 <li><a href="#galeria">Projetos</a></li>
                 <li><a href="public/portfolio.pdf" target="_blank" style="color: var(--branco); font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Portfólio</a></li>
                 <li><a href="#contato">Contato</a></li>
                 <!-- BOTOES DE ACESSO DO SISTEMA -->
-                <div style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
                     <a href="login.html" class="btn" style="background-color: var(--branco); color: var(--azul-marca); padding: 10px 20px;">
                         <i class="fa-solid fa-user-lock"></i> Área do Cliente
                     </a>
@@ -194,33 +215,24 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
     </header>
 
     <main>
-        <!-- ==========================================================
-             SESSÃO HERO (AGORA COM VÍDEO DE FUNDO ESTILO ABB)
-             ========================================================== -->
+        <!-- SESSÃO HERO -->
         <section id="hero" class="hero-wrapper">
-            
-            <!-- VÍDEO DE FUNDO EM LOOP -->
             <video autoplay loop muted playsinline class="hero-video-bg">
-                <!-- Certifique-se de baixar um vídeo MP4 e salvar na pasta 'public' -->
                 <source src="public/video-engenharia.mp4" type="video/mp4">
             </video>
             
-            <!-- MÁSCARA ESCURA (OVERLAY) -->
             <div class="hero-video-overlay"></div>
             
-            <!-- TEXTO DE IMPACTO CENTRALIZADO -->
             <div class="hero-texto-central reveal">
                 <h1>A segurança ideal em painéis elétricos</h1>
                 <p>Projetos e soluções de alta performance estruturados para atender desde grandes plantas industriais até demandas específicas.</p>
             </div>
 
-            <!-- BOTÕES MANTIDOS DO ORIGINAL -->
             <div class="hero-botoes reveal">
                 <a href="#contato" class="btn btn-secundario" style="background: var(--branco); color: var(--azul-marca); border-color: var(--branco);"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
                 <a href="public/catalogo.pdf" download="catalogo.pdf" class="btn btn-secundario"><i class="fa-solid fa-file-pdf"></i> Baixar Catálogo</a>
             </div>
 
-            <!-- ESTATÍSTICAS MANTIDAS DO ORIGINAL -->
             <div class="hero-stats reveal">
                 <div style="text-align: center;">
                     <h3>+<span class="contador-animado" data-target="11000">0</span></h3>
@@ -312,6 +324,80 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             </div>
         </section>
 
+        <!-- SEÇÃO EXPO FOOD 2026 (IMAGENS INTEIRAS - SEM CORTES) -->
+        <section id="expo" class="secao bg-cinza">
+            <div class="conteudo-secao">
+                <h2 class="titulo-secao reveal">Presença na EXPO Food 2026</h2>
+                <p class="apresentacao-intro reveal">A ENGQUADROS marcou forte presença na EXPO Food 2026, apresentando ao mercado corporativo e industrial nossas soluções avançadas em painéis elétricos e automação.</p>
+                
+                <div class="grid-expo reveal">
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/1.jpeg" alt="Expo Food 2026 - Logística e Estrutura" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Logística e Montagem</h4>
+                            <p>Preparação e infraestrutura robusta para entrega de grandes projetos industriais.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/2.jpeg" alt="Expo Food 2026 - Visão do Stand" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Nosso Stand na Feira</h4>
+                            <p>Espaço dedicado a receber clientes, parceiros e engenheiros do setor industrial.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/3.jpeg" alt="Expo Food 2026 - Equipe Comercial" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Relacionamento B2B</h4>
+                            <p>Nossa equipe técnica e comercial em atendimento ativo aos visitantes.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/4.jpeg" alt="Expo Food 2026 - Atendimento Técnico" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Parcerias Estratégicas</h4>
+                            <p>Conectando nossa engenharia elétrica às principais demandas do mercado.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/5.jpeg" alt="Expo Food 2026 - Tecnologias e Soluções" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Tecnologia em Destaque</h4>
+                            <p>Apresentação visual de alta performance em automação e painéis elétricos.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/6.jpeg" alt="Expo Food 2026 - Demonstração" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Inovação em Sistemas</h4>
+                            <p>Soluções estruturadas para garantir máxima segurança operacional nas indústrias.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/7.jpeg" alt="Expo Food 2026 - Bastidores e Evento" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Cobertura do Evento</h4>
+                            <p>Registros dos melhores momentos de nossa participação na feira.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/8.jpeg" alt="Expo Food 2026 - Equipe EngQuadros" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Compromisso e Qualidade</h4>
+                            <p>Nossa equipe unida levando excelência e confiança para o evento.</p>
+                        </div>
+                    </div>
+                    <div class="card-expo">
+                        <img src="public/Expo Food 2026/9.jpeg" alt="Expo Food 2026 - Encerramento" loading="lazy">
+                        <div class="card-expo-conteudo">
+                            <h4>Sucesso de Público</h4>
+                            <p>Agradecimento a todos os clientes e parceiros que visitaram nosso espaço.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- FAIXA DE SELOS E NORMAS -->
         <section class="faixa-certificacoes bg-escuro reveal">
             <div class="conteudo-secao" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px;">
@@ -320,14 +406,45 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 </h3>
                 
                 <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center;">
-                    <div class="selo-cert">
-                        <i class="fa-solid fa-certificate"></i> Padrão ISO (Qualidade)
+                    <div class="selo-cert"><i class="fa-solid fa-certificate"></i> Padrão ISO (Qualidade)</div>
+                    <div class="selo-cert"><i class="fa-solid fa-shield-check"></i> Norma IEC 61439</div>
+                    <div class="selo-cert"><i class="fa-solid fa-hard-hat"></i> NR-10 e NR-22</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO: CERTIFICAÇÕES ISO -->
+        <section id="certificacoes" class="secao bg-claro">
+            <div class="conteudo-secao">
+                <h2 class="titulo-secao reveal">Normas e Certificações ISO</h2>
+                <p class="apresentacao-intro reveal">Garantimos rigorosos padrões internacionais de qualidade, gestão ambiental e segurança operacional em todos os nossos processos fabris.</p>
+
+                <div class="grid-isos reveal">
+                    <div class="card-iso">
+                        <div>
+                            <i class="fa-solid fa-file-shield"></i>
+                            <h3>ISO 9001</h3>
+                            <p>Sistema de Gestão da Qualidade. Assegura a melhoria contínua dos processos e a total satisfação dos clientes em nossos painéis.</p>
+                        </div>
+                        <a href="public/ISOS/ISO9001.pdf" download="ISO9001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 9001</a>
                     </div>
-                    <div class="selo-cert">
-                        <i class="fa-solid fa-shield-check"></i> Norma IEC 61439
+
+                    <div class="card-iso">
+                        <div>
+                            <i class="fa-solid fa-leaf"></i>
+                            <h3>ISO 14001</h3>
+                            <p>Sistema de Gestão Ambiental. Compromisso com a sustentabilidade, redução de impactos ambientais e responsabilidade ecológica.</p>
+                        </div>
+                        <a href="public/ISOS/ISO14001.pdf" download="ISO14001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 14001</a>
                     </div>
-                    <div class="selo-cert">
-                        <i class="fa-solid fa-hard-hat"></i> NR-10 e NR-22
+
+                    <div class="card-iso">
+                        <div>
+                            <i class="fa-solid fa-helmet-safety"></i>
+                            <h3>ISO 45001</h3>
+                            <p>Sistema de Gestão de Saúde e Segurança Ocupacional. Foco na prevenção de acidentes e bem-estar integral da equipe fabril.</p>
+                        </div>
+                        <a href="public/ISOS/ISO45001.pdf" download="ISO45001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 45001</a>
                     </div>
                 </div>
             </div>
@@ -553,16 +670,16 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 <div class="contato-container reveal">
                     <div>
                         <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: var(--azul-claro-bg); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-industry"></i></span> Av. Calombé, 4775 - Duque de Caxias, RJ
+                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-industry"></i></span> Av. Calombé, 4775 - Duque de Caxias, RJ
                         </p>
                         <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: var(--azul-claro-bg); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-envelope"></i></span> comercial@engquadros.ind.br
+                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-envelope"></i></span> comercial@engquadros.ind.br
                         </p>
                         <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: var(--azul-claro-bg); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-phone"></i></span> (21) 3842-1058
+                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-phone"></i></span> (21) 3842-1058
                         </p>
                         <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: var(--azul-claro-bg); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-brands fa-whatsapp"></i></span> (21) 99617-4264
+                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-brands fa-whatsapp"></i></span> (21) 99617-4264
                         </p>
                     </div>
                     
