@@ -5012,7 +5012,8 @@ async function carregarProjetosPCP() {
     });
 
     try {
-        let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }).limit(100);
+        // CORRIGIDO: Removido o .limit(100) para garantir que obras ativas mais antigas (como a Etapa 1) não fiquem de fora
+        let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).not('etapa_pcp_id', 'is', null).order('id', { ascending: false });
         
         if (!isMaster && cnpjsPermitidos.length > 0) {
             queryObras = queryObras.in('cliente_cnpj', cnpjsPermitidos);
@@ -5045,25 +5046,20 @@ async function carregarProjetosPCP() {
 
         if (data && data.length > 0) {
             data.forEach(obra => {
-                // REGRA: Se a obra não tem etapa_pcp_id preenchida, ela é ignorada no Kanban do PCP
+                // Se a obra não tem etapa definida, pula
                 if (!obra.etapa_pcp_id) return;
 
-                let etapaAtual = String(obra.etapa_pcp_id);
-                if (etapaAtual.startsWith('1')) {
-                    etapaAtual = etapaAtual.replace('1', '');
-                }
+                // Força a conversão para string para comparar com segurança com o ID do banco
+                let etapaAtual = String(obra.etapa_pcp_id).trim();
                 
-                // Busca estritamente a etapa correspondente
-                let etapaObj = etapasPCP.find(e => String(e.id) === etapaAtual);
+                // Busca a etapa correspondente na lista ativa do PCP
+                let etapaObj = etapasPCP.find(e => String(e.id).trim() === etapaAtual);
                 
-                // Se a etapa da obra não existe mais nas configurações ativas, ignora
-                if (!etapaObj) {
-                    return; 
-                }
+                if (!etapaObj) return; // Se não achar a etapa configurada, ignora
                 
                 contadores[etapaObj.id]++;
                 
-                // Mantém a busca do cliente para exibir no subtítulo do cartão
+                // Restante da lógica de cliente e agrupamento...
                 let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
                 if (obra.cliente_cnpj) {
                     const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
@@ -5073,14 +5069,12 @@ async function carregarProjetosPCP() {
                 }
                 obra.nomeCliResolved = nomeCli;
                 
-                // Agrupando pelo NOME DA OBRA
                 let chaveAgrupamento = obra.nome_obra || 'Projeto Sem Nome';
                 
                 if (!obrasAgrupadas[etapaObj.id][chaveAgrupamento]) {
                     obrasAgrupadas[etapaObj.id][chaveAgrupamento] = [];
                 }
                 
-                // Adiciona a obra na pasta correta do Projeto
                 obrasAgrupadas[etapaObj.id][chaveAgrupamento].push(obra);
             });
         }
