@@ -6,6 +6,13 @@
     <title>EngQuadros | Engenharia em Painéis Elétricos e Automação</title>
     <meta name="description" content="A segurança ideal em painéis elétricos. Projeto, fabricação e montagem de painéis de baixa e média tensão e automação industrial.">
 
+    <!-- Meta Tags Open Graph (Para WhatsApp, LinkedIn, etc.) -->
+    <meta property="og:title" content="EngQuadros | Engenharia Segura">
+    <meta property="og:description" content="A segurança ideal em painéis elétricos. Automação e quadros de alta performance.">
+    <!-- Recomendo salvar a logo ou o prédio como og-image.jpg na pasta public -->
+    <meta property="og:image" content="public/og-image.jpg"> 
+    <meta property="og:type" content="website">
+
     <link rel="icon" type="image/png" href="public/favicon.png">
     
     <!-- Tipografia Corporativa Premium -->
@@ -15,11 +22,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+/* VARIÁVEIS E BASE */
 :root{--azul-profundo:#060b14;--azul-marca:#0b1c35;--azul-sutil:#2b5c92;--branco:#ffffff;--texto-principal:#1e293b;--texto-secundario:#475569;--texto-claro:#f1f5f9;--borda-industrial:1px solid rgba(11,28,53,0.1);--borda-branca:1px solid rgba(255,255,255,0.1);--sombra-industrial:0 4px 20px rgba(0,0,0,0.05);--transicao-padrao:all 0.3s ease}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background-color:var(--azul-profundo);color:var(--texto-principal);line-height:1.6;overflow-x:hidden;font-family:'Inter',sans-serif}
 h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,header nav a{font-family:'Montserrat',sans-serif}
+
+/* CLASSES UTILITÁRIAS (SUBSTITUEM INLINE CSS) */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-40 { margin-bottom: 40px; }
+.mt-40 { margin-top: 40px; }
+.w-100 { width: 100%; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.font-bold { font-weight: bold; }
+
+/* BACKGROUNDS ANIMADOS */
 .global-bg{position:fixed;top:0;left:0;width:100vw;height:100vh;background-image:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center;z-index:-5;opacity:0.18;mix-blend-mode:luminosity}
 .circuit-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-4;background-image:linear-gradient(rgba(43,92,146,0.05)1px,transparent1px),linear-gradient(90deg,rgba(43,92,146,0.05)1px,transparent1px);background-size:50px 50px}
 .circuit-line{position:absolute;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);opacity:0.4}
@@ -36,6 +57,8 @@ h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,
 @keyframes energyFlow{0%{left:-400px}100%{left:100%}}
 .reveal{opacity:0;transform:translateY(30px);transition:var(--transicao-padrao);transition-duration:0.8s}
 .reveal.active{opacity:1;transform:translateY(0)}
+
+/* CABEÇALHO */
 header{position:fixed;top:0;width:100%;padding:15px 50px;display:flex;justify-content:space-between;align-items:center;background:rgba(6,11,20,0.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 2px 15px rgba(0,0,0,0.3);transition:var(--transicao-padrao);z-index:1000;border-bottom:1px solid rgba(255,255,255,0.05)}
 .logo img{height:40px;width:auto;transition:var(--transicao-padrao)}
 .header-biblico{flex:1;text-align:center;color:rgba(255,255,255,0.6);font-size:0.85rem;font-style:italic;padding:0 20px}
@@ -46,13 +69,19 @@ header{position:fixed;top:0;width:100%;padding:15px 50px;display:flex;justify-co
 nav ul{display:flex;list-style:none;gap:25px;align-items:center}
 nav a{color:#e2e8f0;font-weight:500;text-decoration:none;font-size:13px;transition:var(--transicao-padrao);text-transform:uppercase;letter-spacing:0.5px}
 nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,255,0.3)}
-.btn{padding:12px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:0.95rem;transition:var(--transicao-padrao);border:none;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+
+/* BOTÕES */
+.btn{padding:12px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-size:0.95rem;transition:var(--transicao-padrao);border:none;display:inline-flex;align-items:center;gap:8px;justify-content:center; cursor:pointer;}
 .btn-primario{background-color:var(--azul-marca);color:var(--branco);box-shadow:0 4px 15px rgba(11,28,53,0.15)}
 .btn-primario:hover{background-color:var(--azul-sutil);transform:translateY(-2px);box-shadow:0 6px 20px rgba(43,92,146,0.2)}
 .btn-secundario{background-color:transparent;border:1px solid var(--branco);color:var(--branco)}
 .btn-secundario:hover{background-color:var(--branco);color:var(--azul-marca)}
 .btn-outline-dark{background-color:transparent;border:1px solid var(--azul-marca);color:var(--azul-marca)}
 .btn-outline-dark:hover{background-color:var(--azul-marca);color:var(--branco)}
+.btn-white{background:var(--branco);color:var(--azul-marca);border-color:var(--branco);}
+.btn-white:hover{background:var(--azul-claro-bg);color:var(--azul-sutil);}
+
+/* HERO SECTION */
 .hero-wrapper{position:relative;width:100%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:transparent;overflow:hidden}
 .hero-video-bg{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);min-width:100%;min-height:100%;object-fit:cover;z-index:0}
 .hero-video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(6,11,20,0.85)0%,rgba(6,11,20,0.3)100%);z-index:1}
@@ -64,59 +93,50 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .hero-stats h3{font-size:3rem;color:var(--branco);font-weight:700;line-height:1.1}
 .hero-stats p{color:rgba(255,255,255,0.7);font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-top:5px}
 .stats-divider{width:1px;background:rgba(255,255,255,0.2)}
+
+/* ESTRUTURA DE SEÇÕES */
 .secao{padding:100px 50px;position:relative;z-index:2}
 .bg-claro{background-color:rgba(255,255,255,0.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .bg-cinza{background-color:rgba(248,250,252,0.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .bg-escuro{background-color:rgba(6,11,20,0.85);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
 .conteudo-secao{max-width:1200px;margin:0 auto}
-.titulo-secao{text-align:center;font-size:2.2rem;margin-bottom:60px;color:var(--azul-marca);font-weight:700;letter-spacing:-0.5px}
+.titulo-secao{font-size:2.2rem;margin-bottom:60px;color:var(--azul-marca);font-weight:700;letter-spacing:-0.5px;text-align:center;}
 .titulo-secao::after{content:'';display:block;width:40px;height:3px;background:var(--azul-sutil);margin:15px auto 0;border-radius:2px}
+.titulo-secao.text-left::after{margin:15px 0 0 0;}
 .titulo-branco{color:var(--branco)}
-.apresentacao-intro{text-align:center;max-width:900px;margin:0 auto 50px;font-size:1.15rem;color:var(--texto-secundario);line-height:1.8}
-.pilares-paisagem{margin-bottom:80px}
-.grid-pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
-.pilar-card{background:var(--branco);padding:40px 30px;border-radius:8px;box-shadow:var(--sombra-industrial);transition:transform 0.3s ease;text-align:center;border:var(--borda-industrial);border-top:4px solid var(--azul-marca)}
-.pilar-card:hover{transform:translateY(-8px);box-shadow:0 10px 30px rgba(11,28,53,0.08)}
-.pilar-card i{font-size:2.5rem;margin-bottom:20px;color:var(--azul-marca)}
-.pilar-card h4{color:var(--azul-marca);margin-bottom:15px;font-size:1.2rem;font-weight:700}
-.pilar-card p{color:var(--texto-secundario);font-size:1rem;line-height:1.6}
+.apresentacao-intro{max-width:900px;margin:0 auto 50px;font-size:1.15rem;color:var(--texto-secundario);line-height:1.8;text-align:center;}
+
+/* NOVO LAYOUT: A ENGENHARIA SEGURA (COM O PRÉDIO) */
+.sobre-container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.sobre-texto { padding-right: 20px; }
+.sobre-imagem { border-radius: 12px; overflow: hidden; box-shadow: var(--sombra-industrial); position: relative; border: var(--borda-industrial); }
+.sobre-imagem img { width: 100%; height: auto; display: block; transition: var(--transicao-padrao); }
+.sobre-imagem:hover img { transform: scale(1.03); }
+.lista-pilares-vertical { display: flex; flex-direction: column; gap: 25px; margin-top: 30px; }
+.pilar-item { display: flex; align-items: flex-start; gap: 15px; }
+.pilar-item i { font-size: 1.8rem; color: var(--azul-marca); background: rgba(11,28,53,0.05); padding: 12px; border-radius: 8px; }
+.pilar-item h4 { color: var(--azul-marca); font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
+.pilar-item p { color: var(--texto-secundario); font-size: 0.95rem; line-height: 1.5; }
+
+/* DEMAIS GRIDS */
 .missao-bg{background-color:var(--branco);border-radius:12px;box-shadow:var(--sombra-industrial);padding:60px;position:relative;z-index:2;border:var(--borda-industrial)}
 .missao-overhead{text-align:center;font-size:0.85rem;color:var(--azul-sutil);text-transform:uppercase;font-weight:bold;letter-spacing:2px;margin-bottom:10px}
 .grid-missao{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px}
 .item-missao{display:flex;gap:20px;align-items:flex-start}
 .icone-missao{flex-shrink:0;width:50px;height:50px;background:rgba(43,92,146,0.05);color:var(--azul-marca);border-radius:8px;display:flex;justify-content:center;align-items:center;font-size:1.5rem;transition:var(--transicao-padrao)}
 .item-missao:hover .icone-missao{background:var(--azul-marca);color:var(--branco);transform:translateY(-3px)}
+
 .grid-servicos{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px}
 .card-servico{background:var(--branco);border:var(--borda-industrial);box-shadow:var(--sombra-industrial);padding:40px 30px;border-radius:8px;text-align:center;transition:var(--transicao-padrao);border-top:1px solid transparent}
 .card-servico:hover{transform:translateY(-5px);border-top-color:var(--azul-sutil);box-shadow:0 12px 20px rgba(11,28,53,0.06)}
 .card-servico i{font-size:2.5rem;color:var(--azul-marca);margin-bottom:20px}
 .card-servico h3{color:var(--azul-marca);margin-bottom:15px;font-size:1.2rem}
+
 .faixa-certificacoes{padding:40px 20px;text-align:center;color:var(--branco);display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:30px;border-top:1px solid rgba(255,255,255,0.1)}
 .selo-cert{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);padding:12px 25px;border-radius:50px;font-weight:600;display:flex;align-items:center;gap:10px;transition:var(--transicao-padrao)}
 .selo-cert:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px)}
-.steel-panel{background:rgba(255,255,255,0.03);border:var(--borda-branca);backdrop-filter:blur(5px)}
-.grid-flip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;max-width:1200px;margin:0 auto;perspective:1000px}
-.flip-card{background-color:transparent;width:100%;height:260px}
-.flip-card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.8s;transform-style:preserve-3d}
-.flip-card:hover .flip-card-inner{transform:rotateY(180deg)}
-.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px}
-.flip-card-front{color:var(--branco)}
-.flip-card-front i{font-size:2.5rem;color:var(--branco);margin-bottom:15px;opacity:0.9}
-.flip-card-back{background:var(--branco);color:var(--azul-marca);transform:rotateY(180deg);font-size:0.95rem;border:var(--borda-industrial);box-shadow:0 10px 25px rgba(0,0,0,0.1)}
-.faixa-qualidade{color:var(--branco);padding:60px 20px;text-align:center;border-top:var(--borda-branca)}
-.grid-qualidade{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;max-width:1200px;margin:0 auto;margin-top:40px}
-.item-qualidade{display:flex;flex-direction:column;align-items:center;gap:15px}
-.item-qualidade i{font-size:2.2rem;color:var(--branco);opacity:0.7;transition:var(--transicao-padrao)}
-.item-qualidade:hover i{opacity:1;transform:translateY(-3px)}
-.item-qualidade span{font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px}
-.card-tecnico{background:var(--azul-marca);padding:35px;border-radius:8px;display:flex;flex-direction:column;justify-content:space-between;border:var(--borda-branca);transition:var(--transicao-padrao)}
-.card-tecnico:hover{box-shadow:0 10px 30px rgba(0,0,0,0.4);border-color:rgba(255,255,255,0.2);transform:translateY(-5px)}
-.card-tecnico h3{color:var(--branco);font-size:1.4rem;margin-bottom:15px}
-.card-tecnico p{color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:25px}
-.card-tecnico ul{color:rgba(255,255,255,0.9);font-size:0.9rem;line-height:1.8;list-style:none}
-.card-tecnico li i{color:var(--azul-sutil);margin-right:8px}
 
-/* ESTILOS DA SEÇÃO EXPO FOOD 2026 - CORRIGIDO PARA NÃO CORTAR NENHUMA CABEÇA */
+/* SEÇÃO EXPO FOOD 2026 */
 .grid-expo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:40px}
 .card-expo{background:var(--branco);border-radius:8px;overflow:hidden;box-shadow:var(--sombra-industrial);border:var(--borda-industrial);transition:var(--transicao-padrao)}
 .card-expo:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(11,28,53,0.1)}
@@ -126,7 +146,7 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .card-expo-conteudo h4{color:var(--azul-marca);font-size:1.1rem;margin-bottom:8px;font-weight:700}
 .card-expo-conteudo p{color:var(--texto-secundario);font-size:0.9rem;line-height:1.5}
 
-/* ESTILOS PARA OS CARDS DE ISOs */
+/* ISOs */
 .grid-isos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;margin-top:40px}
 .card-iso{background:var(--branco);border:var(--borda-industrial);border-top:4px solid var(--azul-sutil);padding:35px 30px;border-radius:8px;box-shadow:var(--sombra-industrial);text-align:center;transition:var(--transicao-padrao);display:flex;flex-direction:column;justify-content:space-between}
 .card-iso:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(11,28,53,0.08)}
@@ -134,6 +154,34 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .card-iso h3{color:var(--azul-marca);font-size:1.3rem;margin-bottom:12px;font-weight:700}
 .card-iso p{color:var(--texto-secundario);font-size:0.95rem;margin-bottom:25px;line-height:1.6}
 
+/* ENGENHARIA FLIPS */
+.steel-panel{background:rgba(255,255,255,0.03);border:var(--borda-branca);backdrop-filter:blur(5px)}
+.grid-flip{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px;max-width:1200px;margin:0 auto;perspective:1000px}
+.flip-card{background-color:transparent;width:100%;height:260px}
+.flip-card-inner{position:relative;width:100%;height:100%;text-align:center;transition:transform 0.8s;transform-style:preserve-3d}
+.flip-card:hover .flip-card-inner{transform:rotateY(180deg)}
+.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:8px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px}
+.flip-card-front{color:var(--branco)}
+.flip-card-front i{font-size:2.5rem;color:var(--branco);margin-bottom:15px;opacity:0.9}
+.flip-card-back{background:var(--branco);color:var(--azul-marca);transform:rotateY(180deg);font-size:0.95rem;border:var(--borda-industrial);box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+
+.faixa-qualidade{color:var(--branco);padding:60px 20px;text-align:center;border-top:var(--borda-branca)}
+.grid-qualidade{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;max-width:1200px;margin:0 auto;margin-top:40px}
+.item-qualidade{display:flex;flex-direction:column;align-items:center;gap:15px}
+.item-qualidade i{font-size:2.2rem;color:var(--branco);opacity:0.7;transition:var(--transicao-padrao)}
+.item-qualidade:hover i{opacity:1;transform:translateY(-3px)}
+.item-qualidade span{font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:1px}
+
+/* QUADROS E PAINÉIS */
+.grid-pilares{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+.card-tecnico{background:var(--azul-marca);padding:35px;border-radius:8px;display:flex;flex-direction:column;justify-content:space-between;border:var(--borda-branca);transition:var(--transicao-padrao)}
+.card-tecnico:hover{box-shadow:0 10px 30px rgba(0,0,0,0.4);border-color:rgba(255,255,255,0.2);transform:translateY(-5px)}
+.card-tecnico h3{color:var(--branco);font-size:1.4rem;margin-bottom:15px}
+.card-tecnico p{color:rgba(255,255,255,0.7);font-size:0.95rem;margin-bottom:25px}
+.card-tecnico ul{color:rgba(255,255,255,0.9);font-size:0.9rem;line-height:1.8;list-style:none}
+.card-tecnico li i{color:var(--azul-sutil);margin-right:8px}
+
+/* GALERIA E PARCEIROS */
 .filtros-galeria{display:flex;justify-content:center;gap:15px;margin-bottom:40px;flex-wrap:wrap}
 .btn-filtro{padding:8px 22px;border:1px solid rgba(11,28,53,0.2);background:transparent;color:var(--texto-secundario);border-radius:20px;font-weight:500;font-size:0.9rem;transition:var(--transicao-padrao)}
 .btn-filtro:hover,.btn-filtro.ativo{background:var(--azul-marca);color:var(--branco);border-color:var(--azul-marca)}
@@ -141,24 +189,52 @@ nav a:hover,nav a.ativo{color:var(--branco);text-shadow:0 0 10px rgba(255,255,25
 .item-galeria{position:relative;overflow:hidden;border-radius:8px;aspect-ratio:4/3;background:#e2e8f0;transition:opacity 0.4s ease;border:var(--borda-industrial)}
 .item-galeria img{width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease}
 .item-galeria:hover img{transform:scale(1.05);filter:brightness(0.9)}
+
 .grid-clientes{display:flex;flex-wrap:wrap;justify-content:center;gap:50px;align-items:center;margin-bottom:50px}
 .grid-clientes img{max-width:130px;filter:grayscale(100%) opacity(0.4);transition:var(--transicao-padrao)}
 .grid-clientes img:hover{filter:grayscale(0%) opacity(1);transform:translateY(-2px)}
 .divisor-parceiros{height:1px;background:rgba(11,28,53,0.1);width:80%;margin:0 auto 40px}
+
+/* AVALIAÇÕES E CONTATO */
 .avaliacoes-header .nota{font-size:3rem;font-weight:700;color:var(--azul-marca)}
 .carousel-reviews{position:relative;max-width:800px;margin:0 auto;overflow:hidden;height:220px;background:var(--branco);border-radius:12px;box-shadow:var(--sombra-industrial);border:var(--borda-industrial)}
 .review-slide{position:absolute;top:0;left:0;width:100%;height:100%;padding:30px;opacity:0;transition:opacity 0.8s ease;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
 .review-slide.active{opacity:1;z-index:2}
 .review-text{font-size:1.05rem;color:var(--texto-secundario);font-style:italic}
+
 .contato-container{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;background:var(--branco);padding:40px;border-radius:12px;box-shadow:var(--sombra-industrial);border:var(--borda-industrial)}
 .formulario input,.formulario textarea{width:100%;padding:14px;border:1px solid rgba(11,28,53,0.2);border-radius:4px;background:rgba(248,250,252,0.8);font-size:0.95rem;font-family:'Inter';transition:0.3s;margin-bottom:15px;color:var(--texto-principal)}
 .formulario input:focus,.formulario textarea:focus{border-color:var(--azul-marca);outline:none;background:var(--branco);box-shadow:0 0 0 2px rgba(11,28,53,0.1)}
+.icon-contato {width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;}
+.item-contato {margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;}
+
 footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(255,255,255,0.5);text-align: center;padding:25px;font-size:0.9rem;border-top:1px solid rgba(255,255,255,0.05)}
 .whatsapp-float{position:fixed;bottom:30px;right:30px;background-color:#25d366;color:#fff;width:60px;height:60px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;box-shadow:0 4px 15px rgba(37,211,102,0.3);z-index:1000;transition:var(--transicao-padrao)}
 .whatsapp-float:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(37,211,102,0.5)}
 .menu-mobile-btn{display:none;background:transparent;border:none;color:var(--branco);font-size:1.8rem;cursor:pointer}
-@media (max-width:992px){.contato-container{grid-template-columns:1fr}.hero-stats{flex-direction:column;gap:15px;padding:25px 40px}.stats-divider{width:100%;height:1px}}
-@media (max-width:768px){header{padding:10px 20px;flex-wrap:wrap}.logo{order:1}.menu-mobile-btn{display:block;order:2}.header-biblico{display:block;order:3;width:100%;margin-top:10px;font-size:0.75rem;padding:0}.hero-botoes{flex-direction:column;width:90%}.hero-botoes .btn{width:100%}.secao{padding:60px 20px}.titulo-secao{font-size:1.8rem}#main-header nav ul{display:none;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background-color:rgba(6,11,20,0.98);padding:20px;text-align:center;gap:15px;z-index:9999;border-bottom:1px solid rgba(255,255,255,0.1)}#main-header nav ul.aberto{display:flex !important}#main-header nav ul div{flex-direction:column;margin-left:0 !important;width:100%}#main-header nav ul div a{width:100%;justify-content:center}.hero-texto-central h1{font-size:2.2rem}}
+
+/* RESPONSIVO */
+@media (max-width:992px){
+    .contato-container, .sobre-container {grid-template-columns:1fr}
+    .hero-stats{flex-direction:column;gap:15px;padding:25px 40px}
+    .stats-divider{width:100%;height:1px}
+    .sobre-texto { padding-right: 0; margin-bottom: 30px; }
+}
+@media (max-width:768px){
+    header{padding:10px 20px;flex-wrap:wrap}
+    .logo{order:1}
+    .menu-mobile-btn{display:block;order:2}
+    .header-biblico{display:block;order:3;width:100%;margin-top:10px;font-size:0.75rem;padding:0}
+    .hero-botoes{flex-direction:column;width:90%}
+    .hero-botoes .btn{width:100%}
+    .secao{padding:60px 20px}
+    .titulo-secao{font-size:1.8rem}
+    #main-header nav ul{display:none;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background-color:rgba(6,11,20,0.98);padding:20px;text-align:center;gap:15px;z-index:9999;border-bottom:1px solid rgba(255,255,255,0.1)}
+    #main-header nav ul.aberto{display:flex !important}
+    #main-header nav ul div{flex-direction:column;margin-left:0 !important;width:100%}
+    #main-header nav ul div a{width:100%;justify-content:center}
+    .hero-texto-central h1{font-size:2.2rem}
+}
     </style>
 </head>
 <body>
@@ -176,7 +252,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
 
     <!-- CABEÇALHO -->
     <header id="main-header">
-        <a href="#" class="logo" aria-label="EngQuadros Home">
+        <a href="#" class="logo" aria-label="Página inicial EngQuadros">
             <img src="public/logo.png" alt="Logotipo EngQuadros">
         </a>
         
@@ -187,23 +263,23 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             <div class="slide-biblico">"Das alturas, o Eterno enxerga as profundezas..." <span>Salmos 138:6</span></div>
         </div>
 
-        <button id="btnMenuMobile" class="menu-mobile-btn">
+        <button id="btnMenuMobile" class="menu-mobile-btn" aria-label="Abrir menu">
             <i class="fa-solid fa-bars"></i>
         </button>
 
         <nav aria-label="Menu Principal">
             <ul>
                 <li><a href="#hero">Home</a></li>
-                <li><a href="#missao">A Empresa</a></li>
+                <li><a href="#apresentacao">A Empresa</a></li>
                 <li><a href="#servicos">Soluções</a></li>
                 <li><a href="#expo">EXPO Food 2026</a></li>
                 <li><a href="#certificacoes">Certificações</a></li>
                 <li><a href="#galeria">Projetos</a></li>
-                <li><a href="public/portfolio.pdf" target="_blank" style="color: var(--branco); font-weight: bold;"><i class="fa-solid fa-file-pdf"></i> Portfólio</a></li>
+                <li><a href="public/portfolio.pdf" target="_blank" class="font-bold text-branco"><i class="fa-solid fa-file-pdf"></i> Portfólio</a></li>
                 <li><a href="#contato">Contato</a></li>
                 <!-- BOTOES DE ACESSO DO SISTEMA -->
-                <div style="display: flex; align-items: center; gap: 10px; margin-left: 15px;">
-                    <a href="login.html" class="btn" style="background-color: var(--branco); color: var(--azul-marca); padding: 10px 20px;">
+                <div class="flex-center" style="gap: 10px; margin-left: 15px;">
+                    <a href="login.html" class="btn btn-white" style="padding: 10px 20px;">
                         <i class="fa-solid fa-user-lock"></i> Área do Cliente
                     </a>
                     <a href="admin.html" class="btn btn-secundario" style="padding: 9px 20px;">
@@ -229,52 +305,70 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             </div>
 
             <div class="hero-botoes reveal">
-                <a href="#contato" class="btn btn-secundario" style="background: var(--branco); color: var(--azul-marca); border-color: var(--branco);"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
+                <a href="#contato" class="btn btn-white"><i class="fa-solid fa-bolt"></i> Solicitar Orçamento B2B</a>
                 <a href="public/catalogo.pdf" download="catalogo.pdf" class="btn btn-secundario"><i class="fa-solid fa-file-pdf"></i> Baixar Catálogo</a>
             </div>
 
             <div class="hero-stats reveal">
-                <div style="text-align: center;">
+                <div class="text-center">
                     <h3>+<span class="contador-animado" data-target="11000">0</span></h3>
                     <p>Painéis Entregues</p>
                 </div>
                 
                 <div class="stats-divider"></div>
                 
-                <div style="text-align: center;">
+                <div class="text-center">
                     <h3>+<span class="contador-animado" data-target="2000">0</span>m²</h3>
                     <p>De Parque Fabril</p>
                 </div>
             </div>
         </section>
 
-        <!-- APRESENTAÇÃO E NÚMEROS DE IMPACTO -->
+        <!-- ==========================================================
+             NOVO LAYOUT: APRESENTAÇÃO (TEXTO + FOTO DO PRÉDIO)
+             ========================================================== -->
         <section id="apresentacao" class="secao bg-claro">
             <div class="conteudo-secao">
-                <h2 class="titulo-secao reveal">A Engenharia Segura</h2>
-                <p class="apresentacao-intro reveal">Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.</p>
-
-                <div class="pilares-paisagem reveal">
-                    <h3 style="color: var(--azul-marca); margin-bottom: 40px; font-size: 1.8rem; font-weight: 700; text-align: center; font-family: 'Montserrat';">Nossos Pilares Exemplares</h3>
-                    
-                    <div class="grid-pilares">
-                        <div class="pilar-card">
-                            <i class="fa-solid fa-check-double"></i>
-                            <h4>Consistência de entrega</h4>
-                            <p>Reconhecida pela alta consistência em cada etapa, do projeto à execução.</p>
-                        </div>
-                        <div class="pilar-card">
-                            <i class="fa-solid fa-gears"></i>
-                            <h4>Excelência em produção</h4>
-                            <p>Padrão fiel e rigoroso com processos qualificados e planejados.</p>
-                        </div>
-                        <div class="pilar-card">
-                            <i class="fa-solid fa-shield-halved"></i>
-                            <h4>Engenharia segura</h4>
-                            <p>Base construída pela confiança, entregando resultados verdadeiros e garantidos.</p>
+                
+                <div class="sobre-container">
+                    <div class="sobre-texto reveal">
+                        <h2 class="titulo-secao text-left">A Engenharia Segura</h2>
+                        <p class="text-left" style="font-size: 1.15rem; color: var(--texto-secundario); line-height: 1.8;">
+                            Somos uma empresa brasileira que projeta, fabrica e moderniza painéis de baixa e média tensão e soluções de automação industrial, transformando demandas complexas em sistemas seguros, eficientes e escaláveis.
+                        </p>
+                        
+                        <div class="lista-pilares-vertical">
+                            <div class="pilar-item">
+                                <i class="fa-solid fa-check-double"></i>
+                                <div>
+                                    <h4>Consistência de entrega</h4>
+                                    <p>Reconhecida pela alta consistência em cada etapa, do projeto à execução.</p>
+                                </div>
+                            </div>
+                            <div class="pilar-item">
+                                <i class="fa-solid fa-gears"></i>
+                                <div>
+                                    <h4>Excelência em produção</h4>
+                                    <p>Padrão fiel e rigoroso com processos qualificados e planejados.</p>
+                                </div>
+                            </div>
+                            <div class="pilar-item">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <div>
+                                    <h4>Engenharia garantida</h4>
+                                    <p>Base construída pela confiança, entregando resultados verdadeiros.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- FOTO DO PRÉDIO ESPELHADO DO ID VISUAL -->
+                    <div class="sobre-imagem reveal">
+                        <!-- IMPORTANTE: Salve a foto do prédio espelhado do PDF como 'predio.jpg' na pasta public -->
+                        <img src="public/predio.jpg" alt="Fachada do prédio corporativo espelhado da EngQuadros">
+                    </div>
                 </div>
+
             </div>
         </section>
 
@@ -283,8 +377,9 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             <div class="conteudo-secao">
                 <div class="missao-bg reveal">
                     <p class="missao-overhead">Nossa Missão</p>
-                    <h2 class="titulo-secao" style="margin-bottom: 20px;">Objetivo e Área de Aplicação</h2>
-                    <p class="apresentacao-intro" style="margin-bottom: 50px;">Fabricar painéis em baixa tensão que atendam as demandas de cada cliente, de forma personalizada, sempre garantindo a segurança, qualidade e confiabilidade.</p>
+                    <h2 class="titulo-secao mb-20">Objetivo e Área de Aplicação</h2>
+                    <p class="apresentacao-intro">Fabricar painéis em baixa tensão que atendam as demandas de cada cliente, de forma personalizada, sempre garantindo a segurança, qualidade e confiabilidade.</p>
+                    
                     <div class="grid-missao">
                         <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-users-gear"></i></div><p><strong>Profissionais Experientes:</strong> Equipe altamente qualificada em montagem e instalação em sistemas complexos.</p></div>
                         <div class="item-missao"><div class="icone-missao"><i class="fa-solid fa-industry"></i></div><p><strong>Atuação Multisetorial:</strong> Indústrias, Shopping Centers, Hospitais e Construtoras, seguindo as normas técnicas aplicáveis.</p></div>
@@ -324,7 +419,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             </div>
         </section>
 
-        <!-- SEÇÃO EXPO FOOD 2026 (IMAGENS INTEIRAS - SEM CORTES) -->
+        <!-- SEÇÃO EXPO FOOD 2026 -->
         <section id="expo" class="secao bg-cinza">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Presença na EXPO Food 2026</h2>
@@ -332,63 +427,63 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 
                 <div class="grid-expo reveal">
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/1.jpeg" alt="Expo Food 2026 - Logística e Estrutura" loading="lazy">
+                        <img src="public/Expo Food 2026/1.jpeg" alt="Logística e Estrutura na Expo Food" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Logística e Montagem</h4>
                             <p>Preparação e infraestrutura robusta para entrega de grandes projetos industriais.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/2.jpeg" alt="Expo Food 2026 - Visão do Stand" loading="lazy">
+                        <img src="public/Expo Food 2026/2.jpeg" alt="Stand EngQuadros" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Nosso Stand na Feira</h4>
                             <p>Espaço dedicado a receber clientes, parceiros e engenheiros do setor industrial.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/3.jpeg" alt="Expo Food 2026 - Equipe Comercial" loading="lazy">
+                        <img src="public/Expo Food 2026/3.jpeg" alt="Equipe Comercial" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Relacionamento B2B</h4>
                             <p>Nossa equipe técnica e comercial em atendimento ativo aos visitantes.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/4.jpeg" alt="Expo Food 2026 - Atendimento Técnico" loading="lazy">
+                        <img src="public/Expo Food 2026/4.jpeg" alt="Atendimento Técnico" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Parcerias Estratégicas</h4>
                             <p>Conectando nossa engenharia elétrica às principais demandas do mercado.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/5.jpeg" alt="Expo Food 2026 - Tecnologias e Soluções" loading="lazy">
+                        <img src="public/Expo Food 2026/5.jpeg" alt="Tecnologias Expostas" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Tecnologia em Destaque</h4>
                             <p>Apresentação visual de alta performance em automação e painéis elétricos.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/6.jpeg" alt="Expo Food 2026 - Demonstração" loading="lazy">
+                        <img src="public/Expo Food 2026/6.jpeg" alt="Demonstração de Sistemas" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Inovação em Sistemas</h4>
                             <p>Soluções estruturadas para garantir máxima segurança operacional nas indústrias.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/7.jpeg" alt="Expo Food 2026 - Bastidores e Evento" loading="lazy">
+                        <img src="public/Expo Food 2026/7.jpeg" alt="Cobertura da Feira" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Cobertura do Evento</h4>
                             <p>Registros dos melhores momentos de nossa participação na feira.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/8.jpeg" alt="Expo Food 2026 - Equipe EngQuadros" loading="lazy">
+                        <img src="public/Expo Food 2026/8.jpeg" alt="Equipe Unida" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Compromisso e Qualidade</h4>
                             <p>Nossa equipe unida levando excelência e confiança para o evento.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/9.jpeg" alt="Expo Food 2026 - Encerramento" loading="lazy">
+                        <img src="public/Expo Food 2026/9.jpeg" alt="Encerramento do Evento" loading="lazy">
                         <div class="card-expo-conteudo">
                             <h4>Sucesso de Público</h4>
                             <p>Agradecimento a todos os clientes e parceiros que visitaram nosso espaço.</p>
@@ -400,12 +495,12 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
 
         <!-- FAIXA DE SELOS E NORMAS -->
         <section class="faixa-certificacoes bg-escuro reveal">
-            <div class="conteudo-secao" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 30px;">
-                <h3 style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 15px; font-family: 'Montserrat';">
+            <div class="conteudo-secao flex-center" style="flex-wrap: wrap; gap: 30px;">
+                <h3 class="flex-center font-bold" style="font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1px; gap: 15px;">
                     <i class="fa-solid fa-award" style="font-size: 1.6rem;"></i> Qualidade Certificada:
                 </h3>
                 
-                <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <div class="flex-center" style="gap: 20px; flex-wrap: wrap;">
                     <div class="selo-cert"><i class="fa-solid fa-certificate"></i> Padrão ISO (Qualidade)</div>
                     <div class="selo-cert"><i class="fa-solid fa-shield-check"></i> Norma IEC 61439</div>
                     <div class="selo-cert"><i class="fa-solid fa-hard-hat"></i> NR-10 e NR-22</div>
@@ -426,7 +521,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                             <h3>ISO 9001</h3>
                             <p>Sistema de Gestão da Qualidade. Assegura a melhoria contínua dos processos e a total satisfação dos clientes em nossos painéis.</p>
                         </div>
-                        <a href="public/ISOS/ISO9001.pdf" download="ISO9001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 9001</a>
+                        <a href="public/ISOS/ISO9001.pdf" download="ISO9001.pdf" class="btn btn-outline-dark w-100" aria-label="Baixar Certificado ISO 9001"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 9001</a>
                     </div>
 
                     <div class="card-iso">
@@ -435,7 +530,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                             <h3>ISO 14001</h3>
                             <p>Sistema de Gestão Ambiental. Compromisso com a sustentabilidade, redução de impactos ambientais e responsabilidade ecológica.</p>
                         </div>
-                        <a href="public/ISOS/ISO14001.pdf" download="ISO14001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 14001</a>
+                        <a href="public/ISOS/ISO14001.pdf" download="ISO14001.pdf" class="btn btn-outline-dark w-100" aria-label="Baixar Certificado ISO 14001"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 14001</a>
                     </div>
 
                     <div class="card-iso">
@@ -444,14 +539,14 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                             <h3>ISO 45001</h3>
                             <p>Sistema de Gestão de Saúde e Segurança Ocupacional. Foco na prevenção de acidentes e bem-estar integral da equipe fabril.</p>
                         </div>
-                        <a href="public/ISOS/ISO45001.pdf" download="ISO45001.pdf" class="btn btn-outline-dark" style="width: 100%;"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 45001</a>
+                        <a href="public/ISOS/ISO45001.pdf" download="ISO45001.pdf" class="btn btn-outline-dark w-100" aria-label="Baixar Certificado ISO 45001"><i class="fa-solid fa-download"></i> Baixar Certificado ISO 45001</a>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- ENGENHARIA EM FOCO -->
-        <section class="secao bg-escuro" style="padding-top: 100px; padding-bottom: 100px;">
+        <section class="secao bg-escuro" style="padding: 100px 50px;">
             <div class="conteudo-secao">
                 <h2 class="titulo-secao titulo-branco reveal">Engenharia em Foco</h2>
                 <div class="grid-flip reveal">
@@ -459,7 +554,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                         <div class="flip-card-inner">
                             <div class="flip-card-front steel-panel">
                                 <i class="fa-solid fa-temperature-high"></i>
-                                <h3 style="font-family: 'Montserrat'; font-weight: 600;">Segurança Térmica</h3>
+                                <h3 class="font-bold">Segurança Térmica</h3>
                                 <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 10px;">Interaja para exibir</p>
                             </div>
                             <div class="flip-card-back">
@@ -471,7 +566,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                         <div class="flip-card-inner">
                             <div class="flip-card-front steel-panel">
                                 <i class="fa-solid fa-hard-hat"></i>
-                                <h3 style="font-family: 'Montserrat'; font-weight: 600;">Proteção Operacional</h3>
+                                <h3 class="font-bold">Proteção Operacional</h3>
                                 <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 10px;">Interaja para exibir</p>
                             </div>
                             <div class="flip-card-back">
@@ -483,7 +578,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                         <div class="flip-card-inner">
                             <div class="flip-card-front steel-panel">
                                 <i class="fa-solid fa-droplet-slash"></i>
-                                <h3 style="font-family: 'Montserrat'; font-weight: 600;">Ambientes Severos</h3>
+                                <h3 class="font-bold">Ambientes Severos</h3>
                                 <p style="font-size: 0.8rem; opacity: 0.5; margin-top: 10px;">Interaja para exibir</p>
                             </div>
                             <div class="flip-card-back">
@@ -500,8 +595,8 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
         <!-- FAIXA QUALIDADE -->
         <section class="faixa-qualidade bg-escuro">
             <div class="conteudo-secao">
-                <h2 class="reveal" style="font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 700;">Qualidade em Serviço</h2>
-                <p class="reveal" style="max-width: 900px; margin: 0 auto; color: rgba(255,255,255,0.7); font-size: 1rem; margin-top: 15px;">Da pequena, média e grande obra, a ENGQUADROS tem experiência para a elaboração e aplicação de qualquer projeto.</p>
+                <h2 class="reveal font-bold" style="font-size: 1.8rem;">Qualidade em Serviço</h2>
+                <p class="reveal" style="max-width: 900px; margin: 15px auto 0; color: rgba(255,255,255,0.7); font-size: 1rem;">Da pequena, média e grande obra, a ENGQUADROS tem experiência para a elaboração e aplicação de qualquer projeto.</p>
                 <div class="grid-qualidade reveal">
                     <div class="item-qualidade"><i class="fa-solid fa-flask"></i><span>Experiência</span></div>
                     <div class="item-qualidade"><i class="fa-solid fa-handshake"></i><span>Confiabilidade</span></div>
@@ -567,11 +662,11 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Conheça Alguns de Nossos Projetos</h2>
                 
-                <div class="reveal" style="text-align: center; margin-bottom: 40px;">
+                <div class="reveal text-center mb-40">
                     <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" loading="lazy" style="max-width: 100%; width: 700px; border-radius: 8px; box-shadow: var(--sombra-industrial); border: var(--borda-industrial);">
                 </div>
                 
-                <p class="apresentacao-intro reveal" style="text-align: justify; font-size: 1rem;">
+                <p class="apresentacao-intro reveal text-left" style="font-size: 1rem;">
                     A ENGQUADROS desenvolve e aprimora seu processo de montagem de painéis elétricos através de pesquisas e atualizações técnicas constantes, avaliando os métodos de gerenciamento, inovando em produtos e ensaios, promovendo treinamentos a seus colaboradores, visando maior satisfação dos clientes.
                 </p>
                 
@@ -593,9 +688,9 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
         </section>
 
         <!-- CAPACIDADE TÉCNICA CTA -->
-        <section class="bg-escuro reveal" style="padding: 70px 20px; text-align: center; color: var(--branco); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <section class="bg-escuro reveal text-center" style="padding: 70px 20px; color: var(--branco); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
             <div class="conteudo-secao">
-                <h2 style="font-size: 2rem; font-family: 'Montserrat'; font-weight: 700; margin-bottom: 15px;">Capacidade técnica comprovada</h2>
+                <h2 class="font-bold mb-10" style="font-size: 2rem;">Capacidade técnica comprovada</h2>
                 <p style="font-size: 1.05rem; color: rgba(255,255,255,0.7); margin-bottom: 30px;">Baixe nosso portfólio completo para especificações técnicas detalhadas.</p>
                 <a href="public/portfolio.pdf" download="Portfolio_EngQuadros.pdf" class="btn btn-secundario"><i class="fa-solid fa-download"></i> Baixar Portfólio Digital</a>
             </div>
@@ -606,21 +701,21 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Empresas que confiam em nós</h2>
                 <div class="grid-clientes reveal">
-                    <img src="public/glp.jpg" alt="GLP" loading="lazy">
-                    <img src="public/magalu.jpg" alt="Magalu" loading="lazy">
-                    <img src="public/petrobras.jpg" alt="Petrobras" loading="lazy">
-                    <img src="public/pfrio.jpg" alt="Prefeitura do Rio" loading="lazy">
-                    <img src="public/shelter.jpg" alt="Shelter-Stay" loading="lazy">
-                    <img src="public/ype.jpg" alt="Ypê" loading="lazy">
+                    <img src="public/glp.jpg" alt="Logotipo Cliente GLP" loading="lazy">
+                    <img src="public/magalu.jpg" alt="Logotipo Cliente Magalu" loading="lazy">
+                    <img src="public/petrobras.jpg" alt="Logotipo Cliente Petrobras" loading="lazy">
+                    <img src="public/pfrio.jpg" alt="Logotipo Cliente Prefeitura do Rio" loading="lazy">
+                    <img src="public/shelter.jpg" alt="Logotipo Cliente Shelter-Stay" loading="lazy">
+                    <img src="public/ype.jpg" alt="Logotipo Cliente Ypê" loading="lazy">
                 </div>
                 
                 <div class="divisor-parceiros"></div>
                 
-                <h3 style="text-align: center; color: var(--texto-secundario); margin-bottom: 40px; font-family: 'Montserrat'; font-weight: 600;" class="reveal">Nossos Parceiros</h3>
+                <h3 class="text-center font-bold mb-40 reveal" style="color: var(--texto-secundario);">Nossos Parceiros</h3>
                 <div class="grid-clientes reveal" style="gap: 80px;">
-                    <img src="public/siemens.jpg" alt="Siemens" loading="lazy" style="max-width: 180px;">
-                    <img src="public/rittal.jpg" alt="Rittal" loading="lazy" style="max-width: 180px;">
-                    <img src="public/parceiros.jpg" alt="Parceiros Adicionais" loading="lazy" style="max-width: 180px;">
+                    <img src="public/siemens.jpg" alt="Parceiro Siemens" loading="lazy" style="max-width: 180px;">
+                    <img src="public/rittal.jpg" alt="Parceiro Rittal" loading="lazy" style="max-width: 180px;">
+                    <img src="public/parceiros.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
                 </div>
             </div>
         </section>
@@ -628,11 +723,11 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
         <!-- AVALIAÇÕES -->
         <section id="avaliacoes" class="secao bg-claro">
             <div class="conteudo-secao">
-                <div class="reveal" style="text-align: center; margin-bottom: 40px;">
-                    <h2 class="titulo-secao" style="margin-bottom: 20px;">O que dizem nossos clientes</h2>
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 25px;">
+                <div class="reveal text-center mb-40">
+                    <h2 class="titulo-secao mb-20">O que dizem nossos clientes</h2>
+                    <div class="flex-center mb-20" style="gap: 15px;">
                         <span class="nota">4,7</span>
-                        <div>
+                        <div class="text-left">
                             <div style="color: var(--azul-marca); font-size: 1.2rem; opacity: 0.9;">
                                 <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                             </div>
@@ -645,19 +740,19 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 <div class="carousel-reviews reveal">
                     <div class="review-slide active">
                         <p class="review-text">"Parabéns pelo excelente trabalho! Por trás de um ótimo trabalho, sempre há uma grande equipe."</p>
-                        <p style="margin-top: 20px; font-weight: 600; color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Marcos Fernandes</p>
+                        <p class="font-bold mt-40" style="color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Marcos Fernandes</p>
                     </div>
                     <div class="review-slide">
                         <p class="review-text">"Ótimo atendimento e qualidade nas soluções apresentadas !!"</p>
-                        <p style="margin-top: 20px; font-weight: 600; color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Victor Hugo</p>
+                        <p class="font-bold mt-40" style="color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Victor Hugo</p>
                     </div>
                     <div class="review-slide">
                         <p class="review-text">"Empresa top, recomendo."</p>
-                        <p style="margin-top: 20px; font-weight: 600; color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Henrique Dionizio</p>
+                        <p class="font-bold mt-40" style="color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Henrique Dionizio</p>
                     </div>
                     <div class="review-slide">
                         <p class="review-text">"Muito atenciosos."</p>
-                        <p style="margin-top: 20px; font-weight: 600; color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Marcelo Soares Da Silva</p>
+                        <p class="font-bold mt-40" style="color: var(--azul-marca); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 0.5px;">Marcelo Soares Da Silva</p>
                     </div>
                 </div>
             </div>
@@ -669,28 +764,28 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 <h2 class="titulo-secao reveal">Solicite uma Cotação Técnica</h2>
                 <div class="contato-container reveal">
                     <div>
-                        <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-industry"></i></span> Av. Calombé, 4775 - Duque de Caxias, RJ
+                        <p class="item-contato">
+                            <span class="icon-contato"><i class="fa-solid fa-industry"></i></span> Av. Calombé, 4775 - Duque de Caxias, RJ
                         </p>
-                        <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-envelope"></i></span> comercial@engquadros.ind.br
+                        <p class="item-contato">
+                            <span class="icon-contato"><i class="fa-solid fa-envelope"></i></span> comercial@engquadros.ind.br
                         </p>
-                        <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-solid fa-phone"></i></span> (21) 3842-1058
+                        <p class="item-contato">
+                            <span class="icon-contato"><i class="fa-solid fa-phone"></i></span> (21) 3842-1058
                         </p>
-                        <p style="margin-bottom: 25px; font-size: 1.05rem; color: var(--texto-secundario); display: flex; align-items: center; gap: 15px;">
-                            <span style="width: 40px; height: 40px; background: rgba(43,92,146,0.05); color: var(--azul-marca); border-radius: 50%; display: flex; justify-content: center; align-items: center;"><i class="fa-brands fa-whatsapp"></i></span> (21) 99617-4264
+                        <p class="item-contato">
+                            <span class="icon-contato"><i class="fa-brands fa-whatsapp"></i></span> (21) 99617-4264
                         </p>
                     </div>
                     
                     <form action="#" method="POST" class="formulario" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                        <input type="text" placeholder="Nome Completo" required style="grid-column: 1 / -1;">
-                        <input type="email" placeholder="E-mail Corporativo" required>
-                        <input type="tel" placeholder="Telefone / WhatsApp" required>
-                        <input type="text" placeholder="Empresa (Nome Fantasia)" style="grid-column: 1 / -1;" required>
-                        <input type="text" placeholder="CNPJ (Opcional)" style="grid-column: 1 / -1;">
-                        <textarea placeholder="Descreva sua demanda (Ex: Orçamento para QGBT 1000A...)" style="grid-column: 1 / -1; height: 110px; resize: none;" required></textarea>
-                        <button type="submit" class="btn btn-primario" style="grid-column: 1 / -1; width: 100%;">Solicitar Engenheiro</button>
+                        <input type="text" placeholder="Nome Completo" required style="grid-column: 1 / -1;" aria-label="Nome Completo">
+                        <input type="email" placeholder="E-mail Corporativo" required aria-label="E-mail Corporativo">
+                        <input type="tel" placeholder="Telefone / WhatsApp" required aria-label="Telefone ou WhatsApp">
+                        <input type="text" placeholder="Empresa (Nome Fantasia)" style="grid-column: 1 / -1;" required aria-label="Nome da Empresa">
+                        <input type="text" placeholder="CNPJ (Opcional)" style="grid-column: 1 / -1;" aria-label="CNPJ da Empresa">
+                        <textarea placeholder="Descreva sua demanda (Ex: Orçamento para QGBT 1000A...)" style="grid-column: 1 / -1; height: 110px; resize: none;" required aria-label="Descrição da demanda"></textarea>
+                        <button type="submit" class="btn btn-primario w-100" style="grid-column: 1 / -1;">Solicitar Engenheiro</button>
                     </form>
                 </div>
             </div>
@@ -702,7 +797,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
     </a>
 
     <footer>
-        <p>© 2026 ENGQUADROS. Todos os direitos reservados. | <a href="https://wa.me/5522981063696?text=Quero%20um%20site%20moderno%20tb" target="_blank" style="color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 500; transition: 0.3s;" onmouseover="this.style.color='var(--branco)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">Desenvolvido por Callinfo Tecnologia</a></p>
+        <p>© 2026 ENGQUADROS. Todos os direitos reservados. | <a href="https://wa.me/5522981063696?text=Quero%20um%20site%20moderno%20tb" target="_blank" style="color: rgba(255,255,255,0.7); text-decoration: none; font-weight: 500; transition: 0.3s;" onmouseover="this.style.color='var(--branco)'" onmouseout="this.style.color='rgba(255,255,255,0.7)'" aria-label="Desenvolvido por Callinfo Tecnologia">Desenvolvido por Callinfo Tecnologia</a></p>
     </footer>
 
     <!-- SCRIPTS -->
