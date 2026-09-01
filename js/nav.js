@@ -22,24 +22,34 @@
 
     function arquivoAtual() {
         var p = (location.pathname || '').split('/').pop() || '';
-        return p.toLowerCase() || 'admin.html';
+        return p.toLowerCase();
+    }
+
+    function nomePagina(arquivo) {
+        return String(arquivo || arquivoAtual()).toLowerCase().replace(/\.html$/, '');
+    }
+
+    function paginaErp() {
+        return (typeof EqSec !== 'undefined' && EqSec.urlPainelErp)
+            ? EqSec.urlPainelErp().split('#')[0]
+            : 'index.html';
     }
 
     function ehAdmin() {
-        return arquivoAtual() === 'admin.html' || arquivoAtual() === 'admin_atual.html';
+        var a = nomePagina();
+        return !a || a === 'index' || a === 'admin' || a === 'admin_atual';
     }
 
     function hrefPara(arquivo, hash) {
         var dest = String(arquivo || '').toLowerCase();
-        var atual = arquivoAtual();
-        if (atual === dest) {
+        if (nomePagina() === nomePagina(dest)) {
             return hash ? ('#' + hash) : '#';
         }
         return hash ? (arquivo + '#' + hash) : arquivo;
     }
 
     function hrefModulo(hash) {
-        return ehAdmin() ? ('#' + hash) : ('admin.html#' + hash);
+        return ehAdmin() ? ('#' + hash) : (paginaErp() + '#' + hash);
     }
 
     function temQualquer(chaves) {
@@ -319,7 +329,7 @@
 
     function sair() {
         sessionStorage.clear();
-        window.location.href = 'admin.html';
+        window.location.href = paginaErp();
     }
 
     function ligarSair() {

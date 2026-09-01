@@ -169,13 +169,17 @@
         return false;
     }
 
+    function urlPainelErp(hash) {
+        return hash ? ('index.html#' + hash) : 'index.html';
+    }
+
     function exigirPermissao(chave) {
         if (!exigirSessaoAdmin()) {
-            window.location.href = 'admin.html';
+            window.location.href = urlPainelErp();
             return false;
         }
         if (chave && !temPermissao(chave)) {
-            window.location.href = 'admin.html';
+            window.location.href = urlPainelErp();
             return false;
         }
         return true;
@@ -228,6 +232,7 @@
         getPermissoes: getPermissoes,
         temPermissao: temPermissao,
         exigirPermissao: exigirPermissao,
+        urlPainelErp: urlPainelErp,
         valorPermissaoForm: valorPermissaoForm,
         PERM_TODAS: PERM_TODAS,
         caminhoStorage: caminhoStorage,

@@ -967,7 +967,7 @@
         if (typeof EqSessionTimeout !== 'undefined') {
             EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
                 sessionStorage.clear();
-                window.location.href = 'admin.html';
+                window.location.href = EqSec.urlPainelErp();
             });
         }
 

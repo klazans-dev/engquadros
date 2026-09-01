@@ -1,6 +1,6 @@
 /**
  * Timers isolados: só o nó alvo (slides / cronômetro) muda de classe ou texto.
- * Não recarrega admin.html nem o painel.
+ * Não recarrega o painel ERP nem o portal.
  */
 (function (global) {
     var handles = [];
