@@ -370,6 +370,21 @@ BEGIN
     EXECUTE 'DROP POLICY IF EXISTS tenant_status_pcp ON public.status_pcp';
     EXECUTE 'CREATE POLICY tenant_status_pcp ON public.status_pcp FOR ALL USING (public.eq_mesmo_tenant(empresa_id)) WITH CHECK (public.eq_mesmo_tenant(empresa_id))';
   END IF;
+  IF to_regclass('public.produto_fabricantes') IS NOT NULL THEN
+    EXECUTE 'ALTER TABLE public.produto_fabricantes ENABLE ROW LEVEL SECURITY';
+    EXECUTE 'DROP POLICY IF EXISTS tenant_prod_fab ON public.produto_fabricantes';
+    EXECUTE 'CREATE POLICY tenant_prod_fab ON public.produto_fabricantes FOR ALL USING (public.eq_mesmo_tenant(empresa_id)) WITH CHECK (public.eq_mesmo_tenant(empresa_id))';
+  END IF;
+  IF to_regclass('public.produto_grupos') IS NOT NULL THEN
+    EXECUTE 'ALTER TABLE public.produto_grupos ENABLE ROW LEVEL SECURITY';
+    EXECUTE 'DROP POLICY IF EXISTS tenant_prod_grp ON public.produto_grupos';
+    EXECUTE 'CREATE POLICY tenant_prod_grp ON public.produto_grupos FOR ALL USING (public.eq_mesmo_tenant(empresa_id)) WITH CHECK (public.eq_mesmo_tenant(empresa_id))';
+  END IF;
+  IF to_regclass('public.produto_marcas') IS NOT NULL THEN
+    EXECUTE 'ALTER TABLE public.produto_marcas ENABLE ROW LEVEL SECURITY';
+    EXECUTE 'DROP POLICY IF EXISTS tenant_prod_marca ON public.produto_marcas';
+    EXECUTE 'CREATE POLICY tenant_prod_marca ON public.produto_marcas FOR ALL USING (public.eq_mesmo_tenant(empresa_id)) WITH CHECK (public.eq_mesmo_tenant(empresa_id))';
+  END IF;
 END $$;
 
 -- ---------------------------------------------------------------------------

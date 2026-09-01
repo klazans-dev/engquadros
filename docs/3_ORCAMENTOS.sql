@@ -92,6 +92,11 @@ ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS venda_unit NUMERIC(1
 ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS grupo_id TEXT;
 ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS grupo_nome VARCHAR(120);
 ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS tipo VARCHAR(50);
+ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS marca VARCHAR(80);
+ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS fabricante VARCHAR(120);
+ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS grupo_produto_id TEXT;
+ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS fabricante_id TEXT;
+ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS marca_id TEXT;
 ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS empresa_id UUID;
 ALTER TABLE public.orcamento_itens ADD COLUMN IF NOT EXISTS criado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());
 

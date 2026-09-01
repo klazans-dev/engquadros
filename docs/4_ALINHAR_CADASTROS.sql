@@ -114,6 +114,10 @@ ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS unidade VARCHAR(10) DEFAULT
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS unidade_tributavel VARCHAR(10) DEFAULT 'UN';
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS fator_conversao NUMERIC(12,6) DEFAULT 1;
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS marca VARCHAR(80);
+ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS fabricante VARCHAR(120);
+ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS fabricante_id UUID;
+ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS grupo_produto_id UUID;
+ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS marca_id UUID;
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS modelo VARCHAR(80);
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS ativo BOOLEAN DEFAULT TRUE;
 ALTER TABLE public.produtos ADD COLUMN IF NOT EXISTS imagem_url TEXT;
@@ -365,6 +369,9 @@ WHERE NOT EXISTS (SELECT 1 FROM public.tributacao_ibs_cbs WHERE nome_regra = 'Al
 -- ---------------------------------------------------------------------------
 -- 7. Permissões API + recarrega o cache do PostgREST (obrigatório)
 -- ---------------------------------------------------------------------------
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.produto_fabricantes TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.produto_grupos TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.produto_marcas TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.produtos TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.tributacao_estadual TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.tributacao_federal TO anon, authenticated;

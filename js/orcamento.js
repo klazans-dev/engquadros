@@ -3,7 +3,8 @@
  */
 (function () {
     var KEY_RASCUNHO = 'eq_orcamento_rascunho';
-    var CAMPOS_PRODUTO = 'id, nome, sku, tipo, preco_custo, preco_venda, ncm, marca, dados_tecnicos';
+    var CAMPOS_PRODUTO = 'id, nome, sku, tipo, preco_custo, preco_venda, ncm, marca, fabricante, fabricante_id, grupo_produto_id, marca_id, dados_tecnicos';
+    var CAMPOS_PRODUTO_MIN = 'id, nome, sku, tipo, preco_custo, preco_venda, ncm, marca, dados_tecnicos';
     var GRUPO_SOLTO = 'solto';
 
     var supabaseClient = null;
@@ -564,6 +565,10 @@
             tipoVisual: tipo,
             ncm: prod.ncm || '',
             marca: prod.marca || '',
+            fabricante: prod.fabricante || '',
+            fabricante_id: prod.fabricante_id || null,
+            grupo_produto_id: prod.grupo_produto_id || null,
+            marca_id: prod.marca_id || null,
             grupo_id: gid
         });
         estado.grupoAtivo = gid;
@@ -589,20 +594,31 @@
         }
     }
 
-    async function listarProdutosCatalogo(termo) {
-        termo = EqSec.sanitizarFiltro(termo);
-        if (!termo) return [];
-        var query = supabaseClient.from('produtos').select(CAMPOS_PRODUTO).eq('empresa_id', empresaId);
-        query = query.or('nome.ilike.%' + termo + '%,sku.ilike.%' + termo + '%');
-        var res = await query.limit(12);
-        if (res.error) {
-            query = supabaseClient.from('produtos').select('id, nome, sku, tipo, preco_custo, preco_venda')
-                .eq('empresa_id', empresaId)
-                .or('nome.ilike.%' + termo + '%,sku.ilike.%' + termo + '%');
-            res = await query.limit(12);
+    async function consultarProdutos(aplicarFiltro, campos) {
+        var query = supabaseClient.from('produtos').select(campos || CAMPOS_PRODUTO).eq('empresa_id', empresaId);
+        query = aplicarFiltro(query);
+        var res = await query;
+        if (res.error && /column|schema cache/i.test(String(res.error.message || ''))) {
+            query = supabaseClient.from('produtos').select(CAMPOS_PRODUTO_MIN).eq('empresa_id', empresaId);
+            query = aplicarFiltro(query);
+            res = await query;
         }
         if (res.error) throw res.error;
         return res.data || [];
+    }
+
+    async function listarProdutosCatalogo(termo) {
+        termo = EqSec.sanitizarFiltro(termo);
+        if (!termo) return [];
+        try {
+            return await consultarProdutos(function (q) {
+                return q.or('nome.ilike.%' + termo + '%,sku.ilike.%' + termo + '%,marca.ilike.%' + termo + '%,fabricante.ilike.%' + termo + '%').limit(12);
+            });
+        } catch (e) {
+            return consultarProdutos(function (q) {
+                return q.or('nome.ilike.%' + termo + '%,sku.ilike.%' + termo + '%').limit(12);
+            }, CAMPOS_PRODUTO_MIN);
+        }
     }
 
     function htmlHitsProdutos(data) {
@@ -611,14 +627,219 @@
             var est = extrairEstoque(p);
             var ncm = p.ncm ? '<span class="tag ncm">NCM ' + esc(p.ncm) + '</span>' : '';
             var estTag = est != null ? '<span class="tag">Est. ' + esc(est) + '</span>' : '';
+            var fab = [p.fabricante, p.marca].filter(Boolean).join(' · ');
+            var fabTag = fab ? '<span class="tag">' + esc(fab) + '</span>' : '';
             return '<div class="prod-hit" data-i="' + i + '" title="Clique para incluir">' +
                 '<div class="p-nome">' + esc(p.nome) + '</div>' +
                 '<div class="p-meta">' +
                 '<span class="tag ' + tagClasse(tipo) + '">' + esc(p.sku || tipo) + '</span>' +
-                ncm + estTag +
+                ncm + estTag + fabTag +
                 '<span>' + money(p.preco_venda) + '</span>' +
                 '<span class="hit-acao">Incluir</span></div></div>';
         }).join('');
+    }
+
+    var trocaCtx = { modo: 'item', idx: -1, equivalentes: [], mapaGrupos: {} };
+
+    function rotuloFab(p) {
+        return [p.fabricante, p.marca].filter(Boolean).join(' · ') || 'Sem fabricante';
+    }
+
+    function aplicarProdutoNoItem(it, prod) {
+        if (!it || !prod) return;
+        it.produto_id = prod.id;
+        it.sku = prod.sku || '';
+        it.descricao = prod.nome;
+        it.custo_unit = num(prod.preco_custo);
+        it.venda_unit = num(prod.preco_venda);
+        it.ncm = prod.ncm || it.ncm || '';
+        it.marca = prod.marca || '';
+        it.fabricante = prod.fabricante || '';
+        it.fabricante_id = prod.fabricante_id || null;
+        it.grupo_produto_id = prod.grupo_produto_id || it.grupo_produto_id || null;
+        it.marca_id = prod.marca_id || null;
+        it.tipoVisual = inferirTipo(prod);
+    }
+
+    async function resolverGrupoProduto(it) {
+        if (it.grupo_produto_id) return it.grupo_produto_id;
+        var pid = idProdutoBanco(it.produto_id);
+        if (!pid) return null;
+        try {
+            var lista = await consultarProdutos(function (q) { return q.eq('id', pid).limit(1); });
+            var p = lista[0];
+            if (p && p.grupo_produto_id) {
+                it.grupo_produto_id = p.grupo_produto_id;
+                if (!it.fabricante) it.fabricante = p.fabricante || '';
+                if (!it.marca) it.marca = p.marca || '';
+                it.fabricante_id = it.fabricante_id || p.fabricante_id;
+                it.marca_id = it.marca_id || p.marca_id;
+                return p.grupo_produto_id;
+            }
+        } catch (e) { /* catálogo sem coluna */ }
+        return null;
+    }
+
+    async function buscarEquivalentes(grupoProdutoId) {
+        if (!grupoProdutoId) return [];
+        try {
+            return await consultarProdutos(function (q) {
+                return q.eq('grupo_produto_id', grupoProdutoId).order('nome').limit(80);
+            });
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function abrirModalTroca() {
+        var m = document.getElementById('modalTrocaFab');
+        if (!m) return;
+        m.removeAttribute('hidden');
+        m.classList.add('aberto');
+    }
+
+    function fecharModalTroca() {
+        var m = document.getElementById('modalTrocaFab');
+        if (!m) return;
+        m.classList.remove('aberto');
+        m.setAttribute('hidden', '');
+        trocaCtx = { modo: 'item', idx: -1, equivalentes: [], mapaGrupos: {} };
+        var btn = document.getElementById('btnConfirmarTroca');
+        if (btn) btn.hidden = true;
+    }
+
+    function htmlCardEquivalente(p, atualId, vendaAtual) {
+        var mesmo = String(p.id) === String(atualId);
+        var delta = num(p.preco_venda) - num(vendaAtual);
+        var clsDelta = delta > 0.009 ? 'mais' : (delta < -0.009 ? 'menos' : '');
+        var txtDelta = delta === 0 ? '' : ((delta > 0 ? '+' : '') + money(delta));
+        return '<button type="button" class="troca-hit' + (mesmo ? ' atual' : '') + '" data-prod-id="' + esc(p.id) + '"' + (mesmo ? ' disabled' : '') + '>' +
+            '<div class="t-nome">' + esc(p.nome) + (mesmo ? ' (atual)' : '') + '</div>' +
+            '<div class="t-meta">' +
+            '<span>' + esc(rotuloFab(p)) + '</span>' +
+            '<span>SKU ' + esc(p.sku || '—') + '</span>' +
+            '<span>' + money(p.preco_venda) + '</span>' +
+            (txtDelta ? '<span class="t-delta ' + clsDelta + '">' + txtDelta + '</span>' : '') +
+            '</div></button>';
+    }
+
+    async function abrirTrocaItem(idx) {
+        var it = estado.itens[idx];
+        if (!it) return;
+        var gid = await resolverGrupoProduto(it);
+        if (!gid) {
+            toast('Este item não tem Grupo de equivalência. Vincule o produto a um grupo no cadastro para oferecer outro fabricante.', true);
+            return;
+        }
+        var eqs = await buscarEquivalentes(gid);
+        if (eqs.length < 2) {
+            toast('Não há outro produto no mesmo grupo. Cadastre o equivalente de outro fabricante no mesmo Grupo.', true);
+            return;
+        }
+        trocaCtx = { modo: 'item', idx: idx, equivalentes: eqs, mapaGrupos: {} };
+        document.getElementById('titTrocaFab').textContent = 'Trocar este item';
+        document.getElementById('txtTrocaFab').textContent = 'Equivalentes do grupo. Clique para substituir (quantidade se mantém).';
+        document.getElementById('filtrosTrocaFab').innerHTML = '';
+        document.getElementById('listaTrocaFab').innerHTML = eqs.map(function (p) {
+            return htmlCardEquivalente(p, it.produto_id, it.venda_unit);
+        }).join('');
+        document.getElementById('btnConfirmarTroca').hidden = true;
+        document.getElementById('listaTrocaFab').querySelectorAll('.troca-hit:not([disabled])').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var id = btn.getAttribute('data-prod-id');
+                var prod = eqs.filter(function (p) { return String(p.id) === String(id); })[0];
+                if (!prod) return;
+                aplicarProdutoNoItem(it, prod);
+                fecharModalTroca();
+                sincronizarTela();
+                toast('Item trocado para ' + rotuloFab(prod) + '.');
+            });
+        });
+        abrirModalTroca();
+    }
+
+    function fabricantesDos(lista) {
+        var map = {};
+        (lista || []).forEach(function (p) {
+            var id = p.fabricante_id || p.fabricante || '';
+            var nome = p.fabricante || 'Sem fabricante';
+            if (!id && !p.fabricante) return;
+            map[id || nome] = nome;
+        });
+        return map;
+    }
+
+    async function abrirTrocaOrcamento() {
+        if (!estado.itens.length) {
+            toast('Inclua itens antes de trocar o fabricante.', true);
+            return;
+        }
+        var mapa = {};
+        var todos = [];
+        for (var i = 0; i < estado.itens.length; i++) {
+            var gid = await resolverGrupoProduto(estado.itens[i]);
+            if (!gid || mapa[gid]) continue;
+            var eqs = await buscarEquivalentes(gid);
+            mapa[gid] = eqs;
+            todos = todos.concat(eqs);
+        }
+        var fabs = fabricantesDos(todos);
+        var keys = Object.keys(fabs);
+        if (!keys.length) {
+            toast('Nenhum item tem Grupo com equivalentes. Cadastre fabricante/grupo/marca nos produtos e rode docs/8_FABRICANTE_GRUPO_MARCA.sql.', true);
+            return;
+        }
+        trocaCtx = { modo: 'orcamento', idx: -1, equivalentes: todos, mapaGrupos: mapa };
+        document.getElementById('titTrocaFab').textContent = 'Trocar fabricante do orçamento';
+        document.getElementById('txtTrocaFab').textContent = 'O sistema troca cada item pelo equivalente do fabricante escolhido (mesmo grupo). Itens sem par permanecem.';
+        var opts = '<option value="">— Escolha o fabricante —</option>' + keys.map(function (k) {
+            return '<option value="' + esc(k) + '">' + esc(fabs[k]) + '</option>';
+        }).join('');
+        document.getElementById('filtrosTrocaFab').innerHTML =
+            '<div class="campo"><label>Fabricante de destino</label><select id="selTrocaFabDest">' + opts + '</select></div>';
+        document.getElementById('listaTrocaFab').innerHTML = '<p class="troca-resumo">Escolha o fabricante para ver o que será trocado.</p>';
+        document.getElementById('btnConfirmarTroca').hidden = true;
+        document.getElementById('selTrocaFabDest').addEventListener('change', function () {
+            montarPreviewTrocaOrcamento(this.value, fabs[this.value]);
+        });
+        abrirModalTroca();
+    }
+
+    function montarPreviewTrocaOrcamento(fabKey, fabNome) {
+        var lista = document.getElementById('listaTrocaFab');
+        var btn = document.getElementById('btnConfirmarTroca');
+        if (!fabKey) {
+            lista.innerHTML = '<p class="troca-resumo">Escolha o fabricante para ver o que será trocado.</p>';
+            btn.hidden = true;
+            trocaCtx.plano = [];
+            return;
+        }
+        var plano = [];
+        var html = '';
+        estado.itens.forEach(function (it, idx) {
+            var eqs = trocaCtx.mapaGrupos[it.grupo_produto_id] || [];
+            var cand = eqs.filter(function (p) {
+                var k = p.fabricante_id || p.fabricante || '';
+                return String(k) === String(fabKey) && String(p.id) !== String(it.produto_id);
+            });
+            var prod = cand[0] || null;
+            if (prod) {
+                plano.push({ idx: idx, prod: prod });
+                html += '<div class="troca-resumo"><strong>' + esc(it.descricao) + '</strong> → ' + esc(prod.nome) +
+                    ' · ' + money(it.venda_unit) + ' → ' + money(prod.preco_venda) + '</div>';
+            } else {
+                html += '<div class="troca-resumo">Sem equivalente: ' + esc(it.descricao) + '</div>';
+            }
+        });
+        trocaCtx.plano = plano;
+        lista.innerHTML = html || '<p class="troca-resumo">Nada para trocar neste fabricante.</p>';
+        btn.hidden = !plano.length;
+        btn.onclick = function () {
+            plano.forEach(function (p) { aplicarProdutoNoItem(estado.itens[p.idx], p.prod); });
+            fecharModalTroca();
+            sincronizarTela();
+            toast(plano.length + ' item(ns) trocado(s) para ' + (fabNome || 'o fabricante escolhido') + '.');
+        };
     }
 
     function ligarInsercaoPainel(raiz) {
@@ -1185,9 +1406,12 @@
                 var idx = p.idx;
                 var tipo = tipoItem(it);
                 var custoTxt = EqSec.temPermissao('orcamento_custos') ? (' · custo ' + money(it.custo_unit)) : '';
+                var fabTxt = [it.fabricante, it.marca].filter(Boolean).join(' · ');
+                var btnTroca = '<button type="button" class="icon-btn troca" data-act="trocar" title="Trocar por equivalente de outro fabricante/marca"><i class="fa-solid fa-right-left"></i></button>';
                 return '<div class="bom-row' + (idx === itemAtivoIdx ? ' ativa' : '') + '" data-idx="' + idx + '">' +
                     '<div>' +
                     '<div class="bom-titulo">' + esc(it.descricao) + '</div>' +
+                    (fabTxt ? '<div class="bom-fab">' + esc(fabTxt) + '</div>' : '') +
                     '<div class="bom-sub"><span class="tag ' + tagClasse(tipo) + '">' + esc(tipo) + '</span> ' +
                     esc(it.sku || '—') + ' · ' + num(it.qtde) + ' un' + custoTxt + '</div>' +
                     '<select class="sel-mover" data-idx="' + idx + '" title="Mover para">' + opcoesGrupoHtml(grupoDoItem(it)) + '</select>' +
@@ -1195,6 +1419,7 @@
                     '<div>' +
                     '<div class="bom-val">' + money(num(it.qtde) * num(it.venda_unit)) + '</div>' +
                     '<div class="bom-acoes">' +
+                    btnTroca +
                     '<button type="button" class="icon-btn" data-act="menos" title="Diminuir">−</button>' +
                     '<button type="button" class="icon-btn" data-act="mais" title="Aumentar">+</button>' +
                     '<button type="button" class="icon-btn" data-act="excluir" title="Excluir"><i class="fa-solid fa-trash"></i></button>' +
@@ -1241,6 +1466,10 @@
                     if (act === 'mais') estado.itens[idx].qtde = num(estado.itens[idx].qtde) + 1;
                     if (act === 'menos') {
                         estado.itens[idx].qtde = Math.max(0.01, num(estado.itens[idx].qtde) - 1);
+                    }
+                    if (act === 'trocar') {
+                        abrirTrocaItem(idx);
+                        return;
                     }
                     sincronizarTela();
                 });
@@ -1976,7 +2205,11 @@
                     tipo: it.tipoVisual || inferirTipo(it),
                     grupo_id: it.grupo_id || GRUPO_SOLTO,
                     grupo_nome: nomeDoGrupo(it.grupo_id),
-                    marca: it.marca || null
+                    marca: it.marca || null,
+                    fabricante: it.fabricante || null,
+                    grupo_produto_id: it.grupo_produto_id || null,
+                    fabricante_id: it.fabricante_id || null,
+                    marca_id: it.marca_id || null
                 };
                 var pid = idProdutoBanco(it.produto_id);
                 if (pid) linha.produto_id = pid;
@@ -1990,6 +2223,10 @@
                         delete l.grupo_id;
                         delete l.grupo_nome;
                         delete l.marca;
+                        delete l.fabricante;
+                        delete l.grupo_produto_id;
+                        delete l.fabricante_id;
+                        delete l.marca_id;
                     });
                     insIt = await supabaseClient.from('orcamento_itens').insert(linhas);
                 }
@@ -2531,7 +2768,11 @@
                         venda_unit: num(it.venda_unit),
                         tipoVisual: it.tipo || inferirTipo(it),
                         grupo_id: it.grupo_id || null,
-                        marca: it.marca || ''
+                        marca: it.marca || '',
+                        fabricante: it.fabricante || '',
+                        grupo_produto_id: it.grupo_produto_id || null,
+                        fabricante_id: it.fabricante_id || null,
+                        marca_id: it.marca_id || null
                     };
                 }),
                 paineis: (o.montagem && o.montagem.paineis) ? o.montagem.paineis.map(function (p) {
@@ -2643,6 +2884,20 @@
         }
 
         document.getElementById('btnInserir').addEventListener('click', inserirProduto);
+        var btnTrocarFab = document.getElementById('btnTrocarFab');
+        if (btnTrocarFab) btnTrocarFab.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            abrirTrocaOrcamento();
+        });
+        var btnCancelarTroca = document.getElementById('btnCancelarTroca');
+        if (btnCancelarTroca) btnCancelarTroca.addEventListener('click', fecharModalTroca);
+        var modalTroca = document.getElementById('modalTrocaFab');
+        if (modalTroca) {
+            modalTroca.addEventListener('click', function (e) {
+                if (e.target === modalTroca) fecharModalTroca();
+            });
+        }
         document.querySelectorAll('.btn-minmax-bloco').forEach(function (btn) {
             btn.addEventListener('click', function (e) {
                 e.preventDefault();

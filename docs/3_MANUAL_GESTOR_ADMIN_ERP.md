@@ -54,6 +54,7 @@ No painel: **Sistema → Manual de uso** (mesmo conteúdo, com busca e tópicos 
 
 - **Cadastros → Produtos.**
 - Abas: dados básicos e preços (custo + markup = venda) e regras fiscais (NCM, CFOP e grupos de tributação).
+- **Fabricante, Grupo e Marca:** cadastre em Cadastros → Fabricantes / Grupos de produto / Marcas (ou o + ao lado do campo no produto). O **grupo** é a chave de equivalência: produtos do mesmo grupo (ex.: Disjuntor 100A 3P) podem ser trocados no orçamento por outro fabricante ou marca. SQL: `docs/8_FABRICANTE_GRUPO_MARCA.sql`.
 - A foto enviada é comprimida automaticamente.
 - Tensão, corrente e potência entram em memoriais e propostas.
 
@@ -130,10 +131,11 @@ Para um funcionário ver só um cliente: no perfil do cliente (senha master), us
 - **Vendas → Orçamentos.** O menu do ERP permanece à esquerda.
 - **Novo:** escolha Simples (itens avulsos, custo + markup) ou Industrialização (plantas, painéis e PCP). Atalhos **1** e **2** no teclado.
 - **Catálogo:** clique no resultado da busca para inserir; Enter insere o primeiro. **F3** foca a busca; **Ctrl+S** salva; **Ctrl+P** imprime.
+- **Trocar fabricante:** na lista de materiais, use **Trocar fabricante** (todo o orçamento) ou o ícone de setas no item. Só há equivalentes se os produtos compartilharem o mesmo **Grupo**. SKU, preço e marca são atualizados e a diferença de valor aparece na tela.
 - **Industrialização:** plantas no card; Atualizar planta recalcula o layout. Rodapé com condições comerciais, barra de lucro e cálculo por grupo. Custos só para quem tem a permissão.
 - **Status / PCP:** cria cada quadro em Status (**Novos**). A fábrica só recebe depois de **Iniciar Produção**. Confirme antes de enviar ou de excluir um painel.
 - **Impressão:** simples não imprime planta nem lucro. Industrial imprime SVG das plantas. Dados do emitente vêm da Identidade (logo, CNPJ, e-mail, telefone).
-- **Banco:** rode no SQL Editor do Supabase, se ainda não rodou: `docs/3_ORCAMENTOS.sql` e `docs/7_ORCAMENTO_CALC.sql` (coluna modalidade e cálculo). Sem as tabelas, o rascunho fica só neste navegador.
+- **Banco:** rode no SQL Editor do Supabase, se ainda não rodou: `docs/3_ORCAMENTOS.sql`, `docs/7_ORCAMENTO_CALC.sql` e `docs/8_FABRICANTE_GRUPO_MARCA.sql`. Sem as tabelas, o rascunho fica só neste navegador.
 
 ---
 

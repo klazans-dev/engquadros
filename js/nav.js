@@ -67,6 +67,9 @@
                 filhos: [
                     { href: hrefModulo('clientes'), icon: 'fa-users', label: 'Clientes', perm: 'clientes', ativo: 'clientes' },
                     { href: hrefModulo('produtos'), icon: 'fa-boxes-stacked', label: 'Produtos', perm: 'clientes', ativo: 'produtos' },
+                    { href: hrefModulo('fabricantes'), icon: 'fa-industry', label: 'Fabricantes', perm: 'clientes', ativo: 'fabricantes' },
+                    { href: hrefModulo('grupos-produto'), icon: 'fa-layer-group', label: 'Grupos de produto', perm: 'clientes', ativo: 'grupos-produto' },
+                    { href: hrefModulo('marcas'), icon: 'fa-tags', label: 'Marcas', perm: 'clientes', ativo: 'marcas' },
                     { href: hrefModulo('equipe'), icon: 'fa-user-shield', label: 'Equipe', master: true, ativo: 'equipe' },
                     { href: hrefModulo('trib-estadual'), icon: 'fa-landmark', label: 'Tributação Estadual', perm: 'clientes', ativo: 'trib-estadual' },
                     { href: hrefModulo('trib-federal'), icon: 'fa-building-columns', label: 'Tributação Federal', perm: 'clientes', ativo: 'trib-federal' },
@@ -118,6 +121,7 @@
         var hash = hashAtual();
         var mapaHash = {
             inicio: 'inicio', cadastros: 'cadastros', clientes: 'cadastros', produtos: 'cadastros', equipe: 'cadastros',
+            fabricantes: 'cadastros', 'grupos-produto': 'cadastros', marcas: 'cadastros',
             'trib-estadual': 'cadastros', 'trib-federal': 'cadastros', 'trib-reforma': 'cadastros',
             operacional: 'operacional', pcp: 'operacional', status: 'operacional',
             vendas: 'vendas', compras: 'compras', financeiro: 'financeiro',

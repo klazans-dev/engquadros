@@ -211,7 +211,10 @@
                 <section class="painel-col" id="blocoBom" data-bloco="bom">
                     <h2>
                         <span><i class="fa-solid fa-list-ol"></i> Lista de materiais</span>
-                        <button type="button" class="btn-minmax-bloco" data-bloco="bom" title="Minimizar / expandir"><i class="fa-solid fa-chevron-up"></i></button>
+                        <span style="display:flex;align-items:center;gap:6px;">
+                            <button type="button" class="btn-acao ghost" id="btnTrocarFab" title="Troca os itens do orçamento por equivalentes de outro fabricante (mesmo grupo)" style="height:28px;padding:0 10px;font-size:0.72rem;"><i class="fa-solid fa-right-left"></i> Trocar fabricante</button>
+                            <button type="button" class="btn-minmax-bloco" data-bloco="bom" title="Minimizar / expandir"><i class="fa-solid fa-chevron-up"></i></button>
+                        </span>
                     </h2>
                     <div class="col-body">
                         <div class="bom-lista" id="bomLista"></div>
@@ -422,6 +425,18 @@
                 </button>
             </div>
             <button type="button" class="btn-acao ghost" id="btnCancelarTipoOrc">Cancelar</button>
+        </div>
+    </div>
+    <div id="modalTrocaFab" class="modal-orc" hidden>
+        <div class="modal-orc-card modal-troca-fab" role="dialog" aria-modal="true" aria-labelledby="titTrocaFab">
+            <h2 id="titTrocaFab">Trocar fabricante / marca</h2>
+            <p id="txtTrocaFab">Produtos do mesmo grupo de equivalência.</p>
+            <div id="filtrosTrocaFab" class="troca-filtros"></div>
+            <div id="listaTrocaFab" class="troca-lista"></div>
+            <div class="troca-acoes">
+                <button type="button" class="btn-acao ghost" id="btnCancelarTroca">Fechar</button>
+                <button type="button" class="btn-acao" id="btnConfirmarTroca" hidden><i class="fa-solid fa-check"></i> Aplicar troca</button>
+            </div>
         </div>
     </div>
     <div id="toastOrc"></div>

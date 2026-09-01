@@ -51,8 +51,8 @@ aside {
 .logo-area {
     padding: 20px 16px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(6, 11, 20, 0.35);
+    border-bottom: none;
+    background: transparent;
 }
 .logo-area img {
     max-width: 130px;

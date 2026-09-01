@@ -171,6 +171,10 @@ CREATE TABLE IF NOT EXISTS public.produtos (
     unidade_tributavel VARCHAR(10) DEFAULT 'UN',
     fator_conversao NUMERIC(12,6) DEFAULT 1,
     marca VARCHAR(80),
+    fabricante VARCHAR(120),
+    fabricante_id UUID,
+    grupo_produto_id UUID,
+    marca_id UUID,
     modelo VARCHAR(80),
     ativo BOOLEAN DEFAULT TRUE,
     imagem_url TEXT,
@@ -197,6 +201,32 @@ CREATE TABLE IF NOT EXISTS public.produtos (
     observacoes TEXT,
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     atualizado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.produto_fabricantes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    empresa_id UUID REFERENCES public.empresas(id) ON DELETE CASCADE,
+    nome VARCHAR(120) NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.produto_grupos (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    empresa_id UUID REFERENCES public.empresas(id) ON DELETE CASCADE,
+    nome VARCHAR(160) NOT NULL,
+    descricao TEXT,
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.produto_marcas (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    empresa_id UUID REFERENCES public.empresas(id) ON DELETE CASCADE,
+    fabricante_id UUID REFERENCES public.produto_fabricantes(id) ON DELETE SET NULL,
+    nome VARCHAR(120) NOT NULL,
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
 -- ============================================================================

@@ -49,14 +49,14 @@ aside {
     flex-direction: column;
     z-index: 50;
     flex-shrink: 0;
-    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.06);
+    box-shadow: none;
 }
 
 .logo-area {
     padding: 20px 16px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(6, 11, 20, 0.35);
+    border-bottom: none;
+    background: transparent;
 }
 
 .logo-area img {
@@ -772,6 +772,31 @@ kbd {
     color: var(--texto-secundario);
 }
 .bom-row .icon-btn:hover { color: var(--erro); border-color: #fecaca; }
+.bom-row .icon-btn.troca:hover { color: #0e7490; border-color: #a5f3fc; }
+.bom-row .bom-fab { font-size: 0.68rem; color: #0e7490; font-weight: 600; margin-top: 2px; }
+
+.modal-troca-fab { max-width: 720px; max-height: 86vh; overflow: auto; }
+.troca-filtros { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 8px; }
+.troca-filtros .campo { flex: 1; min-width: 180px; margin: 0; }
+.troca-lista { display: flex; flex-direction: column; gap: 8px; max-height: 48vh; overflow-y: auto; }
+.troca-hit {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+}
+.troca-hit:hover { border-color: #0e7490; }
+.troca-hit.atual { opacity: 0.65; cursor: default; }
+.troca-hit .t-nome { font-weight: 700; color: var(--azul-marca); font-size: 0.88rem; }
+.troca-hit .t-meta { font-size: 0.75rem; color: var(--texto-secundario); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+.troca-hit .t-delta { font-weight: 700; font-size: 0.8rem; }
+.troca-hit .t-delta.mais { color: var(--erro); }
+.troca-hit .t-delta.menos { color: var(--sucesso); }
+.troca-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.troca-resumo { font-size: 0.8rem; color: var(--texto-secundario); background: #f1f5f9; border-radius: 8px; padding: 8px 10px; }
 
 .rodape-orc {
     flex: 0 0 auto;
