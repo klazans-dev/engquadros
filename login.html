@@ -165,17 +165,22 @@
             const rpc = await supabaseClient.rpc('login_cliente', { p_cnpj: cnpjInput, p_chave: chaveInput });
             if (!rpc.error && rpc.data) return rpc.data;
             if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
-                const cnpjLimpo = cnpjInput.replace(/\D/g, '');
-                let resultado = await supabaseClient.from('clientes')
-                    .select('id, cnpj, razao_social, status, empresa_id')
-                    .eq('cnpj', cnpjLimpo)
-                    .eq('chave_mestre', chaveInput);
-                if (!resultado.error && resultado.data && resultado.data.length) return resultado.data[0];
-                resultado = await supabaseClient.from('clientes')
-                    .select('id, cnpj, razao_social, status, empresa_id')
-                    .eq('cnpj', cnpjInput)
-                    .eq('chave_mestre', chaveInput);
-                if (!resultado.error && resultado.data && resultado.data.length) return resultado.data[0];
+                const cnpjLimpo = EqSec.cnpjDigitos(cnpjInput);
+                const cnpjMascara = EqSec.cnpjMascarado(cnpjLimpo);
+                const chaves = ['chave_mestre', 'chave_acesso'];
+                const cnpjs = [cnpjLimpo, cnpjInput, cnpjMascara].filter(function (v, i, a) {
+                    return v && a.indexOf(v) === i;
+                });
+                for (var c = 0; c < cnpjs.length; c++) {
+                    for (var k = 0; k < chaves.length; k++) {
+                        var resultado = await supabaseClient.from('clientes')
+                            .select('id, cnpj, razao_social, status, empresa_id')
+                            .eq('cnpj', cnpjs[c])
+                            .eq(chaves[k], chaveInput)
+                            .limit(1);
+                        if (!resultado.error && resultado.data && resultado.data.length) return resultado.data[0];
+                    }
+                }
             }
             return null;
         }
@@ -234,10 +239,30 @@
             try {
                 const cliente = await autenticarCliente(cnpjInput, chaveInput);
 
-                if (!cliente || cliente.status === 'bloqueado' || cliente.status === 'inativo') {
+                if (!cliente) {
                     EngCaptcha.registrarFalhaLogin('login');
                     EngCaptcha.regenerar('login');
                     mostrarErroLogin('Credenciais inválidas.');
+                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
+                    btn.disabled = false;
+                    return;
+                }
+
+                if (!EqSec.clienteEstaAtivo(cliente.status)) {
+                    EngCaptcha.registrarFalhaLogin('login');
+                    EngCaptcha.regenerar('login');
+                    mostrarErroLogin(EqSec.MSG_CLIENTE_INATIVO);
+                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const gate = await EqSec.verificarTenantAtivo(supabaseClient, {
+                    empresaId: cliente.empresa_id,
+                    cnpj: cliente.cnpj || cnpjInput
+                });
+                if (!gate.ok) {
+                    mostrarErroLogin(gate.mensagem || EqSec.MSG_TENANT_INATIVO);
                     btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
                     btn.disabled = false;
                     return;

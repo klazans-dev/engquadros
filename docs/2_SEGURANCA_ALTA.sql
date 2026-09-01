@@ -188,12 +188,11 @@ BEGIN
     )
   LIMIT 1;
   IF NOT FOUND THEN RETURN NULL; END IF;
-  IF c.status IN ('bloqueado', 'inativo') THEN RETURN NULL; END IF;
   RETURN jsonb_build_object(
     'id', c.id,
     'cnpj', c.cnpj,
     'razao_social', c.razao_social,
-    'status', c.status,
+    'status', coalesce(c.status, ''),
     'empresa_id', c.empresa_id
   );
 END;

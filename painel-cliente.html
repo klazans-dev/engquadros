@@ -375,9 +375,27 @@
         }
 
         if (clienteLogado) {
-            const elPainel = document.getElementById('telaPainel');
-            if (elPainel) elPainel.style.display = 'flex';
-            iniciarPainelCliente();
+            Promise.all([
+                EqSec.verificarTenantAtivo(supabaseClient, {
+                    empresaId: sessionStorage.getItem('empresaId'),
+                    cnpj: clienteLogado
+                }),
+                EqSec.verificarClienteAtivo(supabaseClient, {
+                    empresaId: sessionStorage.getItem('empresaId'),
+                    cnpj: clienteLogado
+                })
+            ]).then(function (res) {
+                var gate = res[0];
+                var cli = res[1];
+                if (!gate.ok || !cli.ok) {
+                    sessionStorage.clear();
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const elPainel = document.getElementById('telaPainel');
+                if (elPainel) elPainel.style.display = 'flex';
+                iniciarPainelCliente();
+            });
         } else {
             document.body.innerHTML = `
                 <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; background:#f4f7f6; font-family:'Inter', sans-serif; text-align:center; padding: 20px;">

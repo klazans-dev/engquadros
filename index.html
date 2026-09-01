@@ -38,7 +38,9 @@
             /* Cores Padrão - Podem ser sobrescritas pelo Tema Master */
             --azul-profundo: #060b14; 
             --azul-marca: #0b1c35; 
-            --azul-sutil: #2b5c92; 
+            --azul-sutil: #2b5c92;
+            --tema-rgb: 11, 28, 53;
+            --tema-sec-rgb: 43, 92, 146; 
             --fundo-site: #f4f7f6; 
             --texto-principal: #1e293b;
             --texto-secundario: #64748b;
@@ -102,7 +104,7 @@
 
         /* ================= SIDEBAR PREMIUM VERTICAL ================= */
         #telaPainel { display: none; height: 100vh; width: 100vw; background-color: var(--fundo-site); }
-        aside { width: 320px; background: var(--azul-marca); color: #fff; display: flex; flex-direction: column; z-index: 10; box-shadow: none; transition: width 0.3s ease; position: relative; overflow-y: auto; overflow-x: hidden; }
+        aside { width: 320px; background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 22%), linear-gradient(180deg, rgb(var(--tema-rgb)) 0%, color-mix(in srgb, rgb(var(--tema-rgb)) 78%, #000) 100%); color: #fff; display: flex; flex-direction: column; z-index: 10; box-shadow: none; transition: width 0.3s ease; position: relative; overflow-y: auto; overflow-x: hidden; }
         #sidebarAdmin.encolhida { width: 60px !important; padding: 20px 5px !important; }
         #sidebarAdmin.encolhida .logo-area img, #sidebarAdmin.encolhida .logo-area p, #sidebarAdmin.encolhida .logo-area button, #sidebarAdmin.encolhida .txt-menu, #sidebarAdmin.encolhida .btn-sair-admin span, #sidebarAdmin.encolhida .eq-nav-filho, #sidebarAdmin.encolhida #razaoSocialSidebar, #sidebarAdmin.encolhida #cnpjSidebar { display: none !important; }
         #sidebarAdmin.encolhida .item-menu { padding: 12px; justify-content: center; }
@@ -114,17 +116,17 @@
         .item-menu { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 15px; padding: 12px 18px; color: rgba(255,255,255,0.6); background: transparent; border-radius: 10px; border: none; font-weight: 500; font-size: 0.9rem; text-decoration: none; transition: color 0.25s ease, background 0.25s ease; cursor: pointer;}
         .item-menu i { font-size: 1.2rem; width: 25px; text-align: center; }
         .item-menu:hover { color: #fff; background: rgba(255,255,255,0.05); transform: none; }
-        .item-menu.ativa { color: #fff; background: rgba(6, 182, 212, 0.14); border: none; border-radius: 10px; }
+        .item-menu.ativa { color: #fff; background: rgba(var(--tema-sec-rgb), 0.28); border: none; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08); }
         
         .rodape-aside { padding: 20px 15px; border-top: none; text-align: center; }
         .btn-sair-admin { background: rgba(239, 68, 68, 0.08); border: none; color: #fca5a5; padding: 10px 15px; font-size: 0.85rem; border-radius: 8px; transition: var(--transicao); font-weight: 600; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; }
         .btn-sair-admin:hover { background: var(--erro); color: #fff; border-color: var(--erro); }
 
         /* ================= CONTEÚDO PRINCIPAL ================= */
-        main { transition: margin-left 0.3s ease; flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; background: var(--fundo-site); }
+        main { transition: margin-left 0.3s ease; flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; background: radial-gradient(900px 280px at 0% 0%, rgba(var(--tema-sec-rgb), 0.10), transparent 55%), radial-gradient(700px 240px at 100% 100%, rgba(var(--tema-rgb), 0.06), transparent 50%), var(--fundo-site); }
         main.expandido { margin-left: 0px !important; width: calc(100% - 60px) !important; }
         .painel-conteudo { display: none; max-width: 100%; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
-        .card-box { background: #fff; border: var(--borda); border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .card-box { background: color-mix(in srgb, #fff 86%, rgb(var(--tema-sec-rgb)) 14%); border: 1px solid rgba(var(--tema-sec-rgb), 0.14); border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 8px 24px rgba(var(--tema-rgb), 0.05); backdrop-filter: blur(10px); }
         .card-accordion { background: #fff; border: var(--borda); border-radius: 8px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); overflow: hidden; transition: var(--transicao); }
         .section-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; background: #fff; transition: var(--transicao); }
         .section-header:hover { background: #f8fafc; }
@@ -132,7 +134,7 @@
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: 600; color: var(--azul-marca); margin-bottom: 5px; font-size: 0.85rem; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; background: #f8fafc; transition: var(--transicao); }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--azul-sutil); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(43,92,146,0.1); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--azul-sutil); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(var(--tema-sec-rgb), 0.18); }
         .btn-acao { background: var(--azul-marca); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: var(--transicao); font-size: 0.85rem; cursor: pointer; }
         .btn-acao:hover { background: var(--azul-sutil); transform: translateY(-1px); box-shadow: 0 3px 8px rgba(43,92,146,0.2); }
         .linha-form { display: flex; gap: 15px; }
@@ -146,9 +148,9 @@
         .painel-modulos { display: none; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeIn 0.4s ease; }
         .titulo-modulo { color: var(--azul-marca); font-size: 1.5rem; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .grid-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .tile-btn { background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid #cbd5e1; border-radius: 12px; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.02); text-decoration: none; color: var(--texto-principal); }
-        .tile-btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(11, 28, 53, 0.1); border-color: var(--azul-sutil); background: #fff; }
-        .tile-icone { width: 60px; height: 60px; background: rgba(43, 92, 146, 0.1); color: var(--azul-marca); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; transition: var(--transicao); }
+        .tile-btn { background: linear-gradient(160deg, color-mix(in srgb, #fff 88%, rgb(var(--tema-sec-rgb)) 12%), rgba(255,255,255,0.72)); border: 1px solid rgba(var(--tema-sec-rgb), 0.16); border-radius: 12px; padding: 30px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: 0 4px 16px rgba(var(--tema-rgb), 0.05); text-decoration: none; color: var(--texto-principal); backdrop-filter: blur(8px); }
+        .tile-btn:hover { transform: translateY(-5px); box-shadow: 0 14px 28px rgba(var(--tema-rgb), 0.14); border-color: rgba(var(--tema-sec-rgb), 0.45); background: color-mix(in srgb, #fff 82%, rgb(var(--tema-sec-rgb)) 18%); }
+        .tile-icone { width: 60px; height: 60px; background: rgba(var(--tema-sec-rgb), 0.16); color: var(--azul-marca); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; transition: var(--transicao); }
         .tile-btn:hover .tile-icone { background: var(--azul-marca); color: #fff; transform: scale(1.1); }
         .tile-titulo { font-size: 1.05rem; font-weight: 700; color: var(--azul-marca); margin-bottom: 5px; }
         .tile-desc { font-size: 0.8rem; color: var(--texto-secundario); font-weight: 500; line-height: 1.3; }
@@ -541,14 +543,14 @@
                             <div class="tile-desc">Nova Reforma Tributária (IBS + CBS)</div>
                         </div>
                     </div>
-                    <div class="tile-btn" data-perm="obras" onclick="location.hash='processos'; abrirTelaAcao('gestaoProcessos')">
+                    <div class="tile-btn" data-perm="obras" onclick="abrirTelaAcao('gestaoProcessos')">
                         <div class="tile-icone"><i class="fa-solid fa-list-check" style="color: #0f766e;"></i></div>
                         <div>
                             <div class="tile-titulo">Processos (Checklists)</div>
                             <div class="tile-desc">Categorias e itens padrão da montagem</div>
                         </div>
                     </div>
-                    <div class="tile-btn" data-perm="obras" onclick="location.hash='etapas'; abrirTelaAcao('gestaoEtapas')">
+                    <div class="tile-btn" data-perm="obras" onclick="abrirTelaAcao('gestaoEtapas')">
                         <div class="tile-icone"><i class="fa-solid fa-gears" style="color: #475569;"></i></div>
                         <div>
                             <div class="tile-titulo">Etapas do PCP</div>
@@ -580,7 +582,7 @@
 </div>
                     
                     <!-- NOVO BOTÃO: ETAPAS DO KANBAN -->
-                    <div class="tile-btn" onclick="abrirModalConfigPCP()">
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoEtapas')">
                         <div class="tile-icone"><i class="fa-solid fa-gears" style="color: #64748b;"></i></div>
                         <div>
                             <div class="tile-titulo">Etapas do Kanban</div>
@@ -597,7 +599,7 @@
 </div>
                     
                     <!-- NOVO BOTÃO: PROCESSOS DE MONTAGEM -->
-                    <div class="tile-btn" onclick="abrirModalConfigProcessos()">
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoProcessos')">
                         <div class="tile-icone"><i class="fa-solid fa-list-check" style="color: #64748b;"></i></div>
                         <div>
                             <div class="tile-titulo">Processos (Checklists)</div>
@@ -1412,6 +1414,75 @@
                 </div>
             </div>
 
+            <div id="painelProcessos" class="painel-conteudo">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid rgba(var(--tema-sec-rgb), 0.18); padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <button type="button" onclick="abrirModulo('cadastros')" style="background:transparent; border:none; color:var(--texto-secundario); font-size:1.2rem; cursor:pointer; margin-top:4px;"><i class="fa-solid fa-arrow-left"></i></button>
+                        <div>
+                            <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-list-check"></i> Processos (Checklists)</h2>
+                            <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Categorias e itens padrão usados na gestão de cada quadro.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-box" style="border-top: 4px solid var(--azul-sutil);">
+                    <form id="formConfigProcesso" onsubmit="salvarProcessoPadrao(event)">
+                        <input type="hidden" id="configProcDbId">
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 2;"><label>ID da Categoria (Ex: cat_eng)</label><input type="text" id="configProcCatId" required></div>
+                            <div class="form-group" style="flex: 3;"><label>Nome da Categoria</label><input type="text" id="configProcNome" required placeholder="Ex: Engenharia e Projetos"></div>
+                        </div>
+                        <div class="linha-form">
+                            <div class="form-group" style="flex: 2;"><label>Ícone FontAwesome (Ex: fa-bolt)</label><input type="text" id="configProcIcone"></div>
+                            <div class="form-group" style="flex: 1;"><label>Ordem na Tela</label><input type="number" id="configProcOrdem" required min="1"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Itens do Checklist (um por linha)</label>
+                            <textarea id="configProcItens" rows="5" placeholder="Passagem de Cabos&#10;Anilhamento&#10;Conexão de Potência"></textarea>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" onclick="limparFormProcesso()" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;"><i class="fa-solid fa-eraser"></i> Nova categoria</button>
+                            <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Gravar categoria</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-box" style="padding: 0; overflow: hidden;">
+                    <div id="listaConfigProcessos"></div>
+                </div>
+            </div>
+
+            <div id="painelEtapas" class="painel-conteudo">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid rgba(var(--tema-sec-rgb), 0.18); padding-bottom: 10px; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <button type="button" onclick="abrirModulo('cadastros')" style="background:transparent; border:none; color:var(--texto-secundario); font-size:1.2rem; cursor:pointer; margin-top:4px;"><i class="fa-solid fa-arrow-left"></i></button>
+                        <div>
+                            <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-gears"></i> Etapas do PCP</h2>
+                            <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 3px;">Colunas do kanban: nome, ordem, cor e vínculo com status macro.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-box" style="border-top: 4px solid var(--azul-sutil);">
+                    <form id="formConfigEtapa" onsubmit="salvarEtapaPCP(event)">
+                        <input type="hidden" id="configEtapaId">
+                        <div class="linha-form" style="align-items: flex-end;">
+                            <div class="form-group" style="flex: 3;"><label>Nome da Etapa</label><input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica"></div>
+                            <div class="form-group" style="flex: 1;"><label>Ordem</label><input type="number" id="configEtapaOrdem" required min="1" placeholder="1"></div>
+                            <div class="form-group" style="flex: 1;"><label>Cor do Card</label><input type="color" id="configEtapaCor" value="#3b82f6" style="height: 42px; cursor: pointer;"></div>
+                            <button type="submit" class="btn-acao" style="background: var(--sucesso); height: 42px; margin-bottom: 15px;"><i class="fa-solid fa-check"></i> Gravar</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Vincular aos Status Macros (Painel Geral)</label>
+                            <div id="containerCheckboxesStatusMacro" style="max-height: 160px; overflow-y: auto; border: 1px solid rgba(var(--tema-sec-rgb), 0.18); border-radius: 6px; padding: 10px; background: rgba(var(--tema-sec-rgb), 0.05); display: flex; flex-direction: column; gap: 6px;">
+                                <span style="font-size: 12px; color: #94a3b8;">Carregando status...</span>
+                            </div>
+                        </div>
+                        <button type="button" onclick="limparFormEtapa()" class="btn-acao" style="background: transparent; color: var(--texto-secundario); border: 1px solid #cbd5e1;"><i class="fa-solid fa-eraser"></i> Nova etapa</button>
+                    </form>
+                </div>
+                <div class="card-box" style="padding: 0; overflow: hidden;">
+                    <div id="listaConfigEtapas"></div>
+                </div>
+            </div>
+
             <!-- PAINEL CADASTRAR NOVO CLIENTE -->
             <div id="painelNovoCliente" class="painel-conteudo">
                 <div style="margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; display: flex; align-items: center; gap: 15px;">
@@ -1721,10 +1792,10 @@
                         <button type="button" class="btn-acao" onclick="toggleModoTV()" id="btnModoTv" style="background: #0f172a;">
                             <i class="fa-solid fa-tv"></i> Modo TV / Painel
                         </button>
-                        <button type="button" class="btn-acao" onclick="abrirModalConfigProcessos()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Processos">
+                        <button type="button" class="btn-acao" onclick="abrirTelaAcao('gestaoProcessos')" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Processos">
                             <i class="fa-solid fa-list-check"></i> Processos
                         </button>
-                        <button type="button" class="btn-acao" onclick="abrirModalConfigPCP()" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Fluxo">
+                        <button type="button" class="btn-acao" onclick="abrirTelaAcao('gestaoEtapas')" style="background: transparent; color: var(--azul-marca); border: 1px solid var(--azul-marca);" title="Configurar Fluxo">
                             <i class="fa-solid fa-gears"></i> Etapas
                         </button>
                         <button type="button" class="btn-acao" onclick="document.getElementById('modalImportarExcel').style.display='flex'" style="background: #10b981; color: white; border: none;" title="Importar Projetos">
@@ -2070,8 +2141,12 @@
 
                         <div class="linha-form">
                             <div class="form-group" style="flex: 2;">
-                                <label>Nome Fantasia (Sua Empresa) *</label>
-                                <input type="text" id="configMasterNome" required placeholder="Ex: Callinfo Tecnologia">
+                                <label>Razão Social *</label>
+                                <input type="text" id="configMasterRazao" required placeholder="Ex: ETECH Engenharia Ltda">
+                            </div>
+                            <div class="form-group" style="flex: 2;">
+                                <label>Nome Fantasia</label>
+                                <input type="text" id="configMasterNome" placeholder="Ex: ETECH">
                             </div>
                             <div class="form-group" style="flex: 1;">
                                 <label>CNPJ Master (Bloqueado)</label>
@@ -2341,100 +2416,8 @@
         </div>
     </div>
 </div>
-   <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
-    <div id="modalConfigPCP" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-gears"></i> Personalizar Fluxo (PCP)</h3>
-                <button type="button" onclick="document.getElementById('modalConfigPCP').style.display='none'" style="background: transparent; border: none; font-size: 1.2rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form id="formConfigEtapa" onsubmit="salvarEtapaPCP(event)">
-                <input type="hidden" id="configEtapaId">
-                
-                <!-- PRIMEIRA LINHA: Nome, Ordem, Cor e Botão Gravar -->
-                <div class="linha-form" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
-                    <div class="form-group" style="flex: 3; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Nome da Etapa</label>
-                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                    </div>
-                    <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Ordem</label>
-                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                    </div>
-                    <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Cor do Card</label>
-                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 35px; cursor: pointer; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px;">
-                    </div>
-                    <button type="submit" class="btn-acao" style="background: var(--sucesso); color: white; height: 35px; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-check"></i> Gravar</button>
-                </div>
-               <div style="margin-bottom: 15px;">
-    <label style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); display: block; margin-bottom: 5px;">Vincular aos Status Macros (Painel Geral):</label>
-    <div id="containerCheckboxesStatusMacro" style="max-height: 120px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 12px; color: #94a3b8;">Carregando status...</span>
-    </div>
-</div>
-                
-                <div style="text-align: right; margin-bottom: 15px;">
-                    <button type="button" onclick="limparFormEtapa()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário (Nova Etapa)</button>
-                </div>
-                
-            </form>
-
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto; padding: 10px;">
-                <div id="listaConfigEtapas" style="display: flex; flex-direction: column; gap: 8px;">
-                    <!-- Preenchido via JS -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- MODAL DE GESTÃO DE PROCESSOS PADRÃO -->
-    <div id="modalConfigProcessos" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 700px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca); max-height: 90vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
-                <h3 style="color: var(--azul-marca); margin: 0;"><i class="fa-solid fa-list-check"></i> Personalizar Checklist (Processos)</h3>
-                <button type="button" onclick="document.getElementById('modalConfigProcessos').style.display='none'" style="background: transparent; border: none; font-size: 1.2rem; color: var(--erro); cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form id="formConfigProcesso" onsubmit="salvarProcessoPadrao(event)">
-                <input type="hidden" id="configProcDbId">
-                <div style="display: flex; gap: 15px; margin-bottom: 10px;">
-                    <div class="form-group" style="flex: 2; margin: 0;">
-                        <label>ID da Categoria (Ex: cat_eng)</label>
-                        <input type="text" id="configProcCatId" required>
-                    </div>
-                    <div class="form-group" style="flex: 3; margin: 0;">
-                        <label>Nome da Categoria (Ex: Engenharia e Projetos)</label>
-                        <input type="text" id="configProcNome" required>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 15px; margin-bottom: 10px;">
-                    <div class="form-group" style="flex: 2; margin: 0;">
-                        <label>Ícone FontAwesome (Ex: fa-bolt)</label>
-                        <input type="text" id="configProcIcone">
-                    </div>
-                    <div class="form-group" style="flex: 1; margin: 0;">
-                        <label>Ordem na Tela</label>
-                        <input type="number" id="configProcOrdem" required min="1">
-                    </div>
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Itens do Checklist (Digite 1 item por linha)</label>
-                    <textarea id="configProcItens" rows="5" placeholder="Passagem de Cabos&#10;Anilhamento&#10;Conexão de Potência" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 0.9rem; resize: vertical;"></textarea>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <button type="button" onclick="limparFormProcesso()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário</button>
-                    <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Gravar Categoria</button>
-                </div>
-            </form>
-
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 250px; overflow-y: auto;">
-                <div id="listaConfigProcessos" style="display: flex; flex-direction: column;">
-                    <!-- Preenchido via JS -->
-                </div>
-            </div>
-        </div>
-    </div>
+   <!-- MODAL DE GESTÃO DAS ETAPAS — conteúdo em #painelEtapas -->
+    <!-- MODAL DE GESTÃO DE PROCESSOS — conteúdo em #painelProcessos -->
 
     <!-- TOAST DE AVISO -->
     <div id="toastNotificacao">
@@ -2558,9 +2541,54 @@
         sessionStorage.setItem('empresaId', sessao.empresaId);
         sessionStorage.setItem('masterCnpj', sessao.cnpj || '');
         sessionStorage.setItem('masterNome', sessao.nome || 'Sua Empresa');
+        if (sessao.razao) sessionStorage.setItem('masterRazao', sessao.razao);
         sessionStorage.setItem('masterLogo', sessao.logo || '');
         sessionStorage.setItem('masterCorPrimaria', sessao.corPri || '#0b1c35');
         sessionStorage.setItem('masterCorSecundaria', sessao.corSec || '#2b5c92');
+    }
+
+    function nomeRazaoEmpresa() {
+        return String(sessionStorage.getItem('masterRazao') || sessionStorage.getItem('masterNome') || 'Sua Empresa').trim();
+    }
+
+    function aplicarNomeMarcaWorkspace() {
+        var nome = nomeRazaoEmpresa();
+        var nomeEmpresaEl = document.getElementById('nomeEmpresaSaaS');
+        if (nomeEmpresaEl) nomeEmpresaEl.innerText = nome;
+        var leadMarca = document.getElementById('wsLeadMarca');
+        if (leadMarca) leadMarca.innerText = nome;
+        var razaoSocialEl = document.getElementById('razaoSocialSidebar');
+        if (razaoSocialEl) razaoSocialEl.innerText = nome;
+    }
+
+    async function buscarRazaoNaEmpresa(empresaId) {
+        if (!empresaId || !supabaseClient) return '';
+        try {
+            var r1 = await supabaseClient.from('empresas').select('razao_social').eq('id', empresaId).maybeSingle();
+            if (r1.data && r1.data.razao_social) return String(r1.data.razao_social).trim();
+        } catch (e) { /* RLS ou tabela */ }
+        try {
+            var r2 = await supabaseClient
+                .from('admin_master')
+                .select('razao_social, empresas(razao_social)')
+                .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
+                .limit(1)
+                .maybeSingle();
+            var row = r2.data;
+            if (!row) return '';
+            var nested = row.empresas && (row.empresas.razao_social || (Array.isArray(row.empresas) && row.empresas[0] && row.empresas[0].razao_social));
+            return String(nested || row.razao_social || '').trim();
+        } catch (e2) {
+            return '';
+        }
+    }
+
+    async function sincronizarRazaoEmpresa() {
+        var eid = sessionStorage.getItem('empresaId');
+        var razao = await buscarRazaoNaEmpresa(eid);
+        if (razao) sessionStorage.setItem('masterRazao', razao);
+        aplicarNomeMarcaWorkspace();
+        if (typeof EqNav !== 'undefined') EqNav.aplicarIdentidade();
     }
 
 
@@ -2577,8 +2605,12 @@
 
     // ================= APLICAÇÃO DE TEMA GLOBAL =================
     function aplicarTemaCores(primaria, secundaria) {
-        if(primaria) document.documentElement.style.setProperty('--azul-marca', primaria);
-        if(secundaria) document.documentElement.style.setProperty('--azul-sutil', secundaria);
+        if (typeof EqNav !== 'undefined' && EqNav.aplicarTintas) {
+            EqNav.aplicarTintas(primaria, secundaria);
+            return;
+        }
+        if (primaria) document.documentElement.style.setProperty('--azul-marca', primaria);
+        if (secundaria) document.documentElement.style.setProperty('--azul-sutil', secundaria);
     }
 
     // ================= FUNÇÃO UNIFICADA DE LOGO (3 LUGARES) =================
@@ -2627,22 +2659,27 @@
         }
     }
 
+    function mostrarAvisoLogin(texto) {
+        const msg = document.getElementById('mensagemErroLogin');
+        if (!msg) return;
+        if (!texto) {
+            msg.style.display = 'none';
+            return;
+        }
+        msg.style.display = 'block';
+        msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + texto;
+    }
+
     async function buscarEaplicarLogo(cnpjBruto) {
         const cnpjLimpo = cnpjBruto ? cnpjBruto.replace(/\D/g, '') : '';
         if (cnpjLimpo.length < 14) return;
 
         try {
-            const { data, error } = await supabaseClient
-                .from('admin_master')
-                .select('logo_url')
-                .eq('cnpj', cnpjLimpo)
-                .maybeSingle();
-
-            if (data && data.logo_url) {
-                aplicarLogoEmTudo(data.logo_url);
-            } else {
-                aplicarLogoEmTudo('');
-            }
+            const gate = await EqSec.verificarTenantAtivo(supabaseClient, { cnpj: cnpjLimpo });
+            if (gate.logo) aplicarLogoEmTudo(gate.logo);
+            else aplicarLogoEmTudo('');
+            if (!gate.ok) mostrarAvisoLogin(gate.mensagem);
+            else mostrarAvisoLogin('');
         } catch (err) {
             console.error("Erro ao buscar logo no admin_master:", err);
         }
@@ -2847,32 +2884,39 @@
     }
 
     if (sessionStorage.getItem('acessoCRM')) {
-        isMaster = sessionStorage.getItem('tipoAcesso') === 'mestre';
-        equipeIdLogada = sessionStorage.getItem('equipeId');
-        empresaIdLogada = sessionStorage.getItem('empresaId'); 
-        
-        const elUsuario = document.getElementById('nomeUsuarioLogado');
-        if (elUsuario) {
-            if (isMaster) { 
-                elUsuario.innerText = 'Acesso Master'; 
-            } else { 
-                elUsuario.innerText = 'Engenharia: ' + (sessionStorage.getItem('nomeEquipe') || 'Equipe'); 
-            }
-        }
-        
-        const tPrim = sessionStorage.getItem('masterCorPrimaria');
-        const tSec = sessionStorage.getItem('masterCorSecundaria');
-        if(tPrim || tSec) aplicarTemaCores(tPrim, tSec);
-
-        aplicarLogoEmTudo(sessionStorage.getItem('masterLogo'));
-
-        if (typeof EqSessionTimeout !== 'undefined') {
-            EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
-                sessionStorage.clear();
-                window.location.href = EqSec.urlPainelErp();
+        (async function () {
+            const gateSessao = await EqSec.verificarTenantAtivo(supabaseClient, {
+                empresaId: sessionStorage.getItem('empresaId'),
+                cnpj: sessionStorage.getItem('masterCnpj')
             });
-        }
-        iniciarPainel();
+            if (!gateSessao.ok) {
+                sessionStorage.clear();
+                mostrarAvisoLogin(gateSessao.mensagem || EqSec.MSG_TENANT_INATIVO);
+                return;
+            }
+            isMaster = sessionStorage.getItem('tipoAcesso') === 'mestre';
+            equipeIdLogada = sessionStorage.getItem('equipeId');
+            empresaIdLogada = sessionStorage.getItem('empresaId');
+            const elUsuario = document.getElementById('nomeUsuarioLogado');
+            if (elUsuario) {
+                if (isMaster) {
+                    elUsuario.innerText = 'Acesso Master';
+                } else {
+                    elUsuario.innerText = 'Engenharia: ' + (sessionStorage.getItem('nomeEquipe') || 'Equipe');
+                }
+            }
+            const tPrim = sessionStorage.getItem('masterCorPrimaria');
+            const tSec = sessionStorage.getItem('masterCorSecundaria');
+            if (tPrim || tSec) aplicarTemaCores(tPrim, tSec);
+            aplicarLogoEmTudo(sessionStorage.getItem('masterLogo'));
+            if (typeof EqSessionTimeout !== 'undefined') {
+                EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
+                    sessionStorage.clear();
+                    window.location.href = EqSec.urlPainelErp();
+                });
+            }
+            iniciarPainel();
+        })();
     }
     ligarAtalhosPermissao('novoPerm');
     ligarAtalhosPermissao('editPerm');
@@ -2920,15 +2964,19 @@
         const cnpjLimpo = cnpjBruto ? cnpjBruto.replace(/\D/g, '') : '';
         if (cnpjLimpo.length !== 14) return;
         try {
-            const rpc = await supabaseClient.rpc('lookup_branding', { p_cnpj: cnpjLimpo });
-            if (!rpc.error && rpc.data && typeof aplicarLogoEmTudo === 'function') {
-                aplicarLogoEmTudo(rpc.data.logo_url);
-                return;
+            const gate = await EqSec.verificarTenantAtivo(supabaseClient, { cnpj: cnpjLimpo });
+            if (gate.logo && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(gate.logo);
+            else {
+                const rpc = await supabaseClient.rpc('lookup_branding', { p_cnpj: cnpjLimpo });
+                if (!rpc.error && rpc.data && typeof aplicarLogoEmTudo === 'function') {
+                    aplicarLogoEmTudo(rpc.data.logo_url);
+                } else if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
+                    const { data } = await supabaseClient.from('admin_master').select('logo_url').eq('cnpj', cnpjLimpo).maybeSingle();
+                    if (data && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(data.logo_url);
+                }
             }
-            if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
-                const { data } = await supabaseClient.from('admin_master').select('logo_url').eq('cnpj', cnpjLimpo).maybeSingle();
-                if (data && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(data.logo_url);
-            }
+            if (!gate.ok) mostrarAvisoLogin(gate.mensagem);
+            else mostrarAvisoLogin('');
         } catch (err) {
             console.error("Erro ao buscar logo:", err);
         }
@@ -2961,29 +3009,36 @@
         
         try {
             if (modoLoginAtual === 'mestre') {
-                const identLimpo = identBruto.replace(/\D/g, '');
+                const identLimpo = EqSec.cnpjDigitos(identBruto);
                 let masterData = null;
-                const rpc = await supabaseClient.rpc('login_admin_master', { p_cnpj: identBruto, p_senha: senha });
+                const rpc = await supabaseClient.rpc('login_admin_master', { p_cnpj: identLimpo || identBruto, p_senha: senha });
                 if (!rpc.error && rpc.data) {
                     masterData = rpc.data;
                 } else if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
                     const { data, error } = await supabaseClient
                         .from('admin_master')
                         .select('id, empresa_id, cnpj, nome_fantasia, logo_url, cor_primaria, cor_secundaria')
-                        .or(`cnpj.eq.${identLimpo},cnpj.eq.${identBruto}`)
+                        .in('cnpj', EqSec.valoresCnpjBusca(identLimpo))
                         .eq('senha', senha);
                     if (error) throw error;
                     if (data && data.length) masterData = data[0];
                 }
 
                 if (masterData) {
-                    const idEmpresaMestre = masterData.empresa_id || masterData.id;
+                    const idEmpresaMestre = masterData.empresa_id || null;
+                    const gate = await EqSec.verificarTenantAtivo(supabaseClient, { empresaId: idEmpresaMestre, cnpj: identLimpo });
+                    if (!gate.ok) {
+                        mostrarAvisoLogin(gate.mensagem || EqSec.MSG_TENANT_INATIVO);
+                        return;
+                    }
+                    const empresaIdFinal = (gate.tenant && gate.tenant.id) || idEmpresaMestre || masterData.id;
                     sessionStorage.setItem('tipoAcesso', 'mestre');
                     sessionStorage.setItem('permissoes', JSON.stringify(EqSec.PERM_TODAS));
                     aplicarSessaoAdmin({
-                        empresaId: idEmpresaMestre,
+                        empresaId: empresaIdFinal,
                         cnpj: masterData.cnpj,
                         nome: masterData.nome_fantasia,
+                        razao: await buscarRazaoNaEmpresa(empresaIdFinal),
                         logo: masterData.logo_url,
                         corPri: masterData.cor_primaria,
                         corSec: masterData.cor_secundaria
@@ -3000,18 +3055,19 @@
                 const cnpjEmpresaBruto = document.getElementById('inputCnpjEmpresa').value.trim();
                 let pack = null;
                 const rpcEq = await supabaseClient.rpc('login_equipe', {
-                    p_cnpj_empresa: cnpjEmpresaBruto,
+                    p_cnpj_empresa: EqSec.cnpjDigitos(cnpjEmpresaBruto) || cnpjEmpresaBruto,
                     p_usuario: identBruto,
                     p_senha: senha
                 });
                 if (!rpcEq.error && rpcEq.data) {
                     pack = rpcEq.data;
                 } else if (EqSec.rpcFalhouPorAusencia(rpcEq.error)) {
-                    const cnpjEmpresaLimpo = cnpjEmpresaBruto.replace(/\D/g, '');
+                    const cnpjEmpresaLimpo = EqSec.cnpjDigitos(cnpjEmpresaBruto);
                     const { data: masterData, error: masterErr } = await supabaseClient
                         .from('admin_master')
                         .select('id, empresa_id, cnpj, nome_fantasia, logo_url, cor_primaria, cor_secundaria')
-                        .or(`cnpj.eq.${cnpjEmpresaLimpo},cnpj.eq.${cnpjEmpresaBruto}`)
+                        .in('cnpj', EqSec.valoresCnpjBusca(cnpjEmpresaLimpo))
+                        .limit(1)
                         .maybeSingle();
                     if (masterErr || !masterData) throw new Error('CNPJ da Empresa não encontrado.');
                     const idEmpresaMaster = masterData.empresa_id || masterData.id;
@@ -3030,15 +3086,22 @@
                 if (pack && pack.equipe) {
                     const masterData = pack.master;
                     const equipeUser = pack.equipe;
-                    const idEmpresaMaster = masterData.empresa_id || masterData.id;
+                    const idEmpresaMaster = masterData.empresa_id || null;
+                    const gateEq = await EqSec.verificarTenantAtivo(supabaseClient, { empresaId: idEmpresaMaster, cnpj: EqSec.cnpjDigitos(cnpjEmpresaBruto) });
+                    if (!gateEq.ok) {
+                        mostrarAvisoLogin(gateEq.mensagem || EqSec.MSG_TENANT_INATIVO);
+                        return;
+                    }
+                    const empresaIdFinalEq = (gateEq.tenant && gateEq.tenant.id) || idEmpresaMaster || masterData.id;
                     sessionStorage.setItem('tipoAcesso', 'equipe');
                     sessionStorage.setItem('equipeId', equipeUser.id);
                     sessionStorage.setItem('nomeEquipe', equipeUser.nome);
                     EqSec.gravarPermissoesSessao(equipeUser.permissoes);
                     aplicarSessaoAdmin({
-                        empresaId: idEmpresaMaster,
+                        empresaId: empresaIdFinalEq,
                         cnpj: masterData.cnpj,
                         nome: masterData.nome_fantasia,
+                        razao: await buscarRazaoNaEmpresa(empresaIdFinalEq),
                         logo: masterData.logo_url,
                         corPri: masterData.cor_primaria,
                         corSec: masterData.cor_secundaria
@@ -3070,15 +3133,11 @@
         marcarWorkspaceInicio(!hashRotaAdmin() || hashRotaAdmin() === 'inicio');
         const p = getPermissoes();
 
-        const nomeTenant = sessionStorage.getItem('masterNome') || 'Sua Empresa';
         const logoTenant = sessionStorage.getItem('masterLogo');
         const corPri = sessionStorage.getItem('masterCorPrimaria') || '#0b1c35';
         const corSec = sessionStorage.getItem('masterCorSecundaria') || '#2b5c92';
         
-        const razaoSocialEl = document.getElementById('razaoSocialSidebar');
-        if (razaoSocialEl) {
-            razaoSocialEl.innerText = sessionStorage.getItem('masterNome') || 'Sua Empresa';
-        }
+        aplicarNomeMarcaWorkspace();
 
         const cnpjEl = document.getElementById('cnpjSidebar');
         if (cnpjEl) {
@@ -3086,13 +3145,9 @@
             cnpjEl.innerText = cnpjSalvo ? `CNPJ: ${cnpjSalvo}` : '';
         }
 
-        const nomeEmpresaEl = document.getElementById('nomeEmpresaSaaS');
-        if (nomeEmpresaEl) nomeEmpresaEl.innerText = nomeTenant;
-        const leadMarca = document.getElementById('wsLeadMarca');
-        if (leadMarca) leadMarca.innerText = nomeTenant;
-
         aplicarTemaCores(corPri, corSec);
         aplicarLogoEmTudo(logoTenant);
+        await sincronizarRazaoEmpresa();
 
         if (typeof EqNav !== 'undefined') EqNav.montar({ pagina: 'admin' });
 
@@ -3208,13 +3263,13 @@
         else if (tela === 'gestaoTribFederal') { document.getElementById('painelTribFederal').style.display = 'block'; carregarListaTribFederal(); }
         else if (tela === 'gestaoTribReforma') { document.getElementById('painelTribReforma').style.display = 'block'; carregarListaTribReforma(); }
         else if (tela === 'gestaoEtapas') {
-            var cadE = document.getElementById('moduloCadastros');
-            if (cadE) cadE.style.display = 'block';
+            document.getElementById('painelEtapas').style.display = 'block';
+            if (hashRotaAdmin() !== 'etapas') history.replaceState(null, '', '#etapas');
             if (typeof abrirModalConfigPCP === 'function') abrirModalConfigPCP();
         }
         else if (tela === 'gestaoProcessos') {
-            var cadP = document.getElementById('moduloCadastros');
-            if (cadP) cadP.style.display = 'block';
+            document.getElementById('painelProcessos').style.display = 'block';
+            if (hashRotaAdmin() !== 'processos') history.replaceState(null, '', '#processos');
             if (typeof abrirModalConfigProcessos === 'function') abrirModalConfigProcessos();
         }
         else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; inicializarPCP(); }
@@ -3229,6 +3284,7 @@
             document.getElementById('painelConfiguracoes').style.display = 'block';
             carregarConfiguracoesMaster();
         }
+        if (typeof EqNav !== 'undefined') EqNav.marcarAtivo('admin');
     }
 
     window.addEventListener('hashchange', function () {
@@ -4350,11 +4406,7 @@ function renderizarCardClient(cliente) {
     const numeroLimpo = cliente.whatsapp ? cliente.whatsapp.replace(/\D/g, '') : '';
     const linkWhatsapp = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : '#';
 
-    // Padroniza o status para maiúsculo (evita problemas com 'ativo', 'Ativo' ou 'ATIVO')
-    const statusTexto = cliente.status ? cliente.status.toUpperCase() : 'ATIVO';
-    
-    // Define as cores com base no status padronizado
-    const isAtivo = statusTexto === 'ATIVO';
+    const isAtivo = EqSec.empresaEstaAtiva(cliente.status);
     const bgStatus = isAtivo ? '#d1fae5' : '#fee2e2';
     const colorStatus = isAtivo ? '#065f46' : '#991b1b';
 
@@ -4383,7 +4435,7 @@ function renderizarCardClient(cliente) {
                 `}
 
                 <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${bgStatus}; color: ${colorStatus}; font-weight: 600;">
-                    ${statusTexto}
+                    ${isAtivo ? 'ATIVO' : 'INATIVO'}
                 </span>
             </div>
         </div>
@@ -4465,7 +4517,7 @@ function mudarPagina(direcao) {
             document.getElementById('viewCliNome').innerText = cli.razao_social || 'Sem Nome'; 
             document.getElementById('viewCliCnpj').innerText = cli.cnpj || '';
             const elStatusText = document.getElementById('viewCliStatusLabel');
-            if (cli.status === 'inativo') { elStatusText.innerText = 'Inativo (Acesso Bloqueado)'; elStatusText.style.background = 'var(--erro)'; } else { elStatusText.innerText = 'Ativo'; elStatusText.style.background = 'var(--sucesso)'; }
+            if (!EqSec.empresaEstaAtiva(cli.status)) { elStatusText.innerText = 'Inativo (Acesso Bloqueado)'; elStatusText.style.background = 'var(--erro)'; } else { elStatusText.innerText = 'Ativo'; elStatusText.style.background = 'var(--sucesso)'; }
             
             const tipoCad = cli.tipo_pessoa || 'J';
             const rad = document.querySelector(`input[name="editCliTipo"][value="${tipoCad}"]`);
@@ -4478,7 +4530,7 @@ function mudarPagina(direcao) {
             
             const preencher = (id, valor) => { const campo = document.getElementById(id); if (campo) campo.value = valor || ''; };
             
-            preencher('editCliNome', cli.razao_social); preencher('editCliSenha', cli.chave_mestre); preencher('editCliWpp', cli.whatsapp); preencher('editCliEmail', cli.email); preencher('editCliStatus', cli.status || 'ativo');
+            preencher('editCliNome', cli.razao_social); preencher('editCliSenha', cli.chave_mestre); preencher('editCliWpp', cli.whatsapp); preencher('editCliEmail', cli.email); preencher('editCliStatus', EqSec.normalizarStatusConta(cli.status) === 'inativo' ? 'inativo' : 'ativo');
             preencher('editCliCep', cli.cep); preencher('editCliEnd', cli.endereco); preencher('editCliNum', cli.numero); preencher('editCliBairro', cli.bairro); preencher('editCliCidade', cli.cidade); preencher('editCliUF', cli.uf);
             
             const wppBtn = document.getElementById('btnWppDireto');
@@ -5141,7 +5193,7 @@ function mudarPagina(direcao) {
                 bairro: document.getElementById('editCliBairro').value.trim(),
                 cidade: document.getElementById('editCliCidade').value.trim(),
                 uf: document.getElementById('editCliUF').value.trim(),
-                status: document.getElementById('editCliStatus').value,
+                status: EqSec.normalizarStatusConta(document.getElementById('editCliStatus').value) === 'inativo' ? 'inativo' : 'ativo',
                 tipo_pessoa: pTipo,
                 is_cliente: pCli,
                 is_fornecedor: pForn,
@@ -5156,7 +5208,7 @@ function mudarPagina(direcao) {
                 .eq('empresa_id', empresaIdLogada); 
             if (error) throw error;
             msg.style.color = 'var(--sucesso)'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Dados atualizados!'; carregarListaClientesGlobais(); document.getElementById('viewCliNome').innerText = payload.razao_social;
-            const statusL = document.getElementById('viewCliStatusLabel'); if(payload.status === 'inativo'){ statusL.innerText = 'Inativo (Acesso Bloqueado)'; statusL.style.background = 'var(--erro)'; } else { statusL.innerText = 'Ativo'; statusL.style.background = 'var(--sucesso)'; }
+            const statusL = document.getElementById('viewCliStatusLabel'); if(!EqSec.empresaEstaAtiva(payload.status)){ statusL.innerText = 'Inativo (Acesso Bloqueado)'; statusL.style.background = 'var(--erro)'; } else { statusL.innerText = 'Ativo'; statusL.style.background = 'var(--sucesso)'; }
             const wppBtn = document.getElementById('btnWppDireto'); if (payload.whatsapp && payload.whatsapp !== '') { wppBtn.href = `https://wa.me/55${payload.whatsapp.replace(/\D/g, '')}`; wppBtn.style.display = 'inline-flex'; } else { wppBtn.style.display = 'none'; } setTimeout(() => msg.innerText = '', 3000);
         } catch (err) { msg.style.color = 'var(--erro)'; msg.innerText = 'Erro ao atualizar.'; }
     });
@@ -5952,6 +6004,12 @@ document.addEventListener('dragend', function(ev) {
                 
                 document.getElementById('configMasterCorPrimaria').value = data.cor_primaria || '#0b1c35';
                 document.getElementById('configMasterCorSecundaria').value = data.cor_secundaria || '#2b5c92';
+                var elRazao = document.getElementById('configMasterRazao');
+                if (elRazao) {
+                    var razaoSalva = sessionStorage.getItem('masterRazao') || '';
+                    if (!razaoSalva) razaoSalva = await buscarRazaoNaEmpresa(data.empresa_id || empresaIdLogada);
+                    elRazao.value = razaoSalva || data.nome_fantasia || '';
+                }
             }
         } catch(e) { console.error("Erro Config Master", e); }
     }
@@ -5987,9 +6045,10 @@ document.addEventListener('dragend', function(ev) {
             const cPrimaria = document.getElementById('configMasterCorPrimaria').value;
             const cSecundaria = document.getElementById('configMasterCorSecundaria').value;
             const nFantasia = document.getElementById('configMasterNome').value.trim();
+            const nRazao = (document.getElementById('configMasterRazao') || {}).value.trim();
 
             const payload = {
-                nome_fantasia: nFantasia,
+                nome_fantasia: nFantasia || nRazao,
                 whatsapp: document.getElementById('configMasterWpp').value.trim(),
                 email: document.getElementById('configMasterEmail').value.trim(),
                 logo_url: logoUrlFinal,
@@ -6000,17 +6059,20 @@ document.addEventListener('dragend', function(ev) {
             const { error } = await supabaseClient.from('admin_master').update(payload).eq('cnpj', cnpjLogado);
             if (error) throw new Error("Erro no banco de dados: " + error.message);
 
-            sessionStorage.setItem('masterNome', nFantasia);
+            if (nRazao && empresaIdLogada) {
+                await supabaseClient.from('empresas').update({ razao_social: nRazao }).eq('id', empresaIdLogada);
+                sessionStorage.setItem('masterRazao', nRazao);
+            }
+
+            sessionStorage.setItem('masterNome', nFantasia || nRazao);
             sessionStorage.setItem('masterLogo', logoUrlFinal);
             sessionStorage.setItem('masterCorPrimaria', cPrimaria);
             sessionStorage.setItem('masterCorSecundaria', cSecundaria);
             
             aplicarTemaCores(cPrimaria, cSecundaria);
             aplicarLogoEmTudo(logoUrlFinal);
+            aplicarNomeMarcaWorkspace();
             if (typeof EqNav !== 'undefined') EqNav.aplicarIdentidade();
-
-            const elNomeMenu = document.getElementById('nomeEmpresaSaaS');
-            if (elNomeMenu) elNomeMenu.innerText = nFantasia;
             
             if(fileInput) fileInput.value = '';
             if(inputLogoTexto) inputLogoTexto.value = logoUrlFinal;
@@ -6047,15 +6109,14 @@ document.addEventListener('dragend', function(ev) {
 
     async function abrirModalConfigPCP() {
         carregarDropdownStatusConfigPCP();
-    document.getElementById('modalConfigPCP').style.display = 'flex';
-    limparFormEtapa();
+        limparFormEtapa();
     
-    // NOVO: Ao abrir a tela, já carrega a lista de Status no dropdown
     if (typeof carregarDropdownStatusConfigPCP === 'function') {
         carregarDropdownStatusConfigPCP();
     }
     
     const lista = document.getElementById('listaConfigEtapas');
+    if (!lista) return;
     lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
 
     try {
@@ -6161,14 +6222,7 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
         if (resultado.error) throw resultado.error;
 
         limparFormEtapa();
-
-        // Atualiza a listagem de etapas instantaneamente na tela
-        if (typeof carregarListaEtapasPCP === 'function') {
-            await carregarListaEtapasPCP();
-        } else if (typeof carregarEtapasConfig === 'function') {
-            await carregarEtapasConfig();
-        }
-
+        await abrirModalConfigPCP();
         alert("Etapa salva com sucesso!");
 
     } catch (err) {
@@ -6190,10 +6244,10 @@ function editarEtapaForm(id, nome, cor, ordem, status_id) {
     let listaProcessosGlobal = [];
 
     async function abrirModalConfigProcessos() {
-        document.getElementById('modalConfigProcessos').style.display = 'flex';
         limparFormProcesso();
         
         const lista = document.getElementById('listaConfigProcessos');
+        if (!lista) return;
         lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando processos do banco de dados...</p>';
 
         try {

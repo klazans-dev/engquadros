@@ -34,8 +34,8 @@
     padding: 36px 28px 48px;
     overflow: hidden;
     background:
-        radial-gradient(ellipse 70% 50% at 50% 38%, rgba(6, 182, 212, 0.12), transparent 58%),
-        radial-gradient(ellipse 40% 30% at 18% 80%, rgba(43, 92, 146, 0.18), transparent 50%),
+        radial-gradient(ellipse 70% 50% at 50% 38%, rgba(var(--tema-sec-rgb, 6, 182, 212), 0.16), transparent 58%),
+        radial-gradient(ellipse 40% 30% at 18% 80%, rgba(var(--tema-rgb, 43, 92, 146), 0.22), transparent 50%),
         #05080f;
 }
 

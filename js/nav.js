@@ -5,17 +5,40 @@
 (function (global) {
     'use strict';
 
-    function aplicarTema() {
-        var pri = sessionStorage.getItem('masterCorPrimaria');
-        var sec = sessionStorage.getItem('masterCorSecundaria');
+    function hexParaRgb(hex) {
+        var h = String(hex || '').replace('#', '').trim();
+        if (h.length === 3) h = h.charAt(0) + h.charAt(0) + h.charAt(1) + h.charAt(1) + h.charAt(2) + h.charAt(2);
+        if (h.length !== 6 || /[^0-9a-f]/i.test(h)) return null;
+        return [
+            parseInt(h.slice(0, 2), 16),
+            parseInt(h.slice(2, 4), 16),
+            parseInt(h.slice(4, 6), 16)
+        ];
+    }
+
+    function aplicarTintas(primaria, secundaria) {
+        var root = document.documentElement;
+        var pri = primaria || sessionStorage.getItem('masterCorPrimaria');
+        var sec = secundaria || sessionStorage.getItem('masterCorSecundaria');
         if (pri) {
-            document.documentElement.style.setProperty('--azul-marca', pri);
-            document.documentElement.style.setProperty('--azul-profundo', pri);
+            root.style.setProperty('--azul-marca', pri);
+            root.style.setProperty('--azul-profundo', pri);
+            var rgb = hexParaRgb(pri);
+            if (rgb) root.style.setProperty('--tema-rgb', rgb.join(', '));
         }
         if (sec) {
-            document.documentElement.style.setProperty('--azul-sutil', sec);
-            document.documentElement.style.setProperty('--azul-hover', sec);
+            root.style.setProperty('--azul-sutil', sec);
+            root.style.setProperty('--azul-hover', sec);
+            var rgbS = hexParaRgb(sec);
+            if (rgbS) root.style.setProperty('--tema-sec-rgb', rgbS.join(', '));
         }
+    }
+
+    function aplicarTema() {
+        aplicarTintas(
+            sessionStorage.getItem('masterCorPrimaria'),
+            sessionStorage.getItem('masterCorSecundaria')
+        );
     }
 
     aplicarTema();
@@ -146,17 +169,25 @@
 
         document.querySelectorAll('#eqMenuPrincipal .item-menu').forEach(function (el) {
             var on = false;
-            if (el.getAttribute('data-id') === modulo) on = true;
-            if (pagina === 'orcamento' && el.getAttribute('data-pagina') === 'orcamento') on = true;
-            if (pagina === 'proposta' && el.getAttribute('data-pagina') === 'proposta') on = true;
-            if (pagina === 'dashboard' && el.getAttribute('data-pagina') === 'dashboard') on = true;
-            if (hash && el.getAttribute('data-ativo') === hash) on = true;
+            var isPai = el.classList.contains('eq-nav-pai');
+            var hashFilho = hash && mapaHash[hash] === modulo && hash !== modulo;
+            var paginaFilho = (pagina === 'dashboard' && modulo === 'relatorios')
+                || ((pagina === 'orcamento' || pagina === 'proposta') && modulo === 'vendas');
+            if (isPai) {
+                on = el.getAttribute('data-id') === modulo && !hashFilho && !paginaFilho;
+            } else {
+                if (el.getAttribute('data-id') === modulo) on = true;
+                if (pagina === 'orcamento' && el.getAttribute('data-pagina') === 'orcamento') on = true;
+                if (pagina === 'proposta' && el.getAttribute('data-pagina') === 'proposta') on = true;
+                if (pagina === 'dashboard' && el.getAttribute('data-pagina') === 'dashboard') on = true;
+                if (hash && el.getAttribute('data-ativo') === hash) on = true;
+            }
             el.classList.toggle('ativa', on);
         });
         document.querySelectorAll('#eqMenuPrincipal .eq-nav-grupo').forEach(function (g) {
             var id = g.getAttribute('data-id');
-            var filhoAtivo = g.querySelector('.item-menu.ativa');
-            if (filhoAtivo || id === modulo) g.classList.add('aberto');
+            g.classList.toggle('aberto', id === modulo);
+            g.classList.toggle('em-uso', id === modulo);
         });
     }
 
@@ -219,7 +250,7 @@
     function aplicarIdentidade() {
         aplicarTema();
         var logo = sessionStorage.getItem('masterLogo') || '';
-        var nome = sessionStorage.getItem('masterNome') || '';
+        var nome = sessionStorage.getItem('masterRazao') || sessionStorage.getItem('masterNome') || '';
         if (logo && logo !== 'null' && logo !== 'undefined') {
             var fav = document.querySelector("link[rel*='icon']");
             if (fav) fav.href = logo;
@@ -239,6 +270,10 @@
             });
             var razao = document.getElementById('razaoSocialSidebar');
             if (razao) razao.textContent = nome;
+            var wsNome = document.getElementById('nomeEmpresaSaaS');
+            if (wsNome) wsNome.textContent = nome;
+            var lead = document.getElementById('wsLeadMarca');
+            if (lead) lead.textContent = nome;
         }
     }
 
@@ -288,6 +323,16 @@
         else if (salvo === '0') definirMenuFechado(false);
     }
 
+    function irParaModulo(id) {
+        if (!id) return;
+        if (ehAdmin()) {
+            if (typeof global.abrirModulo === 'function') global.abrirModulo(id);
+            else location.hash = id;
+        } else {
+            location.href = paginaErp() + '#' + id;
+        }
+    }
+
     function ligarSubmenus() {
         var menu = document.getElementById('eqMenuPrincipal');
         if (!menu || menu.getAttribute('data-eq-sub')) return;
@@ -298,13 +343,19 @@
             e.preventDefault();
             var grupo = pai.closest('.eq-nav-grupo');
             if (!grupo) return;
+            var id = grupo.getAttribute('data-id');
             var side = asideAtual();
+            document.querySelectorAll('#eqMenuPrincipal .eq-nav-grupo').forEach(function (g) {
+                if (g !== grupo) g.classList.remove('aberto');
+            });
             if (side && side.classList.contains('encolhida')) {
                 definirMenuFechado(false);
                 grupo.classList.add('aberto');
+                irParaModulo(id);
                 return;
             }
-            grupo.classList.toggle('aberto');
+            grupo.classList.add('aberto');
+            irParaModulo(id);
         });
     }
 
@@ -314,7 +365,7 @@
         if (!sb) return;
         var empresaId = sessionStorage.getItem('empresaId');
         sb.from('admin_master')
-            .select('nome_fantasia, logo_url, cor_primaria, cor_secundaria')
+            .select('nome_fantasia, logo_url, cor_primaria, cor_secundaria, empresas(razao_social)')
             .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
             .limit(1)
             .maybeSingle()
@@ -322,6 +373,9 @@
                 var t = res && res.data;
                 if (!t) return;
                 if (t.nome_fantasia) sessionStorage.setItem('masterNome', t.nome_fantasia);
+                var emp = t.empresas;
+                var razao = emp && (emp.razao_social || (emp[0] && emp[0].razao_social));
+                if (razao) sessionStorage.setItem('masterRazao', razao);
                 if (t.logo_url) sessionStorage.setItem('masterLogo', t.logo_url);
                 if (t.cor_primaria) sessionStorage.setItem('masterCorPrimaria', t.cor_primaria);
                 if (t.cor_secundaria) sessionStorage.setItem('masterCorSecundaria', t.cor_secundaria);
@@ -366,6 +420,7 @@
     global.EqNav = {
         montar: montar,
         aplicarTema: aplicarTema,
+        aplicarTintas: aplicarTintas,
         aplicarIdentidade: aplicarIdentidade,
         marcarAtivo: marcarAtivo,
         definirMenuFechado: definirMenuFechado,
