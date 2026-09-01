@@ -1,0 +1,5 @@
+.eq-sim-titulo { font-weight: 700; font-size: 0.9rem; margin-bottom: 10px; color: var(--azul-marca, #0b1c35); }
+.eq-sim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+.eq-sim-grid label { font-size: 0.75rem; color: #64748b; display: flex; flex-direction: column; gap: 4px; }
+.eq-sim-grid input { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
+.eq-sim-out { margin-top: 10px; font-weight: 700; font-size: 0.9rem; color: var(--azul-marca, #0b1c35); }

@@ -1,0 +1,196 @@
+/* Menu principal compartilhado (mesmo padrão do Admin) */
+.eq-nav-filho {
+    padding-left: 34px !important;
+    font-size: 0.8rem !important;
+    opacity: 0.92;
+}
+.eq-nav-filho i { font-size: 0.95rem !important; }
+.eq-nav-filhos {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 0 6px;
+}
+.eq-nav-grupo.aberto > .eq-nav-filhos { display: flex; }
+#eqMenuPrincipal .eq-nav-pai {
+    width: 100%;
+    cursor: pointer;
+}
+.eq-nav-seta {
+    margin-left: auto !important;
+    font-size: 0.65rem !important;
+    width: auto !important;
+    opacity: 0.55;
+    transition: transform 0.2s ease;
+}
+.eq-nav-grupo.aberto .eq-nav-seta { transform: rotate(180deg); }
+aside.encolhida .eq-nav-seta,
+aside.encolhida .eq-nav-filhos { display: none !important; }
+
+.menu-lateral.menu-abas,
+#eqMenuPrincipal {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 10px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+#eqMenuPrincipal .item-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 10px 14px;
+    color: rgba(255, 255, 255, 0.68);
+    background: transparent;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.84rem;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+#eqMenuPrincipal .item-menu i {
+    font-size: 1.05rem;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+}
+#eqMenuPrincipal .item-menu:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+}
+#eqMenuPrincipal .item-menu.ativa {
+    color: #fff;
+    background: var(--azul-sutil, #2b5c92);
+    box-shadow: 0 4px 12px rgba(43, 92, 146, 0.28);
+}
+
+.btn-sair-admin {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    font-weight: 600;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+.btn-sair-admin:hover {
+    background: var(--erro, #ef4444);
+    color: #fff;
+    border-color: var(--erro, #ef4444);
+}
+
+#telaDashboard aside,
+#telaOrcamento aside,
+#telaProposta aside {
+    width: 250px;
+    position: relative;
+    overflow-x: visible;
+    transition: width 0.28s ease;
+}
+
+#btnToggleSidebar {
+    position: absolute;
+    top: 15px;
+    right: -15px;
+    background: var(--azul-sutil, #2b5c92);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+#btnToggleSidebar:hover {
+    background: var(--azul-marca, #0b1c35);
+    transform: scale(1.08);
+}
+
+aside.encolhida,
+#sidebarAdmin.encolhida {
+    width: 60px !important;
+}
+aside.encolhida .logo-area img,
+aside.encolhida .empresa-info-badge,
+aside.encolhida .txt-menu,
+aside.encolhida .eq-nav-filho,
+aside.encolhida .btn-sair-admin span,
+aside.encolhida #razaoSocialSidebar,
+aside.encolhida #cnpjSidebar {
+    display: none !important;
+}
+aside.encolhida .item-menu {
+    padding: 12px 8px !important;
+    justify-content: center !important;
+    gap: 0 !important;
+}
+aside.encolhida #eqMenuPrincipal {
+    padding: 10px 4px;
+}
+
+#sidebarAdmin #eqMenuPrincipal .item-menu.ativa {
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1) 0%, transparent 100%);
+    border-left: 4px solid #06b6d4;
+    border-radius: 0 8px 8px 0;
+    box-shadow: none;
+}
+aside.encolhida #eqMenuPrincipal .item-menu.ativa {
+    border-left: none;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    #telaDashboard #btnToggleSidebar,
+    #telaOrcamento #btnToggleSidebar,
+    #telaProposta #btnToggleSidebar {
+        display: none;
+    }
+    #telaDashboard aside.encolhida,
+    #telaOrcamento aside.encolhida,
+    #telaProposta aside.encolhida {
+        width: 100% !important;
+        padding: 8px 12px !important;
+    }
+    #telaDashboard aside.encolhida .logo-area img,
+    #telaOrcamento aside.encolhida .logo-area img,
+    #telaProposta aside.encolhida .logo-area img,
+    #telaDashboard aside.encolhida .empresa-info-badge,
+    #telaOrcamento aside.encolhida .empresa-info-badge,
+    #telaProposta aside.encolhida .empresa-info-badge {
+        display: block !important;
+    }
+    #eqMenuPrincipal.aberto {
+        display: flex !important;
+        position: absolute;
+        top: 58px;
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 58px);
+        background: var(--azul-marca, #0b1c35);
+        padding: 10px;
+        overflow-y: auto;
+        flex-direction: column;
+        z-index: 120;
+    }
+    #eqMenuPrincipal.aberto .txt-menu,
+    #eqMenuPrincipal.aberto .eq-nav-filho {
+        display: flex !important;
+    }
+}

@@ -1,133 +1,144 @@
-# Manual do Gestor ERP (Painel Administrativo)
+# Manual de Operações do Gestor ERP
 
-Guia de operação completo do ERP Industrial para Administradores Master, Engenheiros, Coordenadores de PCP e Equipe Interna.
+Guia técnico, fiscal e operacional para administradores master, engenheiros, coordenação de PCP e equipe interna.
 
----
-
-## 📑 Sumário
-
-1. [Acesso ao Sistema e Autenticação](#1-acesso-ao-sistema-e-autenticação)
-2. [Identidade Visual e Whitelabel (Tema & Logo)](#2-identidade-visual-e-whitelabel-tema--logo)
-3. [Módulo de Cadastros](#3-módulo-de-cadastros)
-   - [3.1 Gestão de Pessoas / Clientes](#31-gestão-de-pessoas--clientes)
-   - [3.2 Catálogo de Produtos e Precificação](#32-catálogo-de-produtos-e-precificação)
-   - [3.3 Equipe Interna e Permissões](#33-equipe-interna-e-permissões)
-4. [Módulo de Tributação & Reforma Tributária (IBS/CBS)](#4-módulo-de-tributação--reforma-tributária-ibscbs)
-   - [4.1 Regras Estaduais (ICMS, ST, FCP)](#41-regras-estaduais-icms-st-fcp)
-   - [4.2 Regras Federais (PIS, COFINS, IPI)](#42-regras-federais-pis-cofins-ipi)
-   - [4.3 Nova Reforma Tributária (IBS + CBS)](#43-nova-reforma-tributária-ibs--cbs)
-5. [Módulo Operacional (PCP & Chão de Fábrica)](#5-módulo-operacional-pcp--chão-de-fábrica)
-   - [5.1 Kanban de Produção](#51-kanban-de-produção)
-   - [5.2 Checklists Técnicos e Avanço Físico](#52-checklists-técnicos-e-avanço-físico)
-   - [5.3 Modo TV Fábrica](#53-modo-tv-fábrica)
-6. [Módulo de Atendimento (Chamados & Suporte)](#6-módulo-de-atendimento-chamados--suporte)
-7. [Dashboard BI Executivo & Relatórios](#7-dashboard-bi-executivo--relatórios)
+No painel: **Sistema → Manual de uso** (mesmo conteúdo, com busca e tópicos expansíveis).
 
 ---
 
-## 1. Acesso ao Sistema e Autenticação
+## Sumário
 
-1. Acesse o endereço do sistema no navegador e entre na tela de Login (`login.html` ou `admin.html`).
-2. Selecione a aba **Gestor / Admin**.
-3. Insira suas credenciais:
-   - **Usuário / E-mail**: Seu e-mail ou usuário cadastrado.
-   - **Senha**: Sua senha de acesso.
-   - **CNPJ da Empresa**: O CNPJ da sua empresa (Tenant).
-4. Clique em **Entrar no Painel**. O sistema fará a autenticação segura no Supabase e carregará os módulos autorizados para o seu perfil.
-
----
-
-## 2. Identidade Visual e Whitelabel (Tema & Logo)
-
-O ERP é 100% personalizável para a marca da sua empresa:
-1. No menu lateral, acesse **Configurações / Identidade Visual**.
-2. **Razão Social & Nome Fantasia**: Altere o nome exibido no topo e nos cabeçalhos.
-3. **Cores da Marca**:
-   - **Cor Primária**: Define o tom da barra lateral, botões principais e títulos.
-   - **Cor Secundária**: Define gradientes, detalhes de destaque e bordas.
-4. **Logomarca**: Envie uma imagem PNG ou JPG da sua empresa. Ela será aplicada automaticamente no menu lateral, na tela de login e nos relatórios de impressão.
-5. Clique em **Salvar Configurações**.
+0. [Menu principal, tema e navegação](#0-menu-principal-tema-e-navegação)
+1. [Gestão de clientes](#1-gestão-de-clientes)
+2. [Catálogo de produtos](#2-catálogo-de-produtos)
+3. [Tributação e reforma (IBS / CBS)](#3-tributação-e-reforma-ibs--cbs)
+4. [Operacional: PCP e Status de obras](#4-operacional-pcp-e-status-de-obras)
+5. [Dashboard BI](#5-dashboard-bi)
+6. [Documentos técnicos](#6-documentos-técnicos)
+7. [Atendimento](#7-atendimento)
+8. [Equipe e permissões](#8-equipe-e-permissões)
+9. [Identidade visual](#9-identidade-visual)
+10. [Orçamentos](#10-orçamentos)
+11. [Editor de proposta](#11-editor-de-proposta)
 
 ---
 
-## 3. Módulo de Cadastros
+## Acesso
 
-### 3.1 Gestão de Pessoas / Clientes
-- **Cadastrar Cliente:** Clique em **Novo Cliente**.
-- **Automação por CNPJ:** Digite o CNPJ da empresa cliente e clique em **Puxar Dados**. O sistema consulta automaticamente a base da Receita Federal e preenche Razão Social, Endereço, Bairro, CEP e Cidade.
-- **Chave de Acesso do Cliente:** Defina uma chave única (ex: `CLI@2026`). O cliente usará essa chave + CNPJ para entrar no portal dele (`painel-cliente.html`).
-- **Bloqueio/Inativação:** Altere o status para "Inativo" ou "Bloqueado" para suspender o acesso do cliente imediatamente.
-
-### 3.2 Catálogo de Produtos e Precificação
-- **Aba 1 (Dados Básicos & Preços):**
-  - Informe Nome, Categoria (Painel, Componente, Barramento), SKU e Código EAN/GTIN.
-  - **Motor de Markup:** Digite o Custo Base (R$) e a Margem Markup (%) desejada. O sistema calcula automaticamente o Preço de Venda Final.
-  - **Especificações de Engenharia:** Tensão Nominal (ex: `220V/380V`), Corrente Máxima (`100A`) e Potência (`15kW`).
-- **Aba 2 (Regras Fiscais):**
-  - NCM (8 dígitos) e CFOP Padrão de saída.
-  - Selecione o **Grupo Estadual de ICMS**, o **Grupo Federal de PIS/COFINS** e o **Grupo da Reforma IBS/CBS**.
-- **Foto do Produto:** Envie uma foto do seu computador ou cole o link da web. O sistema comprime automaticamente para máxima performance.
-
-### 3.3 Equipe Interna e Permissões
-- Cadastre novos colaboradores (engenheiros, compradores, operadores).
-- Marque individualmente quais abas cada um pode visualizar:
-  - `Cadastros`, `Operacional (PCP)`, `Arquivos`, `Atendimento`, `Vendas`, `Compras`, `Financeiro`, `Relatórios BI`.
+1. Abra o sistema no navegador (`admin.html` / login).
+2. Na aba **Gestor / Admin**, informe usuário, senha e CNPJ da empresa (tenant).
+3. O menu mostra só os módulos liberados para o perfil.
 
 ---
 
-## 4. Módulo de Tributação & Reforma Tributária (IBS/CBS)
+## 0. Menu principal, tema e navegação
 
-O sistema conta com arquitetura fiscal desacoplada para atender tanto ao regime atual quanto ao período de transição da **Reforma Tributária (EC 132/2023)**.
-
-### 4.1 Regras Estaduais (ICMS, ST, FCP)
-- Acesse **Cadastros > Tributação Estadual**.
-- Configure regras por UF de Origem e UF de Destino.
-- Parametrize: Alíquota ICMS (%), CST/CSOSN, Redução de Base (%), FCP (Fundo de Combate à Pobreza %) e MVA-ST (%) para Substituição Tributária.
-
-### 4.2 Regras Federais (PIS, COFINS, IPI)
-- Acesse **Cadastros > Tributação Federal**.
-- Configure regras para Lucro Real, Presumido ou Monofásico/Zero.
-- Parametrize: Alíquota PIS (%), CST PIS, Alíquota COFINS (%), CST COFINS, Alíquota IPI (%) e Código de Enquadramento IPI.
-
-### 4.3 Nova Reforma Tributária (IBS + CBS)
-- Acesse **Cadastros > Tributação Reforma (IBS/CBS)**.
-- Parametrize:
-  - **Alíquota CBS (Federal)**: Alíquota federal (padrão 8.80%).
-  - **Alíquota IBS (Estadual/Municipal)**: Alíquota estadual (padrão 17.70%).
-  - **Regime Diferenciado / Redução de Base**: Aplique reduções (ex: 60%) para setores favorecidos ou marque **Isenção Total**.
+- **Uma barra só:** o mesmo menu aparece em Admin, Orçamentos, Propostas e Dashboard BI. Os módulos abrem **na mesma aba** do navegador.
+- **Submenus:** Cadastros, Operacional, Vendas, Relatórios e Sistema começam fechados. Clique no nome do módulo para abrir Clientes, Tributações, PCP, Status, Orçamentos, Dashboard BI etc. Clique de novo para recolher **só aquele submenu** — a barra lateral permanece.
+- **Minimizar a barra:** o botão redondo na borda recolhe ou expande o menu inteiro (ícones). Isso **não** fecha sozinho ao navegar. O estado fica na sessão do navegador.
+- **Identidade e Tema:** em Sistema → Identidade e Tema, grave cor primária, cor secundária, logomarca e nome fantasia. As cores e a logo valem em todas as telas após salvar (use Ctrl+F5 se o navegador cachear).
+- **Status de obras:** Operacional → Status de obras abre o quadro (Novos, Engenharia/Produção, Concluído). Não é preciso passar pelo card grande do módulo.
 
 ---
 
-## 5. Módulo Operacional (PCP & Chão de Fábrica)
+## 1. Gestão de clientes
 
-### 5.1 Kanban de Produção
-- Visualize todas as ordens de fabricação de quadros e painéis.
-- **Mover Etapas:** Arraste os cards entre as colunas (ex: *Mecânica* $\rightarrow$ *Barramento* $\rightarrow$ *Fiação* $\rightarrow$ *Testes* $\rightarrow$ *Concluído*).
-- O salvamento da posição é instantâneo no banco de dados.
-
-### 5.2 Checklists Técnicos e Avanço Físico
-- Clique no botão **Processos** em qualquer card de obra.
-- Marque os itens concluídos pela equipe da fábrica. A barra de progresso (0% a 100%) é recalculada automaticamente e sincronizada com o cliente.
-
-### 5.3 Modo TV Fábrica
-- Clique no botão **Modo TV** no canto superior do PCP.
-- A tela entra em modo fullscreen com fonte de alto contraste e atualização contínua para painéis industriais na fábrica.
+- **Cadastros → Clientes** → Novo Cliente.
+- Digite o CNPJ e use **Puxar Dados** (Receita Federal: razão social, endereço, CEP, cidade).
+- Defina a chave do portal. O cliente entra com CNPJ + chave em `painel-cliente.html`.
+- Status Inativo ou Bloqueado suspende o portal na hora.
 
 ---
 
-## 6. Módulo de Atendimento (Chamados & Suporte)
+## 2. Catálogo de produtos
 
-- Receba solicitações de dúvidas técnicas, garantias ou ajustes de projeto abertas pelos clientes.
-- Responda em formato de chat interno com histórico cronológico.
-- Altere o status do chamado (*Aberto*, *Em Análise*, *Respondido*, *Concluído*).
+- **Cadastros → Produtos.**
+- Abas: dados básicos e preços (custo + markup = venda) e regras fiscais (NCM, CFOP e grupos de tributação).
+- A foto enviada é comprimida automaticamente.
+- Tensão, corrente e potência entram em memoriais e propostas.
 
 ---
 
-## 7. Dashboard BI Executivo & Relatórios
+## 3. Tributação e reforma (IBS / CBS)
 
-- Acesse **Relatórios > Dashboard BI Executivo** ou abra `dashboard.html`.
-- **Gráficos em Tempo Real:**
-  - Status e Volume de Projetos (Distribuição por Fase).
-  - Capacidade e Entregas Mensais.
-- **KPIs de Eficiência:** Índice de Entregas no Prazo (On-time Delivery), Média de Avanço Físico e Total Faturado.
-- **Exportação:** Exporte as tabelas para planilhas CSV ou imprima relatórios executivos em PDF com layout pronto para impressão (`Ctrl + P`).
+As alíquotas ficam em **grupos reutilizáveis**, não grudadas no produto.
+
+| Menu | Uso |
+|---|---|
+| Cadastros → Tributação Estadual | ICMS por UF origem/destino, CST/CSOSN, redução de base, FCP, MVA-ST |
+| Cadastros → Tributação Federal | PIS, COFINS, IPI, Lucro Real/Presumido, alíquota zero |
+| Cadastros → Tributação Reforma | CBS federal, IBS estadual/municipal, redução (ex.: 60%), isenção |
+
+No cadastro do item, vincule os três grupos. Ao gravar uma regra, os dropdowns do produto atualizam.
+
+---
+
+## 4. Operacional: PCP e Status de obras
+
+- **Status de obras** (Operacional → Status de obras): quadros recém-enviados do orçamento entram em **Novos** (`etapa_pcp_id` vazio). Só **Iniciar Produção** no card coloca o painel na primeira etapa do PCP.
+- **PCP / Fábrica** (Operacional → PCP / Fábrica): arraste os cards entre as colunas. O salvamento é automático.
+- **Checklists:** em Processos no card, marque tarefas; o avanço físico (0–100%) sincroniza com o cliente.
+- **Modo TV:** projeta o Kanban na linha com contraste alto e atualização contínua.
+
+---
+
+## 5. Dashboard BI
+
+- **Relatórios → Dashboard BI** (permissão Relatórios). O menu lateral continua o mesmo do Admin.
+- **Abas do painel:** Visão Geral (previsto vs. realizado, conversão, projetos em andamento, saúde de prazos), Comercial & Orçamentos (funil B2B) e Projetos & Produção (PCP e matriz semanal).
+- **Filtros:** período (todo, mês, trimestre) e texto livre (cliente, obra, CNPJ ou projeto). As abas de conteúdo não somem ao rolar.
+- **Dados:** números vêm de orçamentos, obras e chamados. Se a consulta vier vazia, o chip **Demonstração** ilustra o layout até haver registros.
+- **PDF / CSV:** Relatório PDF (Ctrl+P) e exportação CSV da matriz de PCP.
+
+---
+
+## 6. Documentos técnicos
+
+- Upload de PDFs de diagramas, memoriais, laudos e fotos. Somente PDF no portal, até 20 MB.
+- Associe à obra para aparecer no Kanban e no portal do cliente.
+
+---
+
+## 7. Atendimento
+
+- Menu **Atendimento ao cliente**.
+- Tickets por prioridade; respostas no chat interno chegam no portal do cliente.
+
+---
+
+## 8. Equipe e permissões
+
+- **Cadastros → Equipe** (somente master). Cadastre operadores, engenheiros e vendedores.
+- **Módulos:** Cadastros, Operacional, Arquivos, Atendimento, Vendas, Compras, Financeiro, Relatórios.
+- **Vendas (detalhe):** Orçamentos, Editor de proposta, ver custos/lucro, enviar ao Status/PCP, autorizar prazo expirado e autorizar margem abaixo da mínima.
+- O que não estiver marcado some do menu e da tela.
+
+Para um funcionário ver só um cliente: no perfil do cliente (senha master), use **Delegação de Equipe**.
+
+---
+
+## 9. Identidade visual
+
+- **Sistema → Identidade e Tema.**
+- Grava: cor primária (barra e botões), cor secundária (destaques), logomarca, nome fantasia, WhatsApp e e-mail. O CNPJ master **não** se altera nesta tela.
+- Aparece em: menu, login, orçamento, proposta, dashboard e cabeçalhos de impressão.
+
+---
+
+## 10. Orçamentos
+
+- **Vendas → Orçamentos.** O menu do ERP permanece à esquerda.
+- **Novo:** escolha Simples (itens avulsos, custo + markup) ou Industrialização (plantas, painéis e PCP). Atalhos **1** e **2** no teclado.
+- **Catálogo:** clique no resultado da busca para inserir; Enter insere o primeiro. **F3** foca a busca; **Ctrl+S** salva; **Ctrl+P** imprime.
+- **Industrialização:** plantas no card; Atualizar planta recalcula o layout. Rodapé com condições comerciais, barra de lucro e cálculo por grupo. Custos só para quem tem a permissão.
+- **Status / PCP:** cria cada quadro em Status (**Novos**). A fábrica só recebe depois de **Iniciar Produção**. Confirme antes de enviar ou de excluir um painel.
+- **Impressão:** simples não imprime planta nem lucro. Industrial imprime SVG das plantas. Dados do emitente vêm da Identidade (logo, CNPJ, e-mail, telefone).
+- **Banco:** rode no SQL Editor do Supabase, se ainda não rodou: `docs/3_ORCAMENTOS.sql` e `docs/7_ORCAMENTO_CALC.sql` (coluna modalidade e cálculo). Sem as tabelas, o rascunho fica só neste navegador.
+
+---
+
+## 11. Editor de proposta
+
+- **Vendas → Propostas**, ou o botão Proposta dentro do orçamento (permissão correspondente).
+- Use o botão do modelo profissional EngQuadros; o texto padrão segue o tipo do orçamento (simples ou industrialização).
+- **Ctrl+S** grava o modelo; **Ctrl+P** imprime. Paletas de cor da folha ficam na barra de formatação.

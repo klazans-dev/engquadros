@@ -11,8 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link rel="stylesheet" href="css/fundo.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/security.js"></script>
 
     <style>
         :root { 
@@ -31,24 +32,10 @@
             background-color: var(--azul-profundo); 
             display: flex; justify-content: center; align-items: center; 
             min-height: 100vh; color: var(--branco); padding: 20px; 
-            overflow: hidden;
+            overflow: auto;
         }
 
-        h1, h2, h3, button, .abas-auth button { font-family: 'Montserrat', sans-serif; }
-
-        /* BACKGROUND INDUSTRIAL IGUAL AO SITE */
-        .global-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover; background-position: center;
-            z-index: -5; opacity: 0.18; mix-blend-mode: luminosity;
-        }
-
-        .circuit-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -4;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px; 
-        }
+        h1, h2, h3, button { font-family: 'Montserrat', sans-serif; }
 
         /* CONTAINER GLASSMORPHISM */
         .auth-container { 
@@ -59,15 +46,22 @@
         }
 
         .logo { max-width: 160px; margin-bottom: 25px; display: block; margin-left: auto; margin-right: auto; }
-        
-        .abas-auth { display: flex; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .abas-auth button { 
-            flex: 1; padding: 12px; background: transparent; color: rgba(255,255,255,0.5); 
-            border: none; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; 
-            transition: var(--transicao); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px;
+
+        .titulo-acesso {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
         }
-        .abas-auth button:hover { color: var(--branco); }
-        .abas-auth button.ativo { color: var(--branco); border-bottom-color: var(--azul-sutil); }
+        .aviso-acesso {
+            text-align: center;
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.45;
+            margin-bottom: 24px;
+        }
 
         .input-group { margin-bottom: 18px; text-align: left; }
         .input-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: rgba(255,255,255,0.7); font-weight: 500; }
@@ -87,9 +81,6 @@
             border: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; gap: 8px;
         }
         .btn-acao:hover { background: var(--azul-sutil); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43, 92, 146, 0.3); }
-        
-        .btn-sucesso { background: var(--sucesso); border-color: var(--sucesso); }
-        .btn-sucesso:hover { background: #0ea5e9; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
 
         .mensagem { font-size: 0.9rem; margin-top: 15px; display: none; text-align: center; font-weight: 600; padding: 10px; border-radius: 6px; }
         .msg-erro { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.2); }
@@ -97,6 +88,14 @@
 
         .voltar { display: block; margin-top: 30px; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.9rem; transition: var(--transicao); text-align: center; font-weight: 500; }
         .voltar:hover { color: var(--branco); }
+
+        .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+        .captcha-box { margin-top: 4px; margin-bottom: 6px; }
+        .captcha-row { display: flex; align-items: stretch; gap: 10px; }
+        .captcha-row canvas { flex: 1; height: 52px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: #0a1628; }
+        .captcha-refresh { width: 52px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff; cursor: pointer; }
+        .captcha-refresh:hover { background: rgba(43, 92, 146, 0.35); border-color: var(--azul-sutil); }
+        .captcha-hint { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -106,134 +105,157 @@
 
     <div class="auth-container">
         <img src="public/logo.png" alt="EngQuadros" class="logo">
-        
-        <div class="abas-auth">
-            <button id="btnAbaLogin" class="ativo" onclick="alternarAba('login')">Área do Cliente</button>
-            <button id="btnAbaCadastro" onclick="alternarAba('cadastro')">Novo Cadastro</button>
-        </div>
+        <h1 class="titulo-acesso">Área do Cliente</h1>
+        <p class="aviso-acesso">O cadastro é feito exclusivamente pela equipe. Use o CNPJ e a chave de acesso recebidos da empresa.</p>
 
         <!-- FORMULÁRIO DE LOGIN -->
-        <form id="formLogin">
+        <form id="formLogin" autocomplete="off">
+            <div class="hp-field" aria-hidden="true">
+                <label for="websiteUrl">Não preencha</label>
+                <input type="text" id="honeyPot" name="website" tabindex="-1" autocomplete="off">
+            </div>
+            
             <div class="input-group">
                 <label>CNPJ da Empresa</label>
                 <input type="text" id="loginCnpj" placeholder="Somente números" required autocomplete="off">
             </div>
             <div class="input-group">
                 <label>Chave de Acesso (Senha)</label>
-                <input type="password" id="loginSenha" required>
+                <input type="password" id="loginSenha" required autocomplete="current-password">
+            </div>
+            <div class="input-group captcha-box">
+                <label>Código de verificação</label>
+                <div class="captcha-row">
+                    <canvas id="captchaCanvas-login" width="280" height="52" aria-label="Código CAPTCHA"></canvas>
+                    <button type="button" class="captcha-refresh" id="captchaRefresh-login" title="Gerar novo código" aria-label="Gerar novo código">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+                <input type="text" id="captchaInput-login" maxlength="8" placeholder="Digite o código da imagem" required autocomplete="off" style="margin-top:10px;" autocapitalize="characters">
+                <p class="captcha-hint">Digite os caracteres da imagem. Clique na imagem para renovar.</p>
+            </div>
+            <div class="input-group" style="margin-top: 12px;">
+                <button type="button" id="togglePassword" class="btn-acao" style="width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--branco); border-radius: 6px; font-size: 0.95rem; transition: var(--transicao); cursor: pointer; justify-content: center; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-eye"></i> Mostrar senha
+                </button>
             </div>
             <button type="submit" class="btn-acao"><i class="fa-solid fa-lock-open"></i> Acessar Portal</button>
-            <div id="msgErroLogin" class="mensagem msg-erro"><i class="fa-solid fa-triangle-exclamation"></i> CNPJ ou Senha incorretos.</div>
-        </form>
-
-        <!-- FORMULÁRIO DE CADASTRO -->
-        <form id="formCadastro" style="display: none;">
-            <div class="input-group">
-                <label>Razão Social da Empresa</label>
-                <input type="text" id="cadRazao" required>
-            </div>
-            <div class="linha-dupla">
-                <div class="input-group"><label>CNPJ (Somente Números)</label><input type="text" id="cadCnpj" required></div>
-                <div class="input-group"><label>WhatsApp</label><input type="text" id="cadWhatsapp" required></div>
-            </div>
-            <div class="input-group">
-                <label>Nome do Contato Responsável</label>
-                <input type="text" id="cadNome" required>
-            </div>
-            <div class="input-group">
-                <label>E-mail Corporativo</label>
-                <input type="email" id="cadEmail" required>
-            </div>
-            <div class="input-group">
-                <label>Crie uma Chave de Acesso (Senha)</label>
-                <input type="password" id="cadSenha" required>
-            </div>
-            <button type="submit" class="btn-acao btn-sucesso"><i class="fa-solid fa-user-check"></i> Finalizar Cadastro</button>
-            <div id="msgCadastro" class="mensagem"></div>
+            <div id="msgErroLogin" class="mensagem msg-erro"><i class="fa-solid fa-triangle-exclamation"></i> Credenciais inválidas.</div>
         </form>
 
         <a href="index.html" class="voltar"><i class="fa-solid fa-arrow-left"></i> Retornar ao site institucional</a>
     </div>
 
-    <!-- SCRIPT ORIGINAL MANTIDO -->
+    <script src="js/security.js"></script>
+    <script src="js/captcha.js"></script>
     <script>
-        const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
-        const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        function alternarAba(aba) {
-            document.getElementById('btnAbaLogin').className = aba === 'login' ? 'ativo' : '';
-            document.getElementById('btnAbaCadastro').className = aba === 'cadastro' ? 'ativo' : '';
-            
-            document.getElementById('formLogin').style.display = aba === 'login' ? 'block' : 'none';
-            document.getElementById('formCadastro').style.display = aba === 'cadastro' ? 'block' : 'none';
+        if (typeof window.supabase === 'undefined') {
+            alert('⚠️ ERRO: O motor do banco de dados não carregou.');
         }
 
-        // LÓGICA DE LOGIN
+        const supabaseClient = EqSec.criarClienteSupabase();
+
+        function mostrarErroLogin(texto) {
+            const msgErro = document.getElementById('msgErroLogin');
+            msgErro.style.display = 'block';
+            msgErro.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + texto;
+        }
+
+        async function autenticarCliente(cnpjInput, chaveInput) {
+            const rpc = await supabaseClient.rpc('login_cliente', { p_cnpj: cnpjInput, p_chave: chaveInput });
+            if (!rpc.error && rpc.data) return rpc.data;
+            if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
+                const cnpjLimpo = cnpjInput.replace(/\D/g, '');
+                let resultado = await supabaseClient.from('clientes')
+                    .select('id, cnpj, razao_social, status, empresa_id')
+                    .eq('cnpj', cnpjLimpo)
+                    .eq('chave_mestre', chaveInput);
+                if (!resultado.error && resultado.data && resultado.data.length) return resultado.data[0];
+                resultado = await supabaseClient.from('clientes')
+                    .select('id, cnpj, razao_social, status, empresa_id')
+                    .eq('cnpj', cnpjInput)
+                    .eq('chave_mestre', chaveInput);
+                if (!resultado.error && resultado.data && resultado.data.length) return resultado.data[0];
+            }
+            return null;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            EngCaptcha.init('login');
+
+            const cnpjInputs = document.querySelectorAll('input[id*="Cnpj"], input[id*="cnpj"]');
+            cnpjInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+                    value = value.replace(/^(\d{2}\.\d{3})(\d)/, '$1.$2');
+                    value = value.replace(/^(\d{2}\.\d{3}\.\d{3})(\d)/, '$1/$2');
+                    value = value.replace(/^(\d{2}\.\d{3}\.\d{3}\/\d{4})(\d)/, '$1-$2');
+                    e.target.value = value;
+                });
+            });
+
+            const togglePassword = document.getElementById('togglePassword');
+            if (togglePassword) {
+                const passwordInput = document.getElementById('loginSenha');
+                togglePassword.addEventListener('click', function() {
+                    const visivel = passwordInput.type === 'password';
+                    passwordInput.type = visivel ? 'text' : 'password';
+                    const icon = this.querySelector('i');
+                    if (icon) icon.className = visivel ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+                    this.lastChild.textContent = visivel ? ' Ocultar senha' : ' Mostrar senha';
+                });
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('session') === 'expired') {
+                mostrarErroLogin('Sessão expirada. Faça login novamente.');
+            }
+        });
+
         document.getElementById('formLogin').addEventListener('submit', async function(e) {
             e.preventDefault();
             const cnpjInput = document.getElementById('loginCnpj').value.trim();
             const chaveInput = document.getElementById('loginSenha').value.trim();
             const msgErro = document.getElementById('msgErroLogin');
-            const btn = document.querySelector('#formLogin .btn-acao');
-            
+            const btn = document.querySelector('#formLogin button[type="submit"]');
+
             msgErro.style.display = 'none';
+
+            const captcha = EngCaptcha.validar('login', '#honeyPot');
+            if (!captcha.ok) {
+                mostrarErroLogin(captcha.mensagem);
+                return;
+            }
+
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
             btn.disabled = true;
 
-            const { data, error } = await supabaseClient.from('clientes')
-                .select('*').eq('cnpj', cnpjInput).eq('chave_mestre', chaveInput);
+            try {
+                const cliente = await autenticarCliente(cnpjInput, chaveInput);
 
-            if (error || data.length === 0) {
-                msgErro.style.display = 'block';
+                if (!cliente || cliente.status === 'bloqueado' || cliente.status === 'inativo') {
+                    EngCaptcha.registrarFalhaLogin('login');
+                    EngCaptcha.regenerar('login');
+                    mostrarErroLogin('Credenciais inválidas.');
+                    btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
+                    btn.disabled = false;
+                    return;
+                }
+
+                EngCaptcha.zerarFalhas('login');
+                sessionStorage.setItem('clienteCnpj', EqSec.cnpjDigitos(cliente.cnpj) || String(cliente.cnpj || '').trim());
+                sessionStorage.setItem('clienteNome', cliente.razao_social);
+                if (cliente.empresa_id) sessionStorage.setItem('empresaId', cliente.empresa_id);
+                sessionStorage.removeItem('cnpj');
+                localStorage.removeItem('clienteCnpj');
+                localStorage.removeItem('cnpj');
+                window.location.href = 'painel-cliente.html';
+            } catch (err) {
+                EngCaptcha.regenerar('login');
+                mostrarErroLogin('Não foi possível autenticar. Tente novamente.');
                 btn.innerHTML = '<i class="fa-solid fa-lock-open"></i> Acessar Portal';
                 btn.disabled = false;
-            } else {
-                sessionStorage.setItem('clienteCnpj', data[0].cnpj);
-                sessionStorage.setItem('clienteNome', data[0].razao_social);
-                window.location.href = 'painel-cliente.html';
-            }
-        });
-
-        // LÓGICA DE CADASTRO
-        document.getElementById('formCadastro').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const msg = document.getElementById('msgCadastro');
-            const btn = document.querySelector('#formCadastro .btn-acao');
-            
-            const novoCliente = {
-                razao_social: document.getElementById('cadRazao').value.trim(),
-                cnpj: document.getElementById('cadCnpj').value.trim(),
-                whatsapp: document.getElementById('cadWhatsapp').value.trim(),
-                nome_contato: document.getElementById('cadNome').value.trim(),
-                email: document.getElementById('cadEmail').value.trim(),
-                chave_mestre: document.getElementById('cadSenha').value.trim()
-            };
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
-
-            // Insere no banco
-            const { error } = await supabaseClient.from('clientes').insert([novoCliente]);
-
-            if (error) {
-                msg.style.display = 'block';
-                msg.className = 'mensagem msg-erro';
-                msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CNPJ já cadastrado ou erro na rede.';
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Finalizar Cadastro';
-            } else {
-                msg.style.display = 'block';
-                msg.className = 'mensagem msg-ok';
-                msg.innerHTML = '<i class="fa-solid fa-circle-check"></i> Cadastro realizado! Faça login.';
-                document.getElementById('formCadastro').reset();
-                
-                setTimeout(() => {
-                    alternarAba('login');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Finalizar Cadastro';
-                    msg.style.display = 'none';
-                }, 2500);
             }
         });
     </script>

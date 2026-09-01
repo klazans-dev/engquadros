@@ -21,9 +21,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link rel="stylesheet" href="css/fundo.css">
     <style>
 /* VARIÁVEIS E BASE */
-:root{--azul-profundo:#060b14;--azul-marca:#0b1c35;--azul-sutil:#2b5c92;--branco:#ffffff;--texto-principal:#1e293b;--texto-secundario:#475569;--texto-claro:#f1f5f9;--borda-industrial:1px solid rgba(11,28,53,0.1);--borda-branca:1px solid rgba(255,255,255,0.1);--sombra-industrial:0 4px 20px rgba(0,0,0,0.05);--transicao-padrao:all 0.3s ease}
+:root{--azul-profundo:#060b14;--azul-marca:#0b1c35;--azul-sutil:#2b5c92;--branco:#ffffff;--texto-principal:#1e293b;--texto-secundario:#475569;--texto-claro:#f1f5f9;--borda-industrial:1px solid rgba(11,28,53,0.1);--borda-branca:1px solid rgba(255,255,255,0.1);--sombra-industrial:0 4px 20px rgba(0,0,0,0.05);--transicao-padrao:all 0.3s ease;--reducao-mo:0.2s}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background-color:var(--azul-profundo);color:var(--texto-principal);line-height:1.6;overflow-x:hidden;font-family:'Inter',sans-serif}
@@ -41,7 +42,6 @@ h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,
 .font-bold { font-weight: bold; }
 
 /* BACKGROUNDS ANIMADOS */
-.global-bg{position:fixed;top:0;left:0;width:100vw;height:100vh;background-image:url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center;z-index:-5;opacity:0.18;mix-blend-mode:luminosity}
 .circuit-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-4;background-image:linear-gradient(rgba(43,92,146,0.05)1px,transparent1px),linear-gradient(90deg,rgba(43,92,146,0.05)1px,transparent1px);background-size:50px 50px}
 .circuit-line{position:absolute;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);opacity:0.4}
 .circuit-line.vertical{background:linear-gradient(0deg,transparent,var(--azul-sutil),transparent);width:2px;height:150px}
@@ -51,6 +51,17 @@ h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,
 .c4{left:-150px;top:25%;height:2px;width:200px;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);animation:runX 22s linear infinite 1s}
 @keyframes runY{0%{top:-150px}100%{top:120vh}}
 @keyframes runX{0%{left:-250px}100%{left:120vw}}
+/* RESPONSIVIDADE DE MOTION */
+@media (prefers-reduced-motion: reduce){
+    .circuit-line, .energy-divider::before{
+        animation:none !important;
+        transition:none !important;
+    }
+    .global-bg{
+        background-attachment:fixed;
+    }
+}
+
 .energy-divider{width:100%;height:1px;background:rgba(11,28,53,0.1);position:relative;overflow:hidden;z-index:10}
 .energy-divider.dark{background:rgba(255,255,255,0.1)}
 .energy-divider::before{content:'';position:absolute;width:300px;height:100%;background:linear-gradient(90deg,transparent,rgba(43,92,146,0.3),transparent);animation:energyFlow 5s infinite linear}
@@ -807,36 +818,13 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
     </footer>
 
     <!-- SCRIPTS -->
+    <script src="js/timers.js"></script>
     <script>
         const header = document.getElementById('main-header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) header.classList.add('scrolled');
             else header.classList.remove('scrolled');
         });
-
-        let verseIndex = 0;
-        function showVerseSlides() {
-            let verses = document.querySelectorAll(".slide-biblico");
-            if(!verses.length) return;
-            verses.forEach(v => v.classList.remove("active"));
-            verseIndex++;
-            if (verseIndex > verses.length) verseIndex = 1;
-            verses[verseIndex - 1].classList.add("active");
-            setTimeout(showVerseSlides, 7000);
-        }
-        showVerseSlides();
-
-        let reviewIndex = 0;
-        function showReviewSlides() {
-            let reviews = document.querySelectorAll(".review-slide");
-            if(!reviews.length) return;
-            reviews.forEach(r => r.classList.remove("active"));
-            reviewIndex++;
-            if (reviewIndex > reviews.length) reviewIndex = 1;
-            reviews[reviewIndex - 1].classList.add("active");
-            setTimeout(showReviewSlides, 5000);
-        }
-        showReviewSlides();
 
         function filtrarGaleria(categoria, btn) {
             document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));

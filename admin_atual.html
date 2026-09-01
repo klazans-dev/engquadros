@@ -22,15 +22,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
             <!-- Biblioteca para Leitura de Excel (SheetJS) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="js/security.js"></script>
-    <script src="js/session-timeout.js"></script>
-    <script src="js/nav.js"></script>
-    <script src="js/captcha.js"></script>
-    <script src="js/simulador.js"></script>
-    <script src="js/ia.js"></script>
-    <link rel="stylesheet" href="css/fundo.css">
-    <link rel="stylesheet" href="css/nav.css">
-    <link rel="stylesheet" href="css/simulador.css">
     <style>
         :root { 
             /* Cores Padrão - Podem ser sobrescritas pelo Tema Master */
@@ -67,18 +58,14 @@
         body { background-color: var(--fundo-site); color: var(--texto-principal); height: 100vh; overflow: hidden; }
         h1, h2, h3, h4, .menu-abas button { font-family: 'Montserrat', sans-serif; }
 
-       /* ================= MOUSE PERSONALIZADO ================= */
-        body, a, button, select, input[type="file"], .item-lista, .kanban-card, .obra-header, .section-header, .drop-zone, input[type="checkbox"], input[type="radio"], input[type="range"]::-webkit-slider-thumb { 
-            cursor: default !important; 
-        }
-        
-        /* Caso queira a mãozinha tradicional (pointer) apenas em links e botões clicáveis: */
-        a, button, .tile-btn, .item-menu, .btn-acao, .btn-novo-cliente, .btn-entrar {
-            cursor: pointer !important;
-        }
+        /* ================= MOUSE PERSONALIZADO ================= */
+        body { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%230b1c35" stroke="%23ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'), auto; }
+        a, button, select, input[type="file"], .item-lista, .kanban-card, .obra-header, .section-header, .drop-zone, input[type="checkbox"], input[type="radio"], input[type="range"]::-webkit-slider-thumb { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="%232b5c92" stroke="%23ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>'), pointer !important; }
+
         /* ================= TELA DE LOGIN ================= */
         #telaLogin { display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; position: relative; overflow: hidden; background-color: var(--azul-profundo); }
-        /* .global-bg / .circuit-overlay: css/fundo.css */
+        .global-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center; opacity: 0.18; mix-blend-mode: luminosity; z-index: 1; }
+        .circuit-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 50px 50px; }
         .login-container { background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 40px; border-radius: 12px; border-top: 4px solid var(--azul-sutil); width: 100%; max-width: 420px; text-align: center; color: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.5); z-index: 10; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .tipo-acesso { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .tipo-acesso button { flex: 1; padding: 12px; border: none; background: transparent; color: rgba(255,255,255,0.5); cursor: pointer; font-weight: 600; transition: var(--transicao); font-size: 0.95rem; border-bottom: 2px solid transparent; }
@@ -91,18 +78,12 @@
         .btn-entrar { width: 100%; padding: 14px; background: var(--azul-marca); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-weight: 700; cursor: pointer; transition: var(--transicao); display: flex; justify-content: center; align-items: center; gap: 8px; font-size: 1rem; letter-spacing: 0.5px;}
         .btn-entrar:hover { background: var(--azul-sutil); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(43, 92, 146, 0.3); }
         #mensagemErroLogin { color: #fca5a5; font-size: 0.9rem; margin-top: 15px; display: none; font-weight: 600; background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-        .captcha-row { display: flex; align-items: stretch; gap: 10px; }
-        .captcha-row canvas { flex: 1; height: 52px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: #0a1628; }
-        .captcha-refresh { width: 52px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04); color: #fff; cursor: pointer; }
-        .captcha-refresh:hover { background: rgba(43, 92, 146, 0.35); border-color: var(--azul-sutil); }
-        .captcha-hint { font-size: 0.75rem; color: rgba(255,255,255,0.45); margin-top: 6px; }
 
         /* ================= SIDEBAR PREMIUM VERTICAL ================= */
         #telaPainel { display: none; height: 100vh; width: 100vw; background-color: var(--fundo-site); }
         aside { width: 320px; background: var(--azul-marca); color: #fff; display: flex; flex-direction: column; z-index: 10; box-shadow: 4px 0 15px rgba(0,0,0,0.05); transition: width 0.3s ease; position: relative; overflow-y: auto; overflow-x: hidden; }
         #sidebarAdmin.encolhida { width: 60px !important; padding: 20px 5px !important; }
-        #sidebarAdmin.encolhida .logo-area img, #sidebarAdmin.encolhida .logo-area p, #sidebarAdmin.encolhida .logo-area button, #sidebarAdmin.encolhida .txt-menu, #sidebarAdmin.encolhida .btn-sair-admin span, #sidebarAdmin.encolhida .eq-nav-filho, #sidebarAdmin.encolhida #razaoSocialSidebar, #sidebarAdmin.encolhida #cnpjSidebar { display: none !important; }
+        #sidebarAdmin.encolhida .logo-area img, #sidebarAdmin.encolhida .logo-area p, #sidebarAdmin.encolhida .logo-area button, #sidebarAdmin.encolhida .txt-menu, #sidebarAdmin.encolhida .btn-sair-admin span { display: none !important; }
         #sidebarAdmin.encolhida .item-menu { padding: 12px; justify-content: center; }
         #btnToggleSidebar { position: absolute; top: 15px; right: -15px; background: var(--azul-sutil); color: #fff; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; z-index: 1000; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: var(--transicao); }
         #btnToggleSidebar:hover { background: var(--azul-profundo); transform: scale(1.1); }
@@ -254,7 +235,6 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #e2e8f0; border-radius: 4px; }
         .check-permissao { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed #cbd5e1; color: var(--texto-principal); font-size: 0.88rem; }
         .check-permissao input { width: 16px; height: 16px; accent-color: var(--azul-marca); }
-        .perm-grupo { grid-column: 1 / -1; margin: 8px 0 0; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--azul-sutil); }
         
         #toastNotificacao { position: fixed; bottom: 30px; right: -400px; background: #0f172a; color: #fff; padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 9999; display: flex; align-items: center; gap: 15px; border-left: 4px solid var(--sucesso); font-weight: 500; font-size: 0.95rem; }
         #toastNotificacao.mostrar { right: 30px; }
@@ -302,13 +282,6 @@
             .checklist-datas-grid { grid-template-columns: 1fr; }
             .checklist-header { flex-direction: column; align-items: flex-start; gap: 10px; }
             .checklist-status { width: 100%; }
-            #sidebarAdmin .menu-abas, #sidebarAdmin .rodape-aside { display: none; }
-            #sidebarAdmin.menu-aberto { max-height: 100vh; height: auto; }
-            #sidebarAdmin.menu-aberto .menu-abas { display: flex !important; flex-direction: column; }
-            #sidebarAdmin.menu-aberto .rodape-aside { display: block !important; }
-            #btnMenuMobile { display: block; }
-            .kanban-board { flex-direction: row; overflow-x: auto; }
-            .kanban-col { min-width: 260px; }
         }
     </style>
 </head>
@@ -338,12 +311,7 @@
                 <button type="button" id="btnAcessoEquipe" onclick="mudarModoLogin('equipe')">Painel Equipe</button>
             </div>
             
-        <form id="formLogin" autocomplete="off">
-    <div class="hp-field" aria-hidden="true">
-        <label for="websiteUrlAdmin">Não preencha</label>
-        <input type="text" id="honeyPotAdmin" name="website" tabindex="-1" autocomplete="off">
-    </div>
-
+        <form id="formLogin">
     <!-- Campo de CNPJ da Empresa (Aparece exclusivo no Painel Equipe) -->
     <div class="input-group" id="grupoCnpjEquipe" style="display: none;">
         <label>CNPJ da Empresa</label>
@@ -358,19 +326,7 @@
 
     <div class="input-group">
         <label>Senha de Acesso</label>
-        <input type="password" id="inputSenha" required autocomplete="current-password">
-    </div>
-
-    <div class="input-group">
-        <label>Código de verificação</label>
-        <div class="captcha-row">
-            <canvas id="captchaCanvas-admin" width="280" height="52" aria-label="Código CAPTCHA"></canvas>
-            <button type="button" class="captcha-refresh" id="captchaRefresh-admin" title="Gerar novo código" aria-label="Gerar novo código">
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
-        </div>
-        <input type="text" id="captchaInput-admin" maxlength="8" placeholder="Digite o código da imagem" required autocomplete="off" style="margin-top:10px;" autocapitalize="characters">
-        <p class="captcha-hint">Digite os caracteres da imagem. Clique na imagem para renovar.</p>
+        <input type="password" id="inputSenha" required>
     </div>
 
     <button type="submit" class="btn-entrar"><i class="fa-solid fa-shield-halved"></i> Autenticar Sessão</button>
@@ -383,13 +339,13 @@
     <div id="telaPainel">
         <!-- BARRA LATERAL VERTICAL PREMIUM -->
         <aside id="sidebarAdmin">
-            <button type="button" id="btnToggleSidebar" title="Minimizar menu" aria-label="Abrir ou recolher menu">
+            <button id="btnToggleSidebar">
                 <i class="fa-solid fa-chevron-left" id="iconeToggle"></i>
             </button>
 
-           <div class="logo-area" style="text-align: center; padding: 15px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-    <button type="button" id="btnMenuMobile" onclick="toggleMenuMobileAdmin()" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
-    <a href="#inicio" style="text-decoration: none; display: inline-block; flex: 1;">
+           <div class="logo-area" style="text-align: center; padding: 15px 10px;">
+    <!-- Logo centralizada -->
+    <a href="#" style="text-decoration: none; display: inline-block;" onclick="abrirModulo('inicio')">
         <img src="" alt="Admin SaaS" id="logoTopoSidebar" style="max-width: 140px; max-height: 50px; object-fit: contain;  display: none; margin: 0 auto;">
     </a>
     
@@ -400,7 +356,7 @@
     </div>
 </div>
             
-            <div class="menu-abas" id="eqMenuPrincipal" data-eq-pagina="admin">
+            <div class="menu-abas">
                 <a href="#" class="item-menu ativa" id="abaInicio" onclick="abrirModulo('inicio')">
                     <i class="fa-solid fa-house"></i>
                     <span class="txt-menu">Início</span>
@@ -458,7 +414,7 @@
                     <div class="circuit-container">
                         <div class="marca-box marca-callinfo">
                             <img src="public/SAAS.png" alt="Callinfo" class="logo-animada" style="max-height: 170px; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));">
-                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado Versão 3.1.0.8</h3>
+                            <h3 style="margin:0; font-size:0.9rem;" id="tituloSoftware">Software Integrado Versão 1.0.0.0</h3>
                             <p style="font-size: 1.1rem; color: #06b6d4; margin-top: 16px; font-weight: 600;"></p>
                         </div>
                         <div class="conexoes">
@@ -474,7 +430,7 @@
     <img src="" alt="Empresa Cliente" id="logoSidebarAdmin" class="logo-animada" style="max-width: 100%; max-height: 70px; width: auto; height: auto; object-fit: contain; margin-bottom: 15px; filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)); display: none; margin-left: auto; margin-right: auto;">
     
     <h3 style="margin:0; font-size:1.3rem;" id="nomeEmpresaSaaS">Sua Empresa</h3>
-    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;" id="nichoEmpresaSaaS"></p>
+    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 5px; font-weight: 600;" id="nichoEmpresaSaaS">Gestão Corporativa</p>
 </div>
                     </div>
                     
@@ -510,7 +466,7 @@
                             <div class="tile-desc">Insumos, Margem Markup e Elétrica</div>
                         </div>
                     </div>
-                    <div class="tile-btn" id="tileGestaoEquipe" onclick="abrirTelaAcao('gestaoEquipe')">
+                    <div class="tile-btn" onclick="abrirTelaAcao('gestaoEquipe')">
                         <div class="tile-icone"><i class="fa-solid fa-user-shield"></i></div>
                         <div>
                             <div class="tile-titulo">Equipe Interna</div>
@@ -554,14 +510,13 @@
                             <div class="tile-desc">Gestão Kanban e etapas de montagem</div>
                         </div>
                     </div>
-                   <!-- Troque a primeira linha do seu HTML por esta: -->
-               <div class="tile-btn" onclick="abrirTelaAcao('dashboardGeral'); carregarObrasNoDashboardMacro();">
-    <div class="tile-icone"><i class="fa-solid fa-chart-gantt"></i></div>
-    <div>
-        <div class="tile-titulo">Status de Projetos</div>
-        <div class="tile-desc">Visão global e andamento das obras</div>
-    </div>
-</div>
+                    <div class="tile-btn" onclick="abrirTelaAcao('dashboardGeral')">
+                        <div class="tile-icone"><i class="fa-solid fa-chart-gantt"></i></div>
+                        <div>
+                            <div class="tile-titulo">Status de Projetos</div>
+                            <div class="tile-desc">Visão global e andamento das obras</div>
+                        </div>
+                    </div>
                     
                     <!-- NOVO BOTÃO: ETAPAS DO KANBAN -->
                     <div class="tile-btn" onclick="abrirModalConfigPCP()">
@@ -571,14 +526,6 @@
                             <div class="tile-desc">Personalizar colunas e fluxo do PCP</div>
                         </div>
                     </div>
-                    <!-- NOVO BOTÃO: STATUS MACROS -->
-<div class="tile-btn" onclick="abrirModalConfigStatus()">
-    <div class="tile-icone"><i class="fa-solid fa-tags" style="color: #10b981;"></i></div>
-    <div>
-        <div class="tile-titulo">Status Macros</div>
-        <div class="tile-desc">Cadastrar e gerenciar status globais</div>
-    </div>
-</div>
                     
                     <!-- NOVO BOTÃO: PROCESSOS DE MONTAGEM -->
                     <div class="tile-btn" onclick="abrirModalConfigProcessos()">
@@ -595,18 +542,11 @@
             <div id="moduloVendas" class="painel-modulos">
                 <h2 class="titulo-modulo"><i class="fa-solid fa-cart-shopping"></i> Módulo de Vendas</h2>
                 <div class="grid-tiles">
-                    <div class="tile-btn" data-perm="orcamentos" onclick="window.location.href='orcamento.html'" style="cursor: pointer;">
+                    <div class="tile-btn">
                         <div class="tile-icone"><i class="fa-solid fa-file-invoice"></i></div>
                         <div>
-                            <div class="tile-titulo">Orçamentos / Montagem</div>
-                            <div class="tile-desc">Pesquisar orçamentos e montar painéis</div>
-                        </div>
-                    </div>
-                    <div class="tile-btn" data-perm="propostas" onclick="window.location.href='proposta.html'" style="cursor: pointer;">
-                        <div class="tile-icone"><i class="fa-solid fa-file-signature"></i></div>
-                        <div>
-                            <div class="tile-titulo">Editor de proposta</div>
-                            <div class="tile-desc">Proposta técnica e comercial (capa, textos, impressão)</div>
+                            <div class="tile-titulo">Orçamentos</div>
+                            <div class="tile-desc">Elaboração de propostas comerciais</div>
                         </div>
                     </div>
                     <div class="tile-btn">
@@ -662,7 +602,7 @@
             <div id="moduloRelatorios" class="painel-modulos">
                 <h2 class="titulo-modulo"><i class="fa-solid fa-chart-pie"></i> Relatórios e BI</h2>
                 <div class="grid-tiles">
-                    <div class="tile-btn" data-perm="relatorios" onclick="window.location.href='dashboard.html'" style="cursor: pointer;">
+                    <div class="tile-btn" onclick="window.location.href='dashboard.html'" style="cursor: pointer;">
                         <div class="tile-icone"><i class="fa-solid fa-chart-line"></i></div>
                         <div>
                             <div class="tile-titulo">Dashboard BI Executivo</div>
@@ -722,7 +662,7 @@
         <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #64748b;">
             <i class="fa-solid fa-magnifying-glass"></i>
         </span>
-<input type="text" id="inputBuscaCliente" placeholder="Digite o nome ou CNPJ para pesquisar..." class="form-control" oninput="if(window.debouncedCarregarClientes) window.debouncedCarregarClientes();" style="width: 100%; padding-left: 40px; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none;">    </div>
+<input type="text" id="inputBuscaCliente" placeholder="Digite o nome ou CNPJ para pesquisar..." class="form-control" oninput="paginaAtual = 0; carregarListaClientesCentral();" style="width: 100%; padding-left: 40px; height: 42px; border-radius: 8px; border: 1px solid #cbd5e1; outline: none;">    </div>
 </div>
 
     <div id="listaCentralClientes" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
@@ -1211,8 +1151,6 @@
                     <input type="text" id="buscaTribReforma" placeholder="Buscar regra da reforma..." onkeyup="filtrarTribReforma()">
                 </div>
 
-                <div id="simuladorIbsCbs" class="card-box" style="margin-bottom: 16px;"></div>
-
                 <!-- FORMULÁRIO REFORMA -->
                 <div id="boxFormTribReforma" class="card-box" style="display: none; border-top: 4px solid #0891b2; animation: fadeIn 0.3s ease;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px;">
@@ -1391,8 +1329,8 @@
                                 <div class="form-group" style="flex: 1;">
                                     <label>Status da Conta</label>
                                     <select id="editCliStatus">
-                                        <option value="ativo">ATIVO (Liberado)</option>
-                                        <option value="inativo">INATIVO (Bloqueado)</option>
+                                        <option value="ativo">Ativo (Liberado)</option>
+                                        <option value="inativo">Inativo (Bloqueado)</option>
                                     </select>
                                 </div>
                             </div>
@@ -1600,8 +1538,8 @@
             <!-- TELA: DASHBOARD KANBAN GERAL -->
             <div id="painelDashboard" class="painel-conteudo" style="flex-direction: column;">
                 <div>
-                    <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-chart-gantt"></i> Status Geral de Obras </h2>
-                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 2px;">Acompanhamento  de todos os projetos por orçamento e cliente.</p>
+                    <h2 style="color: var(--azul-marca); font-size: 1.3rem;"><i class="fa-solid fa-chart-gantt"></i> Status Geral de Obras (Antigo)</h2>
+                    <p style="color: var(--texto-secundario); font-size: 0.85rem; margin-top: 2px;">Acompanhamento global de porcentagem de progresso.</p>
                 </div>
                 
                 <div class="filtro-kanban-box">
@@ -1620,10 +1558,20 @@
                     </div>
                 </div>
 
-               <!-- CONTAINER DINÂMICO PARA OS STATUS MACROS -->
-<div class="kanban-board" id="boardStatusMacro" style="display: flex; gap: 20px; overflow-x: auto; padding-top: 20px; align-items: flex-start; min-height: 400px;">
-    <!-- O JavaScript vai injetar as colunas (Novo, Em Execução, Concluído) automaticamente aqui dentro -->
-</div>
+                <div class="kanban-board">
+                    <div class="kanban-col col-orcamento">
+                        <div class="kanban-header"><i class="fa-regular fa-file-lines"></i> Novos (0%)</div>
+                        <div class="kanban-body" id="kbColuna0"></div>
+                    </div>
+                    <div class="kanban-col col-andamento">
+                        <div class="kanban-header"><i class="fa-solid fa-gears"></i> Em Execução (1% - 99%)</div>
+                        <div class="kanban-body" id="kbColuna50"></div>
+                    </div>
+                    <div class="kanban-col col-concluido">
+                        <div class="kanban-header"><i class="fa-solid fa-check-double"></i> Concluídos (100%)</div>
+                        <div class="kanban-body" id="kbColuna100"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- TELA: CHAMADOS / SUPORTE -->
@@ -1668,13 +1616,6 @@
                                 <label class="check-permissao"><input type="checkbox" id="novoPermCom"> <span>Módulo de Compras</span></label>
                                 <label class="check-permissao"><input type="checkbox" id="novoPermFin"> <span>Módulo Financeiro</span></label>
                                 <label class="check-permissao"><input type="checkbox" id="novoPermRel"> <span>Dashboard BI e Relatórios</span></label>
-                                <p class="perm-grupo">Vendas — funções novas</p>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermOrc"> <span>Orçamentos / Montagem</span></label>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermProp"> <span>Editor de proposta</span></label>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermCustos"> <span>Ver custos, lucro e cálculo industrializado</span></label>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermOrcPcp"> <span>Enviar quadros ao Status / PCP</span></label>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermAuthPrazo"> <span>Autorizar pedido com prazo expirado</span></label>
-                                <label class="check-permissao"><input type="checkbox" id="novoPermAuthMargem"> <span>Autorizar pedido com margem abaixo da mínima</span></label>
                             </div>
                         </div>
                         <button type="submit" class="btn-acao" style="background: var(--sucesso);"><i class="fa-solid fa-check"></i> Cadastrar Usuário</button>
@@ -1703,39 +1644,23 @@
 
                 <div class="toolbar-pesquisa" style="margin-bottom: 20px;">
                     <i class="fa-solid fa-magnifying-glass" style="color: var(--texto-secundario);"></i>
-                    <input type="text" id="filtroManualAdmin" placeholder="Pesquisar (ex: menu, orçamento, tributação, status, dashboard, permissões)..." onkeyup="filtrarTopicosManual()">
+                    <input type="text" id="filtroManualAdmin" placeholder="Pesquisar instruções no manual (ex: tributação, markup, cnpj, kanban, permissões)..." onkeyup="filtrarTopicosManual()">
                 </div>
                 
                 <div class="card-box" style="padding: 15px;" id="containerTopicosManual">
-
-                    <div class="obra-accordion item-manual-topico">
-                        <div class="obra-header" onclick="toggleMainSection('manNav', 'icnManNav')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-bars" style="color: var(--azul-sutil);"></i> 0. Menu principal, tema e navegação</h4>
-                            <i class="fa-solid fa-chevron-down" id="icnManNav"></i>
-                        </div>
-                        <div class="obra-content" id="manNav" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
-                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Uma barra só:</strong> O mesmo menu aparece em Admin, Orçamentos, Propostas e Dashboard BI. Os módulos abrem na mesma aba do navegador (não use Ctrl+clique se quiser continuar na sessão).</li>
-                                <li><strong>Submenus:</strong> Cadastros, Operacional, Vendas, Relatórios e Sistema começam fechados. Clique no nome do módulo para abrir Clientes, Tributações, PCP, Status, Orçamentos, Dashboard BI, etc. Clique de novo para recolher só aquele submenu — a barra lateral permanece.</li>
-                                <li><strong>Minimizar a barra:</strong> O botão redondo na borda da barra recolhe ou expande o menu inteiro (ícones). Isso não fecha sozinho ao navegar.</li>
-                                <li><strong>Identidade e Tema:</strong> Em Sistema &gt; Identidade e Tema, grave cor primária, cor secundária, logomarca e nome fantasia. As cores e a logo valem em todas as telas após salvar (use Ctrl+F5 se o navegador cachear).</li>
-                                <li><strong>Status de obras:</strong> Operacional &gt; Status de obras abre o quadro (Novos, Engenharia/Produção, Concluído). Não é preciso passar pelo card grande do módulo.</li>
-                            </ul>
-                        </div>
-                    </div>
-
+                    
                     <!-- 1. GESTÃO DE CLIENTES -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manClientes', 'icnManCli')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-users" style="color: #0284c7;"></i> 1. Gestão de Clientes &amp; Integração com a Receita Federal</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-users" style="color: #0284c7;"></i> 1. Gestão de Clientes & Integração com a Receita Federal</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManCli"></i>
                         </div>
                         <div class="obra-content" id="manClientes" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Cadastrar:</strong> Menu Cadastros &gt; Clientes (ou o card Pessoas / Clientes). Clique em Novo Cliente.</li>
-                                <li><strong>CNPJ:</strong> Digite o CNPJ e use Puxar Dados para preencher razão social e endereço pela Receita Federal.</li>
-                                <li><strong>Portal do cliente:</strong> Defina a chave de acesso. O cliente entra com CNPJ + chave em painel-cliente.html.</li>
-                                <li><strong>Bloqueio:</strong> Status Inativo ou Bloqueado suspende o portal na hora.</li>
+                                <li><strong>Cadastrar Novo Cliente:</strong> Acesse "Cadastros > Pessoas / Clientes" e clique em "Novo Cliente".</li>
+                                <li><strong>Automação Inteligente por CNPJ:</strong> Ao digitar o CNPJ e clicar em "Puxar Dados", o sistema consulta a base da Receita Federal e preenche Razão Social, Logradouro, Bairro, CEP e Cidade automaticamente.</li>
+                                <li><strong>Chave de Acesso do Cliente:</strong> Defina uma senha privativa para o cliente. Ele utilizará o CNPJ + esta Chave para logar no portal externo.</li>
+                                <li><strong>Bloqueio de Inadimplência / Inativação:</strong> Altere o status para "Inativo" ou "Bloqueado" no perfil do cliente para suspender o acesso ao portal imediatamente.</li>
                             </ul>
                         </div>
                     </div>
@@ -1743,32 +1668,32 @@
                     <!-- 2. PRODUTOS E PRECIFICAÇÃO -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manProdutos', 'icnManProd')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-box-open" style="color: #f59e0b;"></i> 2. Catálogo de Produtos, Engenharia &amp; Motor de Markup</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-box-open" style="color: #f59e0b;"></i> 2. Catálogo de Produtos, Engenharia & Motor de Markup</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManProd"></i>
                         </div>
                         <div class="obra-content" id="manProdutos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Acesso:</strong> Cadastros &gt; Produtos.</li>
-                                <li><strong>Abas:</strong> Dados básicos e preços (custo + markup = venda) e regras fiscais (NCM, CFOP e grupos de tributação).</li>
-                                <li><strong>Foto:</strong> O envio comprime a imagem automaticamente.</li>
-                                <li><strong>Engenharia:</strong> Tensão, corrente e potência entram em memoriais e propostas.</li>
+                                <li><strong>Cadastro Rápido com Abas:</strong> O formulário conta com a "Aba 1 (Dados Básicos & Preços)" e a "Aba 2 (Regras Fiscais & Reforma IBS/CBS)".</li>
+                                <li><strong>Motor de Markup Automático:</strong> Digite o Custo Base (R$) e o Markup Desejado (%). O Preço Final de Venda é calculado em tempo real.</li>
+                                <li><strong>Compressor de Imagens:</strong> Ao selecionar uma foto do seu computador, o sistema redimensiona e comprime a imagem automaticamente para não pesar o banco.</li>
+                                <li><strong>Especificações de Engenharia:</strong> Preencha Tensão Nominal, Corrente Máxima e Potência para memoriais e propostas.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 3. TRIBUTAÇÃO -->
+                    <!-- 3. TRIBUTAÇÃO E REFORMA TRIBUTÁRIA -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manFiscal', 'icnManFisc')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-scale-balanced" style="color: #0891b2;"></i> 3. Gestão Fiscal &amp; Reforma Tributária (IBS / CBS)</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-scale-balanced" style="color: #0891b2;"></i> 3. Gestão Fiscal & Nova Reforma Tributária (IBS / CBS)</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManFisc"></i>
                         </div>
                         <div class="obra-content" id="manFiscal" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Onde está:</strong> Abra Cadastros no menu e use Tributação Estadual, Tributação Federal e Tributação Reforma. As alíquotas ficam em grupos reutilizáveis, não grudadas no produto.</li>
-                                <li><strong>Estadual:</strong> ICMS por UF origem/destino, CST/CSOSN, redução de base, FCP e MVA-ST.</li>
-                                <li><strong>Federal:</strong> PIS, COFINS, IPI e enquadramento (Lucro Real, Presumido, alíquota zero).</li>
-                                <li><strong>Reforma:</strong> CBS federal, IBS estadual/municipal, regimes reduzidos e isenção.</li>
-                                <li><strong>Produto:</strong> No cadastro do item, vincule os três grupos. Ao gravar uma regra, os dropdowns do produto atualizam.</li>
+                                <li><strong>Arquitetura Desacoplada:</strong> As alíquotas fiscais não ficam fixadas no produto, mas sim vinculadas a Grupos Tributários reutilizáveis.</li>
+                                <li><strong>Tributação Estadual (ICMS):</strong> Acesse "Cadastros > Tributação Estadual" para parametrizar ICMS por UF Origem/Destino, CST/CSOSN, Redução de Base, FCP e MVA-ST.</li>
+                                <li><strong>Tributação Federal (PIS/COFINS/IPI):</strong> Acesse "Cadastros > Tributação Federal" para configurar Lucro Real, Presumido, Alíquota Zero e Enquadramento de IPI.</li>
+                                <li><strong>Reforma Tributária (IBS/CBS):</strong> Acesse "Cadastros > Tributação Reforma" para parametrizar a CBS Federal (8.8%), IBS Estadual/Municipal (17.7%), regimes reduzidos (60%) e isenções.</li>
+                                <li><strong>Sincronização Instantânea:</strong> Ao salvar ou alterar qualquer regra tributária, todos os dropdowns de seleção no cadastro de produtos são atualizados em tempo real.</li>
                             </ul>
                         </div>
                     </div>
@@ -1776,124 +1701,88 @@
                     <!-- 4. PCP E OBRAS -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manPCP', 'icnManPcp')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-industry" style="color: #6366f1;"></i> 4. Operacional: PCP, Status de obras e chão de fábrica</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-industry" style="color: #6366f1;"></i> 4. Operacional PCP (Chão de Fábrica, Checklists & Modo TV)</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManPcp"></i>
                         </div>
                         <div class="obra-content" id="manPCP" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Status de obras:</strong> Operacional &gt; Status de obras. Quadros novos (ainda sem produção) ficam em Novos. Só Iniciar Produção no quadro coloca o painel na primeira etapa do PCP.</li>
-                                <li><strong>PCP / Fábrica:</strong> Operacional &gt; PCP / Fábrica. Arraste os cards entre as colunas. O salvamento é automático.</li>
-                                <li><strong>Checklists:</strong> Em Processos no card, marque tarefas; o avanço físico (0–100%) sincroniza com o cliente.</li>
-                                <li><strong>Modo TV:</strong> Projeta o Kanban na linha com contraste alto e atualização contínua.</li>
+                                <li><strong>Kanban de Produção:</strong> Mova os quadros entre as colunas da fábrica (Mecânica, Barramento, Fiação, Testes QA, Concluído). O salvamento é automático.</li>
+                                <li><strong>Checklists Técnicos (Avanço Físico):</strong> Clique em "Processos" no card da obra para checar as tarefas executadas. A barra de porcentagem (0% a 100%) é recalculada automaticamente e sincronizada com o cliente.</li>
+                                <li><strong>Configurar Etapas & Processos:</strong> Use os botões do topo do PCP para criar novas colunas, trocar cores ou definir novos checklists de inspeção.</li>
+                                <li><strong>Modo TV Fábrica:</strong> Clique em "Modo TV" para projetar o Kanban nas linhas de montagem com contraste industrial e atualização automática.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 5. DASHBOARD BI -->
+                    <!-- 5. DASHBOARD BI E RELATÓRIOS -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manBI', 'icnManBi')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-chart-line" style="color: #10b981;"></i> 5. Dashboard BI Executivo</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-chart-line" style="color: #10b981;"></i> 5. Dashboard BI Executivo & Relatórios Gerenciais</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManBi"></i>
                         </div>
                         <div class="obra-content" id="manBI" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Acesso:</strong> Relatórios &gt; Dashboard BI (permissão Relatórios). O menu lateral continua o mesmo do Admin.</li>
-                                <li><strong>Abas do painel:</strong> Visão Geral (previsto vs. realizado, conversão, projetos em andamento, saúde de prazos), Comercial &amp; Orçamentos (funil B2B) e Projetos &amp; Produção (PCP e matriz semanal).</li>
-                                <li><strong>Filtros:</strong> Período (todo, mês, trimestre) e texto livre (cliente, obra, CNPJ ou projeto). As abas de conteúdo não somem ao rolar.</li>
-                                <li><strong>Dados:</strong> Números vêm de orçamentos, obras e chamados. Se a consulta vier vazia, o chip Demonstração ilustra o layout até haver registros.</li>
-                                <li><strong>PDF / CSV:</strong> Relatório PDF (Ctrl+P) e exportação CSV da matriz de PCP.</li>
+                                <li><strong>Acesso ao BI:</strong> Na aba "Relatórios", clique no card "Dashboard BI Executivo" para abrir o painel analítico com gráficos Chart.js.</li>
+                                <li><strong>KPIs Industriais:</strong> Acompanhe Obras Ativas, Entregas no Mês, Taxa de Eficiência On-time Delivery (%) e Avanço Físico Médio Ponderado.</li>
+                                <li><strong>Cronograma Semanal & Exportação:</strong> Filtre a tabela de projetos por status ou cliente e exporte os dados consolidados para CSV.</li>
+                                <li><strong>Relatórios em PDF para Diretoria:</strong> Pressione Ctrl+P na tela do Dashboard para gerar o relatório impresso com cabeçalho executivo e layout otimizado.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 6. ARQUIVOS -->
+                    <!-- 6. ARQUIVOS E UPLOADS -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manArquivos', 'icnManArq')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-cloud-arrow-up" style="color: #3b82f6;"></i> 6. Acervo de Documentos Técnicos &amp; Storage</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-cloud-arrow-up" style="color: #3b82f6;"></i> 6. Acervo de Documentos Técnicos & Storage</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManArq"></i>
                         </div>
                         <div class="obra-content" id="manArquivos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Upload:</strong> PDFs de diagramas, memoriais, laudos e fotos. Somente PDF no portal, até 20 MB.</li>
-                                <li><strong>Vínculo:</strong> Associe à obra para aparecer no Kanban e no portal do cliente.</li>
+                                <li><strong>Upload de Arquivos:</strong> Envie PDFs de diagramas elétricos, memoriais descritivos, laudos TTA/PTTA e fotos de fábrica.</li>
+                                <li><strong>Vínculo com a Obra:</strong> Associe o arquivo a uma obra específica para que ele apareça na gaveta inline de arquivos do Kanban e no portal do cliente.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 7. SUPORTE -->
+                    <!-- 7. SUPORTE E CHAMADOS -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manSuporte', 'icnManSup')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-headset" style="color: #ec4899;"></i> 7. Atendimento ao Cliente &amp; Suporte Técnico</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-headset" style="color: #ec4899;"></i> 7. Atendimento ao Cliente & Suporte Técnico</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManSup"></i>
                         </div>
                         <div class="obra-content" id="manSuporte" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Menu:</strong> Atendimento ao cliente. Tickets por prioridade; respostas no chat interno chegam no portal do cliente.</li>
+                                <li><strong>Gestão de Tickets:</strong> Visualize chamados abertos pelos clientes em tempo real divididos por prioridade (Baixa, Média, Alta, Crítica).</li>
+                                <li><strong>Chat de Resposta:</strong> Envie respostas técnicas diretamente pelo chamado. O cliente recebe o parecer instantaneamente no portal dele.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 8. EQUIPE -->
+                    <!-- 8. EQUIPE E PERMISSÕES -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manEquipe', 'icnManEqp')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-user-shield" style="color: #8b5cf6;"></i> 8. Equipe interna e permissões</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-user-shield" style="color: #8b5cf6;"></i> 8. Gestão da Equipe & Matriz de Permissões</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManEqp"></i>
                         </div>
                         <div class="obra-content" id="manEquipe" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Acesso:</strong> Cadastros &gt; Equipe (somente master). Cadastre operadores, engenheiros e vendedores.</li>
-                                <li><strong>Módulos:</strong> Cadastros, Operacional, Arquivos, Atendimento, Vendas, Compras, Financeiro, Relatórios.</li>
-                                <li><strong>Vendas (detalhe):</strong> Orçamentos, Editor de proposta, ver custos/lucro, enviar ao Status/PCP, autorizar prazo expirado e autorizar margem abaixo da mínima. O que não estiver marcado some do menu e da tela.</li>
+                                <li><strong>Cadastro de Membros:</strong> Cadastre usuários para seus operadores, engenheiros e vendedores em "Cadastros > Equipe Interna".</li>
+                                <li><strong>Controle de Acesso Modular:</strong> Marque ou desmarque individualmente as permissões de acesso (Cadastros, Operacional PCP, Arquivos, Suporte, Vendas, Compras, Financeiro, Relatórios BI). Módulos sem permissão não aparecem na tela do colaborador.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- 9. IDENTIDADE -->
+                    <!-- 9. IDENTIDADE VISUAL E WHITELABEL -->
                     <div class="obra-accordion item-manual-topico">
                         <div class="obra-header" onclick="toggleMainSection('manTema', 'icnManTema')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-palette" style="color: #e11d48;"></i> 9. Identidade visual (whitelabel)</h4>
+                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-palette" style="color: #e11d48;"></i> 9. Identidade Visual Whitelabel & Cores</h4>
                             <i class="fa-solid fa-chevron-down" id="icnManTema"></i>
                         </div>
                         <div class="obra-content" id="manTema" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
                             <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Caminho:</strong> Sistema &gt; Identidade e Tema.</li>
-                                <li><strong>O que grava:</strong> Cor primária (barra e botões), cor secundária (destaques), logomarca, nome fantasia, WhatsApp e e-mail. O CNPJ master não se altera nesta tela.</li>
-                                <li><strong>Onde aparece:</strong> Menu, login, orçamento, proposta, dashboard e cabeçalhos de impressão.</li>
-                                <li><strong>Delegação:</strong> No perfil do cliente (senha master), marque a equipe que só deve ver as obras daquele CNPJ.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 10. ORÇAMENTOS -->
-                    <div class="obra-accordion item-manual-topico">
-                        <div class="obra-header" onclick="toggleMainSection('manOrcamentos', 'icnManOrc')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-file-invoice" style="color: #06b6d4;"></i> 10. Orçamentos / Montagem</h4>
-                            <i class="fa-solid fa-chevron-down" id="icnManOrc"></i>
-                        </div>
-                        <div class="obra-content" id="manOrcamentos" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
-                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Acesso:</strong> Vendas &gt; Orçamentos. O menu do ERP permanece à esquerda.</li>
-                                <li><strong>Novo:</strong> Escolha Simples (itens avulsos, custo + markup) ou Industrialização (plantas, painéis e PCP). Atalhos 1 e 2 no teclado.</li>
-                                <li><strong>Catálogo:</strong> Clique no resultado da busca para inserir; Enter insere o primeiro. F3 foca a busca; Ctrl+S salva; Ctrl+P imprime.</li>
-                                <li><strong>Industrialização:</strong> Plantas no card; Atualizar planta recalcula o layout. Rodapé com condições comerciais, barra de lucro e cálculo por grupo. Custos só para quem tem a permissão.</li>
-                                <li><strong>Status / PCP:</strong> Cria cada quadro em Status (Novos). A fábrica só recebe depois de Iniciar Produção. Confirme antes de enviar ou de excluir um painel.</li>
-                                <li><strong>Impressão:</strong> Simples não imprime planta nem lucro. Industrial imprime SVG das plantas. Dados do emitente vêm da Identidade (logo, CNPJ, e-mail, telefone).</li>
-                                <li><strong>Banco:</strong> Rode no SQL Editor do Supabase, se ainda não rodou: <code>docs/3_ORCAMENTOS.sql</code> e <code>docs/7_ORCAMENTO_CALC.sql</code> (coluna modalidade e cálculo). Sem as tabelas, o rascunho fica só neste navegador.</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- 11. PROPOSTAS -->
-                    <div class="obra-accordion item-manual-topico">
-                        <div class="obra-header" onclick="toggleMainSection('manPropostas', 'icnManProp')" style="cursor: pointer;">
-                            <h4 style="color: var(--azul-marca);"><i class="fa-solid fa-file-signature" style="color: #0e7490;"></i> 11. Editor de proposta</h4>
-                            <i class="fa-solid fa-chevron-down" id="icnManProp"></i>
-                        </div>
-                        <div class="obra-content" id="manPropostas" style="display: none; line-height: 1.6; color: var(--texto-principal); font-size: 0.9rem;">
-                            <ul style="padding-left: 20px; margin-bottom: 10px; color: var(--texto-secundario);">
-                                <li><strong>Acesso:</strong> Vendas &gt; Propostas, ou o botão Proposta dentro do orçamento (permissão correspondente).</li>
-                                <li><strong>Modelo EngQuadros:</strong> Use o botão do modelo profissional; o texto padrão segue o tipo do orçamento (simples ou industrialização).</li>
-                                <li><strong>Atalhos:</strong> Ctrl+S grava o modelo; Ctrl+P imprime. Paletas de cor da folha ficam na barra de formatação.</li>
+                                <li><strong>Personalização da Marca:</strong> Acesse "Sistema > Identidade e Tema" para escolher sua Cor Primária, Cor Secundária e Logomarca.</li>
+                                <li><strong>Aplicação Geral:</strong> As cores e a logomarca são refletidas automaticamente em toda a navegação, login e cabeçalhos de impressão.</li>
+                                <li><strong>Delegação (Vínculo de Cliente):</strong> Se você quiser que um funcionário só veja as obras de 1 cliente específico, abra o perfil desse cliente (usando sua senha Master), desça até "Delegação de Equipe" e marque o nome do funcionário.</li>
                             </ul>
                         </div>
                     </div>
@@ -1972,20 +1861,14 @@
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Dados do Projeto</h3>
             <input type="hidden" id="editObraGlobalId">
             
-           <div class="linha-form">
-    <div class="form-group" style="flex: 1; position: relative;">
-        <label>Cliente (Busque por Nome/CNPJ)</label>
-        
-        <!-- O oninput fica aqui, chamando a função que busca direto no Supabase -->
-        <input type="text" id="editObraGlobalCnpjBusca" placeholder="Digite o nome ou CNPJ..." autocomplete="off" oninput="if(window.debouncedBuscaObraCli) window.debouncedBuscaObraCli(this.value)" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
-        
-        <!-- Caixa flutuante onde os resultados da busca aparecem -->
-        <div id="dropdownResultadosClientes" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; z-index: 9999; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
-        
-        <!-- Input oculto para salvar o CNPJ real -->
-        <input type="hidden" id="editObraGlobalCnpj">
-    </div>
-</div>
+            <div class="linha-form">
+                <div class="form-group" style="flex: 1;">
+                    <label>Cliente (Busque por Nome/CNPJ)</label>
+                    <input type="text" id="editObraGlobalCnpjBusca" list="listaClientesEditGlobal" placeholder="Selecione o Cliente..." autocomplete="off">
+                    <datalist id="listaClientesEditGlobal"></datalist>
+                    <input type="hidden" id="editObraGlobalCnpj">
+                </div>
+            </div>
             
             <div class="linha-form">
                 <div class="form-group" style="flex: 2;"><label>Nome do Quadro / Projeto</label><input type="text" id="editObraGlobalNome" required></div>
@@ -2066,7 +1949,7 @@
     </div>
     
    <div id="modalEditarEquipe" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
+        <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <h3 style="color: var(--azul-marca); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> Editar Membro da Equipe</h3>
             <input type="hidden" id="editEquipeId">
             
@@ -2074,13 +1957,13 @@
                 <div class="form-group" style="flex:1; margin:0;"><label>Nome Completo</label><input type="text" id="editEquipeNome" required></div>
                 <div class="form-group" style="flex:1; margin:0;"><label>Usuário de Login</label><input type="text" id="editEquipeUsuario" required></div>
             </div>
-            <div class="form-group" style="margin-bottom: 20px;"><label>Nova senha (em branco = manter)</label><input type="password" id="editEquipeSenha" placeholder="Deixe em branco para não alterar" autocomplete="new-password"></div>
+            <div class="form-group" style="margin-bottom: 20px;"><label>Senha de Acesso</label><input type="text" id="editEquipeSenha" required></div>
             
             <!-- NOVA ÁREA DE PERMISSÕES EM GRID -->
             <div style="background: #f8fafc; padding: 15px; border: 1px solid #cbd5e1; border-radius: 8px; margin-bottom: 20px;">
                 <label style="font-weight: 700; color: var(--azul-marca); display: block; margin-bottom: 10px; font-size: 0.9rem;"><i class="fa-solid fa-sliders"></i> Permissões de Acesso</label>
                 
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px;">
                     <label class="check-permissao"><input type="checkbox" id="editPermCli"> <span>Cadastros</span></label>
                     <label class="check-permissao"><input type="checkbox" id="editPermObr"> <span>Operacional (PCP)</span></label>
                     <label class="check-permissao"><input type="checkbox" id="editPermArq"> <span>Arquivos</span></label>
@@ -2090,13 +1973,6 @@
                     <label class="check-permissao"><input type="checkbox" id="editPermCom"> <span>Compras</span></label>
                     <label class="check-permissao"><input type="checkbox" id="editPermFin"> <span>Financeiro</span></label>
                     <label class="check-permissao"><input type="checkbox" id="editPermRel"> <span>Relatórios / BI</span></label>
-                    <p class="perm-grupo">Vendas — funções novas</p>
-                    <label class="check-permissao"><input type="checkbox" id="editPermOrc"> <span>Orçamentos / Montagem</span></label>
-                    <label class="check-permissao"><input type="checkbox" id="editPermProp"> <span>Editor de proposta</span></label>
-                    <label class="check-permissao"><input type="checkbox" id="editPermCustos"> <span>Ver custos, lucro e cálculo industrializado</span></label>
-                    <label class="check-permissao"><input type="checkbox" id="editPermOrcPcp"> <span>Enviar quadros ao Status / PCP</span></label>
-                    <label class="check-permissao"><input type="checkbox" id="editPermAuthPrazo"> <span>Autorizar pedido com prazo expirado</span></label>
-                    <label class="check-permissao"><input type="checkbox" id="editPermAuthMargem"> <span>Autorizar pedido com margem abaixo da mínima</span></label>
                 </div>
             </div>
             
@@ -2140,65 +2016,7 @@
         </div>
     
     </div>
-    <!-- ================= MODAL CONFIGURAÇÃO DE STATUS MACRO ================= -->
-<div id="modalConfigStatus" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-    <div class="modal-content" style="background: #f8fafc; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        
-        <!-- Cabeçalho do Modal -->
-        <div style="background: #fff; padding: 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0;">
-            <h2 style="margin: 0; color: #1e293b; font-size: 1.2rem;">
-                <i class="fa-solid fa-tags" style="color: #10b981; margin-right: 10px;"></i>Gerenciar Status Macros
-            </h2>
-            <button type="button" onclick="document.getElementById('modalConfigStatus').style.display='none'" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">&times;</button>
-        </div>
-        
-        <!-- Corpo do Modal -->
-        <div style="padding: 20px;">
-            <!-- Formulário de Cadastro -->
-            <form id="formConfigStatus" onsubmit="salvarStatusProjeto(event)" style="background: #fff; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
-                <input type="hidden" id="configStatusId">
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Nome do Status</label>
-                        <input type="text" id="configStatusNome" required placeholder="Ex: Em Andamento" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
-                    </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Cor</label>
-                        <input type="color" id="configStatusCor" value="#10b981" style="width: 100%; height: 38px; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; box-sizing: border-box;">
-                    </div>
-                    <div style="grid-column: span 2;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.9rem; color: #334155;">Ordem de Exibição</label>
-                        <input type="number" id="configStatusOrdem" required value="1" min="1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box;">
-                    </div>
-                </div>
-                
-                <!-- CAMPO NOVO: Checkboxes de Etapas (Movido para dentro do formulário) -->
-                <div style="margin-bottom: 20px; width: 100%;">
-                    <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">
-                        Quais etapas do PCP pertencem a este Status?
-                    </label>
-                    <!-- É aqui dentro que o JavaScript vai injetar os checkboxes -->
-                    <div id="containerCheckboxesEtapas" style="max-height: 150px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 4px; padding: 10px; background-color: #f8fafc; display: flex; flex-direction: column; gap: 8px;">
-                        <span style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas...</span>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button type="button" onclick="limparFormStatus()" style="padding: 8px 15px; border-radius: 4px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; cursor: pointer;">Limpar</button>
-                    <button type="submit" style="padding: 8px 15px; border-radius: 4px; border: none; background: #2563eb; color: #fff; cursor: pointer; font-weight: 500;">Salvar Status</button>
-                </div>
-            </form>
-
-            <!-- Lista de Status Existentes -->
-            <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;">Status Cadastrados</h3>
-            <div id="listaConfigStatus" style="border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden;">
-                <!-- A lista vai entrar aqui via JavaScript -->
-            </div>
-        </div>
-    </div>
-</div>
-   <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
+    <!-- MODAL DE GESTÃO DAS ETAPAS DO KANBAN -->
     <div id="modalConfigPCP" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 11, 20, 0.85); backdrop-filter: blur(5px); z-index: 2000; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 25px; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); border-top: 4px solid var(--azul-marca);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">
@@ -2208,38 +2026,28 @@
             
             <form id="formConfigEtapa" onsubmit="salvarEtapaPCP(event)">
                 <input type="hidden" id="configEtapaId">
-                
-                <!-- PRIMEIRA LINHA: Nome, Ordem, Cor e Botão Gravar -->
-                <div class="linha-form" style="display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-end;">
+                <div class="linha-form" style="margin-bottom: 15px; align-items: flex-end;">
                     <div class="form-group" style="flex: 3; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Nome da Etapa</label>
-                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Nome da Etapa</label>
+                        <input type="text" id="configEtapaNome" required placeholder="Ex: 3. Montagem Mecânica">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Ordem</label>
-                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Ordem</label>
+                        <input type="number" id="configEtapaOrdem" required min="1" placeholder="Ex: 1">
                     </div>
                     <div class="form-group" style="flex: 1; margin: 0;">
-                        <label style="font-size: 12px; color: #64748b; font-weight: bold; display: block; margin-bottom: 5px;">Cor do Card</label>
-                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 35px; cursor: pointer; padding: 2px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label>Cor do Card</label>
+                        <input type="color" id="configEtapaCor" value="#3b82f6" style="width: 100%; height: 38px; cursor: pointer; padding: 2px;">
                     </div>
-                    <button type="submit" class="btn-acao" style="background: var(--sucesso); color: white; height: 35px; border: none; border-radius: 4px; padding: 0 15px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-check"></i> Gravar</button>
+                    <button type="submit" class="btn-acao" style="background: var(--sucesso); height: 38px;"><i class="fa-solid fa-check"></i> Gravar</button>
                 </div>
-               <div style="margin-bottom: 15px;">
-    <label style="font-size: 0.85rem; font-weight: 600; color: var(--texto-secundario); display: block; margin-bottom: 5px;">Vincular aos Status Macros (Painel Geral):</label>
-    <div id="containerCheckboxesStatusMacro" style="max-height: 120px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; background: #f8fafc; display: flex; flex-direction: column; gap: 6px;">
-        <span style="font-size: 12px; color: #94a3b8;">Carregando status...</span>
-    </div>
-</div>
-                
                 <div style="text-align: right; margin-bottom: 15px;">
                     <button type="button" onclick="limparFormEtapa()" style="background: transparent; border: none; color: var(--texto-secundario); font-size: 0.8rem; cursor: pointer;"><i class="fa-solid fa-eraser"></i> Limpar Formulário (Nova Etapa)</button>
                 </div>
-                
             </form>
 
-            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto; padding: 10px;">
-                <div id="listaConfigEtapas" style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+                <div id="listaConfigEtapas" style="display: flex; flex-direction: column;">
                     <!-- Preenchido via JS -->
                 </div>
             </div>
@@ -2374,52 +2182,10 @@
 <script>
     if (typeof window.supabase === 'undefined') { alert("⚠️ ERRO CRÍTICO: O motor do banco de dados não carregou."); }
 
-    const supabaseClient = window.EqSec ? EqSec.criarClienteSupabase() : window.supabase.createClient('https://grqfsfvqfnybjckopwqy.supabase.co', 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE');
-
-    function colunaAusenteNoSchema(erro) {
-        const texto = String((erro && erro.message) || erro || '');
-        const m = texto.match(/Could not find the '([^']+)' column/i);
-        return m ? m[1] : null;
-    }
-
-    async function gravarFlexivel(tabela, payload, filtro) {
-        const body = Object.assign({}, payload);
-        for (let i = 0; i < 15; i++) {
-            let res;
-            if (filtro && filtro.id) {
-                let q = supabaseClient.from(tabela).update(body).eq('id', filtro.id);
-                if (filtro.empresa_id) q = q.eq('empresa_id', filtro.empresa_id);
-                res = await q;
-            } else {
-                res = await supabaseClient.from(tabela).insert([body]);
-            }
-            if (!res.error) return res;
-            const col = colunaAusenteNoSchema(res.error);
-            if (!col || !Object.prototype.hasOwnProperty.call(body, col)) throw res.error;
-            delete body[col];
-        }
-        throw new Error('Não foi possível gravar: o banco não tem todas as colunas do formulário.');
-    }
-
-    if (typeof EngCaptcha !== 'undefined') {
-        EngCaptcha.init('admin');
-    }
-
-    function toggleMenuMobileAdmin() {
-        const side = document.getElementById('sidebarAdmin');
-        if (side) side.classList.toggle('menu-aberto');
-    }
-
-    function aplicarSessaoAdmin(sessao) {
-        sessionStorage.setItem('acessoCRM', 'true');
-        sessionStorage.setItem('empresaId', sessao.empresaId);
-        sessionStorage.setItem('masterCnpj', sessao.cnpj || '');
-        sessionStorage.setItem('masterNome', sessao.nome || 'Sua Empresa');
-        sessionStorage.setItem('masterLogo', sessao.logo || '');
-        sessionStorage.setItem('masterCorPrimaria', sessao.corPri || '#0b1c35');
-        sessionStorage.setItem('masterCorSecundaria', sessao.corSec || '#2b5c92');
-    }
-
+    const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
+    const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
+    const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
 
     let modoLoginAtual = 'mestre';
     let isMaster = false;
@@ -2639,9 +2405,7 @@
             document.getElementById(prefixo + 'CliCidade').value = data.localidade || '';
             document.getElementById(prefixo + 'CliUF').value = data.uf || '';
             document.getElementById(prefixo + 'CliNum').focus();
-        } catch(e) {
-            console.warn('CEP indisponível. Preencha o endereço manualmente.');
-        }
+        } catch(e) {}
     }
 
     function calcularMarkup() {
@@ -2652,55 +2416,8 @@
     }
 
     function getPermissoes() {
-        if (typeof EqSec !== 'undefined' && EqSec.getPermissoes) return EqSec.getPermissoes();
-        if (isMaster) return Object.assign({}, EqSec.PERM_TODAS);
+        if (isMaster) return { clientes: true, obras: true, arquivos: true, tickets: true, vendas: true, compras: true, financeiro: true, relatorios: true };
         try { return JSON.parse(sessionStorage.getItem('permissoes') || '{}'); } catch(e) { return {}; }
-    }
-
-    var MAPA_PERMS = [
-        ['Cli', 'clientes'], ['Obr', 'obras'], ['Arq', 'arquivos'], ['Tic', 'tickets'],
-        ['Ven', 'vendas'], ['Com', 'compras'], ['Fin', 'financeiro'], ['Rel', 'relatorios'],
-        ['Orc', 'orcamentos'], ['Prop', 'propostas'], ['Custos', 'orcamento_custos'],
-        ['OrcPcp', 'orcamento_pcp'], ['AuthPrazo', 'auth_prazo'], ['AuthMargem', 'auth_margem']
-    ];
-
-    function coletarPermissoes(prefixo) {
-        var obj = {};
-        MAPA_PERMS.forEach(function (par) {
-            var el = document.getElementById(prefixo + par[0]);
-            obj[par[1]] = !!(el && el.checked);
-        });
-        return obj;
-    }
-
-    function preencherPermissoes(prefixo, p) {
-        p = EqSec.parsePermissoes(p);
-        MAPA_PERMS.forEach(function (par) {
-            var el = document.getElementById(prefixo + par[0]);
-            if (!el) return;
-            el.checked = EqSec.valorPermissaoForm(p, par[1]);
-        });
-    }
-
-    function ligarAtalhosPermissao(prefixo) {
-        var ven = document.getElementById(prefixo + 'Ven');
-        var obr = document.getElementById(prefixo + 'Obr');
-        if (ven) {
-            ven.addEventListener('change', function () {
-                if (!ven.checked) return;
-                ['Orc', 'Prop', 'Custos'].forEach(function (s) {
-                    var el = document.getElementById(prefixo + s);
-                    if (el) el.checked = true;
-                });
-            });
-        }
-        if (obr) {
-            obr.addEventListener('change', function () {
-                if (!obr.checked) return;
-                var el = document.getElementById(prefixo + 'OrcPcp');
-                if (el) el.checked = true;
-            });
-        }
     }
 
     if (sessionStorage.getItem('acessoCRM')) {
@@ -2723,16 +2440,8 @@
 
         aplicarLogoEmTudo(sessionStorage.getItem('masterLogo'));
 
-        if (typeof EqSessionTimeout !== 'undefined') {
-            EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
-                sessionStorage.clear();
-                window.location.href = 'admin.html';
-            });
-        }
         iniciarPainel();
     }
-    ligarAtalhosPermissao('novoPerm');
-    ligarAtalhosPermissao('editPerm');
 
     function mudarModoLogin(modo) {
         modoLoginAtual = modo;
@@ -2775,19 +2484,20 @@
 
     async function buscarLogoPorCnpj(cnpjBruto) {
         const cnpjLimpo = cnpjBruto ? cnpjBruto.replace(/\D/g, '') : '';
-        if (cnpjLimpo.length !== 14) return;
-        try {
-            const rpc = await supabaseClient.rpc('lookup_branding', { p_cnpj: cnpjLimpo });
-            if (!rpc.error && rpc.data && typeof aplicarLogoEmTudo === 'function') {
-                aplicarLogoEmTudo(rpc.data.logo_url);
-                return;
+        if (cnpjLimpo.length === 14) {
+            try {
+                const { data } = await supabaseClient
+                    .from('admin_master')
+                    .select('logo_url')
+                    .eq('cnpj', cnpjLimpo)
+                    .maybeSingle();
+                
+                if (data && typeof aplicarLogoEmTudo === 'function') {
+                    aplicarLogoEmTudo(data.logo_url);
+                }
+            } catch (err) {
+                console.error("Erro ao buscar logo:", err);
             }
-            if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
-                const { data } = await supabaseClient.from('admin_master').select('logo_url').eq('cnpj', cnpjLimpo).maybeSingle();
-                if (data && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(data.logo_url);
-            }
-        } catch (err) {
-            console.error("Erro ao buscar logo:", err);
         }
     }
 
@@ -2805,115 +2515,92 @@
         const identBruto = document.getElementById('inputIdentificador').value.trim(); 
         const senha = document.getElementById('inputSenha').value.trim();
         const msg = document.getElementById('mensagemErroLogin'); 
-        msg.style.display = 'none';
-
-        const captcha = EngCaptcha.validar('admin', '#honeyPotAdmin');
-        if (!captcha.ok) {
-            msg.style.display = 'block';
-            msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + captcha.mensagem;
-            return;
-        }
+        msg.style.display = 'none'; 
         
         document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Autenticando...';
         
         try {
             if (modoLoginAtual === 'mestre') {
                 const identLimpo = identBruto.replace(/\D/g, '');
-                let masterData = null;
-                const rpc = await supabaseClient.rpc('login_admin_master', { p_cnpj: identBruto, p_senha: senha });
-                if (!rpc.error && rpc.data) {
-                    masterData = rpc.data;
-                } else if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
-                    const { data, error } = await supabaseClient
-                        .from('admin_master')
-                        .select('id, empresa_id, cnpj, nome_fantasia, logo_url, cor_primaria, cor_secundaria')
-                        .or(`cnpj.eq.${identLimpo},cnpj.eq.${identBruto}`)
-                        .eq('senha', senha);
-                    if (error) throw error;
-                    if (data && data.length) masterData = data[0];
-                }
+                
+                const { data, error } = await supabaseClient
+                    .from('admin_master')
+                    .select('*')
+                    .or(`cnpj.eq.${identLimpo},cnpj.eq.${identBruto}`)
+                    .eq('senha', senha);
 
-                if (masterData) {
+                if (error) throw error;
+
+                if (data && data.length > 0) { 
+                    const masterData = data[0];
+                    // Captura o ID principal da empresa (administrado em admin_master.empresa_id ou masterData.id)
                     const idEmpresaMestre = masterData.empresa_id || masterData.id;
+
+                    sessionStorage.setItem('acessoCRM', 'true'); 
                     sessionStorage.setItem('tipoAcesso', 'mestre');
-                    sessionStorage.setItem('permissoes', JSON.stringify(EqSec.PERM_TODAS));
-                    aplicarSessaoAdmin({
-                        empresaId: idEmpresaMestre,
-                        cnpj: masterData.cnpj,
-                        nome: masterData.nome_fantasia,
-                        logo: masterData.logo_url,
-                        corPri: masterData.cor_primaria,
-                        corSec: masterData.cor_secundaria
-                    });
-                    EngCaptcha.zerarFalhas('admin');
+                    sessionStorage.setItem('empresaId', idEmpresaMestre);
+                    sessionStorage.setItem('masterCnpj', masterData.cnpj);
+                    sessionStorage.setItem('masterNome', masterData.nome_fantasia || 'Sua Empresa');
+                    sessionStorage.setItem('masterLogo', masterData.logo_url || '');
+                    sessionStorage.setItem('masterCorPrimaria', masterData.cor_primaria || '#0b1c35');
+                    sessionStorage.setItem('masterCorSecundaria', masterData.cor_secundaria || '#2b5c92');
+                    sessionStorage.setItem('masterSenha', senha);
+                    
                     window.location.reload();
-                } else {
-                    EngCaptcha.registrarFalhaLogin('admin');
-                    EngCaptcha.regenerar('admin');
-                    msg.style.display = 'block';
-                    msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CNPJ ou senha incorretos.';
+                } else { 
+                    msg.style.display = 'block'; 
+                    msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> CNPJ ou senha incorretos.'; 
                 }
             } else {
                 const cnpjEmpresaBruto = document.getElementById('inputCnpjEmpresa').value.trim();
-                let pack = null;
-                const rpcEq = await supabaseClient.rpc('login_equipe', {
-                    p_cnpj_empresa: cnpjEmpresaBruto,
-                    p_usuario: identBruto,
-                    p_senha: senha
-                });
-                if (!rpcEq.error && rpcEq.data) {
-                    pack = rpcEq.data;
-                } else if (EqSec.rpcFalhouPorAusencia(rpcEq.error)) {
-                    const cnpjEmpresaLimpo = cnpjEmpresaBruto.replace(/\D/g, '');
-                    const { data: masterData, error: masterErr } = await supabaseClient
-                        .from('admin_master')
-                        .select('id, empresa_id, cnpj, nome_fantasia, logo_url, cor_primaria, cor_secundaria')
-                        .or(`cnpj.eq.${cnpjEmpresaLimpo},cnpj.eq.${cnpjEmpresaBruto}`)
-                        .maybeSingle();
-                    if (masterErr || !masterData) throw new Error('CNPJ da Empresa não encontrado.');
-                    const idEmpresaMaster = masterData.empresa_id || masterData.id;
-                    const { data, error } = await supabaseClient
-                        .from('equipe_admin')
-                        .select('id, nome, usuario_login, permissoes')
-                        .eq('empresa_id', idEmpresaMaster)
-                        .eq('usuario_login', identBruto)
-                        .eq('senha', senha);
-                    if (error) throw error;
-                    if (data && data.length) {
-                        pack = { equipe: data[0], master: { ...masterData, empresa_id: idEmpresaMaster } };
-                    }
+                const cnpjEmpresaLimpo = cnpjEmpresaBruto.replace(/\D/g, '');
+
+                const { data: masterData, error: masterErr } = await supabaseClient
+                    .from('admin_master')
+                    .select('*')
+                    .or(`cnpj.eq.${cnpjEmpresaLimpo},cnpj.eq.${cnpjEmpresaBruto}`)
+                    .maybeSingle();
+
+                if (masterErr || !masterData) {
+                    throw new Error("CNPJ da Empresa não encontrado na base master.");
                 }
 
-                if (pack && pack.equipe) {
-                    const masterData = pack.master;
-                    const equipeUser = pack.equipe;
-                    const idEmpresaMaster = masterData.empresa_id || masterData.id;
+                const idEmpresaMaster = masterData.empresa_id || masterData.id;
+
+                const { data, error } = await supabaseClient
+                    .from('equipe_admin')
+                    .select('*')
+                    .eq('empresa_id', idEmpresaMaster)
+                    .eq('usuario_login', identBruto)
+                    .eq('senha', senha);
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    const equipeUser = data[0];
+                    sessionStorage.setItem('acessoCRM', 'true'); 
                     sessionStorage.setItem('tipoAcesso', 'equipe');
-                    sessionStorage.setItem('equipeId', equipeUser.id);
-                    sessionStorage.setItem('nomeEquipe', equipeUser.nome);
-                    EqSec.gravarPermissoesSessao(equipeUser.permissoes);
-                    aplicarSessaoAdmin({
-                        empresaId: idEmpresaMaster,
-                        cnpj: masterData.cnpj,
-                        nome: masterData.nome_fantasia,
-                        logo: masterData.logo_url,
-                        corPri: masterData.cor_primaria,
-                        corSec: masterData.cor_secundaria
-                    });
-                    EngCaptcha.zerarFalhas('admin');
+                    sessionStorage.setItem('equipeId', equipeUser.id); 
+                    sessionStorage.setItem('nomeEquipe', equipeUser.nome); 
+                    sessionStorage.setItem('empresaId', idEmpresaMaster); 
+                    sessionStorage.setItem('permissoes', equipeUser.permissoes || '{}');
+
+                    sessionStorage.setItem('masterCnpj', masterData.cnpj || '');
+                    sessionStorage.setItem('masterNome', masterData.nome_fantasia || 'Sua Empresa');
+                    sessionStorage.setItem('masterLogo', masterData.logo_url || '');
+                    sessionStorage.setItem('masterCorPrimaria', masterData.cor_primaria || '#0b1c35');
+                    sessionStorage.setItem('masterCorSecundaria', masterData.cor_secundaria || '#2b5c92');
+
                     window.location.reload();
-                } else {
-                    EngCaptcha.registrarFalhaLogin('admin');
-                    EngCaptcha.regenerar('admin');
-                    msg.style.display = 'block';
-                    msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Usuário ou senha da equipe incorretos para esta empresa.';
+                } else { 
+                    msg.style.display = 'block'; 
+                    msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Usuário ou senha da equipe incorretos para esta empresa.'; 
                 }
             }
         } catch (err) { 
             console.error("Erro no login:", err);
-            EngCaptcha.regenerar('admin');
             msg.style.display = 'block'; 
-            msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Acesso negado. Credenciais inválidas.'; 
+            msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + err.message; 
         } finally { 
             document.querySelector('.btn-entrar').innerHTML = '<i class="fa-solid fa-shield-halved"></i> Autenticar Sessão'; 
         }
@@ -2948,29 +2635,20 @@
         aplicarTemaCores(corPri, corSec);
         aplicarLogoEmTudo(logoTenant);
 
-        if (typeof EqNav !== 'undefined') EqNav.montar({ pagina: 'admin' });
-
         if (isMaster) {
             const abaConfig = document.getElementById('abaSistema');
             if (abaConfig) abaConfig.style.display = 'flex';
         } else { 
-            if(!EqSec.temPermissao('clientes')) { const el = document.getElementById('abaCadastros'); if(el) el.style.display = 'none'; }
-            if(!EqSec.temPermissao('obras')) { const el = document.getElementById('abaOperacional'); if(el) el.style.display = 'none'; }
-            if(!EqSec.temPermissao('tickets')) { const el = document.getElementById('abaAtendimento'); if(el) el.style.display = 'none'; }
-            if(!EqSec.temPermissao('vendas') && !EqSec.temPermissao('orcamentos') && !EqSec.temPermissao('propostas')) {
-                const el = document.getElementById('abaVendas'); if(el) el.style.display = 'none';
-            }
-            if(!EqSec.temPermissao('compras')) { const el = document.getElementById('abaCompras'); if(el) el.style.display = 'none'; }
-            if(!EqSec.temPermissao('financeiro')) { const el = document.getElementById('abaFinanceiro'); if(el) el.style.display = 'none'; }
-            if(!EqSec.temPermissao('relatorios')) { const el = document.getElementById('abaRelatorios'); if(el) el.style.display = 'none'; }
-            var tileEq = document.getElementById('tileGestaoEquipe');
-            if (tileEq) tileEq.style.display = 'none';
-            document.querySelectorAll('[data-perm]').forEach(function (el) {
-                if (!EqSec.temPermissao(el.getAttribute('data-perm'))) el.style.display = 'none';
-            });
+            if(!p.clientes) { const el = document.getElementById('abaCadastros'); if(el) el.style.display = 'none'; }
+            if(!p.obras) { const el = document.getElementById('abaOperacional'); if(el) el.style.display = 'none'; }
+            if(!p.tickets) { const el = document.getElementById('abaAtendimento'); if(el) el.style.display = 'none'; }
+            if(!p.vendas) { const el = document.getElementById('abaVendas'); if(el) el.style.display = 'none'; }
+            if(!p.compras) { const el = document.getElementById('abaCompras'); if(el) el.style.display = 'none'; }
+            if(!p.financeiro) { const el = document.getElementById('abaFinanceiro'); if(el) el.style.display = 'none'; }
+            if(!p.relatorios) { const el = document.getElementById('abaRelatorios'); if(el) el.style.display = 'none'; }
         }
 
-        aplicarRotaAdmin();
+        abrirModulo('inicio');
         if (typeof carregarListaClientesGlobais === 'function') {
             carregarListaClientesGlobais(); 
         }
@@ -2980,35 +2658,6 @@
         const content = document.getElementById(idContent); const icon = document.getElementById(idIcone);
         if (content.style.display === 'none' || content.style.display === '') { content.style.display = 'block'; icon.classList.replace('fa-chevron-down', 'fa-chevron-up'); } 
         else { content.style.display = 'none'; icon.classList.replace('fa-chevron-up', 'fa-chevron-down'); }
-    }
-
-    function hashRotaAdmin() {
-        return String(location.hash || '').replace(/^#/, '').split('?')[0].toLowerCase();
-    }
-
-    var EQ_TELAS_HASH = {
-        clientes: 'gestaoClientes',
-        produtos: 'gestaoProdutos',
-        equipe: 'gestaoEquipe',
-        'trib-estadual': 'gestaoTribEstadual',
-        'trib-federal': 'gestaoTribFederal',
-        'trib-reforma': 'gestaoTribReforma',
-        pcp: 'fabricaPcp',
-        status: 'dashboardGeral',
-        identidade: 'identidadeMaster',
-        manual: 'manualUso'
-    };
-    var EQ_MODULOS_HASH = ['inicio', 'cadastros', 'operacional', 'vendas', 'compras', 'financeiro', 'relatorios', 'atendimento', 'sistema'];
-
-    function aplicarRotaAdmin() {
-        var h = hashRotaAdmin();
-        if (EQ_TELAS_HASH[h]) {
-            abrirTelaAcao(EQ_TELAS_HASH[h]);
-            if (typeof EqNav !== 'undefined') EqNav.marcarAtivo('admin');
-            return;
-        }
-        abrirModulo(EQ_MODULOS_HASH.indexOf(h) >= 0 ? h : 'inicio');
-        if (typeof EqNav !== 'undefined') EqNav.marcarAtivo('admin');
     }
 
     function abrirModulo(modulo) {
@@ -3027,15 +2676,11 @@
         else if (modulo === 'financeiro') { document.getElementById('moduloFinanceiro').style.display = 'block'; }
         else if (modulo === 'relatorios') { document.getElementById('moduloRelatorios').style.display = 'block'; }
         else if (modulo === 'sistema') { document.getElementById('moduloSistema').style.display = 'block'; }
-
-        if (EQ_MODULOS_HASH.indexOf(modulo) >= 0 && hashRotaAdmin() !== modulo) {
-            history.replaceState(null, '', '#' + modulo);
-        }
-        if (typeof EqNav !== 'undefined') EqNav.marcarAtivo('admin');
+        
+        if (window.innerWidth <= 768) { const sidebar = document.getElementById('sidebarAdmin'); if (!sidebar.classList.contains('encolhida')) document.getElementById('btnToggleSidebar').click(); }
     }
 
     async function abrirTelaAcao(tela) {
-        if (tela === 'gestaoEquipe' && !isMaster) return;
         document.querySelectorAll('.painel-modulos, .painel-conteudo').forEach(el => el.style.display = 'none');
 
         if (tela === 'gestaoClientes') { document.getElementById('painelGestaoClientes').style.display = 'block'; carregarListaClientesCentral(); } 
@@ -3045,23 +2690,13 @@
         else if (tela === 'gestaoTribFederal') { document.getElementById('painelTribFederal').style.display = 'block'; carregarListaTribFederal(); }
         else if (tela === 'gestaoTribReforma') { document.getElementById('painelTribReforma').style.display = 'block'; carregarListaTribReforma(); }
         else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; inicializarPCP(); }
-        else if (tela === 'dashboardGeral') {
-            var painelStatus = document.getElementById('painelDashboard');
-            if (painelStatus) painelStatus.style.display = 'flex';
-            if (typeof carregarObrasNoDashboardMacro === 'function') carregarObrasNoDashboardMacro();
-            else if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
-        }
+        else if (tela === 'dashboardGeral') { document.getElementById('painelDashboard').style.display = 'flex'; carregarDashboardKanban(); }
         else if (tela === 'manualUso') { document.getElementById('painelManual').style.display = 'block'; }
         else if (tela === 'identidadeMaster') {
             document.getElementById('painelConfiguracoes').style.display = 'block';
             carregarConfiguracoesMaster();
         }
     }
-
-    window.addEventListener('hashchange', function () {
-        var painel = document.getElementById('telaPainel');
-        if (painel && painel.style.display === 'flex') aplicarRotaAdmin();
-    });
 
     // ================= FUNÇÕES DO MANUAL DO GESTOR ERP =================
     let manuaisExpandidos = false;
@@ -3108,11 +2743,13 @@
             if (empresaIdLogada) query = query.or(`empresa_id.eq.${empresaIdLogada},empresa_id.is.null`);
             const { data, error } = await query;
             if (error) throw error;
-            cacheRegrasEstaduais = data || [];
+            lista.innerHTML = '';
+
             if (data && data.length > 0) {
-            lista.innerHTML = data.map(r => {
+                cacheRegrasEstaduais = data;
+                data.forEach(r => {
                     const rCodificada = encodeURIComponent(JSON.stringify(r));
-                    return `
+                    lista.innerHTML += `
                         <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #0284c7; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                                 <div>
@@ -3144,7 +2781,7 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                });
             } else {
                 lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra estadual de ICMS cadastrada.</p>';
             }
@@ -3262,9 +2899,9 @@
 
             if (data && data.length > 0) {
                 cacheRegrasFederais = data;
-                lista.innerHTML = data.map(r => {
+                data.forEach(r => {
                     const rCodificada = encodeURIComponent(JSON.stringify(r));
-                    return `
+                    lista.innerHTML += `
                         <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #2563eb; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                                 <div>
@@ -3289,7 +2926,7 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                });
             } else {
                 lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra federal cadastrada.</p>';
             }
@@ -3405,11 +3042,11 @@
 
             if (data && data.length > 0) {
                 cacheRegrasReforma = data;
-                lista.innerHTML = data.map(r => {
+                data.forEach(r => {
                     const rCodificada = encodeURIComponent(JSON.stringify(r));
                     const isentoBadge = r.isento_reforma ? '<span style="background: rgba(16,185,129,0.15); color: #059669; font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; font-weight: 700;">ISENÇÃO TOTAL</span>' : '';
                     
-                    return `
+                    lista.innerHTML += `
                         <div class="card-box item-trib-card" style="padding: 18px; border-left: 4px solid #0891b2; box-shadow: 0 2px 5px rgba(0,0,0,0.04); margin-bottom: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                                 <div>
@@ -3437,7 +3074,7 @@
                             </div>
                         </div>
                     `;
-                }).join('');
+                });
             } else {
                 lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhuma regra de IBS/CBS cadastrada.</p>';
             }
@@ -3634,7 +3271,9 @@
         }
 
         let defaultLabel = tipo === 'ICMS' ? 'Selecione a Regra de ICMS...' : (tipo === 'Federal' ? 'Selecione a Regra Federal...' : 'Selecione a Regra da Reforma (IBS/CBS)...');
-        el.innerHTML = `<option value="">${defaultLabel}</option>` + lista.map(regra => {
+        el.innerHTML = `<option value="">${defaultLabel}</option>`;
+
+        lista.forEach(regra => {
             let labelTexto = regra.nome_regra;
             if (tipo === 'ICMS') {
                 labelTexto += ` | CST: ${regra.cst_csosn || '00'} - ICMS: ${regra.aliquota_icms || 0}%`;
@@ -3643,8 +3282,8 @@
             } else if (tipo === 'Reforma') {
                 labelTexto += regra.isento_reforma ? ' [ISENTO]' : ` [CBS: ${regra.aliquota_cbs || 0}% + IBS: ${regra.aliquota_ibs || 0}%]`;
             }
-            return `<option value="${regra.id}">${EqSec.escapeHtml(labelTexto)}</option>`;
-        }).join('');
+            el.innerHTML += `<option value="${regra.id}">${labelTexto}</option>`;
+        });
     }
 
     async function carregarListaProdutos() {
@@ -3665,7 +3304,7 @@
             lista.innerHTML = '';
             
             if(data && data.length > 0) {
-                lista.innerHTML = data.map(p => {
+                data.forEach(p => {
                     const precoVenda = parseFloat(p.preco_venda || 0).toFixed(2).replace('.', ',');
                     const pCodificado = encodeURIComponent(JSON.stringify(p));
                     
@@ -3681,9 +3320,9 @@
                         ? `<div style="width: 50px; height: 50px; border-radius: 6px; overflow: hidden; flex-shrink: 0; border: 1px solid #e2e8f0;"><img src="${imgThumb}" style="width: 100%; height: 100%; object-fit: cover;"></div>` 
                         : `<div style="width: 50px; height: 50px; border-radius: 6px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #e2e8f0;"><i class="fa-solid fa-box-open" style="color: #cbd5e1; font-size: 1.2rem;"></i></div>`;
 
-                    const tagNcm = p.ncm ? `<span style="background: rgba(43,92,146,0.1); color: var(--azul-sutil); font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px;">NCM: ${EqSec.escapeHtml(p.ncm)}</span>` : '';
+                    const tagNcm = p.ncm ? `<span style="background: rgba(43,92,146,0.1); color: var(--azul-sutil); font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-left: 6px;">NCM: ${p.ncm}</span>` : '';
 
-                    return `
+                    lista.innerHTML += `
                     <div class="card-box item-produto-card" onclick="abrirEdicaoProduto('${pCodificado}')" style="cursor: pointer; padding: 15px; margin-bottom: 0; border-left: 4px solid var(--azul-sutil); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
                         <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
                             ${divImagem}
@@ -3692,7 +3331,7 @@
                                     <span style="background: #e2e8f0; color: var(--texto-secundario); font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: 700;">${p.tipo || 'Painel'}</span>
                                     ${tagNcm}
                                 </div>
-                                <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 0;">${EqSec.escapeHtml(p.nome)}</h4>
+                                <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 0;">${p.nome}</h4>
                                 <p style="color: var(--texto-secundario); font-size: 0.8rem; margin-top: 4px;">
                                     SKU: ${p.sku || 'N/A'} ${p.cfop_padrao || p.cfop ? ` | CFOP: ${p.cfop_padrao || p.cfop}` : ''}
                                 </p>
@@ -3705,7 +3344,7 @@
                             <i class="fa-solid fa-chevron-right" style="color: #cbd5e1; font-size: 1.2rem;"></i>
                         </div>
                     </div>`;
-                }).join('');
+                });
             } else {
                 lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum produto cadastrado no banco de dados.</p>';
             }
@@ -3848,7 +3487,11 @@
         };
 
         try {
-            const { error } = await gravarFlexivel('produtos', payload, { id: id, empresa_id: empresaIdLogada });
+            const { error } = await supabaseClient
+                .from('produtos')
+                .update(payload)
+                .eq('id', id)
+                .eq('empresa_id', empresaIdLogada);
             if (error) throw error;
             
             carregarListaProdutos(); 
@@ -3982,8 +3625,7 @@
         const objTecnico = {
             tensao: document.getElementById('prodTensao').value.trim(),
             corrente_maxima: document.getElementById('prodCorrente').value.trim(),
-            potencia: document.getElementById('prodPotencia').value.trim(),
-            ean_gtin: document.getElementById('prodEan').value.trim() || null
+            potencia: document.getElementById('prodPotencia').value.trim()
         };
 
         const payload = { 
@@ -3994,12 +3636,12 @@
             tipo: document.getElementById('prodCategoria').value,
             unidade: 'UN', 
             ncm: document.getElementById('prodNcm').value.trim(),
-            cfop: document.getElementById('prodCfop').value.trim(),
             cfop_padrao: document.getElementById('prodCfop').value.trim(),
             preco_custo: parseFloat(document.getElementById('prodCusto').value.replace(',','.')) || 0,
             margem_lucro: parseFloat(document.getElementById('prodMarkup').value.replace(',','.')) || 0,
             preco_venda: parseFloat(document.getElementById('prodPreco').value.replace(',','.')) || 0,
             
+            // Chaves Estrangeiras Fiscais
             id_tributacao_estadual: document.getElementById('prodTribEstadual').value || null,
             id_tributacao_federal: document.getElementById('prodTribFederal').value || null,
             id_tributacao_ibs_cbs: document.getElementById('prodTribIbsCbs').value || null,
@@ -4008,7 +3650,7 @@
         };
         
         try {
-            const { error } = await gravarFlexivel('produtos', payload);
+            const { error } = await supabaseClient.from('produtos').insert([payload]);
             if (error) throw error;
             
             document.getElementById('formNovoProduto').reset();
@@ -4068,7 +3710,7 @@ async function carregarListaClientesCentral() {
     if(!lista) return;
 
     const empresaIdLogada = sessionStorage.getItem('empresaId') || window.empresaId;
-    const termoBusca = EqSec.sanitizarFiltro(document.getElementById('inputBuscaCliente') ? document.getElementById('inputBuscaCliente').value : '');
+    const termoBusca = document.getElementById('inputBuscaCliente') ? document.getElementById('inputBuscaCliente').value.trim() : '';
 
     if (!termoBusca) {
         lista.innerHTML = `
@@ -4132,34 +3774,20 @@ async function carregarListaClientesCentral() {
     }
 }
 
-window.debouncedCarregarClientes = EqSec.debounce(function() {
-    paginaAtual = 0;
-    carregarListaClientesCentral();
-}, 400);
-
-// 1. Função que desenha o card compacto com o WhatsApp no rodapé
 // 1. Função que desenha o card compacto com o WhatsApp no rodapé
 function renderizarCardClient(cliente) {
     const numeroLimpo = cliente.whatsapp ? cliente.whatsapp.replace(/\D/g, '') : '';
     const linkWhatsapp = numeroLimpo ? `https://wa.me/55${numeroLimpo}` : '#';
 
-    // Padroniza o status para maiúsculo (evita problemas com 'ativo', 'Ativo' ou 'ATIVO')
-    const statusTexto = cliente.status ? cliente.status.toUpperCase() : 'ATIVO';
-    
-    // Define as cores com base no status padronizado
-    const isAtivo = statusTexto === 'ATIVO';
-    const bgStatus = isAtivo ? '#d1fae5' : '#fee2e2';
-    const colorStatus = isAtivo ? '#065f46' : '#991b1b';
-
     return `
         <div class="card-box item-cliente" onclick="prepararPainelCliente('${cliente.id}')" style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; gap: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.boxShadow='0 1px 2px rgba(0,0,0,0.04)';">
             
             <div>
-                <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${EqSec.escapeHtml(cliente.razao_social || 'Cliente')}">
-                    ${EqSec.escapeHtml(cliente.razao_social || 'Cliente sem Nome')}
+                <h4 style="margin: 0; font-size: 0.9rem; font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${cliente.razao_social || 'Cliente'}">
+                    ${cliente.razao_social || 'Cliente sem Nome'}
                 </h4>
                 <span style="font-size: 0.72rem; color: #64748b; display: block; margin-top: 2px;">
-                    <i class="fa-solid fa-id-card" style="font-size: 0.65rem; margin-right: 3px;"></i> CNPJ: ${EqSec.escapeHtml(cliente.cnpj || 'Não informado')}
+                    <i class="fa-solid fa-id-card" style="font-size: 0.65rem; margin-right: 3px;"></i> CNPJ: ${cliente.cnpj || 'Não informado'}
                 </span>
             </div>
 
@@ -4175,14 +3803,13 @@ function renderizarCardClient(cliente) {
                     </span>
                 `}
 
-                <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${bgStatus}; color: ${colorStatus}; font-weight: 600;">
-                    ${statusTexto}
+                <span style="font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: ${cliente.status === 'ATIVO' ? '#d1fae5' : '#fee2e2'}; color: ${cliente.status === 'ATIVO' ? '#065f46' : '#991b1b'}; font-weight: 600;">
+                    ${cliente.status || 'ATIVO'}
                 </span>
             </div>
         </div>
     `;
-}
-window.prepararPainelCliente = async function(clienteId) {
+}window.prepararPainelCliente = async function(clienteId) {
     try {
         const { data: clienteCompleto, error } = await supabaseClient
             .from('clientes')
@@ -4248,7 +3875,7 @@ function mudarPagina(direcao) {
     async function abrirPainelCliente(cli) {
         document.querySelectorAll('.painel-conteudo').forEach(el => el.style.display = 'none'); 
         document.getElementById('painelCliente').style.display = 'block'; 
-        clienteSelecionado = String(cli.cnpj || cli.cpf_cnpj || '').trim();
+        clienteSelecionado = String(cli.cnpj).trim();
         ['secEditarCliente', 'secProjetos', 'secPermissoes', 'secUpload', 'secAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = 'none'; });
         ['iconeSecCli', 'iconeSecProj', 'iconeSecPerm', 'iconeSecUp', 'iconeSecAcervo'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.replace('fa-chevron-up', 'fa-chevron-down'); });
         const containerLista = document.getElementById('listaArquivosAdmin'); 
@@ -4330,63 +3957,17 @@ function mudarPagina(direcao) {
         }
     });
 
-  function filtrarKanban() {
-    const textoBusca = document.getElementById('filtroKanbanCliente').value.toLowerCase().trim();
-    const selectStatus = document.getElementById('filtroKanbanStatus');
-    const statusFiltro = selectStatus ? selectStatus.value : 'todos';
-
-    // Pega todos os cards de orçamento exibidos no board macro
-    const cardsOrcamento = document.querySelectorAll('#boardStatusMacro > div');
-
-    cardsOrcamento.forEach(coluna => {
-        // Identifica o ID da coluna atual (ex: coluna-macro-1, etc.)
-        const colunaId = coluna.id;
-        
-        // Pega os cards de orçamento individuais dentro desta coluna
-        const itensNaColuna = coluna.querySelectorAll('.coluna-body > div');
-
-        itensNaColuna.forEach(card => {
-            const textoCard = card.innerText.toLowerCase();
-            let mostrarTexto = true;
-            let mostrarStatus = true;
-
-            // 1. Filtro de Texto (Busca por nome de cliente ou número do orçamento)
-            if (textoBusca !== '' && !textoCard.includes(textoBusca)) {
-                mostrarTexto = false;
-            }
-
-            // 2. Filtro de Status (Baseado nas opções do seu select)
-            if (statusFiltro !== 'todos') {
-                // Verificamos com base na posição da coluna ou no conteúdo/progresso do item
-                const headerColuna = coluna.querySelector('.coluna-header span').innerText.toLowerCase();
-                
-                if (statusFiltro === '0') {
-                    // Somente Projetos Novos (geralmente a primeira coluna ou que contenha "novo")
-                    if (!headerColuna.includes('novo') && !headerColuna.includes('projeto')) {
-                        mostrarStatus = false;
-                    }
-                } else if (statusFiltro === '100') {
-                    // Somente Concluídos
-                    if (!headerColuna.includes('concluído') && !headerColuna.includes('entrega')) {
-                        mostrarStatus = false;
-                    }
-                } else if (statusFiltro === '50') {
-                    // Somente Em Execução (colunas intermediárias)
-                    if (headerColuna.includes('novo') || headerColuna.includes('concluído')) {
-                        mostrarStatus = false;
-                    }
-                }
-            }
-
-            // Aplica a visibilidade final do card combinando texto e status
-            if (mostrarTexto && mostrarStatus) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+    function filtrarKanban() {
+        const textoBusca = document.getElementById('filtroKanbanCliente').value.toLowerCase().trim(); const statusFiltro = document.getElementById('filtroKanbanStatus').value;
+        document.querySelectorAll('.kanban-card').forEach(card => {
+            const cProg = parseInt(card.getAttribute('data-progresso')); const nomeClienteCard = card.querySelector('p').innerText.toLowerCase(); 
+            let mostrar = true;
+            if (textoBusca !== '' && !nomeClienteCard.includes(textoBusca)) mostrar = false;
+            if (statusFiltro !== 'todos') { if (statusFiltro === '0' && cProg !== 0) mostrar = false; else if (statusFiltro === '100' && cProg !== 100) mostrar = false; else if (statusFiltro === '50' && (cProg === 0 || cProg === 100)) mostrar = false; }
+            card.style.display = mostrar ? 'block' : 'none';
         });
-    });
-}
+    }
+
     // ================= DASHBOARD / OBRAS (BLINDADOS COM EMPRESA_ID) =================
     async function carregarDashboardKanban() {
         // Garante que a lista de clientes está carregada antes de exibir nomes
@@ -4423,7 +4004,6 @@ function mudarPagina(direcao) {
             });
             
             col0.innerHTML = ''; col50.innerHTML = ''; col100.innerHTML = '';
-            const html0 = []; const html50 = []; const html100 = [];
             
             if(obrasData && obrasData.length > 0) {
                 obrasData.forEach(obra => {
@@ -4438,10 +4018,12 @@ function mudarPagina(direcao) {
                     const oCodificada = encodeURIComponent(JSON.stringify(obra));
                     const onClickAttr = `onclick="abrirEdicaoObraGlobal('${oCodificada}')" style="cursor: pointer;"`;
                     
+                    const nT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                    
                     const htmlCard = `
-                    <div class="kanban-card" data-cnpj="${EqSec.escapeHtml(obra.cliente_cnpj)}" data-progresso="${progresso}" ${onClickAttr}>
-                        <h4>${EqSec.escapeHtml(obra.nome_obra)}</h4>
-                        <p><i class="fa-regular fa-building"></i> ${EqSec.escapeHtml(nomeCli)}</p>
+                    <div class="kanban-card" data-cnpj="${obra.cliente_cnpj}" data-progresso="${progresso}" ${onClickAttr}>
+                        <h4>${nT}</h4>
+                        <p><i class="fa-regular fa-building"></i> ${nomeCli}</p>
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" style="width: ${progresso}%;"></div>
                         </div>
@@ -4450,14 +4032,11 @@ function mudarPagina(direcao) {
                         </div>
                     </div>`;
                     
-                    if (progresso === 0) html0.push(htmlCard); 
-                    else if (progresso === 100) html100.push(htmlCard); 
-                    else html50.push(htmlCard);
+                    if (progresso === 0) col0.innerHTML += htmlCard; 
+                    else if (progresso === 100) col100.innerHTML += htmlCard; 
+                    else col50.innerHTML += htmlCard;
                 });
             }
-            col0.innerHTML = html0.join('');
-            col50.innerHTML = html50.join('');
-            col100.innerHTML = html100.join('');
             
             if(col0.innerHTML==='') col0.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem projetos novos.</p>';
             if(col50.innerHTML==='') col50.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.8rem; text-align:center; padding: 10px;">Sem obras em andamento.</p>';
@@ -4532,34 +4111,23 @@ function mudarPagina(direcao) {
         prepararUploadParaObra(obraId);
     }
 
-   async function carregarObrasCliente(cnpj) {
+    async function carregarObrasCliente(cnpj) {
         const container = document.getElementById('listaObrasContainer'); 
         container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando projetos...</p>';
         const p = getPermissoes(); 
         
-        // Limpa o CNPJ alvo para remover pontos, traços e barras
-        const cnpjAlvoLimpo = String(cnpj || '').replace(/\D/g, '').trim();
-        
         try {
-            // Busca todas as obras da empresa logada
             const { data, error } = await supabaseClient
                 .from('obras')
                 .select('*')
+                .eq('cliente_cnpj', cnpj)
                 .eq('empresa_id', empresaIdLogada)
                 .order('id', { ascending: false });
-                
             if(error) throw error; 
-
-            // Filtra via JavaScript comparando apenas os números dos CNPJs
-            const obrasDoCliente = (data || []).filter(o => {
-                const obraCnpjLimpo = String(o.cliente_cnpj || '').replace(/\D/g, '').trim();
-                return obraCnpjLimpo === cnpjAlvoLimpo;
-            });
-
-            obrasDoClienteAtual = obrasDoCliente; 
+            obrasDoClienteAtual = data || []; 
             atualizarDropdownObrasUpload();
             
-            if(!obrasDoCliente || obrasDoCliente.length === 0) { 
+            if(!data || data.length === 0) { 
                 container.innerHTML = '<p style="color:var(--texto-secundario); font-size:0.85rem; font-style:italic;">Nenhum projeto cadastrado para este cliente.</p>'; 
                 return; 
             }
@@ -4569,7 +4137,7 @@ function mudarPagina(direcao) {
             const c = encontrarClienteGlobal(cnpj);
             if(c) nomeCli = c.razao_social.replace(/'/g, "\\'");
 
-            obrasDoCliente.forEach(obra => {
+            data.forEach(obra => {
                 const id = obra.id; 
                 const prog = obra.progresso || 0; 
                 const nomeT = obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -4615,6 +4183,7 @@ function mudarPagina(direcao) {
             container.innerHTML = `<p style="color:var(--erro);">Erro ao buscar obras.</p>`; 
         }
     }
+
     function toggleFormNovaObra() {
         const form = document.getElementById('formNovaObraContainer');
         const sec = document.getElementById('secProjetos');
@@ -4653,13 +4222,13 @@ function mudarPagina(direcao) {
 
             const payload = {
                 empresa_id: empresaIdLogada, 
-                cliente_cnpj: String(clienteSelecionado || '').replace(/\D/g, '') || clienteSelecionado, 
+                cliente_cnpj: clienteSelecionado, 
                 nome_obra: nome,
                 codigo_orcamento: orc ? orc : null,
                 data_inicio: dIni || null,
                 data_fim: dFim || null,
                 progresso: 0,
-                etapa_pcp_id: null
+                etapa_pcp_id: 1 
             };
             
             const { error } = await supabaseClient.from('obras').insert([payload]);
@@ -5041,15 +4610,7 @@ function mudarPagina(direcao) {
         try {
             if (tipo === 'link') { linkFinal = document.getElementById('linkDoc').value.trim(); if(!linkFinal) throw new Error("Insira a URL externa válida."); if(!linkFinal.startsWith('http://') && !linkFinal.startsWith('https://')) linkFinal = 'https://' + linkFinal; } 
             else {
-                const arquivoInput = document.getElementById('arquivoPdf').files[0];
-                if(!arquivoInput) throw new Error("Selecione um arquivo PDF.");
-                const erroPdf = EqSec.validarPdfFront(arquivoInput);
-                if (erroPdf) throw new Error(erroPdf);
-                const nomeUnico = EqSec.caminhoStorage(clienteSelecionado, arquivoInput.name);
-                const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivoInput, { contentType: 'application/pdf' });
-                if (uploadError) throw new Error("Erro no servidor: " + uploadError.message);
-                const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico);
-                linkFinal = urlData.publicUrl;
+                const arquivoInput = document.getElementById('arquivoPdf').files[0]; if(!arquivoInput) throw new Error("Selecione um arquivo PDF."); const nomeUnico = `${clienteSelecionado}/${Date.now()}_${arquivoInput.name}`; const { error: uploadError } = await supabaseClient.storage.from('pdfs_clientes').upload(nomeUnico, arquivoInput); if (uploadError) throw new Error("Erro no servidor: " + uploadError.message); const { data: urlData } = supabaseClient.storage.from('pdfs_clientes').getPublicUrl(nomeUnico); linkFinal = urlData.publicUrl;
             }
             let payloadBanco = { empresa_id: empresaIdLogada, cliente_cnpj: clienteSelecionado, nome_documento: titulo, caminho_arquivo: linkFinal, status_aprovacao: 'pendente' }; if (obs !== '') payloadBanco.observacao = obs; if (obraSelecionada !== '') payloadBanco.obra_id = parseInt(obraSelecionada); 
             const { error: dbError } = await supabaseClient.from('arquivos').insert([payloadBanco]); if (dbError) throw dbError;
@@ -5108,25 +4669,25 @@ function mudarPagina(direcao) {
         lista.innerHTML = '<p style="padding: 20px; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Buscando equipe...</p>';
         const { data } = await supabaseClient
             .from('equipe_admin')
-            .select('id, nome, usuario_login, permissoes')
+            .select('*')
             .eq('empresa_id', empresaIdLogada)
             .order('nome'); 
         lista.innerHTML = '';
         
         if(data && data.length > 0) { 
-            lista.innerHTML = data.map(m => { 
-                const pStr = encodeURIComponent(typeof m.permissoes === 'string' ? m.permissoes : JSON.stringify(m.permissoes || {})); 
-                return `
+            data.forEach(m => { 
+                const pStr = encodeURIComponent(m.permissoes || '{}'); 
+                lista.innerHTML += `
                 <div class="card-box" style="padding: 20px; margin-bottom: 0; border-left: 4px solid var(--azul-marca); display: flex; flex-direction: column; justify-content: space-between;">
                     <div>
-                        <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 5px;"><i class="fa-solid fa-user-gear"></i> ${EqSec.escapeHtml(m.nome)}</h4>
-                        <p style="color: var(--texto-secundario); font-size: 0.85rem;"><i class="fa-solid fa-envelope"></i> ${EqSec.escapeHtml(m.usuario_login)}</p>
+                        <h4 style="color: var(--azul-marca); font-size: 1.05rem; margin-bottom: 5px;"><i class="fa-solid fa-user-gear"></i> ${m.nome}</h4>
+                        <p style="color: var(--texto-secundario); font-size: 0.85rem;"><i class="fa-solid fa-envelope"></i> ${m.usuario_login}</p>
                     </div>
-                    <button class="btn-acao" onclick="abrirModalMembro('${m.id}', '${EqSec.escapeHtml(m.nome)}', '${EqSec.escapeHtml(m.usuario_login)}', decodeURIComponent('${pStr}'))" style="margin-top: 15px; width: 100%; background: var(--azul-sutil);">
+                    <button class="btn-acao" onclick="abrirModalMembro('${m.id}', '${m.nome}', '${m.usuario_login}', '${m.senha}', decodeURIComponent('${pStr}'))" style="margin-top: 15px; width: 100%; background: var(--azul-sutil);">
                         <i class="fa-solid fa-pen-to-square"></i> Gerenciar Acesso
                     </button>
                 </div>`; 
-            }).join(''); 
+            }); 
         } else {
             lista.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum membro cadastrado.</p>';
         }
@@ -5134,7 +4695,16 @@ function mudarPagina(direcao) {
 
     document.getElementById('formEquipe').addEventListener('submit', async function(e) { 
         e.preventDefault(); 
-        const objPermissoes = coletarPermissoes('novoPerm'); 
+        const objPermissoes = { 
+            clientes: document.getElementById('novoPermCli').checked, 
+            obras: document.getElementById('novoPermObr').checked, 
+            arquivos: document.getElementById('novoPermArq').checked, 
+            tickets: document.getElementById('novoPermTic').checked,
+            vendas: document.getElementById('novoPermVen').checked,
+            compras: document.getElementById('novoPermCom').checked,
+            financeiro: document.getElementById('novoPermFin').checked,
+            relatorios: document.getElementById('novoPermRel').checked
+        }; 
         const payload = { empresa_id: empresaIdLogada, nome: document.getElementById('eqNome').value.trim(), usuario_login: document.getElementById('eqUser').value.trim(), senha: document.getElementById('eqPass').value.trim(), permissoes: JSON.stringify(objPermissoes) }; 
         await supabaseClient.from('equipe_admin').insert([payload]); 
         document.getElementById('formEquipe').reset(); 
@@ -5145,7 +4715,7 @@ function mudarPagina(direcao) {
 
     async function carregarEquipeParaVinculo(cnpj) { 
         const container = document.getElementById('listaEquipeVinculo'); 
-        const { data: equipe } = await supabaseClient.from('equipe_admin').select('id, nome, usuario_login').eq('empresa_id', empresaIdLogada); 
+        const { data: equipe } = await supabaseClient.from('equipe_admin').select('*').eq('empresa_id', empresaIdLogada); 
         const { data: vinculos } = await supabaseClient.from('vinculo_equipe_cliente').select('equipe_id').eq('cliente_cnpj', cnpj).eq('empresa_id', empresaIdLogada); 
         const idsVinculados = vinculos ? vinculos.map(v => v.equipe_id) : []; 
         container.innerHTML = ''; 
@@ -5167,15 +4737,25 @@ function mudarPagina(direcao) {
         setTimeout(() => document.getElementById('msgVinculo').innerHTML = '', 3000); 
     }
 
-    /* Recolher/expandir o menu: EqNav.ligarToggle em js/nav.js */
+    document.getElementById('btnToggleSidebar').addEventListener('click', function() { const sidebar = document.getElementById('sidebarAdmin'); const icone = document.getElementById('iconeToggle'); sidebar.classList.toggle('encolhida'); if(document.querySelector('main')) document.querySelector('main').classList.toggle('expandido'); sidebar.classList.contains('encolhida') ? icone.classList.replace('fa-chevron-left', 'fa-chevron-right') : icone.classList.replace('fa-chevron-right', 'fa-chevron-left'); });
 
-    function abrirModalMembro(id, nome, usuario, permissoesStr) { 
+    function abrirModalMembro(id, nome, usuario, senha, permissoesStr) { 
         document.getElementById('editEquipeId').value = id; 
         document.getElementById('editEquipeNome').value = nome; 
         document.getElementById('editEquipeUsuario').value = usuario; 
-        document.getElementById('editEquipeSenha').value = ''; 
+        document.getElementById('editEquipeSenha').value = senha; 
         
-        preencherPermissoes('editPerm', permissoesStr); 
+        let p = {}; 
+        try { p = JSON.parse(permissoesStr || '{}'); } catch(e) { p = {}; } 
+        
+        document.getElementById('editPermCli').checked = !!p.clientes; 
+        document.getElementById('editPermObr').checked = !!p.obras; 
+        document.getElementById('editPermArq').checked = !!p.arquivos; 
+        document.getElementById('editPermTic').checked = !!p.tickets; 
+        document.getElementById('editPermVen').checked = !!p.vendas; 
+        document.getElementById('editPermCom').checked = !!p.compras; 
+        document.getElementById('editPermFin').checked = !!p.financeiro; 
+        document.getElementById('editPermRel').checked = !!p.relatorios; 
         
         document.getElementById('modalEditarEquipe').style.display = 'flex'; 
     }
@@ -5185,16 +4765,23 @@ function mudarPagina(direcao) {
         const nome = document.getElementById('editEquipeNome').value; 
         const usuario = document.getElementById('editEquipeUsuario').value; 
         const senha = document.getElementById('editEquipeSenha').value; 
-        if(!nome || !usuario) return; 
+        if(!nome || !usuario || !senha) return; 
         
-        const objPermissoes = coletarPermissoes('editPerm'); 
+        const objPermissoes = { 
+            clientes: document.getElementById('editPermCli').checked, 
+            obras: document.getElementById('editPermObr').checked, 
+            arquivos: document.getElementById('editPermArq').checked, 
+            tickets: document.getElementById('editPermTic').checked,
+            vendas: document.getElementById('editPermVen').checked,
+            compras: document.getElementById('editPermCom').checked,
+            financeiro: document.getElementById('editPermFin').checked,
+            relatorios: document.getElementById('editPermRel').checked
+        }; 
         
         try { 
-            const payloadEq = { nome, usuario_login: usuario, permissoes: JSON.stringify(objPermissoes) };
-            if (senha && senha.trim()) payloadEq.senha = senha.trim();
             const { error } = await supabaseClient
                 .from('equipe_admin')
-                .update(payloadEq)
+                .update({ nome, usuario_login: usuario, senha, permissoes: JSON.stringify(objPermissoes) })
                 .eq('id', id)
                 .eq('empresa_id', empresaIdLogada); 
             if (error) throw error; 
@@ -5262,9 +4849,8 @@ function mudarPagina(direcao) {
     });
 }
 
-   // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
-// ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
-async function carregarProjetosPCP() {
+    // ================= PCP / ETAPAS (BLINDADOS COM EMPRESA_ID) =================
+ async function carregarProjetosPCP() {
     // Garante que a lista de clientes está carregada antes de exibir nomes
     if (listaGlobalClientes.length === 0) {
         await carregarListaClientesGlobais();
@@ -5291,8 +4877,7 @@ async function carregarProjetosPCP() {
     });
 
     try {
-        // CORRIGIDO: Removido o .limit(100) para garantir que obras ativas mais antigas (como a Etapa 1) não fiquem de fora
-        let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).not('etapa_pcp_id', 'is', null).order('id', { ascending: false });
+        let queryObras = supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }).limit(100);
         
         if (!isMaster && cnpjsPermitidos.length > 0) {
             queryObras = queryObras.in('cliente_cnpj', cnpjsPermitidos);
@@ -5314,7 +4899,7 @@ async function carregarProjetosPCP() {
             if (key) mapaClientes[key] = c.razao_social;
         });
 
-        // 2. Agrupa os dados na memória antes de criar o HTML
+        // 2. Novo objeto para Agrupar os dados na memória antes de criar o HTML
         const contadores = {};
         const obrasAgrupadas = {}; 
 
@@ -5325,20 +4910,18 @@ async function carregarProjetosPCP() {
 
         if (data && data.length > 0) {
             data.forEach(obra => {
-                // Se a obra não tem etapa definida, pula
-                if (!obra.etapa_pcp_id) return;
-
-                // Força a conversão para string para comparar com segurança com o ID do banco
-                let etapaAtual = String(obra.etapa_pcp_id).trim();
-                
-                // Busca a etapa correspondente na lista ativa do PCP
-                let etapaObj = etapasPCP.find(e => String(e.id).trim() === etapaAtual);
-                
-                if (!etapaObj) return; // Se não achar a etapa configurada, ignora
+                let etapaAtual = String(obra.etapa_pcp_id);
+                if (etapaAtual.startsWith('1')) {
+                    etapaAtual = etapaAtual.replace('1', '');
+                }
+                let etapaObj = etapasPCP.find(e => String(e.id) === etapaAtual);
+                if (!etapaObj) {
+                    etapaObj = etapasPCP[0];
+                }
                 
                 contadores[etapaObj.id]++;
                 
-                // Restante da lógica de cliente e agrupamento...
+                // Mantemos a busca do cliente para exibir no subtítulo do cartão
                 let nomeCli = obra.cliente_cnpj || 'Sem Cliente';
                 if (obra.cliente_cnpj) {
                     const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
@@ -5348,17 +4931,17 @@ async function carregarProjetosPCP() {
                 }
                 obra.nomeCliResolved = nomeCli;
                 
-                let chaveAgrupamento = (obra.codigo_orcamento || obra.numero_orcamento || '').trim();
-                if (chaveAgrupamento) {
-                    chaveAgrupamento = 'ORC ' + chaveAgrupamento + (obra.nomeCliResolved ? ' · ' + obra.nomeCliResolved : '');
-                } else {
-                    chaveAgrupamento = (obra.nomeCliResolved || 'Avulso') + ' · sem orçamento';
-                }
+                // -------------------------------------------------------------
+                // MUDANÇA AQUI: Agrupando pelo NOME DA OBRA em vez do Cliente
+                // -------------------------------------------------------------
+                let chaveAgrupamento = obra.nome_obra || 'Projeto Sem Nome';
                 
+                // Se o projeto ainda não tem grupo nesta coluna, criamos um array vazio para ele
                 if (!obrasAgrupadas[etapaObj.id][chaveAgrupamento]) {
                     obrasAgrupadas[etapaObj.id][chaveAgrupamento] = [];
                 }
                 
+                // Adiciona a obra na pasta correta do Projeto
                 obrasAgrupadas[etapaObj.id][chaveAgrupamento].push(obra);
             });
         }
@@ -5367,25 +4950,31 @@ async function carregarProjetosPCP() {
         etapasPCP.forEach(etapa => {
             const containerColuna = document.getElementById(`body_${etapa.id}`);
             const countEl = document.getElementById(`count_${etapa.id}`);
-            if (countEl) countEl.innerText = contadores[etapa.id] || 0;
+            if (countEl) countEl.innerText = contadores[etapa.id];
 
             if (containerColuna) {
                 let htmlColuna = '';
-                const gruposDestaColuna = obrasAgrupadas[etapa.id] || {};
+                const gruposDestaColuna = obrasAgrupadas[etapa.id];
                 
                 // Ordena os Projetos em ordem alfabética
                 const nomesDosProjetos = Object.keys(gruposDestaColuna).sort();
 
-                nomesDosProjetos.forEach(nomeDoProjeto => {
+               nomesDosProjetos.forEach(nomeDoProjeto => {
                     const obrasNoGrupo = gruposDestaColuna[nomeDoProjeto];
                     
-                    // Cria o cabeçalho expansível (Sanfona) com texto completo
+                    // Cria o cabeçalho expansível (Sanfona) com texto completo e quebra de linha
                     htmlColuna += `
                     <div class="kanban-grupo-cliente" style="margin-bottom: 12px;">
                         <div class="kanban-grupo-header" onclick="const div = this.nextElementSibling; div.style.display = div.style.display === 'none' ? 'block' : 'none';" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid ${etapa.cor}; padding: 6px 8px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: bold; color: var(--azul-marca); margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'">
+                            
+                            <!-- AQUI ESTÁ A CORREÇÃO DO TEXTO: flex: 1 e line-height para permitir quebrar a linha graciosamente sem cortar -->
                             <span style="flex: 1; padding-right: 8px; line-height: 1.3; word-break: break-word;"><i class="fa-solid fa-folder-open"></i> ${nomeDoProjeto}</span>
+                            
+                            <!-- A tag de contagem com white-space: nowrap para não espremer o número -->
                             <span style="background: #e2e8f0; color: #475569; padding: 2px 6px; border-radius: 12px; font-size: 0.7rem; white-space: nowrap; height: fit-content;">${obrasNoGrupo.length}</span>
                         </div>
+                        
+                        <!-- AQUI ESTÁ A CORREÇÃO PARA INICIAR MINIMIZADO: display mudou de 'block' para 'none' -->
                         <div class="kanban-grupo-cards" style="display: none; padding-left: 2px;">
                     `;
 
@@ -5394,13 +4983,12 @@ async function carregarProjetosPCP() {
                         const nomeT = obra.nome_obra ? obra.nome_obra.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Sem Título';
                         const cliT = obra.nomeCliResolved ? obra.nomeCliResolved.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
                         const oCodificada = encodeURIComponent(JSON.stringify(obra));
-
+                        
+                        // O cartão em si
                         htmlColuna += `
                         <div class="card-op" draggable="true" ondragstart="arrastar(event)" id="obra_pcp_${obra.id}" data-obraid="${obra.id}" style="border-left-color: ${etapa.cor}; cursor: pointer; margin-bottom: 8px;" onclick="abrirEdicaoObraGlobal('${oCodificada}')">
-                            <h4 style="margin: 0 0 4px; font-size: 0.82rem; color: #0b1c35;">${nomeT}</h4>
                             <h5 style="margin-bottom: 5px; color: #475569; font-size: 0.75rem;"><i class="fa-regular fa-building"></i> ${cliT || 'Sem Cliente'}</h5>
-                            ${obra.codigo_orcamento ? `<p style="margin-bottom: 6px;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
-                            ${obra.origem === 'orcamento' ? `<p style="margin-bottom: 8px; font-size: 0.68rem; color: #0f766e; font-weight: 700;"><i class="fa-solid fa-link"></i> Ligado ao orçamento</p>` : ''}
+                            ${obra.codigo_orcamento ? `<p style="margin-bottom: 8px;"><i class="fa-solid fa-file-invoice-dollar"></i> ORC: ${obra.codigo_orcamento}</p>` : ''}
                             
                             <div class="card-op-footer">
                                 <span class="card-op-progress">${obra.progresso || 0}% Concluído</span>
@@ -5408,13 +4996,13 @@ async function carregarProjetosPCP() {
                                     <button onclick="event.stopPropagation(); duplicarObraKanban('${oCodificada}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--alerta); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Duplicar Projeto">
                                         <i class="fa-regular fa-copy"></i>
                                     </button>
-                                    <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj || ''}', '${obra.id}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
+                                    <button onclick="event.stopPropagation(); abrirUploadViaPCP('${obra.cliente_cnpj}', ${obra.id})" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--texto-secundario); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Anexar Arquivo">
                                         <i class="fa-solid fa-paperclip"></i>
                                     </button>
-                                    <button onclick="event.stopPropagation(); imprimirObraDiretoPCP('${obra.id}', '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
+                                    <button onclick="event.stopPropagation(); imprimirObraDiretoPCP(${obra.id}, '${nomeT}', '${cliT}')" style="background: #f1f5f9; border: 1px solid #cbd5e1; color: var(--azul-marca); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Imprimir Relatório Executivo">
                                         <i class="fa-solid fa-print"></i>
                                     </button>
-                                    <button onclick="event.stopPropagation(); abrirGestaoObra('${obra.id}', '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Processos (Checklist)">
+                                    <button onclick="event.stopPropagation(); abrirGestaoObra(${obra.id}, '${nomeT}', '${cliT}')" style="background: var(--azul-sutil); border: none; color: #fff; cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;" title="Processos (Checklist)">
                                         <i class="fa-solid fa-list-check"></i>
                                     </button>
                                 </div>
@@ -5422,79 +5010,83 @@ async function carregarProjetosPCP() {
                         </div>`;
                     });
 
+                    // Fecha as divs do grupo e do conteúdo
                     htmlColuna += `
                         </div> <!-- /kanban-grupo-cards -->
                     </div> <!-- /kanban-grupo-cliente -->
                     `;
                 });
+
                 containerColuna.innerHTML = htmlColuna;
             }
         });
+
     } catch (err) {
         console.error("Erro ao carregar PCP:", err);
     }
 }
-  // ================= DRAG AND DROP ORIGINAL DO PCP =================
-function arrastar(ev) {        
-    ev.dataTransfer.setData("text", ev.target.id);        
-    ev.target.style.opacity = '0.5';    
-}
+    function arrastar(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.target.style.opacity = '0.5';
+    }
 
-function permitirDrop(ev) {        
-    ev.preventDefault();        
-    const coluna = ev.target.closest('.coluna-pcp');        
-    if (coluna) {            
-        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));            
-        coluna.classList.add('drag-over');        
-    }    
-}
-
-async function soltar(ev) {        
-    ev.preventDefault();        
-    document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));                
-    const dataId = ev.dataTransfer.getData("text");        
-    const card = document.getElementById(dataId);        
-    if (!card) return;                
-    card.style.opacity = '1';                
-    
-    const colunaDestino = ev.target.closest('.coluna-pcp');        
-    if (colunaDestino) {            
-        const bodyDestino = colunaDestino.querySelector('.coluna-body');            
-        bodyDestino.appendChild(card);                        
-        
-        const novaEtapaId = colunaDestino.id;            
-        const obraId = card.getAttribute('data-obraid');                        
-        
-        const etapaObj = etapasPCP.find(e => String(e.id) === String(novaEtapaId));            
-        if (etapaObj) {                
-            card.style.borderLeftColor = etapaObj.cor;            
+    function permitirDrop(ev) {
+        ev.preventDefault();
+        const coluna = ev.target.closest('.coluna-pcp');
+        if (coluna) {
+            document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+            coluna.classList.add('drag-over');
         }
+    }
 
-        try {                
-            await supabaseClient                    
-                .from('obras')                    
-                .update({ etapa_pcp_id: String(novaEtapaId) })                    
-                .eq('id', obraId)                    
-                .eq('empresa_id', empresaIdLogada);                                
+    async function soltar(ev) {
+        ev.preventDefault();
+        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+        
+        const dataId = ev.dataTransfer.getData("text");
+        const card = document.getElementById(dataId);
+        if (!card) return;
+        
+        card.style.opacity = '1';
+        
+        const colunaDestino = ev.target.closest('.coluna-pcp');
+        if (colunaDestino) {
+            const bodyDestino = colunaDestino.querySelector('.coluna-body');
+            bodyDestino.appendChild(card);
             
-            etapasPCP.forEach(e => {                    
-                const coluna = document.getElementById(`body_${e.id}`);                    
-                if (coluna) {                        
-                    const qtdeCards = coluna.querySelectorAll('.card-op').length;                        
-                    document.getElementById(`count_${e.id}`).innerText = qtdeCards;                    
-                }                
-            });            
-        } catch (e) {                
-            alert("Erro de conexão ao salvar mudança de etapa.");                
-            carregarProjetosPCP();             
-        }        
-    }    
-}
+            const novaEtapaId = colunaDestino.id;
+            const obraId = card.getAttribute('data-obraid');
+            
+            const etapaObj = etapasPCP.find(e => String(e.id) === String(novaEtapaId));
+            if (etapaObj) {
+                card.style.borderLeftColor = etapaObj.cor;
+            }
 
-document.addEventListener('dragend', function(ev) {        
-    if (ev.target && ev.target.style) ev.target.style.opacity = '1';        
-    document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));    
-});
+            try {
+                await supabaseClient
+                    .from('obras')
+                    .update({ etapa_pcp_id: String(novaEtapaId) })
+                    .eq('id', parseInt(obraId))
+                    .eq('empresa_id', empresaIdLogada);
+                
+                etapasPCP.forEach(e => {
+                    const coluna = document.getElementById(`body_${e.id}`);
+                    if (coluna) {
+                        const qtdeCards = coluna.querySelectorAll('.card-op').length;
+                        document.getElementById(`count_${e.id}`).innerText = qtdeCards;
+                    }
+                });
+            } catch (e) {
+                alert("Erro de conexão ao salvar mudança de etapa.");
+                carregarProjetosPCP(); 
+            }
+        }
+    }
+
+    document.addEventListener('dragend', function(ev) {
+        if (ev.target && ev.target.style) ev.target.style.opacity = '1';
+        document.querySelectorAll('.coluna-pcp').forEach(c => c.classList.remove('drag-over'));
+    });
 
     function toggleModoTV() {
         isModoTV = !isModoTV;
@@ -5764,7 +5356,7 @@ document.addEventListener('dragend', function(ev) {
             if (fileInput && fileInput.files && fileInput.files.length > 0) {
                 const arquivo = fileInput.files[0];
                 const nomeLimpo = arquivo.name.replace(/\s+/g, '_');
-                const nomeUnico = EqSec.caminhoStorage('logos', nomeLimpo);
+                const nomeUnico = `logos/${cnpjLogado}_${Date.now()}_${nomeLimpo}`;
                 
                 const { data: uploadData, error: uploadError } = await supabaseClient
                     .storage
@@ -5800,7 +5392,6 @@ document.addEventListener('dragend', function(ev) {
             
             aplicarTemaCores(cPrimaria, cSecundaria);
             aplicarLogoEmTudo(logoUrlFinal);
-            if (typeof EqNav !== 'undefined') EqNav.aplicarIdentidade();
 
             const elNomeMenu = document.getElementById('nomeEmpresaSaaS');
             if (elNomeMenu) elNomeMenu.innerText = nFantasia;
@@ -5839,135 +5430,87 @@ document.addEventListener('dragend', function(ev) {
     }
 
     async function abrirModalConfigPCP() {
-        carregarDropdownStatusConfigPCP();
-    document.getElementById('modalConfigPCP').style.display = 'flex';
-    limparFormEtapa();
-    
-    // NOVO: Ao abrir a tela, já carrega a lista de Status no dropdown
-    if (typeof carregarDropdownStatusConfigPCP === 'function') {
-        carregarDropdownStatusConfigPCP();
-    }
-    
-    const lista = document.getElementById('listaConfigEtapas');
-    lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('etapas_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-        if (error) throw error;
+        document.getElementById('modalConfigPCP').style.display = 'flex';
+        limparFormEtapa();
         
-        etapasPCP = data || [];
-        renderizarListaEtapasConfig();
+        const lista = document.getElementById('listaConfigEtapas');
+        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando etapas do banco de dados...</p>';
 
-    } catch (err) {
-        console.error("Erro ao buscar etapas:", err);
-        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+        try {
+            const { data, error } = await supabaseClient
+                .from('etapas_pcp')
+                .select('*')
+                .eq('empresa_id', empresaIdLogada)
+                .order('ordem_exibicao', { ascending: true });
+            if (error) throw error;
+            
+            etapasPCP = data || [];
+            renderizarListaEtapasConfig();
+
+        } catch (err) {
+            console.error("Erro ao buscar etapas:", err);
+            lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
+        }
     }
-}
 
- function renderizarListaEtapasConfig() {
-    const lista = document.getElementById('listaConfigEtapas');
-    lista.innerHTML = '';
-    
-    etapasPCP.forEach(e => {
-        // Garante que pegamos o ID correto da coluna do banco
-        const statusMacroId = e.status_macro_id || '';
-
-        lista.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="display:inline-block; width:16px; height:16px; background:${e.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
-                    <strong style="color: var(--azul-marca); font-size: 0.9rem;">Etapa ${e.ordem_exibicao}</strong> 
-                    <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
+    function renderizarListaEtapasConfig() {
+        const lista = document.getElementById('listaConfigEtapas');
+        lista.innerHTML = '';
+        
+        etapasPCP.forEach(e => {
+            lista.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="display:inline-block; width:16px; height:16px; background:${e.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
+                        <strong style="color: var(--azul-marca); font-size: 0.9rem;">Etapa ${e.ordem_exibicao}</strong> 
+                        <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${e.nome}</span>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao})" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                        <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </div>
-                <div style="display: flex; gap: 8px;">
-                    <!-- CORRIGIDO: Agora envia o status_macro_id correto para o formulário -->
-                    <button type="button" onclick="editarEtapaForm('${e.id}', '${e.nome.replace(/'/g, "\\'")}', '${e.cor}', ${e.ordem_exibicao}, '${statusMacroId}')" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" onclick="excluirEtapaPCP('${e.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-        `;
-    });
-    if(etapasPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma etapa cadastrada no Banco de Dados.</p>';
-}
+            `;
+        });
+        if(etapasPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhuma etapa cadastrada no Banco de Dados.</p>';
+    }
 
-    // NOVO: Adicionado o 5º parâmetro 'status_id'
-function editarEtapaForm(id, nome, cor, ordem, status_id) {
-    document.getElementById('configEtapaId').value = id;
-    document.getElementById('configEtapaNome').value = nome;
-    document.getElementById('configEtapaCor').value = cor;
-    document.getElementById('configEtapaOrdem').value = ordem;
-
-    // Chama a função que busca e marca o rádio correspondente ao que foi salvo no banco
-    carregarDropdownStatusConfigPCP(status_id);
-}
+    function editarEtapaForm(id, nome, cor, ordem) {
+        document.getElementById('configEtapaId').value = id;
+        document.getElementById('configEtapaNome').value = nome;
+        document.getElementById('configEtapaCor').value = cor;
+        document.getElementById('configEtapaOrdem').value = ordem;
+    }
 
     function limparFormEtapa() {
-    document.getElementById('formConfigEtapa').reset();
-    document.getElementById('configEtapaId').value = '';
-    document.getElementById('configEtapaCor').value = '#3b82f6';
-    
-    // Zera o dropdown para a opção "Não vincular"
-    const selectStatus = document.getElementById('configEtapaStatus');
-    if (selectStatus) {
-        selectStatus.value = "";
-    }
-}
-
-  async function salvarEtapaPCP(e) {
-    if (e) e.preventDefault();
-
-    const id = document.getElementById('configEtapaId').value;
-    const nome = document.getElementById('configEtapaNome').value.trim();
-    const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
-    const cor = document.getElementById('configEtapaCor').value;
-    
-    // CORRIGIDO: Captura o valor do rádio/checkbox marcado na div de status macro
-    const rdbSelecionado = document.querySelector('.chk-status-macro-vinculo:checked');
-    const statusVinculado = rdbSelecionado ? rdbSelecionado.value : "";
-
-    if (!nome) {
-        alert("Preencha o nome da etapa.");
-        return;
+        document.getElementById('formConfigEtapa').reset();
+        document.getElementById('configEtapaId').value = '';
+        document.getElementById('configEtapaCor').value = '#3b82f6';
     }
 
-    // Se estiver vazio, manda "null" para o banco
-    const payload = {
-        empresa_id: empresaIdLogada,
-        nome: nome,
-        ordem_exibicao: ordem, 
-        cor: cor,
-        status_macro_id: statusVinculado === "" ? null : statusVinculado 
-    };
+    async function salvarEtapaPCP(e) {
+        e.preventDefault();
+        const id = document.getElementById('configEtapaId').value;
+        const nome = document.getElementById('configEtapaNome').value.trim();
+        const cor = document.getElementById('configEtapaCor').value;
+        const ordem = parseInt(document.getElementById('configEtapaOrdem').value);
 
-    try {
-        let resultado;
-        if (id) {
-            resultado = await supabaseClient.from('etapas_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
-        } else {
-            resultado = await supabaseClient.from('etapas_pcp').insert([payload]);
+        const payload = { empresa_id: empresaIdLogada, nome: nome, cor: cor, ordem_exibicao: ordem };
+
+        try {
+            if (id) {
+                await supabaseClient.from('etapas_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
+            } else {
+                await supabaseClient.from('etapas_pcp').insert([payload]);
+            }
+            limparFormEtapa();
+            await inicializarPCP(); 
+            renderizarListaEtapasConfig(); 
+        } catch(err) {
+            alert("Erro ao gravar etapa no banco de dados.");
         }
-
-        if (resultado.error) throw resultado.error;
-
-        limparFormEtapa();
-
-        // Atualiza a listagem de etapas instantaneamente na tela
-        if (typeof carregarListaEtapasPCP === 'function') {
-            await carregarListaEtapasPCP();
-        } else if (typeof carregarEtapasConfig === 'function') {
-            await carregarEtapasConfig();
-        }
-
-        alert("Etapa salva com sucesso!");
-
-    } catch (err) {
-        alert("Erro ao salvar etapa: " + err.message);
     }
-}
+
     async function excluirEtapaPCP(id) {
         if(confirm("ATENÇÃO: Apagar esta etapa fará com que as obras que estão nela deixem de aparecer no painel até serem realocadas. Continuar?")) {
             try {
@@ -6607,7 +6150,7 @@ async function executarImportacaoSupabase() {
             if (linhaEstaVazia) continue;
 
             let registroMapeado = {
-                chave_mestre: EqSec.gerarSenha(12),
+                chave_mestre: 'Eng@2026',
                 empresa_id: empresaIdLogada
             };
 
@@ -6762,7 +6305,7 @@ async function processarPlanilhaProjetos() {
                         codigo_orcamento: String(orcamento),
                         data_inicio: dataIni,
                         data_fim: dataFim,
-                        etapa_pcp_id: null, // ALTERADO: Agora entra como null para cair direto na coluna de "Novos" no painel macro!
+                        etapa_pcp_id: 1, 
                         progresso: 0,
                         dados_checklist: {}
                     });
@@ -6786,7 +6329,6 @@ async function processarPlanilhaProjetos() {
             // Atualiza os painéis visuais
             if (typeof carregarProjetosPCP === 'function') carregarProjetosPCP();
             if (typeof carregarDashboardKanban === 'function') carregarDashboardKanban();
-            if (typeof carregarObrasNoDashboardMacro === 'function') carregarObrasNoDashboardMacro(); // Garante a atualização do macro
 
         } catch (err) {
             console.error("Erro na importação:", err);
@@ -6799,677 +6341,7 @@ async function processarPlanilhaProjetos() {
     
     reader.readAsArrayBuffer(file);
 }
-// ================= GESTÃO DE STATUS (MACRO) =================
-let statusPCP = [];
 
-async function abrirModalConfigStatus() {
-    carregarCheckboxesEtapas(null);
-    const modal = document.getElementById('modalConfigStatus');
-    if (!modal) {
-        alert("Erro: O HTML do modal modalConfigStatus não foi encontrado na página.");
-        return;
-    }
-    
-    modal.style.display = 'flex';
-    limparFormStatus();
-    
-    const lista = document.getElementById('listaConfigStatus');
-    lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Carregando status...</p>';
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('status_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-        if (error) throw error;
-        
-        statusPCP = data || [];
-        renderizarListaStatusConfig();
-    } catch (err) {
-        lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--erro);">Erro ao conectar com o banco de dados.</p>';
-    }
-}
-
-function renderizarListaStatusConfig() {
-    const lista = document.getElementById('listaConfigStatus');
-    lista.innerHTML = '';
-    
-    statusPCP.forEach(s => {
-        lista.innerHTML += `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px 15px; border-bottom:1px solid #e2e8f0; background: #fff;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span style="display:inline-block; width:16px; height:16px; background:${s.cor}; border-radius:50%; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></span>
-                    <strong style="color: var(--azul-marca); font-size: 0.9rem;">Ordem ${s.ordem_exibicao}</strong> 
-                    <span style="color: var(--texto-principal); font-size: 0.9rem;">- ${s.nome}</span>
-                </div>
-                <div style="display: flex; gap: 8px;">
-                    <button type="button" onclick="editarStatusForm('${s.id}', '${s.nome.replace(/'/g, "\\'")}', '${s.cor}', ${s.ordem_exibicao})" class="btn-acao" style="background: #f1f5f9; color: var(--azul-sutil); border: 1px solid #cbd5e1; padding: 6px 10px;" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" onclick="excluirStatusProjeto('${s.id}')" class="btn-acao" style="background: transparent; color: var(--erro); border: 1px solid var(--erro); padding: 6px 10px;" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-        `;
-    });
-    if(statusPCP.length === 0) lista.innerHTML = '<p style="padding: 15px; text-align: center; color: var(--texto-secundario);">Nenhum Status cadastrado no Banco de Dados.</p>';
-}
-
-function editarStatusForm(id, nome, cor, ordem) {
-    document.getElementById('configStatusId').value = id;
-    document.getElementById('configStatusNome').value = nome;
-    document.getElementById('configStatusCor').value = cor;
-    document.getElementById('configStatusOrdem').value = ordem;
-
-    // ADICIONE ESTA LINHA PARA CARREGAR AS ETAPAS VINCULADAS:
-    carregarCheckboxesEtapas(id);
-}
-function limparFormStatus() {
-    document.getElementById('formConfigStatus').reset();
-    document.getElementById('configStatusId').value = '';
-    document.getElementById('configStatusCor').value = '#10b981';
-}
-
-async function salvarStatusProjeto(e) {
-    if (e) e.preventDefault(); 
-
-    const id = document.getElementById('configStatusId').value;
-    const nome = document.getElementById('configStatusNome').value.trim();
-    const cor = document.getElementById('configStatusCor').value;
-    const ordem = parseInt(document.getElementById('configStatusOrdem').value);
-
-    if (!nome) { alert("Por favor, preencha o nome do status."); return; }
-
-    const payload = { 
-        empresa_id: empresaIdLogada, 
-        nome: nome, 
-        cor: cor, 
-        ordem_exibicao: ordem 
-    };
-
-    try {
-        let statusIdParaVincular = id;
-
-        // 1. SALVA OU CRIA O STATUS MACRO
-        if (id) {
-            const { error } = await supabaseClient.from('status_pcp').update(payload).eq('id', id).eq('empresa_id', empresaIdLogada);
-            if (error) throw error;
-        } else {
-            // O ".select()" é obrigatório aqui para o banco nos devolver qual foi o ID do status novo criado!
-            const { data, error } = await supabaseClient.from('status_pcp').insert([payload]).select();
-            if (error) throw error;
-            statusIdParaVincular = data[0].id; 
-        }
-
-        // 2. LIDA COM OS CHECKBOXES DAS ETAPAS
-        // Pega todos os IDs das caixinhas que o usuário deixou marcadas
-        const checkboxes = document.querySelectorAll('.chk-etapa-vinculo:checked');
-        const etapasSelecionadas = Array.from(checkboxes).map(chk => chk.value);
-
-        // A) Primeiro, limpamos qualquer vínculo antigo desse Status
-        await supabaseClient.from('etapas_pcp')
-            .update({ status_macro_id: null })
-            .eq('status_macro_id', statusIdParaVincular)
-            .eq('empresa_id', empresaIdLogada);
-
-        // B) Depois, se ele marcou alguma coisa, vinculamos as etapas novas
-        if (etapasSelecionadas.length > 0) {
-            await supabaseClient.from('etapas_pcp')
-                .update({ status_macro_id: statusIdParaVincular })
-                .in('id', etapasSelecionadas) // Atualiza todas as etapas marcadas de uma vez só!
-                .eq('empresa_id', empresaIdLogada);
-        }
-
-        limparFormStatus();
-        await abrirModalConfigStatus(); // Sua função que recarrega a tabela de status
-        
-    } catch(err) {
-        console.error("Erro interno:", err);
-        alert("Erro ao gravar. Verifique o console.");
-    }
-}
-
-async function excluirStatusProjeto(id) {
-    if(confirm("ATENÇÃO: Apagar este status pode impactar as etapas que estão vinculadas a ele. Continuar?")) {
-        try {
-            await supabaseClient.from('status_pcp').delete().eq('id', id).eq('empresa_id', empresaIdLogada);
-            await abrirModalConfigStatus();
-        } catch(err) {
-            alert("Erro ao excluir status. Verifique dependências no banco.");
-        }
-    }
-}
-
-// ================= FUNÇÃO PONTE (ALIMENTA O DROPDOWN DA TELA DE ETAPAS) =================
-async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
-    const select = document.getElementById('configEtapaStatus');
-    if (!select) return;
-
-    select.innerHTML = '<option value="">Carregando...</option>';
-
-    try {
-        // Busca os Status Macros no banco
-        const { data: statusLista, error } = await supabaseClient
-            .from('status_pcp')
-            .select('id, nome')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-
-        if (error) throw error;
-
-        // Opção padrão
-        select.innerHTML = '<option value="">-- Não vincular (Ocultar do Painel) --</option>';
-
-        // Preenche as opções
-        if (statusLista && statusLista.length > 0) {
-            statusLista.forEach(status => {
-                select.innerHTML += `<option value="${status.id}">${status.nome}</option>`;
-            });
-        }
-
-        // Seleciona o valor correspondente se houver
-        if (statusSelecionado !== null && statusSelecionado !== undefined && statusSelecionado !== "") {
-            select.value = String(statusSelecionado).trim();
-        } else {
-            select.value = "";
-        }
-
-    } catch (err) {
-        console.error("Erro ao carregar dropdown de status:", err);
-        select.innerHTML = '<option value="">Erro ao carregar opções</option>';
-    }
-}
-async function iniciarProducaoObra(obraId) {
-    try {
-        // 1. Busca a primeira etapa válida do PCP configurada na empresa
-        const { data: etapasPCP, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true })
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        if (!etapasPCP || etapasPCP.length === 0) {
-            alert("Atenção: Nenhuma etapa do PCP está configurada. Vá em 'Etapas' e crie pelo menos uma etapa para iniciar a produção.");
-            return;
-        }
-
-        const primeiraEtapaId = etapasPCP[0].id;
-
-        // 2. Atualiza a obra no banco de dados jogando-a para a primeira etapa
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaId })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // 3. Recarrega o painel macro para atualizar as colunas
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao iniciar produção da obra:", err);
-        alert("Erro ao iniciar a produção do projeto.");
-    }
-}
-
-async function carregarObrasNoDashboardMacro() {
-    try {
-        var containerBoard = document.getElementById('boardStatusMacro');
-        if (containerBoard) {
-            containerBoard.innerHTML = '<p style="color:var(--texto-secundario);padding:24px;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando status das obras...</p>';
-        }
-        // 1. Busca os Status Macros
-        const { data: statusMacros, error: errStatus } = await supabaseClient
-            .from('status_pcp')
-            .select('*')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-
-        if (errStatus) throw errStatus;
-        if (!statusMacros || statusMacros.length === 0) {
-            if (typeof carregarDashboardKanban === 'function') await carregarDashboardKanban();
-            return;
-        }
-
-        containerBoard = document.getElementById('boardStatusMacro');
-        if (containerBoard) {
-            containerBoard.innerHTML = '';
-            
-            statusMacros.forEach(status => {
-                containerBoard.innerHTML += `
-                    <div class="coluna-pcp" id="coluna-macro-${status.id}" ondragover="permitirDrop(event)" ondrop="soltarCardMacro(event, '${status.id}')" style="flex: 1; min-width: 280px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden;">
-                        <div class="coluna-header" style="background: #f8fafc; padding: 12px 15px; border-bottom: 3px solid ${status.cor || '#10b981'}; color: var(--azul-marca); font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-                            <span>${status.nome}</span> 
-                            <span id="count-macro-${status.id}" style="background: #e2e8f0; color: var(--texto-secundario); padding: 2px 6px; border-radius: 10px; font-size: 0.7rem;">0</span>
-                        </div>
-                        <div class="coluna-body" id="body-macro-${status.id}" style="padding: 15px; flex: 1; overflow-y: auto; min-height: 350px; display: flex; flex-direction: column; gap: 10px;"></div>
-                    </div>
-                `;
-            });
-        }
-
-        // 2. Busca obras, etapas e clientes em paralelo para garantir os nomes reais
-        const [resObras, resEtapas, resClientes] = await Promise.all([
-            supabaseClient.from('obras').select('*').eq('empresa_id', empresaIdLogada).order('id', { ascending: false }),
-            supabaseClient.from('etapas_pcp').select('id, nome, status_macro_id').eq('empresa_id', empresaIdLogada),
-            supabaseClient.from('clientes').select('cnpj, razao_social').eq('empresa_id', empresaIdLogada)
-        ]);
-
-        if (resObras.error) throw resObras.error;
-        if (resEtapas.error) throw resEtapas.error;
-
-        const obras = resObras.data || [];
-        const etapasDB = resEtapas.data || [];
-        const clientesDB = resClientes.data || [];
-
-        // Cria o mapa de clientes baseado no CNPJ (igual ao PCP)
-        const mapaClientes = {};
-        clientesDB.forEach(c => {
-            const key = String(c.cnpj).replace(/\D/g, '');
-            if (key) mapaClientes[key] = c.razao_social;
-        });
-
-        const mapaEtapas = {};
-        etapasDB.forEach(e => { mapaEtapas[String(e.id)] = e; });
-
-        const primeiroStatusMacroId = statusMacros[0].id;
-        const contadoresMacro = {};
-        statusMacros.forEach(s => contadoresMacro[s.id] = 0);
-
-        const colunasAgrupadas = {};
-        statusMacros.forEach(s => colunasAgrupadas[s.id] = {});
-
-        if (obras.length > 0) {
-            obras.forEach(obra => {
-                // Se a obra estiver com etapa nula/vazia, ela vai direto para o primeiro status macro (Novos)
-                let idStatusDestino = primeiroStatusMacroId;
-                let nomeEtapaExibicao = 'Recém-criado (Novo)';
-
-                // Se tiver etapa vinculada, busca a qual status macro ela pertence
-                if (obra.etapa_pcp_id) {
-                    const etapaObj = mapaEtapas[String(obra.etapa_pcp_id)];
-                    if (etapaObj && etapaObj.status_macro_id) {
-                        idStatusDestino = etapaObj.status_macro_id;
-                        nomeEtapaExibicao = etapaObj.nome;
-                    }
-                }
-
-                const codOrc = obra.codigo_orcamento ? String(obra.codigo_orcamento) : 'S-ORC';
-                
-                if (!colunasAgrupadas[idStatusDestino][codOrc]) {
-                    colunasAgrupadas[idStatusDestino][codOrc] = [];
-                }
-                
-                // Resolução correta do nome do cliente usando o mapa de clientes cadastrados
-                let nomeCliente = 'Cliente não informado';
-                if (obra.cliente_cnpj) {
-                    const cnpjKey = String(obra.cliente_cnpj).replace(/\D/g, '');
-                    if (mapaClientes[cnpjKey]) {
-                        nomeCliente = mapaClientes[cnpjKey];
-                    } else {
-                        nomeCliente = obra.cliente_cnpj;
-                    }
-                } else if (obra.cliente || obra.razao_social || obra.nome_cliente) {
-                    nomeCliente = obra.cliente || obra.razao_social || obra.nome_cliente;
-                }
-
-                colunasAgrupadas[idStatusDestino][codOrc].push({ 
-                    ...obra, 
-                    clienteNome: nomeCliente,
-                    etapaNome: nomeEtapaExibicao 
-                });
-            });
-        }
-
-        // 3. Renderiza os cards pai com clique no cabeçalho e itens internos arrastáveis
-        statusMacros.forEach(status => {
-            const corpoColuna = document.getElementById(`body-macro-${status.id}`);
-            const orcamentosNaColuna = colunasAgrupadas[status.id];
-            let qtdCardsNaColuna = 0;
-
-            if (corpoColuna && orcamentosNaColuna) {
-                Object.keys(orcamentosNaColuna).forEach(codOrc => {
-                    const listaItens = orcamentosNaColuna[codOrc];
-                    const primeiraObra = listaItens[0];
-                    qtdCardsNaColuna += listaItens.length; 
-
-                    const idGaveta = `gaveta-orc-${status.id}-${codOrc}`;
-
-                    // Itens internos (cada um com seu draggable próprio)
-                    let htmlItensInternos = '';
-                    listaItens.forEach(item => {
-                        // Exibe o botão "Iniciar Produção" apenas se o item estiver sem etapa (na coluna de Novos)
-                        const botaoIniciar = (!item.etapa_pcp_id) ? `
-                            <button onclick="event.stopPropagation(); iniciarProducaoObra('${item.id}')" style="margin-top: 6px; width: 100%; background: #10b981; border: none; color: #fff; padding: 5px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 5px;" title="Enviar para a primeira etapa da fábrica">
-                                <i class="fa-solid fa-play"></i> Iniciar Produção
-                            </button>
-                        ` : '';
-
-                        htmlItensInternos += `
-                            <div draggable="true" ondragstart="arrastarCardMacro(event, '${item.id}')" id="obra-macro-${item.id}" style="background: #fff; border: 1px solid #cbd5e1; border-left: 3px solid var(--azul-marca); border-radius: 4px; padding: 8px; margin-top: 6px; font-size: 11px; cursor: grab;" title="Arraste este projeto para outro status">
-                                <strong style="color: #1e293b; display: block; margin-bottom: 2px;">${item.nome_obra || item.nome || 'Item sem nome'}</strong>
-                                <span style="color: #0284c7; font-weight: 500;"><i class="fa-solid fa-list-check"></i> Etapa: ${item.etapaNome}</span>
-                                ${botaoIniciar}
-                            </div>
-                        `;
-                    });
-
-                    // Card Pai com onclick direto no bloco superior para expandir/recolher ao clicar
-                    corpoColuna.innerHTML += `
-                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid ${status.cor || 'var(--azul-marca)'}; border-radius: 6px; padding: 10px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 8px;">
-                            <div onclick="toggleGavetaOrcamento('${idGaveta}')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" title="Clique para expandir/recolher">
-                                <div>
-                                    <div style="font-size: 0.75rem; font-weight: bold; color: var(--azul-marca);">Orçamento: #${codOrc}</div>
-                                    <strong style="font-size: 12px; color: #1e293b; display: block; margin-top: 2px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${primeiraObra.clienteNome}">${primeiraObra.clienteNome}</strong>
-                                    <span style="font-size: 10px; color: #64748b; background: #e2e8f0; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-top: 4px;">${listaItens.length} ite${listaItens.length > 1 ? 'ns' : 'm'}</span>
-                                </div>
-                                <div style="color: var(--azul-marca); font-size: 14px; padding: 5px;">
-                                    <i class="fa-solid fa-chevron-down" id="icon-${idGaveta}"></i>
-                                </div>
-                            </div>
-
-                            <!-- Gaveta com os itens internos -->
-                            <div id="${idGaveta}" style="display: none; margin-top: 10px; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
-                                ${htmlItensInternos}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            contadoresMacro[status.id] = qtdCardsNaColuna;
-            const spanCount = document.getElementById(`count-macro-${status.id}`);
-            if (spanCount) spanCount.innerText = qtdCardsNaColuna;
-        });
-
-    } catch (err) {
-        console.error("Erro ao carregar o Dashboard Macro de Obras:", err);
-    }
-}
-// Funções de Apoio ao Drag and Drop e Gaveta
-function permitirDrop(ev) {
-    ev.preventDefault();
-}
-
-function arrastarCardMacro(ev, obraId) {
-    ev.dataTransfer.setData("text/plain", obraId);
-}
-
-function toggleGavetaOrcamento(idGaveta) {
-    const gaveta = document.getElementById(idGaveta);
-    const icone = document.getElementById(`icon-${idGaveta}`);
-    if (gaveta) {
-        if (gaveta.style.display === 'none') {
-            gaveta.style.display = 'block';
-            if (icone) icone.className = 'fa-solid fa-chevron-up';
-        } else {
-            gaveta.style.display = 'none';
-            if (icone) icone.className = 'fa-solid fa-chevron-down';
-        }
-    }
-}
-
-
-function arrastarCardMacro(ev, obraId) {
-    ev.dataTransfer.setData("text/plain", obraId);
-}
-
-async function soltarCardMacro(ev, novoStatusMacroId) {
-    ev.preventDefault();
-    const obraId = ev.dataTransfer.getData("text/plain");
-    if (!obraId) return;
-
-    try {
-        // 1. REGRA DO VÍNCULO: 
-        // Busca na tabela de etapas qual é a primeira etapa do PCP que está 
-        // vinculada estritamente a este Status Macro de destino.
-        const { data: etapasDoStatus, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('status_macro_id', novoStatusMacroId)
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true }) // Ajustado para 'id' para evitar erro caso a coluna de ordenação mude
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        // 2. REGRA FLEXÍVEL (PERMITIR VOLTAR PARA NULL):
-        // Se o Status Macro não tiver nenhuma etapa vinculada (ex: coluna "Novos"),
-        // em vez de dar o alert e barrar, definimos como null para limpar o ID no banco!
-        let etapaParaSalvar = null;
-        if (etapasDoStatus && etapasDoStatus.length > 0) {
-            etapaParaSalvar = etapasDoStatus[0].id;
-        }
-
-        // 3. Atualiza a obra no banco de dados com o ID da etapa ou com NULL
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: etapaParaSalvar })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // 4. Recarrega o dashboard para atualizar a tela e os contadores instantaneamente
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao mover obra no painel macro:", err);
-        alert("Erro ao alterar o status do projeto.");
-    }
-}
-async function carregarDropdownStatusConfigPCP(statusSelecionado = null) {
-    const container = document.getElementById('containerCheckboxesStatusMacro');
-    if (!container) return;
-
-    container.innerHTML = '<span style="font-size: 12px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Carregando status...</span>';
-
-    try {
-        const { data: statusLista, error } = await supabaseClient
-            .from('status_pcp')
-            .select('id, nome')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true });
-
-        if (error) throw error;
-
-        container.innerHTML = '';
-
-        if (!statusLista || statusLista.length === 0) {
-            container.innerHTML = '<span style="font-size: 12px; color: #ef4444;">Nenhum status macro cadastrado.</span>';
-            return;
-        }
-
-        const targetIdStr = statusSelecionado !== null && statusSelecionado !== undefined ? String(statusSelecionado).trim() : null;
-
-        // Desenha uma opção para cada status macro
-        statusLista.forEach(status => {
-            const statusIdStr = String(status.id).trim();
-            const isChecked = (targetIdStr && statusIdStr === targetIdStr) ? 'checked' : '';
-
-            container.innerHTML += `
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #334155;">
-                    <input type="radio" name="chkStatusMacroUnico" class="chk-status-macro-vinculo" value="${status.id}" ${isChecked}>
-                    ${status.nome}
-                </label>
-            `;
-        });
-
-        // Opção para desmarcar (sem vínculo)
-        container.innerHTML += `
-            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 2px;">
-                <input type="radio" name="chkStatusMacroUnico" class="chk-status-macro-vinculo" value="" ${!targetIdStr ? 'checked' : ''}>
-                -- Nenhum (Ocultar do Painel) --
-            </label>
-        `;
-
-    } catch (err) {
-        console.error("Erro ao carregar opções de status:", err);
-        container.innerHTML = '<span style="font-size: 12px; color: #ef4444;">Erro ao carregar opções.</span>';
-    }
-}
-async function carregarCheckboxesEtapas(statusId = null) {
-    const container = document.getElementById('containerCheckboxesEtapas');
-    if (!container) return;
-
-    // Mostra o loading animado
-    container.innerHTML = '<span style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando etapas...</span>';
-
-    try {
-        // Busca as etapas no banco
-        const { data: etapas, error } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id, nome, status_macro_id')
-            .eq('empresa_id', empresaIdLogada)
-            .order('id', { ascending: true });
-
-        if (error) throw error;
-
-        container.innerHTML = ''; // Limpa o loading
-        
-        if(!etapas || etapas.length === 0) {
-            container.innerHTML = '<span style="font-size: 13px; color: #ef4444;">Nenhuma etapa cadastrada no Kanban ainda.</span>';
-            return;
-        }
-
-        // Normaliza o ID atual para string para evitar conflito entre string e número
-        const targetIdStr = statusId ? String(statusId).trim() : null;
-
-        // Desenha uma caixinha para cada etapa
-        etapas.forEach(etapa => {
-            const etapaStatusStr = etapa.status_macro_id ? String(etapa.status_macro_id).trim() : null;
-            const isChecked = (targetIdStr && etapaStatusStr === targetIdStr) ? 'checked' : '';
-            
-            container.innerHTML += `
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: #334155;">
-                    <input type="checkbox" class="chk-etapa-vinculo" value="${etapa.id}" ${isChecked}>
-                    ${etapa.nome}
-                </label>
-            `;
-        });
-    } catch (err) {
-        console.error("Erro ao carregar checkboxes:", err);
-        container.innerHTML = '<span style="font-size: 13px; color: #ef4444;">Erro ao carregar as opções. Pressione F12 e veja o Console.</span>';
-    }
-}
-// Função chamada a cada tecla digitada no campo de busca do cliente
-// Função de busca assíncrona direta no Supabase (igual à Central de Clientes)
-async function buscarClientesParaEdicao(termo) {
-    termo = EqSec.sanitizarFiltro(termo);
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    const inputHidden = document.getElementById('editObraGlobalCnpj');
-    
-    // Limpa o hidden se o usuário apagar o texto
-    if (!termo || termo.trim() === "") {
-        if (inputHidden) inputHidden.value = "";
-        if (dropdown) dropdown.style.display = "none";
-        return;
-    }
-
-    if (!dropdown) return;
-
-    try {
-        let query = supabaseClient
-            .from('clientes')
-            .select('cnpj, razao_social')
-            .eq('empresa_id', empresaIdLogada);
-
-        // O mesmo filtro inteligente com ILIKE por partes que você usa na central
-        query = query.or(`razao_social.ilike.%${termo}%,cnpj.ilike.%${termo}%`);
-
-        const { data, error } = await query.limit(10);
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            dropdown.innerHTML = '<div style="padding: 10px; color: #64748b; font-size: 12px;">Nenhum cliente encontrado</div>';
-            dropdown.style.display = "block";
-            return;
-        }
-
-        dropdown.innerHTML = data.map(c => `
-                <div onclick="selecionarClienteModal(this.dataset.razao, this.dataset.cnpj)" data-razao="${EqSec.escapeHtml(c.razao_social)}" data-cnpj="${EqSec.escapeHtml(c.cnpj)}" style="padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 12px;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
-                    <div style="font-weight: bold; color: var(--azul-marca);">${EqSec.escapeHtml(c.razao_social)}</div>
-                    <div style="color: #64748b; font-size: 11px;">CNPJ: ${EqSec.escapeHtml(c.cnpj)}</div>
-                </div>
-            `).join('');
-        dropdown.style.display = "block";
-
-    } catch (err) {
-        console.error("Erro na busca de clientes:", err);
-    }
-}
-
-window.debouncedBuscaObraCli = EqSec.debounce(buscarClientesParaEdicao, 400);
-
-// Função disparada quando você clica em cima do cliente na lista
-function selecionarClienteModal(razaoSocial, cnpj) {
-    document.getElementById('editObraGlobalCnpjBusca').value = `${razaoSocial} — ${cnpj}`;
-    document.getElementById('editObraGlobalCnpj').value = cnpj; // Salva o CNPJ real no input oculto
-    document.getElementById('dropdownResultadosClientes').style.display = 'none'; // Fecha a caixa
-}
-
-// Fecha a caixinha se clicar fora dela na tela
-document.addEventListener('click', function(e) {
-    const buscaInput = document.getElementById('editObraGlobalCnpjBusca');
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    if (buscaInput && dropdown && !buscaInput.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
-
-// Função disparada quando você clica em cima do cliente na lista
-function selecionarClienteModal(razaoSocial, cnpj) {
-    document.getElementById('editObraGlobalCnpjBusca').value = `${razaoSocial} — ${cnpj}`;
-    document.getElementById('editObraGlobalCnpj').value = cnpj; // Salva o CNPJ real no input oculto
-    document.getElementById('dropdownResultadosClientes').style.display = 'none'; // Fecha a caixa
-}
-
-// Opcional: Fecha a caixinha se clicar fora dela na tela
-document.addEventListener('click', function(e) {
-    const buscaInput = document.getElementById('editObraGlobalCnpjBusca');
-    const dropdown = document.getElementById('dropdownResultadosClientes');
-    if (buscaInput && dropdown && !buscaInput.contains(e.target) && !dropdown.contains(e.target)) {
-        dropdown.style.display = 'none';
-    }
-});
-async function iniciarProducaoObra(obraId) {
-    try {
-        // 1. Busca a primeira etapa válida do PCP configurada na empresa (ordenada pela ordem de exibição ou ID)
-        const { data: etapasPCP, error: errEtapas } = await supabaseClient
-            .from('etapas_pcp')
-            .select('id')
-            .eq('empresa_id', empresaIdLogada)
-            .order('ordem_exibicao', { ascending: true })
-            .limit(1);
-
-        if (errEtapas) throw errEtapas;
-
-        if (!etapasPCP || etapasPCP.length === 0) {
-            alert("Atenção: Nenhuma etapa do PCP está configurada. Vá em 'Etapas' e crie pelo menos uma etapa para iniciar a produção.");
-            return;
-        }
-
-        const primeiraEtapaId = etapasPCP[0].id;
-
-        // 2. Atualiza a obra no banco de dados jogando-a para a primeira etapa da fábrica
-        const { error: errUpdate } = await supabaseClient
-            .from('obras')
-            .update({ etapa_pcp_id: primeiraEtapaId })
-            .eq('id', obraId)
-            .eq('empresa_id', empresaIdLogada);
-
-        if (errUpdate) throw errUpdate;
-
-        // 3. Recarrega o painel macro para mover o card instantaneamente de coluna
-        carregarObrasNoDashboardMacro();
-
-    } catch (err) {
-        console.error("Erro ao iniciar produção da obra:", err);
-        alert("Erro ao iniciar a produção do projeto.");
-    }
-}
 </script>
 <!-- Modal de Importação -->
 <div id="modalImportacao" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">

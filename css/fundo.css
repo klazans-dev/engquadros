@@ -1,0 +1,53 @@
+/* Fundo industrial compartilhado (login, admin, site) */
+.global-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    z-index: -5;
+    opacity: 0.18;
+    mix-blend-mode: luminosity;
+    pointer-events: none;
+}
+
+#telaLogin .global-bg {
+    position: absolute;
+    z-index: 1;
+}
+
+.circuit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -4;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+#telaLogin .circuit-overlay {
+    position: absolute;
+    z-index: 2;
+}
+
+#btnMenuMobile {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+    padding: 6px 8px;
+}
+
+@media (max-width: 768px) {
+    #btnMenuMobile { display: block; }
+}

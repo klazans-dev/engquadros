@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/security.js"></script>
+    <script src="js/session-timeout.js"></script>
 
     <style>
         :root { 
@@ -330,24 +332,49 @@
             alert("⚠️ ERRO: O motor do banco de dados não carregou.");
         }
 
-        const supabaseUrl = 'https://grqfsfvqfnybjckopwqy.supabase.co'; 
-        const supabaseKey = 'sb_publishable_VEaH0YLuk_Wmf55CpZFOrg_Rv2L5qxE';
-        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        let clienteLogado = sessionStorage.getItem('clienteCnpj');
+        if (clienteLogado) {
+            const cnpjCanon = EqSec.cnpjDigitos(clienteLogado) || clienteLogado;
+            sessionStorage.setItem('clienteCnpj', cnpjCanon);
+            clienteLogado = cnpjCanon;
+        }
 
-        let clienteLogado = null;
+        const supabaseClient = EqSec.criarClienteSupabase();
         let nomeClienteLogado = 'Cliente';
         let obrasGlobaisCliente = [];
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const cnpjUrl = urlParams.get('cnpj');
-
-        clienteLogado = cnpjUrl || sessionStorage.getItem('clienteCnpj') || localStorage.getItem('clienteCnpj') || sessionStorage.getItem('cnpj') || localStorage.getItem('cnpj');
-        
-        const nomeSalvo = sessionStorage.getItem('clienteNome') || localStorage.getItem('clienteNome');
+        const nomeSalvo = sessionStorage.getItem('clienteNome');
         if (nomeSalvo) nomeClienteLogado = nomeSalvo;
 
+        function filtrarCnpjCliente(linhas, campo) {
+            campo = campo || 'cliente_cnpj';
+            return (linhas || []).filter(function (row) {
+                return EqSec.mesmaLinhaCnpj(row[campo], clienteLogado);
+            });
+        }
+
+        async function consultarPorCnpj(tabela, opts) {
+            opts = opts || {};
+            const coluna = opts.coluna || 'cliente_cnpj';
+            const montar = function (comFiltroCnpj) {
+                let q = supabaseClient.from(tabela).select(opts.select || '*');
+                if (comFiltroCnpj) q = EqSec.aplicarFiltroCnpj(q, coluna, clienteLogado);
+                if (opts.eq) {
+                    Object.keys(opts.eq).forEach(function (k) { q = q.eq(k, opts.eq[k]); });
+                }
+                if (opts.order) q = q.order(opts.order, { ascending: opts.asc === true });
+                return q;
+            };
+            let res = await montar(true);
+            if (res.error || !(res.data && res.data.length)) {
+                const res2 = await montar(false);
+                if (!res2.error) res = res2;
+                else if (res.error) throw res.error;
+            }
+            if (res.error) throw res.error;
+            return filtrarCnpjCliente(res.data, coluna);
+        }
+
         if (clienteLogado) {
-            sessionStorage.setItem('clienteCnpj', clienteLogado);
             const elPainel = document.getElementById('telaPainel');
             if (elPainel) elPainel.style.display = 'flex';
             iniciarPainelCliente();
@@ -371,6 +398,12 @@
         }
 
         function iniciarPainelCliente() {
+            if (typeof EqSessionTimeout !== 'undefined') {
+                EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
+                    sessionStorage.clear();
+                    window.location.href = 'login.html?session=expired';
+                });
+            }
             const elNome = document.getElementById('nomeClienteSidebar');
             if (elNome) elNome.innerText = nomeClienteLogado;
 
@@ -424,13 +457,7 @@
                     return;
                 }
 
-                const { data: obras, error: errObras } = await supabaseClient
-                    .from('obras')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .order('id', { ascending: false });
-
-                if (errObras) throw errObras;
+                const obras = await consultarPorCnpj('obras', { order: 'id', asc: false });
                 obrasGlobaisCliente = obras || [];
 
                 let columnsHtml = '';
@@ -440,14 +467,8 @@
                     const nomeEtapaLower = nomeEtapa.toLowerCase();
                     
                     const obrasDaEtapa = (obras || []).filter(obra => {
-                        let etapaObraId = String(obra.etapa_pcp_id || '');
-                        if (etapaObraId.startsWith('1')) etapaObraId = etapaObraId.replace('1', '');
-
-                        const matchId = (etapaObraId && String(etapa.id) === etapaObraId);
-                        const obraStatus = (obra.status || obra.fase || obra.etapa || '').trim().toLowerCase();
-                        const matchTexto = (obraStatus && obraStatus === nomeEtapaLower);
-
-                        return matchId || matchTexto;
+                        const etapaObraId = String(obra.etapa_pcp_id || '').trim();
+                        return !!(etapaObraId && String(etapa.id).trim() === etapaObraId);
                     });
 
                     columnsHtml += `
@@ -474,6 +495,7 @@
                                     <h4 style="color: var(--azul-marca); font-size: 0.9rem; margin-bottom: 2px; display: flex; align-items: center; gap: 6px;">
                                         <i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${obra.nome_obra}
                                     </h4>
+                                    ${obra.codigo_orcamento ? `<p style="font-size:0.72rem;color:#0f766e;font-weight:700;margin:0 0 6px;"><i class="fa-solid fa-file-invoice-dollar"></i> Orçamento ${obra.codigo_orcamento}</p>` : ''}
                                     <div style="font-size: 0.75rem; color: var(--texto-secundario); display: flex; flex-direction: column; gap: 2px; background: #f8fafc; padding: 6px 8px; border-radius: 4px; border: 1px solid #e2e8f0;">
                                         <span>Início: <strong style="color:var(--azul-marca);">${dIni}</strong></span>
                                         <span>Previsão: <strong style="color:var(--azul-marca);">${dFim}</strong></span>
@@ -489,7 +511,7 @@
                                     </div>
                                     
                                     <!-- BOTÃO DE ACESSAR ANEXOS/ARQUIVOS DIRETAMENTE NO KANBAN -->
-                                    <button class="btn-ver-arquivos" id="btn-gaveta-kanban-${obra.id}" onclick="toggleGavetaArquivosKanban(${obra.id})">
+                                    <button class="btn-ver-arquivos" id="btn-gaveta-kanban-${obra.id}" onclick="toggleGavetaArquivosKanban('${obra.id}')">
                                         <i class="fa-regular fa-folder-open"></i> Acessar Arquivos
                                     </button>
                                     
@@ -505,8 +527,38 @@
                     `;
                 });
 
+                const idsNasEtapas = {};
+                (etapas || []).forEach(function (et) {
+                    (obras || []).forEach(function (o) {
+                        if (String(o.etapa_pcp_id || '').trim() === String(et.id).trim()) idsNasEtapas[o.id] = true;
+                    });
+                });
+                const fila = (obras || []).filter(function (o) { return !idsNasEtapas[o.id]; });
+                if (fila.length) {
+                    let filaHtml = '';
+                    fila.forEach(function (obra) {
+                        const prog = obra.progresso || 0;
+                        filaHtml += `
+                            <div class="kanban-card-item" style="border-left-color: #0f766e;">
+                                <h4 style="color: var(--azul-marca); font-size: 0.9rem; margin-bottom: 2px;">${obra.nome_obra || 'Quadro'}</h4>
+                                ${obra.codigo_orcamento ? `<p style="font-size:0.72rem;color:#0f766e;font-weight:700;margin:0 0 6px;"><i class="fa-solid fa-file-invoice-dollar"></i> Orçamento ${obra.codigo_orcamento}</p>` : ''}
+                                <p style="font-size:0.75rem;color:#64748b;">Solicitado a partir do orçamento. Aguardando entrada na fábrica.</p>
+                                <div class="progress-text"><span>Progresso</span><span style="font-weight:700;">${prog}%</span></div>
+                                <div class="progress-container"><div class="progress-fill" style="width:${prog}%;"></div></div>
+                            </div>`;
+                    });
+                    columnsHtml = `
+                        <div class="kanban-coluna">
+                            <h3 style="border-bottom-color:#0f766e;">
+                                <span><i class="fa-solid fa-inbox" style="color:#0f766e;"></i> Solicitado</span>
+                                <span style="font-size: 0.72rem; background: #ccfbf1; color: #0f766e; padding: 2px 8px; border-radius: 10px; font-weight: 700;">${fila.length}</span>
+                            </h3>
+                            <div class="kanban-cards-container">${filaHtml}</div>
+                        </div>` + columnsHtml;
+                }
+
                 boardContainer.innerHTML = columnsHtml;
-                boardContainer.style.setProperty('--num-colunas', Math.max(etapas.length, 1));
+                boardContainer.style.setProperty('--num-colunas', Math.max(etapas.length + (fila.length ? 1 : 0), 1));
 
             } catch (e) {
                 console.error("Erro ao carregar Kanban dinâmico:", e);
@@ -532,13 +584,11 @@
             gaveta.innerHTML = '<p style="font-size: 0.75rem; color: var(--texto-secundario); text-align: center; padding: 6px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>';
 
             try {
-                const { data, error } = await supabaseClient.from('arquivos')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .eq('obra_id', obraId)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
+                const data = await consultarPorCnpj('arquivos', {
+                    eq: { obra_id: obraId },
+                    order: 'id',
+                    asc: false
+                });
 
                 if (!data || data.length === 0) {
                     gaveta.innerHTML = '<p style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding: 6px 0;">Nenhum arquivo vinculado.</p>';
@@ -553,7 +603,7 @@
                     
                     let htmlBotaoAprovar = '';
                     if (statusAprovacao === 'pendente') {
-                        htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoKanban('${arq.id}', ${obraId})" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
+                        htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoKanban('${arq.id}', '${obraId}')" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
                     } else {
                         htmlBotaoAprovar = `<span style="color: var(--sucesso); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; gap: 3px;"><i class="fa-solid fa-check-double"></i> Aprovado</span>`;
                     }
@@ -601,12 +651,7 @@
             container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Sincronizando dados...</p>';
 
             try {
-                const { data, error } = await supabaseClient.from('obras')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
+                const data = await consultarPorCnpj('obras', { order: 'id', asc: false });
                 obrasGlobaisCliente = data || [];
 
                 if (!data || data.length === 0) {
@@ -643,6 +688,7 @@
                     html += `
                         <div class="obra-card">
                             <h4 style="margin-bottom: ${htmlDatas ? '0' : '12px'};"><i class="fa-regular fa-building" style="color: var(--azul-sutil);"></i> ${nomeO}</h4>
+                            ${obra.codigo_orcamento ? `<p style="font-size:0.75rem;color:#0f766e;font-weight:700;margin:4px 0 8px;"><i class="fa-solid fa-file-invoice-dollar"></i> Orçamento ${obra.codigo_orcamento}</p>` : ''}
                             ${htmlDatas}
                             <div class="progress-text">
                                 <span>Status Técnico</span>
@@ -652,7 +698,7 @@
                                 <div class="progress-fill" style="width: ${prog}%; background: ${corBarra};"></div>
                             </div>
                             
-                            <button class="btn-ver-arquivos" id="btn-gaveta-${obra.id}" onclick="toggleGavetaArquivos(${obra.id})">
+                            <button class="btn-ver-arquivos" id="btn-gaveta-${obra.id}" onclick="toggleGavetaArquivos('${obra.id}')">
                                 <i class="fa-regular fa-folder-open"></i> Acessar Arquivos
                             </button>
                             
@@ -684,13 +730,11 @@
             gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 8px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Buscando arquivos...</p>';
 
             try {
-                const { data, error } = await supabaseClient.from('arquivos')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .eq('obra_id', obraId)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
+                const data = await consultarPorCnpj('arquivos', {
+                    eq: { obra_id: obraId },
+                    order: 'id',
+                    asc: false
+                });
 
                 if (!data || data.length === 0) {
                     gaveta.innerHTML = '<p style="font-size: 0.8rem; color: var(--texto-secundario); text-align: center; padding: 8px 0;">Nenhum arquivo vinculado.</p>';
@@ -705,7 +749,7 @@
                     
                     let htmlBotaoAprovar = '';
                     if (statusAprovacao === 'pendente') {
-                        htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoInline('${arq.id}', ${obraId})" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
+                        htmlBotaoAprovar = `<button class="btn-mini-acao btn-mini-aprovar" onclick="aprovarDocumentoInline('${arq.id}', '${obraId}')" title="Assinar Aceite"><i class="fa-solid fa-signature"></i> Aprovar</button>`;
                     } else {
                         htmlBotaoAprovar = `<span style="color: var(--sucesso); font-size: 0.75rem; font-weight: 700; display: flex; align-items: center; gap: 4px;"><i class="fa-solid fa-check-double"></i> Aprovado</span>`;
                     }
@@ -754,16 +798,10 @@
 
             try {
                 if (obrasGlobaisCliente.length === 0) {
-                    const { data: obrasData } = await supabaseClient.from('obras').select('*').eq('cliente_cnpj', clienteLogado);
-                    obrasGlobaisCliente = obrasData || [];
+                    obrasGlobaisCliente = await consultarPorCnpj('obras', { order: 'id', asc: false });
                 }
 
-                const { data, error } = await supabaseClient.from('arquivos')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
+                const data = await consultarPorCnpj('arquivos', { order: 'id', asc: false });
 
                 if (!data || data.length === 0) {
                     container.innerHTML = '<p style="color:var(--texto-secundario);">Nenhum documento encontrado.</p>';
@@ -838,12 +876,7 @@
             container.innerHTML = '<p style="color: var(--texto-secundario);"><i class="fa-solid fa-spinner fa-spin"></i> Atualizando solicitações...</p>';
 
             try {
-                const { data, error } = await supabaseClient.from('chamados_suporte')
-                    .select('*')
-                    .eq('cliente_cnpj', clienteLogado)
-                    .order('data_abertura', { ascending: false });
-
-                if (error) throw error;
+                const data = await consultarPorCnpj('chamados_suporte', { order: 'data_abertura', asc: false });
 
                 if (!data || data.length === 0) {
                     container.innerHTML = `
@@ -909,7 +942,8 @@
 
                 try {
                     const { error } = await supabaseClient.from('chamados_suporte').insert([{
-                        cliente_cnpj: clienteLogado,
+                        cliente_cnpj: EqSec.cnpjDigitos(clienteLogado) || clienteLogado,
+                        empresa_id: sessionStorage.getItem('empresaId') || undefined,
                         assunto: assunto,
                         mensagem: mensagem,
                         status: 'aberto'
