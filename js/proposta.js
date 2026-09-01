@@ -1095,18 +1095,22 @@
         }
 
         try {
-            var { data: emp } = await supabaseClient.from('admin_master')
-                .select('nome_fantasia, logo_url, cnpj, email, whatsapp, telefone, cor_primaria, cor_secundaria')
-                .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
-                .limit(1).maybeSingle();
-            ctx.emitente = emp || {};
-            if (emp && emp.logo_url) {
+            var t = (typeof EqSec !== 'undefined' && EqSec.carregarIdentidadeTenant)
+                ? await EqSec.carregarIdentidadeTenant(supabaseClient, empresaId)
+                : null;
+            ctx.emitente = (t && t.master) ? t.master : {};
+            if (t && t.logo) ctx.emitente.logo_url = t.logo;
+            if (t && t.nome) ctx.emitente.nome_fantasia = t.nome;
+            if (t && t.logo) {
                 var img = document.getElementById('logoSidebarProp');
-                if (img) img.src = emp.logo_url;
+                if (img) img.src = t.logo;
+            } else {
+                var imgVazio = document.getElementById('logoSidebarProp');
+                if (imgVazio) imgVazio.removeAttribute('src');
             }
-            if (emp && emp.nome_fantasia) {
+            if (t && t.nome) {
                 var badge = document.getElementById('badgeEmpresaProp');
-                if (badge) badge.textContent = emp.nome_fantasia;
+                if (badge) badge.textContent = t.nome;
             }
         } catch (e) { ctx.emitente = {}; }
 

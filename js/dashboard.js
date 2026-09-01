@@ -860,19 +860,13 @@
 
     async function carregarIdentidadeTenant() {
         try {
-            if (!empresaId) return;
-            var res = await supabaseClient
-                .from('admin_master')
-                .select('nome_fantasia, logo_url, cor_primaria, cor_secundaria')
-                .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
-                .limit(1)
-                .maybeSingle();
-            var tenant = res.data;
-            if (!tenant) return;
-            if (tenant.nome_fantasia) sessionStorage.setItem('masterNome', tenant.nome_fantasia);
-            if (tenant.logo_url) sessionStorage.setItem('masterLogo', tenant.logo_url);
-            if (tenant.cor_primaria) sessionStorage.setItem('masterCorPrimaria', tenant.cor_primaria);
-            if (tenant.cor_secundaria) sessionStorage.setItem('masterCorSecundaria', tenant.cor_secundaria);
+            if (!empresaId || typeof EqSec === 'undefined' || !EqSec.carregarIdentidadeTenant) return;
+            var t = await EqSec.carregarIdentidadeTenant(supabaseClient, empresaId);
+            if (!t) return;
+            if (t.nome) sessionStorage.setItem('masterNome', t.nome);
+            sessionStorage.setItem('masterLogo', t.logo || '');
+            if (t.corPri) sessionStorage.setItem('masterCorPrimaria', t.corPri);
+            if (t.corSec) sessionStorage.setItem('masterCorSecundaria', t.corSec);
             if (typeof EqNav !== 'undefined') EqNav.aplicarIdentidade();
         } catch (e) {
             console.warn('Identidade do tenant indisponível.', e);

@@ -2852,17 +2852,19 @@
 
     async function carregarIdentidade() {
         try {
-            var { data: tenant } = await supabaseClient.from('admin_master')
-                .select('nome_fantasia, logo_url, cnpj, email, whatsapp, telefone, cor_primaria, cor_secundaria')
-                .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
-                .limit(1).maybeSingle();
-            if (tenant) {
-                emitenteCache = tenant;
-                if (tenant.nome_fantasia) sessionStorage.setItem('masterNome', tenant.nome_fantasia);
-                if (tenant.logo_url) sessionStorage.setItem('masterLogo', tenant.logo_url);
-                if (tenant.cor_primaria) sessionStorage.setItem('masterCorPrimaria', tenant.cor_primaria);
-                if (tenant.cor_secundaria) sessionStorage.setItem('masterCorSecundaria', tenant.cor_secundaria);
+            var t = (typeof EqSec !== 'undefined' && EqSec.carregarIdentidadeTenant)
+                ? await EqSec.carregarIdentidadeTenant(supabaseClient, empresaId)
+                : null;
+            var tenant = t && t.master ? t.master : null;
+            if (t) {
+                emitenteCache = Object.assign({}, tenant || {}, { logo_url: t.logo, nome_fantasia: t.nome || (tenant && tenant.nome_fantasia) });
+                if (t.nome) sessionStorage.setItem('masterNome', t.nome);
+                sessionStorage.setItem('masterLogo', t.logo || '');
+                if (t.corPri) sessionStorage.setItem('masterCorPrimaria', t.corPri);
+                if (t.corSec) sessionStorage.setItem('masterCorSecundaria', t.corSec);
                 if (typeof EqNav !== 'undefined') EqNav.aplicarIdentidade();
+            } else {
+                emitenteCache = {};
             }
         } catch (e) { emitenteCache = {}; }
     }

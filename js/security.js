@@ -250,10 +250,7 @@
 
         if (opts.empresaId) {
             var r1 = await sb.from('empresas').select(COLUNAS_EMPRESA).eq('id', opts.empresaId).limit(1);
-            if (!r1.error && r1.data && r1.data[0]) {
-                emp = r1.data[0];
-                if (alvoCnpj && cnpjDigitos(emp.cnpj) && cnpjDigitos(emp.cnpj) !== alvoCnpj) emp = null;
-            }
+            if (!r1.error && r1.data && r1.data[0]) emp = r1.data[0];
         }
 
         if (!emp && valores.length) {
@@ -283,6 +280,50 @@
         }
 
         return emp;
+    }
+
+    function logoDoTenant(emp, master) {
+        var a = emp && emp.logo_url;
+        var b = master && master.logo_url;
+        if (a && String(a).trim() && a !== 'null') return String(a).trim();
+        if (b && String(b).trim() && b !== 'null') return String(b).trim();
+        return '';
+    }
+
+    async function carregarIdentidadeTenant(sb, empresaId) {
+        empresaId = String(empresaId || '').trim();
+        if (!sb || !empresaId) return null;
+        var emp = null;
+        var rEmp = await sb.from('empresas').select(COLUNAS_EMPRESA).eq('id', empresaId).maybeSingle();
+        if (!rEmp.error) emp = rEmp.data || null;
+
+        var rMaster = await sb.from('admin_master')
+            .select('id, empresa_id, logo_url, nome_fantasia, cor_primaria, cor_secundaria, cnpj')
+            .eq('empresa_id', empresaId)
+            .limit(20);
+        var masters = !rMaster.error ? (rMaster.data || []) : [];
+        var cnpjSessao = cnpjDigitos(sessionStorage.getItem('masterCnpj'));
+        var master = cnpjSessao ? acharPorCnpj(masters, cnpjSessao) : null;
+        if (!master) master = masters[0] || null;
+
+        if (!master) {
+            var rId = await sb.from('admin_master')
+                .select('id, empresa_id, logo_url, nome_fantasia, cor_primaria, cor_secundaria, cnpj')
+                .eq('id', empresaId)
+                .maybeSingle();
+            var row = !rId.error ? rId.data : null;
+            if (row && (!row.empresa_id || String(row.empresa_id) === empresaId)) master = row;
+        }
+
+        return {
+            empresa: emp,
+            master: master,
+            logo: logoDoTenant(emp, master),
+            razao: emp && emp.razao_social ? String(emp.razao_social).trim() : '',
+            nome: master && master.nome_fantasia ? String(master.nome_fantasia).trim() : '',
+            corPri: master && master.cor_primaria,
+            corSec: master && master.cor_secundaria
+        };
     }
 
     async function verificarTenantAtivo(sb, opts) {
@@ -354,6 +395,8 @@
         validarPdfFront: validarPdfFront,
         verificarTenantAtivo: verificarTenantAtivo,
         verificarClienteAtivo: verificarClienteAtivo,
+        carregarIdentidadeTenant: carregarIdentidadeTenant,
+        logoDoTenant: logoDoTenant,
         normalizarStatusConta: normalizarStatusConta,
         empresaEstaAtiva: empresaEstaAtiva,
         clienteEstaAtivo: clienteEstaAtivo,

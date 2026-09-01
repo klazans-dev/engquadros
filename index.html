@@ -2537,6 +2537,15 @@
     }
 
     function aplicarSessaoAdmin(sessao) {
+        var tipo = sessionStorage.getItem('tipoAcesso');
+        var equipeId = sessionStorage.getItem('equipeId');
+        var nomeEquipe = sessionStorage.getItem('nomeEquipe');
+        var permissoes = sessionStorage.getItem('permissoes');
+        sessionStorage.clear();
+        if (tipo) sessionStorage.setItem('tipoAcesso', tipo);
+        if (equipeId) sessionStorage.setItem('equipeId', equipeId);
+        if (nomeEquipe) sessionStorage.setItem('nomeEquipe', nomeEquipe);
+        if (permissoes) sessionStorage.setItem('permissoes', permissoes);
         sessionStorage.setItem('acessoCRM', 'true');
         sessionStorage.setItem('empresaId', sessao.empresaId);
         sessionStorage.setItem('masterCnpj', sessao.cnpj || '');
@@ -2571,7 +2580,7 @@
             var r2 = await supabaseClient
                 .from('admin_master')
                 .select('razao_social, empresas(razao_social)')
-                .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
+                .eq('empresa_id', empresaId)
                 .limit(1)
                 .maybeSingle();
             var row = r2.data;
@@ -2630,32 +2639,35 @@
         
         const imgSidebar = document.getElementById('logoSidebarAdmin');
         if (imgSidebar) {
-            if (logoFinal) {
-                imgSidebar.src = logoFinal;
-                imgSidebar.style.display = 'block';
-            } else {
-                imgSidebar.style.display = 'none';
-            }
+        if (logoFinal) {
+            imgSidebar.src = logoFinal;
+            imgSidebar.style.display = 'block';
+        } else {
+            imgSidebar.removeAttribute('src');
+            imgSidebar.style.display = 'none';
+        }
         }
         
         const imgTopoSidebar = document.getElementById('logoTopoSidebar');
         if (imgTopoSidebar) {
-            if (logoFinal) {
-                imgTopoSidebar.src = logoFinal;
-                imgTopoSidebar.style.display = 'block';
-            } else {
-                imgTopoSidebar.style.display = 'none';
-            }
+        if (logoFinal) {
+            imgTopoSidebar.src = logoFinal;
+            imgTopoSidebar.style.display = 'block';
+        } else {
+            imgTopoSidebar.removeAttribute('src');
+            imgTopoSidebar.style.display = 'none';
+        }
         }
         
         const imgLogin = document.getElementById('logoTelaLogin');
         if (imgLogin) {
-            if (logoFinal) {
-                imgLogin.src = logoFinal;
-                imgLogin.style.display = 'block';
-            } else {
-                imgLogin.style.display = 'none';
-            }
+        if (logoFinal) {
+            imgLogin.src = logoFinal;
+            imgLogin.style.display = 'block';
+        } else {
+            imgLogin.removeAttribute('src');
+            imgLogin.style.display = 'none';
+        }
         }
     }
 
@@ -2676,8 +2688,7 @@
 
         try {
             const gate = await EqSec.verificarTenantAtivo(supabaseClient, { cnpj: cnpjLimpo });
-            if (gate.logo) aplicarLogoEmTudo(gate.logo);
-            else aplicarLogoEmTudo('');
+            aplicarLogoEmTudo(gate.tenant ? (gate.logo || '') : '');
             if (!gate.ok) mostrarAvisoLogin(gate.mensagem);
             else mostrarAvisoLogin('');
         } catch (err) {
@@ -2907,7 +2918,11 @@
             }
             const tPrim = sessionStorage.getItem('masterCorPrimaria');
             const tSec = sessionStorage.getItem('masterCorSecundaria');
-            if (tPrim || tSec) aplicarTemaCores(tPrim, tSec);
+            aplicarTemaCores(tPrim, tSec);
+            if (gateSessao.tenant) {
+                sessionStorage.setItem('empresaId', gateSessao.tenant.id);
+                sessionStorage.setItem('masterLogo', gateSessao.logo || '');
+            }
             aplicarLogoEmTudo(sessionStorage.getItem('masterLogo'));
             if (typeof EqSessionTimeout !== 'undefined') {
                 EqSessionTimeout.iniciar(30 * 60 * 1000, function () {
@@ -2965,16 +2980,7 @@
         if (cnpjLimpo.length !== 14) return;
         try {
             const gate = await EqSec.verificarTenantAtivo(supabaseClient, { cnpj: cnpjLimpo });
-            if (gate.logo && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(gate.logo);
-            else {
-                const rpc = await supabaseClient.rpc('lookup_branding', { p_cnpj: cnpjLimpo });
-                if (!rpc.error && rpc.data && typeof aplicarLogoEmTudo === 'function') {
-                    aplicarLogoEmTudo(rpc.data.logo_url);
-                } else if (EqSec.rpcFalhouPorAusencia(rpc.error)) {
-                    const { data } = await supabaseClient.from('admin_master').select('logo_url').eq('cnpj', cnpjLimpo).maybeSingle();
-                    if (data && typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(data.logo_url);
-                }
-            }
+            if (typeof aplicarLogoEmTudo === 'function') aplicarLogoEmTudo(gate.tenant ? (gate.logo || '') : '');
             if (!gate.ok) mostrarAvisoLogin(gate.mensagem);
             else mostrarAvisoLogin('');
         } catch (err) {
@@ -3039,7 +3045,7 @@
                         cnpj: masterData.cnpj,
                         nome: masterData.nome_fantasia,
                         razao: await buscarRazaoNaEmpresa(empresaIdFinal),
-                        logo: masterData.logo_url,
+                        logo: EqSec.logoDoTenant(gate.tenant, masterData),
                         corPri: masterData.cor_primaria,
                         corSec: masterData.cor_secundaria
                     });
@@ -3102,7 +3108,7 @@
                         cnpj: masterData.cnpj,
                         nome: masterData.nome_fantasia,
                         razao: await buscarRazaoNaEmpresa(empresaIdFinalEq),
-                        logo: masterData.logo_url,
+                        logo: EqSec.logoDoTenant(gateEq.tenant, masterData),
                         corPri: masterData.cor_primaria,
                         corSec: masterData.cor_secundaria
                     });

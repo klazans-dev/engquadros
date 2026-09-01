@@ -251,17 +251,23 @@
         aplicarTema();
         var logo = sessionStorage.getItem('masterLogo') || '';
         var nome = sessionStorage.getItem('masterRazao') || sessionStorage.getItem('masterNome') || '';
-        if (logo && logo !== 'null' && logo !== 'undefined') {
+        var idsLogo = ['logoSidebarBi', 'logoSidebarOrc', 'logoSidebarProp', 'logoTopoSidebar', 'logoSidebarAdmin'];
+        var temLogo = logo && logo !== 'null' && logo !== 'undefined';
+        if (temLogo) {
             var fav = document.querySelector("link[rel*='icon']");
             if (fav) fav.href = logo;
-            ['logoSidebarBi', 'logoSidebarOrc', 'logoSidebarProp', 'logoTopoSidebar', 'logoSidebarAdmin'].forEach(function (id) {
-                var img = document.getElementById(id);
-                if (img) {
-                    img.src = logo;
-                    img.style.display = 'block';
-                }
-            });
         }
+        idsLogo.forEach(function (id) {
+            var img = document.getElementById(id);
+            if (!img) return;
+            if (temLogo) {
+                img.src = logo;
+                img.style.display = 'block';
+            } else {
+                img.removeAttribute('src');
+                img.style.display = 'none';
+            }
+        });
         if (nome) {
             var safe = EqSec ? EqSec.escapeHtml(nome) : nome;
             ['badgeEmpresaBi', 'badgeEmpresaOrc', 'badgeEmpresaProp'].forEach(function (id) {
@@ -360,25 +366,18 @@
     }
 
     function sincronizarTemaBanco() {
-        if (typeof EqSec === 'undefined' || !sessionStorage.getItem('empresaId')) return;
+        if (typeof EqSec === 'undefined' || !EqSec.carregarIdentidadeTenant || !sessionStorage.getItem('empresaId')) return;
         var sb = EqSec.criarClienteSupabase();
         if (!sb) return;
         var empresaId = sessionStorage.getItem('empresaId');
-        sb.from('admin_master')
-            .select('nome_fantasia, logo_url, cor_primaria, cor_secundaria, empresas(razao_social)')
-            .or('empresa_id.eq.' + empresaId + ',id.eq.' + empresaId)
-            .limit(1)
-            .maybeSingle()
-            .then(function (res) {
-                var t = res && res.data;
+        EqSec.carregarIdentidadeTenant(sb, empresaId)
+            .then(function (t) {
                 if (!t) return;
-                if (t.nome_fantasia) sessionStorage.setItem('masterNome', t.nome_fantasia);
-                var emp = t.empresas;
-                var razao = emp && (emp.razao_social || (emp[0] && emp[0].razao_social));
-                if (razao) sessionStorage.setItem('masterRazao', razao);
-                if (t.logo_url) sessionStorage.setItem('masterLogo', t.logo_url);
-                if (t.cor_primaria) sessionStorage.setItem('masterCorPrimaria', t.cor_primaria);
-                if (t.cor_secundaria) sessionStorage.setItem('masterCorSecundaria', t.cor_secundaria);
+                if (t.nome) sessionStorage.setItem('masterNome', t.nome);
+                if (t.razao) sessionStorage.setItem('masterRazao', t.razao);
+                sessionStorage.setItem('masterLogo', t.logo || '');
+                if (t.corPri) sessionStorage.setItem('masterCorPrimaria', t.corPri);
+                if (t.corSec) sessionStorage.setItem('masterCorSecundaria', t.corSec);
                 aplicarIdentidade();
             })
             .catch(function () { /* identidade da sessão permanece */ });
