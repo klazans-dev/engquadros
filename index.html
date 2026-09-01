@@ -541,6 +541,20 @@
                             <div class="tile-desc">Nova Reforma Tributária (IBS + CBS)</div>
                         </div>
                     </div>
+                    <div class="tile-btn" data-perm="obras" onclick="location.hash='processos'; abrirTelaAcao('gestaoProcessos')">
+                        <div class="tile-icone"><i class="fa-solid fa-list-check" style="color: #0f766e;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Processos (Checklists)</div>
+                            <div class="tile-desc">Categorias e itens padrão da montagem</div>
+                        </div>
+                    </div>
+                    <div class="tile-btn" data-perm="obras" onclick="location.hash='etapas'; abrirTelaAcao('gestaoEtapas')">
+                        <div class="tile-icone"><i class="fa-solid fa-gears" style="color: #475569;"></i></div>
+                        <div>
+                            <div class="tile-titulo">Etapas do PCP</div>
+                            <div class="tile-desc">Colunas do kanban, ordem, cor e status macro</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -3131,7 +3145,9 @@
         pcp: 'fabricaPcp',
         status: 'dashboardGeral',
         identidade: 'identidadeMaster',
-        manual: 'manualUso'
+        manual: 'manualUso',
+        etapas: 'gestaoEtapas',
+        processos: 'gestaoProcessos'
     };
     var EQ_MODULOS_HASH = ['inicio', 'cadastros', 'operacional', 'vendas', 'compras', 'financeiro', 'relatorios', 'atendimento', 'sistema'];
 
@@ -3191,6 +3207,16 @@
         else if (tela === 'gestaoTribEstadual') { document.getElementById('painelTribEstadual').style.display = 'block'; carregarListaTribEstadual(); }
         else if (tela === 'gestaoTribFederal') { document.getElementById('painelTribFederal').style.display = 'block'; carregarListaTribFederal(); }
         else if (tela === 'gestaoTribReforma') { document.getElementById('painelTribReforma').style.display = 'block'; carregarListaTribReforma(); }
+        else if (tela === 'gestaoEtapas') {
+            var cadE = document.getElementById('moduloCadastros');
+            if (cadE) cadE.style.display = 'block';
+            if (typeof abrirModalConfigPCP === 'function') abrirModalConfigPCP();
+        }
+        else if (tela === 'gestaoProcessos') {
+            var cadP = document.getElementById('moduloCadastros');
+            if (cadP) cadP.style.display = 'block';
+            if (typeof abrirModalConfigProcessos === 'function') abrirModalConfigProcessos();
+        }
         else if (tela === 'fabricaPcp') { document.getElementById('painelPCP').style.display = 'block'; inicializarPCP(); }
         else if (tela === 'dashboardGeral') {
             var painelStatus = document.getElementById('painelDashboard');

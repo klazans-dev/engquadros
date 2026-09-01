@@ -83,7 +83,9 @@
                     { href: hrefModulo('equipe'), icon: 'fa-user-shield', label: 'Equipe', master: true, ativo: 'equipe' },
                     { href: hrefModulo('trib-estadual'), icon: 'fa-landmark', label: 'Tributação Estadual', perm: 'clientes', ativo: 'trib-estadual' },
                     { href: hrefModulo('trib-federal'), icon: 'fa-building-columns', label: 'Tributação Federal', perm: 'clientes', ativo: 'trib-federal' },
-                    { href: hrefModulo('trib-reforma'), icon: 'fa-scale-balanced', label: 'Tributação Reforma', perm: 'clientes', ativo: 'trib-reforma' }
+                    { href: hrefModulo('trib-reforma'), icon: 'fa-scale-balanced', label: 'Tributação Reforma', perm: 'clientes', ativo: 'trib-reforma' },
+                    { href: hrefModulo('processos'), icon: 'fa-list-check', label: 'Processos', perm: 'obras', ativo: 'processos' },
+                    { href: hrefModulo('etapas'), icon: 'fa-gears', label: 'Etapas', perm: 'obras', ativo: 'etapas' }
                 ]
             },
             {
@@ -133,6 +135,7 @@
             inicio: 'inicio', cadastros: 'cadastros', clientes: 'cadastros', produtos: 'cadastros', equipe: 'cadastros',
             fabricantes: 'cadastros', 'grupos-produto': 'cadastros', marcas: 'cadastros',
             'trib-estadual': 'cadastros', 'trib-federal': 'cadastros', 'trib-reforma': 'cadastros',
+            processos: 'cadastros', etapas: 'cadastros',
             operacional: 'operacional', pcp: 'operacional', status: 'operacional',
             vendas: 'vendas', compras: 'compras', financeiro: 'financeiro',
             relatorios: 'relatorios', atendimento: 'atendimento', sistema: 'sistema', identidade: 'sistema', manual: 'sistema'
