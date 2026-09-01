@@ -1,8 +1,7 @@
 /**
  * Dashboard BI gerencial — EngQuadros
- * KPIs e gráficos Chart.js. Selects do Supabase em buscarObras / buscarOrcamentos /
- * buscarClientes / buscarChamados. Se a consulta falhar ou vier vazia, usa mocks
- * de demonstração para a diretoria visualizar o layout.
+ * KPIs e gráficos Chart.js. Selects do Supabase filtrados por empresa_id.
+ * Tenant sem registros mostra zeros e estado vazio — nunca dados de outro cliente.
  */
 (function (global) {
     'use strict';
@@ -15,9 +14,7 @@
         orcamentos: [],
         clientes: [],
         chamados: [],
-        demoObras: false,
-        demoOrc: false,
-        demoChamados: false
+        consultaFalhou: false
     };
 
     var CORES = {
@@ -39,55 +36,6 @@
         APROVADO: CORES.sucesso,
         CANCELADO: CORES.erro
     };
-
-    /* ---------- mocks (substituídos quando o select retornar linhas) ---------- */
-
-    function mocksOrcamentos() {
-        return [
-            { numero: 'ORC-2026-041', cliente_nome: 'Usina Vale Verde S.A.', cliente_cnpj: '11.222.333/0001-44', situacao: 'APROVADO', total_venda: 486000, criado_em: '2026-07-12', modalidade: 'industrializacao', projeto: 'QGBT Subestação 3' },
-            { numero: 'ORC-2026-038', cliente_nome: 'Metalúrgica Horizonte Ltda.', cliente_cnpj: '22.333.444/0001-55', situacao: 'APROVADO', total_venda: 312400, criado_em: '2026-06-03', modalidade: 'industrializacao', projeto: 'CCM Laminador' },
-            { numero: 'ORC-2026-052', cliente_nome: 'Cimento Norte S.A.', cliente_cnpj: '33.444.555/0001-66', situacao: 'ENVIADO', total_venda: 198750, criado_em: '2026-08-18', modalidade: 'industrializacao', projeto: 'Painéis forno 2' },
-            { numero: 'ORC-2026-055', cliente_nome: 'Agroindústria Rio Claro', cliente_cnpj: '44.555.666/0001-77', situacao: 'PENDENTE', total_venda: 87400, criado_em: '2026-08-26', modalidade: 'simples', projeto: 'Reposicao disjuntores' },
-            { numero: 'ORC-2026-049', cliente_nome: 'Porto Atlântico Logística', cliente_cnpj: '55.666.777/0001-88', situacao: 'APROVADO', total_venda: 254900, criado_em: '2026-08-02', modalidade: 'industrializacao', projeto: 'Eletrocentro pátio 4' },
-            { numero: 'ORC-2026-033', cliente_nome: 'Saneamento Municipal SPE', cliente_cnpj: '66.777.888/0001-99', situacao: 'CANCELADO', total_venda: 141200, criado_em: '2026-05-21', modalidade: 'industrializacao', projeto: 'CCM ETA' },
-            { numero: 'ORC-2026-057', cliente_nome: 'Usina Vale Verde S.A.', cliente_cnpj: '11.222.333/0001-44', situacao: 'ENVIADO', total_venda: 167800, criado_em: '2026-08-28', modalidade: 'simples', projeto: 'Spare QGBT' }
-        ];
-    }
-
-    function mocksObras() {
-        var hoje = new Date();
-        function iso(offsetDias) {
-            var d = new Date(hoje);
-            d.setDate(d.getDate() + offsetDias);
-            return d.toISOString().slice(0, 10);
-        }
-        return [
-            { id: 'm1', nome_obra: 'QGBT Subestação 3', cliente_cnpj: '11.222.333/0001-44', progresso: 72, etapa_pcp_id: 'e3', status_kanban: 'em_fabricacao', data_fim: iso(18), data_inicio: iso(-40), codigo_orcamento: 'ORC-2026-041' },
-            { id: 'm2', nome_obra: 'CCM Laminador', cliente_cnpj: '22.333.444/0001-55', progresso: 48, etapa_pcp_id: 'e2', status_kanban: 'aguardando_pecas', data_fim: iso(-3), data_inicio: iso(-55), codigo_orcamento: 'ORC-2026-038' },
-            { id: 'm3', nome_obra: 'Eletrocentro pátio 4', cliente_cnpj: '55.666.777/0001-88', progresso: 91, etapa_pcp_id: 'e5', status_kanban: 'ensaios', data_fim: iso(8), data_inicio: iso(-70), codigo_orcamento: 'ORC-2026-049' },
-            { id: 'm4', nome_obra: 'Painel comando silos', cliente_cnpj: '44.555.666/0001-77', progresso: 0, etapa_pcp_id: null, status_kanban: 'aguardando_engenharia', data_fim: iso(45), data_inicio: iso(0), codigo_orcamento: 'ORC-2026-055' },
-            { id: 'm5', nome_obra: 'Cubículo MT forno 2', cliente_cnpj: '33.444.555/0001-66', progresso: 28, etapa_pcp_id: 'e1', status_kanban: 'em_fabricacao', data_fim: iso(22), data_inicio: iso(-20), codigo_orcamento: 'ORC-2026-052' },
-            { id: 'm6', nome_obra: 'QGBT Administrativo', cliente_cnpj: '22.333.444/0001-55', progresso: 100, etapa_pcp_id: 'e6', status_kanban: 'finalizado', data_fim: iso(-12), data_inicio: iso(-90), codigo_orcamento: 'ORC-2026-021' }
-        ];
-    }
-
-    function mocksClientes() {
-        return [
-            { cnpj: '11222333000144', razao_social: 'Usina Vale Verde S.A.', status: 'ativo' },
-            { cnpj: '22333444000155', razao_social: 'Metalúrgica Horizonte Ltda.', status: 'ativo' },
-            { cnpj: '33444555000166', razao_social: 'Cimento Norte S.A.', status: 'ativo' },
-            { cnpj: '44555666000177', razao_social: 'Agroindústria Rio Claro', status: 'ativo' },
-            { cnpj: '55666777000188', razao_social: 'Porto Atlântico Logística', status: 'ativo' },
-            { cnpj: '66777888000199', razao_social: 'Saneamento Municipal SPE', status: 'ativo' }
-        ];
-    }
-
-    function mocksChamados() {
-        return [
-            { status: 'resolvido' }, { status: 'resolvido' }, { status: 'fechado' },
-            { status: 'aberto' }, { status: 'em andamento' }
-        ];
-    }
 
     /* ---------- util ---------- */
 
@@ -202,6 +150,7 @@
 
     /* Ponto de conexão: altere o select abaixo quando o schema do tenant divergir. */
     async function selectComFallback(tabela, selects, extra) {
+        if (!empresaId) return [];
         var i;
         var res;
         for (i = 0; i < selects.length; i++) {
@@ -378,7 +327,7 @@
         var abertos = obras.filter(function (o) { return num(o.progresso) < 100; });
         var atrasados = abertos.filter(obraAtrasada).length;
         var noPrazo = abertos.length - atrasados;
-        var saude = abertos.length > 0 ? (noPrazo / abertos.length) * 100 : 100;
+        var saude = abertos.length > 0 ? (noPrazo / abertos.length) * 100 : null;
         var cobertura = (previsto + realizado) > 0 ? (realizado / (previsto + realizado)) * 100 : 0;
 
         setTxt('kpiFatPrev', fmtBRL(previsto));
@@ -387,16 +336,20 @@
         if (bar) bar.style.width = Math.min(100, cobertura).toFixed(0) + '%';
         setTxt('kpiFatTexto', fechados + ' aprovado(s) · pipeline ' + fmtBRL(previsto));
 
-        setTxt('kpiConversao', taxa.toFixed(1).replace('.', ',') + '%');
-        setTxt('kpiConversaoTexto', fechados + ' fechados em ' + emitidos + ' emitidos (exclui cancelados)');
+        setTxt('kpiConversao', emitidos > 0 ? taxa.toFixed(1).replace('.', ',') + '%' : '—');
+        setTxt('kpiConversaoTexto', emitidos > 0
+            ? (fechados + ' fechados em ' + emitidos + ' emitidos (exclui cancelados)')
+            : 'Sem orçamentos neste tenant');
 
         setTxt('kpiProjetosAndamento', String(andamento));
         setTxt('kpiProjetosTexto', novos + ' ainda não iniciados · ' + obras.length + ' no recorte');
 
-        setTxt('kpiSaudePrazos', saude.toFixed(1).replace('.', ',') + '%');
+        setTxt('kpiSaudePrazos', saude == null ? '—' : saude.toFixed(1).replace('.', ',') + '%');
         var elPrazo = document.getElementById('kpiPrazosTexto');
         if (elPrazo) {
-            if (atrasados > 0) {
+            if (!obras.length) {
+                elPrazo.innerHTML = 'Sem projetos neste tenant';
+            } else if (atrasados > 0) {
                 elPrazo.innerHTML = '<span style="color:var(--erro);font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> ' + atrasados + ' fora do prazo</span>';
             } else {
                 elPrazo.innerHTML = '<span style="color:var(--sucesso);font-weight:700;"><i class="fa-solid fa-circle-check"></i> Todos no cronograma</span>';
@@ -425,10 +378,13 @@
         }
 
         var alerts = [];
+        if (!orcs.length && !obras.length) {
+            alerts.push({ tipo: '', icon: 'fa-inbox', txt: 'Este tenant ainda não possui orçamentos nem obras. Os indicadores ficam em zero até o primeiro registro.' });
+        }
         var atrasados = obras.filter(obraEmAndamento).filter(obraAtrasada);
         if (atrasados.length) {
             alerts.push({ tipo: 'risco', icon: 'fa-triangle-exclamation', txt: atrasados.length + ' projeto(s) em fabricação com data de entrega vencida.' });
-        } else {
+        } else if (obras.length) {
             alerts.push({ tipo: 'ok', icon: 'fa-circle-check', txt: 'Nenhum painel em linha com prazo vencido no recorte.' });
         }
         var pecas = obras.filter(function (o) { return classificarStatusObra(o) === 'Aguardando peças'; });
@@ -488,7 +444,7 @@
         var data = labels.map(function (k) { return buckets[k]; });
         if (obras.length === 0) {
             labels = ['Sem projetos'];
-            data = [1];
+            data = [0];
         }
 
         montarChart('chartStatusProjetos', {
@@ -866,12 +822,22 @@
     function atualizarChipFonte() {
         var chip = document.getElementById('chipFonte');
         if (!chip) return;
-        var demo = estado.demoObras || estado.demoOrc;
-        chip.textContent = demo ? 'Demonstração' : 'Dados ao vivo';
-        chip.classList.toggle('demo', demo);
-        chip.title = demo
-            ? 'Consultas vazias ou indisponíveis — exibindo cenário ilustrativo. Os selects já estão prontos.'
-            : 'Números agregados das tabelas orcamentos, obras, clientes e chamados_suporte.';
+        var vazio = !estado.obras.length && !estado.orcamentos.length;
+        chip.classList.remove('demo', 'vazio');
+        if (estado.consultaFalhou) {
+            chip.textContent = 'Consulta indisponível';
+            chip.classList.add('demo');
+            chip.title = 'Não foi possível ler orçamentos ou obras deste tenant.';
+            return;
+        }
+        if (vazio) {
+            chip.textContent = 'Sem registros';
+            chip.classList.add('vazio');
+            chip.title = 'Nenhum orçamento ou obra vinculado a esta empresa_id.';
+            return;
+        }
+        chip.textContent = 'Dados ao vivo';
+        chip.title = 'Números agregados das tabelas orcamentos, obras, clientes e chamados_suporte desta empresa.';
     }
 
     function renderTudo() {
@@ -925,14 +891,12 @@
             chamados = await buscarChamados();
         }
 
-        estado.demoObras = !obras || obras.length === 0;
-        estado.demoOrc = !orcs || orcs.length === 0;
-        estado.demoChamados = !chamados || chamados.length === 0;
+        estado.consultaFalhou = (supabaseClient && empresaId) && (obras === null || orcs === null);
 
-        estado.obras = estado.demoObras ? mocksObras() : obras;
-        estado.orcamentos = estado.demoOrc ? mocksOrcamentos() : orcs;
-        estado.clientes = (clientes && clientes.length) ? clientes : mocksClientes();
-        estado.chamados = estado.demoChamados ? mocksChamados() : chamados;
+        estado.obras = Array.isArray(obras) ? obras : [];
+        estado.orcamentos = Array.isArray(orcs) ? orcs : [];
+        estado.clientes = Array.isArray(clientes) ? clientes : [];
+        estado.chamados = Array.isArray(chamados) ? chamados : [];
 
         renderTudo();
     }

@@ -209,6 +209,7 @@ main {
     color: #047857;
 }
 .chip-fonte.demo { background: #fff7ed; color: #c2410c; }
+.chip-fonte.vazio { background: #f1f5f9; color: #475569; }
 
 .nav-abas {
     display: flex;
