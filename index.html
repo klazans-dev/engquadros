@@ -15,10 +15,13 @@
 
     <link rel="icon" type="image/png" href="public/favicon.png">
     
-    <!-- Tipografia Corporativa Premium -->
+    <!-- Tipografia Corporativa Premium (somente pesos usados) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preload" href="public/logo.png" as="image">
+    <link rel="preload" href="public/bg-industrial.jpg" as="image">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="css/fundo.css">
@@ -45,17 +48,18 @@ h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,
 .circuit-overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:-4;background-image:linear-gradient(rgba(43,92,146,0.05)1px,transparent1px),linear-gradient(90deg,rgba(43,92,146,0.05)1px,transparent1px);background-size:50px 50px}
 .circuit-line{position:absolute;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);opacity:0.4}
 .circuit-line.vertical{background:linear-gradient(0deg,transparent,var(--azul-sutil),transparent);width:2px;height:150px}
-.c1{top:-150px;left:15%;animation:runY 18s linear infinite}
-.c2{top:-150px;left:55%;animation:runY 25s linear infinite 5s}
-.c3{top:-150px;left:85%;animation:runY 15s linear infinite 2s}
-.c4{left:-150px;top:25%;height:2px;width:200px;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);animation:runX 22s linear infinite 1s}
-@keyframes runY{0%{top:-150px}100%{top:120vh}}
-@keyframes runX{0%{left:-250px}100%{left:120vw}}
+.c1{top:-150px;left:15%;will-change:transform;animation:runY 18s linear infinite}
+.c2{top:-150px;left:55%;will-change:transform;animation:runY 25s linear infinite 5s}
+.c3{top:-150px;left:85%;will-change:transform;animation:runY 15s linear infinite 2s}
+.c4{left:-250px;top:25%;height:2px;width:200px;background:linear-gradient(90deg,transparent,var(--azul-sutil),transparent);will-change:transform;animation:runX 22s linear infinite 1s}
+@keyframes runY{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(0,calc(120vh + 150px),0)}}
+@keyframes runX{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(calc(120vw + 250px),0,0)}}
 /* RESPONSIVIDADE DE MOTION */
 @media (prefers-reduced-motion: reduce){
     .circuit-line, .energy-divider::before{
         animation:none !important;
         transition:none !important;
+        will-change:auto !important;
     }
     .global-bg{
         background-attachment:fixed;
@@ -64,8 +68,8 @@ h1,h2,h3,h4,h5,.nav-links,.titulo-secao,.btn,.contador-animado,.missao-overhead,
 
 .energy-divider{width:100%;height:1px;background:rgba(11,28,53,0.1);position:relative;overflow:hidden;z-index:10}
 .energy-divider.dark{background:rgba(255,255,255,0.1)}
-.energy-divider::before{content:'';position:absolute;width:300px;height:100%;background:linear-gradient(90deg,transparent,rgba(43,92,146,0.3),transparent);animation:energyFlow 5s infinite linear}
-@keyframes energyFlow{0%{left:-400px}100%{left:100%}}
+.energy-divider::before{content:'';position:absolute;width:300px;height:100%;background:linear-gradient(90deg,transparent,rgba(43,92,146,0.3),transparent);animation:energyFlow 5s infinite linear;will-change:transform}
+@keyframes energyFlow{0%{transform:translate3d(-400px,0,0)}100%{transform:translate3d(100vw,0,0)}}
 .reveal{opacity:0;transform:translateY(30px);transition:var(--transicao-padrao);transition-duration:0.8s}
 .reveal.active{opacity:1;transform:translateY(0)}
 
@@ -264,7 +268,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
     <!-- CABEÇALHO -->
     <header id="main-header">
         <a href="#" class="logo" aria-label="Página inicial EngQuadros">
-            <img src="public/logo.png" alt="Logotipo EngQuadros">
+            <img src="public/logo.png" alt="Logotipo EngQuadros" width="240" height="191" decoding="async" fetchpriority="high">
         </a>
         
         <div class="header-biblico">
@@ -371,7 +375,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                     <!-- FOTO DO PRÉDIO ESPELHADO DO ID VISUAL -->
                     <div class="sobre-imagem reveal">
                         <!-- IMPORTANTE: Salve a foto do prédio espelhado do PDF como 'predio.jpg' na pasta public -->
-                        <img src="public/predio.jpg" alt="Fachada do prédio corporativo espelhado da EngQuadros">
+                        <img src="public/predio.jpg" alt="Fachada do prédio corporativo espelhado da EngQuadros" width="694" height="768" loading="lazy" decoding="async">
                     </div>
                 </div>
 
@@ -433,63 +437,63 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 
                 <div class="grid-expo reveal">
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/1.jpeg" alt="Logística e Estrutura na Expo Food" loading="lazy">
+                        <img src="public/Expo Food 2026/1.jpeg" alt="Logística e Estrutura na Expo Food" width="899" height="1599" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Logística e Montagem</h4>
                             <p>Preparação e infraestrutura robusta para entrega de grandes projetos industriais.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/2.jpeg" alt="Stand EngQuadros" loading="lazy">
+                        <img src="public/Expo Food 2026/2.jpeg" alt="Stand EngQuadros" width="900" height="1600" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Nosso Stand na Feira</h4>
                             <p>Espaço dedicado a receber clientes, parceiros e engenheiros do setor industrial.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/3.jpeg" alt="Equipe Comercial" loading="lazy">
+                        <img src="public/Expo Food 2026/3.jpeg" alt="Equipe Comercial" width="1000" height="1777" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Relacionamento B2B</h4>
                             <p>Nossa equipe técnica e comercial em atendimento ativo aos visitantes.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/4.jpeg" alt="Atendimento Técnico" loading="lazy">
+                        <img src="public/Expo Food 2026/4.jpeg" alt="Atendimento Técnico" width="1000" height="1777" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Parcerias Estratégicas</h4>
                             <p>Conectando nossa engenharia elétrica às principais demandas do mercado.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/5.jpeg" alt="Tecnologias Expostas" loading="lazy">
+                        <img src="public/Expo Food 2026/5.jpeg" alt="Tecnologias Expostas" width="1000" height="1777" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Tecnologia em Destaque</h4>
                             <p>Apresentação visual de alta performance em automação e painéis elétricos.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/6.jpeg" alt="Demonstração de Sistemas" loading="lazy">
+                        <img src="public/Expo Food 2026/6.jpeg" alt="Demonstração de Sistemas" width="900" height="1600" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Inovação em Sistemas</h4>
                             <p>Soluções estruturadas para garantir máxima segurança operacional nas indústrias.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/7.jpeg" alt="Cobertura da Feira" loading="lazy">
+                        <img src="public/Expo Food 2026/7.jpeg" alt="Cobertura da Feira" width="900" height="1600" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Cobertura do Evento</h4>
                             <p>Registros dos melhores momentos de nossa participação na feira.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/8.jpeg" alt="Equipe Unida" loading="lazy">
+                        <img src="public/Expo Food 2026/8.jpeg" alt="Equipe Unida" width="1000" height="1333" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Compromisso e Qualidade</h4>
                             <p>Nossa equipe unida levando excelência e confiança para o evento.</p>
                         </div>
                     </div>
                     <div class="card-expo">
-                        <img src="public/Expo Food 2026/9.jpeg" alt="Encerramento do Evento" loading="lazy">
+                        <img src="public/Expo Food 2026/9.jpeg" alt="Encerramento do Evento" width="1000" height="1777" loading="lazy" decoding="async">
                         <div class="card-expo-conteudo">
                             <h4>Sucesso de Público</h4>
                             <p>Agradecimento a todos os clientes e parceiros que visitaram nosso espaço.</p>
@@ -669,7 +673,7 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 <h2 class="titulo-secao reveal">Conheça Alguns de Nossos Projetos</h2>
                 
                 <div class="reveal text-center mb-40">
-                    <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" loading="lazy" style="max-width: 100%; width: 700px; border-radius: 8px; box-shadow: var(--sombra-industrial); border: var(--borda-industrial);">
+                    <img src="public/eletrocentro1.jpg" alt="Instalações EngQuadros - Eletrocentro" width="1400" height="1050" loading="lazy" decoding="async" style="max-width: 100%; width: 700px; border-radius: 8px; box-shadow: var(--sombra-industrial); border: var(--borda-industrial);">
                 </div>
                 
                 <p class="apresentacao-intro reveal text-left" style="font-size: 1rem;">
@@ -684,9 +688,9 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
                 </div>
 
                 <div class="grid-galeria">
-                    <div class="item-galeria quadros reveal"><img src="public/quadro.jpg" alt="Exemplo de Quadro" loading="lazy"></div>
-                    <div class="item-galeria projetos reveal"><img src="public/projeto.jpg" alt="Exemplo de Projeto" loading="lazy"></div>
-                    <div class="item-galeria paineis reveal"><img src="public/painel.jpg" alt="Exemplo de Painel" loading="lazy"></div>
+                    <div class="item-galeria quadros reveal"><img src="public/quadro.jpg" alt="Exemplo de Quadro" width="689" height="919" loading="lazy" decoding="async"></div>
+                    <div class="item-galeria projetos reveal"><img src="public/projeto.jpg" alt="Exemplo de Projeto" width="689" height="919" loading="lazy" decoding="async"></div>
+                    <div class="item-galeria paineis reveal"><img src="public/painel.jpg" alt="Exemplo de Painel" width="689" height="919" loading="lazy" decoding="async"></div>
                 </div>
             </div>
         </section>
@@ -705,27 +709,27 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
             <div class="conteudo-secao">
                 <h2 class="titulo-secao reveal">Parceiros</h2>
                 <div class="grid-clientes reveal">
-                    <img src="public/glp.jpg" alt="Logotipo Cliente GLP" loading="lazy">
-                    <img src="public/magalu.jpg" alt="Logotipo Cliente Magalu" loading="lazy">
-                    <img src="public/pfrio.jpg" alt="Logotipo Cliente Prefeitura do Rio" loading="lazy">
-                    <img src="public/shelter.jpg" alt="Logotipo Cliente Shelter-Stay" loading="lazy">
-                    <img src="public/ype.jpg" alt="Logotipo Cliente Ypê" loading="lazy">
+                    <img src="public/glp.jpg" alt="Logotipo Cliente GLP" width="254" height="234" loading="lazy" decoding="async">
+                    <img src="public/magalu.jpg" alt="Logotipo Cliente Magalu" width="250" height="231" loading="lazy" decoding="async">
+                    <img src="public/pfrio.jpg" alt="Logotipo Cliente Prefeitura do Rio" width="250" height="234" loading="lazy" decoding="async">
+                    <img src="public/shelter.jpg" alt="Logotipo Cliente Shelter-Stay" width="250" height="210" loading="lazy" decoding="async">
+                    <img src="public/ype.jpg" alt="Logotipo Cliente Ypê" width="248" height="231" loading="lazy" decoding="async">
                 </div>
                 
                
                 <div class="grid-clientes reveal" style="gap: 80px;">
-                    <img src="public/siemens.jpg" alt="Parceiro Siemens" loading="lazy" style="max-width: 180px;">
-                    <img src="public/rittal.jpg" alt="Parceiro Rittal" loading="lazy" style="max-width: 180px;">
-                    <img src="public/abb.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/pt.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/ml.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/cemig.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/eco.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/enel.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/mpd.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/schneider.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/potencia.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
-                    <img src="public/urca.jpg" alt="Demais Parceiros" loading="lazy" style="max-width: 180px;">
+                    <img src="public/siemens.jpg" alt="Parceiro Siemens" width="336" height="92" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/rittal.jpg" alt="Parceiro Rittal" width="253" height="125" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/abb.jpg" alt="Demais Parceiros" width="354" height="257" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/pt.jpg" alt="Demais Parceiros" width="294" height="185" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/ml.jpg" alt="Demais Parceiros" width="400" height="162" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/cemig.jpg" alt="Demais Parceiros" width="317" height="141" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/eco.jpg" alt="Demais Parceiros" width="400" height="108" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/enel.jpg" alt="Demais Parceiros" width="288" height="149" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/mpd.jpg" alt="Demais Parceiros" width="309" height="119" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/schneider.jpg" alt="Demais Parceiros" width="400" height="182" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/potencia.jpg" alt="Demais Parceiros" width="400" height="159" loading="lazy" decoding="async" style="max-width: 180px;">
+                    <img src="public/urca.jpg" alt="Demais Parceiros" width="277" height="140" loading="lazy" decoding="async" style="max-width: 180px;">
                 </div>
             </div>
         </section>
@@ -812,13 +816,19 @@ footer{background-color:rgba(6,11,20,0.95);backdrop-filter:blur(5px);color:rgba(
     </footer>
 
     <!-- SCRIPTS -->
-    <script src="js/timers.js"></script>
+    <script src="js/timers.js" defer></script>
     <script>
         const header = document.getElementById('main-header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) header.classList.add('scrolled');
-            else header.classList.remove('scrolled');
-        });
+        let scrollPending = false;
+        window.addEventListener('scroll', function () {
+            if (scrollPending) return;
+            scrollPending = true;
+            requestAnimationFrame(function () {
+                if (window.scrollY > 50) header.classList.add('scrolled');
+                else header.classList.remove('scrolled');
+                scrollPending = false;
+            });
+        }, { passive: true });
 
         function filtrarGaleria(categoria, btn) {
             document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
